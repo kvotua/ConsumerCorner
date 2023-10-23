@@ -8,6 +8,9 @@ services:
     depends_on:
       - mongo
       - redis
+    environment:
+      - DEBUG=1
+      - SMS_RU_TOKEN=${SMS_RU_TOKEN}
   
   mongo:
     image: mongo:latest

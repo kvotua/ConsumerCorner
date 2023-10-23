@@ -1,3 +1,5 @@
+import os
+import json
 from time import time
 import uuid
 from contextlib import asynccontextmanager
@@ -7,6 +9,7 @@ from fastapi.responses import RedirectResponse
 from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter
 from pydantic_extra_types.phone_numbers import PhoneNumber
+import requests
 from app.models import (
     ProprietorID,
     PointID,
@@ -34,7 +37,8 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+debug_mode = os.getenv("DEBUG") is not None
+app = FastAPI(lifespan=lifespan, debug=debug_mode)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -153,10 +157,19 @@ async def get_proprietor_token(phone_number: PhoneNumber, code: str) -> Token:
     dependencies=[Depends(RateLimiter(times=3, minutes=1))],
 )
 async def get_proprietor_verify_phone(phone_number: PhoneNumber) -> None:
-    # TODO: generate random six-digit code
-    # TODO: send code via SMS
+    if os.getenv("DEBUG") is None:
+        api_id = os.getenv("SMS_RU_TOKEN")
+        if api_id is None:
+            value = "0000"
+        else:
+            number = "".join(filter(lambda x: x.isdigit(), phone_number))
+            url = f"https://sms.ru/code/call?phone={number}&ip=-1&api_id={api_id}"
+            response = requests.get(url)
+            value = json.loads(response.content)["code"]
+    else:
+        value = "0000"
     code = Code(
-        value="000000",
+        value=str(value),
         expires=int(time()) + CODE_EXPIRES_SECONDS,
         phone_number=phone_number,
     )
