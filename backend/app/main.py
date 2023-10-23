@@ -14,7 +14,12 @@ from app.models import (
     Point,
     Proprietor,
 )
-from app.database import proprietors_collection, points_collection, comments_collection
+from app.database import (
+    proprietors_collection,
+    points_collection,
+    comments_collection,
+    redis_database,
+)
 
 app = FastAPI()
 app.add_middleware(
@@ -26,8 +31,6 @@ app.add_middleware(
 )
 
 codes: dict[PhoneNumber, str] = {}
-proprietorID_to_token: dict[ProprietorID, Token] = {}
-token_to_proprietorID: dict[Token, ProprietorID] = {}
 
 
 @app.post("/comments", tags=["Comment"])
@@ -41,7 +44,7 @@ async def post_comment(comment: CommentBase) -> None:
 
 @app.get("/comments/by/pointID", tags=["Comments"])
 async def get_comments(token: Token, pointID: PointID) -> list[Comment]:
-    proprietorID = token_to_proprietorID.get(token, None)
+    proprietorID = redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=404, detail="Wrong token")
     point = points_collection.find_one({"id": pointID})
@@ -57,7 +60,7 @@ async def get_comments(token: Token, pointID: PointID) -> list[Comment]:
 
 @app.post("/points", tags=["Points"])
 async def post_point(token: Token, point: PointBase) -> None:
-    proprietorID = token_to_proprietorID.get(token, None)
+    proprietorID = redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=404, detail="Wrong token")
     point = Point(**point.model_dump(), owner=proprietorID)
@@ -87,7 +90,7 @@ async def get_proprietor_by_id(proprietorID: ProprietorID) -> Proprietor:
 
 @app.get("/proprietors/by/token", tags=["Proprietors"])
 async def get_proprietor(token: Token) -> Proprietor:
-    proprietorID = token_to_proprietorID.get(token, None)
+    proprietorID = redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=404, detail="Wrong token")
     proprietor = Proprietor(**proprietors_collection.find_one({"id": proprietorID}))
@@ -105,8 +108,8 @@ async def post_proprietor(proprietor: ProprietorBase, code: str) -> Token:
     proprietor = Proprietor(**proprietor.model_dump())
     proprietors_collection.insert_one(proprietor.model_dump())
     token = str(uuid.uuid4())
-    proprietorID_to_token[proprietor.id] = token
-    token_to_proprietorID[token] = proprietor.id
+    redis_database.set(f"id:{proprietor.id}", token)
+    redis_database.set(f"token:{token}", proprietor.id)
     return token
 
 
@@ -122,8 +125,8 @@ async def get_proprietor_token(phone_number: PhoneNumber, code: str) -> Token:
     proprietor = Proprietor(
         **proprietors_collection.find_one({"phone_number": phone_number})
     )
-    proprietorID_to_token[proprietor.id] = token
-    token_to_proprietorID[token] = proprietor.id
+    redis_database.set(f"id:{proprietor.id}", token)
+    redis_database.set(f"token:{token}", proprietor.id)
     return token
 
 

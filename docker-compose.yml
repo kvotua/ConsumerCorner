@@ -5,11 +5,20 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
+    depends_on:
+      - mongo
+      - redis
   
-  database:
+  mongo:
     image: mongo:latest
     volumes:
-      - database_volume:/data/db
+      - mongo_volume:/data/db
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis_volume:/data
 
 volumes:
-  database_volume:
+  mongo_volume:
+  redis_volume:
