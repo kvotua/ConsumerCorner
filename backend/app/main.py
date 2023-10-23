@@ -1,8 +1,11 @@
 from time import time
 import uuid
-from fastapi import FastAPI, HTTPException
+from contextlib import asynccontextmanager
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+from fastapi_limiter import FastAPILimiter
+from fastapi_limiter.depends import RateLimiter
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from app.models import (
     ProprietorID,
@@ -24,7 +27,14 @@ from app.database import (
     redis_database,
 )
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await FastAPILimiter.init(redis_database)
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -47,7 +57,7 @@ async def post_comment(comment: CommentBase) -> None:
 
 @app.get("/comments/by/pointID", tags=["Comments"])
 async def get_comments(token: Token, pointID: PointID) -> list[Comment]:
-    proprietorID = redis_database.get(f"token:{token}")
+    proprietorID = await redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=404, detail="Wrong token")
     point = points_collection.find_one({"id": pointID})
@@ -63,7 +73,7 @@ async def get_comments(token: Token, pointID: PointID) -> list[Comment]:
 
 @app.post("/points", tags=["Points"])
 async def post_point(token: Token, point: PointBase) -> None:
-    proprietorID = redis_database.get(f"token:{token}")
+    proprietorID = await redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=404, detail="Wrong token")
     point = Point(**point.model_dump(), owner=proprietorID)
@@ -93,7 +103,7 @@ async def get_proprietor_by_id(proprietorID: ProprietorID) -> Proprietor:
 
 @app.get("/proprietors/by/token", tags=["Proprietors"])
 async def get_proprietor(token: Token) -> Proprietor:
-    proprietorID = redis_database.get(f"token:{token}")
+    proprietorID = await redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=404, detail="Wrong token")
     proprietor = Proprietor(**proprietors_collection.find_one({"id": proprietorID}))
@@ -113,8 +123,8 @@ async def post_proprietor(proprietor: ProprietorBase, code: str) -> Token:
     proprietor = Proprietor(**proprietor.model_dump())
     proprietors_collection.insert_one(proprietor.model_dump())
     token = str(uuid.uuid4())
-    redis_database.set(f"id:{proprietor.id}", token)
-    redis_database.set(f"token:{token}", proprietor.id)
+    await redis_database.set(f"id:{proprietor.id}", token)
+    await redis_database.set(f"token:{token}", proprietor.id)
     return token
 
 
@@ -132,12 +142,16 @@ async def get_proprietor_token(phone_number: PhoneNumber, code: str) -> Token:
     proprietor = Proprietor(
         **proprietors_collection.find_one({"phone_number": phone_number})
     )
-    redis_database.set(f"id:{proprietor.id}", token)
-    redis_database.set(f"token:{token}", proprietor.id)
+    await redis_database.set(f"id:{proprietor.id}", token)
+    await redis_database.set(f"token:{token}", proprietor.id)
     return token
 
 
-@app.get("/proprietors/verify/phone", tags=["Proprietors"])
+@app.get(
+    "/proprietors/verify/phone",
+    tags=["Proprietors"],
+    dependencies=[Depends(RateLimiter(times=3, minutes=1))],
+)
 async def get_proprietor_verify_phone(phone_number: PhoneNumber) -> None:
     # TODO: generate random six-digit code
     # TODO: send code via SMS
