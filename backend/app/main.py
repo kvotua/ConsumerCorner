@@ -5,11 +5,14 @@ from fastapi.responses import RedirectResponse
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from app.models import (
     ProprietorID,
+    PointID,
     Token,
     ProprietorBase,
+    PointBase,
+    Point,
     Proprietor,
 )
-from app.database import proprietors_collection
+from app.database import proprietors_collection, points_collection
 
 app = FastAPI()
 app.add_middleware(
@@ -25,7 +28,37 @@ proprietorID_to_token: dict[ProprietorID, Token] = {}
 token_to_proprietorID: dict[Token, ProprietorID] = {}
 
 
-@app.get("/proprietors", tags=["Proprietors"])
+@app.post("/points", tags=["Points"])
+async def post_point(token: Token, point: PointBase) -> None:
+    proprietorID = token_to_proprietorID.get(token, None)
+    if proprietorID is None:
+        raise HTTPException(status_code=404, detail="Wrong token")
+    point = Point(**point.model_dump(), owner=proprietorID)
+    points_collection.insert_one(point.model_dump())
+    proprietors_collection.update_one(
+        {"id": proprietorID}, {"$push": {"points_id": point.id}}
+    )
+
+
+@app.get("/points", tags=["Points"])
+async def get_point(pointID: PointID) -> Point:
+    point = points_collection.find_one({"id": pointID})
+    if point is None:
+        raise HTTPException(status_code=404, detail="Wrong pointID")
+    point = Point(**point)
+    return point
+
+
+@app.get("/proprietors/by/id", tags=["Proprietors"])
+async def get_proprietor_by_id(proprietorID: ProprietorID) -> Proprietor:
+    proprietor = proprietors_collection.find_one({"id": proprietorID})
+    if proprietor is None:
+        raise HTTPException(status_code=404, detail="Wrong proprietorID")
+    proprietor = Proprietor(**proprietor)
+    return proprietor
+
+
+@app.get("/proprietors/by/token", tags=["Proprietors"])
 async def get_proprietor(token: Token) -> Proprietor:
     proprietorID = token_to_proprietorID.get(token, None)
     if proprietorID is None:
