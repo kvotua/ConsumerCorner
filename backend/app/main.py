@@ -1,5 +1,6 @@
 import uuid
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from app.models import (
@@ -11,10 +12,17 @@ from app.models import (
 from app.database import proprietors_collection
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 codes: dict[PhoneNumber, str] = {}
 proprietorID_to_token: dict[ProprietorID, Token] = {}
-token_to_proprietorID: dict[ProprietorID, Token] = {}
+token_to_proprietorID: dict[Token, ProprietorID] = {}
 
 
 @app.get("/proprietors", tags=["Proprietors"])
