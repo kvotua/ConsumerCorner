@@ -116,6 +116,9 @@ async def get_proprietor(token: Token) -> Proprietor:
 
 @app.post("/proprietors", tags=["Proprietors"])
 async def post_proprietor(proprietor: ProprietorBase, code: str) -> Token:
+    p = proprietors_collection.find_one({"phone_number": proprietor.phone_number})
+    if p is not None:
+        raise HTTPException(status_code=400, detail="Phone number already in use")
     code = codes_collection.find_one_and_delete(
         {"phone_number": proprietor.phone_number, "value": code}
     )
