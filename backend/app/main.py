@@ -1,3 +1,4 @@
+from time import time
 import uuid
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,6 +8,7 @@ from app.models import (
     ProprietorID,
     PointID,
     Token,
+    Code,
     CommentBase,
     Comment,
     ProprietorBase,
@@ -18,6 +20,7 @@ from app.database import (
     proprietors_collection,
     points_collection,
     comments_collection,
+    codes_collection,
     redis_database,
 )
 
@@ -30,10 +33,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-codes: dict[PhoneNumber, str] = {}
+CODE_EXPIRES_SECONDS = 60 * 15
 
 
-@app.post("/comments", tags=["Comment"])
+@app.post("/comments", tags=["Comments"])
 async def post_comment(comment: CommentBase) -> None:
     point = points_collection.find_one({"id": comment.pointID})
     if point is None:
@@ -99,12 +102,14 @@ async def get_proprietor(token: Token) -> Proprietor:
 
 @app.post("/proprietors", tags=["Proprietors"])
 async def post_proprietor(proprietor: ProprietorBase, code: str) -> Token:
-    stored_code = codes.get(proprietor.phone_number, None)
-    if stored_code is None:
-        raise HTTPException(status_code=400, detail="Phone number doesn't have code")
-    if stored_code != code:
-        raise HTTPException(status_code=400, detail="Wrong code")
-    codes.pop(proprietor.phone_number)
+    code = codes_collection.find_one_and_delete(
+        {"phone_number": proprietor.phone_number, "value": code}
+    )
+    if code is None:
+        raise HTTPException(status_code=400, detail="Wrong phone number or code")
+    c = Code(**code)
+    if c.expires < int(time()):
+        raise HTTPException(status_code=400, detail="Code expired")
     proprietor = Proprietor(**proprietor.model_dump())
     proprietors_collection.insert_one(proprietor.model_dump())
     token = str(uuid.uuid4())
@@ -115,12 +120,14 @@ async def post_proprietor(proprietor: ProprietorBase, code: str) -> Token:
 
 @app.get("/proprietors/token", tags=["Proprietors"])
 async def get_proprietor_token(phone_number: PhoneNumber, code: str) -> Token:
-    stored_code = codes.get(phone_number, None)
-    if stored_code is None:
-        raise HTTPException(status_code=400, detail="Phone number doesn't have code")
-    if stored_code != code:
-        raise HTTPException(status_code=400, detail="Wrong code")
-    codes.pop(phone_number)
+    code = codes_collection.find_one_and_delete(
+        {"phone_number": phone_number, "value": code}
+    )
+    if code is None:
+        raise HTTPException(status_code=400, detail="Wrong phone number or code")
+    c = Code(**code)
+    if c.expires < int(time()):
+        raise HTTPException(status_code=400, detail="Code expired")
     token = str(uuid.uuid4())
     proprietor = Proprietor(
         **proprietors_collection.find_one({"phone_number": phone_number})
@@ -133,9 +140,13 @@ async def get_proprietor_token(phone_number: PhoneNumber, code: str) -> Token:
 @app.get("/proprietors/verify/phone", tags=["Proprietors"])
 async def get_proprietor_verify_phone(phone_number: PhoneNumber) -> None:
     # TODO: generate random six-digit code
-    code = "000000"
-    codes[phone_number] = code
     # TODO: send code via SMS
+    code = Code(
+        value="000000",
+        expires=int(time()) + CODE_EXPIRES_SECONDS,
+        phone_number=phone_number,
+    )
+    codes_collection.insert_one(code.model_dump())
 
 
 @app.get("/", include_in_schema=False)
