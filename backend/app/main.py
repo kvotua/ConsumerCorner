@@ -7,12 +7,14 @@ from app.models import (
     ProprietorID,
     PointID,
     Token,
+    CommentBase,
+    Comment,
     ProprietorBase,
     PointBase,
     Point,
     Proprietor,
 )
-from app.database import proprietors_collection, points_collection
+from app.database import proprietors_collection, points_collection, comments_collection
 
 app = FastAPI()
 app.add_middleware(
@@ -26,6 +28,31 @@ app.add_middleware(
 codes: dict[PhoneNumber, str] = {}
 proprietorID_to_token: dict[ProprietorID, Token] = {}
 token_to_proprietorID: dict[Token, ProprietorID] = {}
+
+
+@app.post("/comments", tags=["Comment"])
+async def post_comment(comment: CommentBase) -> None:
+    point = points_collection.find_one({"id": comment.pointID})
+    if point is None:
+        raise HTTPException(status_code=404, detail="Wrong pointID")
+    comment = Comment(**comment.model_dump())
+    comments_collection.insert_one(comment.model_dump())
+
+
+@app.get("/comments/by/pointID", tags=["Comments"])
+async def get_comments(token: Token, pointID: PointID) -> list[Comment]:
+    proprietorID = token_to_proprietorID.get(token, None)
+    if proprietorID is None:
+        raise HTTPException(status_code=404, detail="Wrong token")
+    point = points_collection.find_one({"id": pointID})
+    if point is None:
+        raise HTTPException(status_code=404, detail="Wrong pointID")
+    point = Point(**point)
+    if point.owner != proprietorID:
+        raise HTTPException(status_code=403)
+    comments = comments_collection.find({"pointID": point.id})
+    comments = [Comment(**x) for x in comments]
+    return comments
 
 
 @app.post("/points", tags=["Points"])
