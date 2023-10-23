@@ -5,3 +5,11 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
+  
+  database:
+    image: mongo:latest
+    volumes:
+      - database_volume:/data/db
+
+volumes:
+  database_volume:
