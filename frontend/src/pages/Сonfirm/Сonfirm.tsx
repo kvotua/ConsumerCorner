@@ -15,11 +15,14 @@ const Сonfirm = () => {
   const navigate = useNavigate();
   const postUser = () => {
     axios
-      .post(`http://77.232.137.4:8000/proprietors?code=${code}`, {
-        name: user.name,
-        surname: user.surname,
-        phone_number: "+" + user.phone,
-      })
+      .post(
+        `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/proprietors?code=${code}`,
+        {
+          name: user.name,
+          surname: user.surname,
+          phone_number: "+" + user.phone,
+        }
+      )
       .then(({ data }) => {
         dispatch(setisEntrepreneur(true));
         localStorage.setItem("isEntrepreneur", JSON.stringify(true));
