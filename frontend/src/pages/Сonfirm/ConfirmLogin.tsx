@@ -16,7 +16,7 @@ const ConfirmLogin = () => {
   const postUser = () => {
     axios
       .get(
-        `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/proprietors/token?phone_number=%2B${user.phone}&code=${code}`
+        `http://77.232.137.4:8000/proprietors/token?phone_number=%2B${user.phone}&code=${code}`
       )
       .then(({ data }) => {
         dispatch(setisEntrepreneur(true));

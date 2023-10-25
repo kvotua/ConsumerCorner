@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "../../shared/Buttons/Button/Button";
 import { AuthInput } from "../../shared/Inputs/AuthInput";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setPhone } from "../../store/Slices/RegisterSlice";
@@ -15,7 +15,7 @@ const LogIn = () => {
     dispatch(setPhone(phone));
     axios
       .get(
-        `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/proprietors/verify/phone?phone_number=%2B${phone}`
+        `http://77.232.137.4:8000/proprietors/verify/phone?phone_number=%2B${phone}`
       )
       .then(() => {
         navigation("/confirmLogin");
@@ -37,9 +37,7 @@ const LogIn = () => {
           handleClick={getUser}
         />
 
-        <Link to={"/"}>
-          <Button type="button" title="Назад" />
-        </Link>
+        <Button type="button" title="Назад" link="/" />
       </form>
     </div>
   );

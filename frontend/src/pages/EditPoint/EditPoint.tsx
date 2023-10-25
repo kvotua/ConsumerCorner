@@ -15,9 +15,7 @@ const EditPoint = () => {
   const token = localStorage.getItem("token");
   const getPoint = () => {
     axios
-      .get(
-        `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/points?pointID=${id}`
-      )
+      .get(`http://77.232.137.4:8000/points?pointID=${id}`)
       .then(({ data }) => {
         setTitle(data?.title);
         setAddress(data?.address);
@@ -25,7 +23,7 @@ const EditPoint = () => {
   };
   const patchPoint = () => {
     axios.patch(
-      `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/points?token=${token}&pointID=${id}`,
+      `http://77.232.137.4:8000/points?token=${token}&pointID=${id}`,
       {
         title: title,
         address: address,
@@ -34,7 +32,7 @@ const EditPoint = () => {
   };
   const deletePoint = () => {
     axios.delete(
-      `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/points?token=${token}&pointID=${id}`
+      `http://77.232.137.4:8000/points?token=${token}&pointID=${id}`
     );
   };
   useEffect(() => {
@@ -89,7 +87,7 @@ const EditPoint = () => {
       {modal && (
         <div className="fixed w-full h-full bg-opacity-90 top-0 left-0 bg-originBlack flex flex-col items-center justify-center p-[10px]">
           <QRCode
-            value={`http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:5173/points/${id}`}
+            value={`http://77.232.137.4:5173/points/${id}`}
             bgColor="none"
             fgColor="#fff"
             className="mb-10"

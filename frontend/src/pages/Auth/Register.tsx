@@ -23,7 +23,7 @@ const Register = () => {
     dispatch(setPhone(phone));
     axios
       .get(
-        `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/proprietors/verify/phone?phone_number=%2B${phone}`
+        `http://77.232.137.4:8000/proprietors/verify/phone?phone_number=%2B${phone}`
       )
       .then(() => navigate("/confirm"))
       .catch(() => {

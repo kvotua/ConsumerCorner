@@ -16,7 +16,7 @@ const Comments = () => {
   const getComments = () => {
     axios
       .get(
-        `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/comments/by/pointID?token=${token}&pointID=${id}`
+        `http://77.232.137.4:8000/comments/by/pointID?token=${token}&pointID=${id}`
       )
       .then(({ data }) => setComments(data));
   };

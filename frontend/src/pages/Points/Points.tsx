@@ -20,7 +20,7 @@ const Points = () => {
     const points = await Promise.all(
       user.points_id?.map(async (id: string) => {
         const res = await axios.get(
-          `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/points?pointID=${id}`
+          `http://77.232.137.4:8000/points?pointID=${id}`
         );
         return await res.data;
       })
@@ -30,9 +30,7 @@ const Points = () => {
 
   const getUser = () => {
     axios
-      .get(
-        `http://XN--90ABDIBNEEKJF0ABCBBQIL3BEJR0C1R.XN--P1AI:8000/proprietors/by/token?token=${token}`
-      )
+      .get(`http://77.232.137.4:8000/proprietors/by/token?token=${token}`)
       .then(({ data }) => {
         setUser(data);
         setIsLoading(true);
