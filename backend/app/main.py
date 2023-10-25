@@ -18,6 +18,7 @@ from app.models import (
     CommentBase,
     Comment,
     ProprietorBase,
+    PointUpdate,
     PointBase,
     Point,
     Proprietor,
@@ -86,6 +87,18 @@ async def post_point(token: Token, point: PointBase) -> None:
     proprietors_collection.update_one(
         {"id": proprietorID}, {"$push": {"points_id": point.id}}
     )
+
+
+@app.patch("/points", tags=["Points"])
+async def patch_point(token: Token, pointID: PointID, updates: PointUpdate) -> None:
+    proprietorID = await redis_database.get(f"token:{token}")
+    if proprietorID is None:
+        raise HTTPException(status_code=404, detail="Wrong token")
+    result = points_collection.update_one(
+        {"id": pointID}, {"$set": updates.model_dump(exclude_none=True)}
+    )
+    if result.matched_count < 1:
+        raise HTTPException(status_code=404, detail="Wrong pointID")
 
 
 @app.get("/points", tags=["Points"])
