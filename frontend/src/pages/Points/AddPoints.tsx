@@ -11,13 +11,10 @@ const AddPoints = () => {
   const navigate = useNavigate();
   const postPoints = () => {
     axios
-      .post(
-        `http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:8000/points?token=${token}`,
-        {
-          title: title,
-          address: addres,
-        }
-      )
+      .post(`http://77.232.137.4:8000/points?token=${token}`, {
+        title: title,
+        address: addres,
+      })
       .then(() => navigate("/points"));
   };
   return (

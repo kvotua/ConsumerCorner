@@ -9,13 +9,10 @@ const Report = () => {
   const navigation = useNavigate();
   const postComment = () => {
     axios
-      .post(
-        "http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:8000/comments",
-        {
-          pointID: id,
-          message: comment,
-        }
-      )
+      .post("http://77.232.137.4:8000/comments", {
+        pointID: id,
+        message: comment,
+      })
       .then(() => {
         navigation("/thanks");
       });
