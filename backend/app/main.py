@@ -21,6 +21,7 @@ from app.models import (
     PointBase,
     Point,
     Proprietor,
+    ProprietorUpdate,
 )
 from app.database import (
     proprietors_collection,
@@ -94,6 +95,25 @@ async def get_point(pointID: PointID) -> Point:
         raise HTTPException(status_code=404, detail="Wrong pointID")
     point = Point(**point)
     return point
+
+
+@app.patch("/proprietors", tags=["Proprietors"])
+async def patch_proprietor(token: Token, updates: ProprietorUpdate) -> None:
+    proprietorID = await redis_database.get(f"token:{token}")
+    if proprietorID is None:
+        raise HTTPException(status_code=404, detail="Wrong token")
+    if updates.phone_number is not None and updates.code is None:
+        raise HTTPException(
+            status_code=400, detail="Code required for change phone number"
+        )
+    updates_dict = updates.model_dump(exclude_none=True)
+    if updates.phone_number is not None:
+        code = codes_collection.find_one_and_delete(
+            {"phone_number": updates.phone_number, "value": updates_dict.pop("code")}
+        )
+        if code is None:
+            raise HTTPException(status_code=400, detail="Wrong code")
+    proprietors_collection.update_one({"id": proprietorID}, {"$set": updates_dict})
 
 
 @app.get("/proprietors/by/id", tags=["Proprietors"])
