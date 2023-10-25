@@ -69,9 +69,7 @@ const Points = () => {
           </Link>
         ))}
       </div>
-      <Link to={"/addPoints"}>
-        <Button title="Добавит точку" type="button" />
-      </Link>
+      <Button title="Добавит точку" type="button" link="/addPoints" />
     </div>
   );
 };
