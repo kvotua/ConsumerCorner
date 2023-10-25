@@ -1,6 +1,11 @@
-version: '3'
+version: "3"
 
 services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:4173"
+
   backend:
     build: ./backend
     ports:
@@ -11,7 +16,7 @@ services:
     environment:
       - DEBUG=1
       - SMS_RU_TOKEN=${SMS_RU_TOKEN}
-  
+
   mongo:
     image: mongo:latest
     volumes:
