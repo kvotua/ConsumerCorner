@@ -89,6 +89,20 @@ async def post_point(token: Token, point: PointBase) -> None:
     )
 
 
+@app.delete("/points", tags=["Points"])
+async def delete_point(token: Token, pointID: PointID) -> None:
+    proprietorID = await redis_database.get(f"token:{token}")
+    if proprietorID is None:
+        raise HTTPException(status_code=404, detail="Wrong token")
+    p = points_collection.find_one_and_delete({"id": pointID})
+    if p is None:
+        raise HTTPException(status_code=404, detail="Wrong pointID")
+    comments_collection.delete_many({"pointID": pointID})
+    proprietors_collection.update_one(
+        {"id": proprietorID}, {"$pull": {"points_id": pointID}}
+    )
+
+
 @app.patch("/points", tags=["Points"])
 async def patch_point(token: Token, pointID: PointID, updates: PointUpdate) -> None:
     proprietorID = await redis_database.get(f"token:{token}")
