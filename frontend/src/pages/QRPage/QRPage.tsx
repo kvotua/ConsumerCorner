@@ -6,7 +6,7 @@ const QRPage = () => {
             <QRCode
                 size={256}
                 style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                value={"http://192.168.0.8:5173/"}
+                value={"http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:5173/"}
                 viewBox={`0 0 256 256`}
                 bgColor="none"
             />

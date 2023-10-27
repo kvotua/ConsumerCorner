@@ -14,7 +14,7 @@ const Report = () => {
     const postComment = () => {
         setIsLoading(true);
         axios
-            .post("http://192.168.0.8:8000/comments", {
+            .post("http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:8000/comments", {
                 pointID: id,
                 message: comment,
             })

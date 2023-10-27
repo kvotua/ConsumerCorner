@@ -15,7 +15,7 @@ const Сonfirm = () => {
     const navigate = useNavigate();
     const postUser = () => {
         axios
-            .post(`http://192.168.0.8:8000/proprietors?code=${code}`, {
+            .post(`http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:8000/proprietors?code=${code}`, {
                 name: user.name,
                 surname: user.surname,
                 phone_number: "+" + user.phone,

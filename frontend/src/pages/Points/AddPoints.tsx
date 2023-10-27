@@ -11,7 +11,7 @@ const AddPoints = () => {
     const navigate = useNavigate();
     const postPoints = () => {
         axios
-            .post(`http://192.168.0.8:8000/points?token=${token}`, {
+            .post(`http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:8000/points?token=${token}`, {
                 title: title,
                 address: addres,
             })
