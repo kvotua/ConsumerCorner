@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AuthInput } from "../../shared/Inputs/AuthInput";
 import { Button } from "../../shared/Buttons/Button/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import {
@@ -56,9 +56,8 @@ const Register = () => {
                     handleClick={user}
                 />
 
-                <Link to={"/"}>
-                    <Button type='button' title='Назад' />
-                </Link>
+
+                    <Button type='button' title='Назад' link="/"/>
             </form>
         </div>
     );
