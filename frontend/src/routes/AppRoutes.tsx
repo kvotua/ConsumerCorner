@@ -1,27 +1,37 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { authUserRoutes, publicRoutes } from "./Routes";
+import { useAppSelector } from "../hooks/useAppSelector";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { setToken } from "../store/Slices/token";
 
 interface IRoute {
   path: string;
-  Component: () => JSX.Element;
+  Component: any;
 }
 
 const AppRoutes = () => {
-  const token = localStorage.getItem("token");
-  return (
-    <Routes>
-      {publicRoutes.map(({ path, Component }: IRoute) => (
+  const tok = localStorage.getItem("token");
+  const token = useAppSelector((state) => state.tokenSlice.token);
+
+  const dispatch = useAppDispatch();
+
+  if (tok) {
+    dispatch(setToken(tok));
+  }
+  let routes = publicRoutes.map(({ path, Component }: IRoute) => (
+    <Route key={path} path={path} element={<Component />} />
+  ));
+  routes.push(<Route path="*" element={<Navigate to="/" replace />} />);
+  if (token) {
+    routes = authUserRoutes.map(({ path, Component }: IRoute) => (
+      <>
         <Route key={path} path={path} element={<Component />} />
-      ))}
+      </>
+    ));
+    routes.push(<Route path="*" element={<Navigate to="/points" replace />} />);
+  }
 
-      {token &&
-        authUserRoutes.map(({ path, Component }: IRoute) => (
-          <Route key={path} path={path} element={<Component />} />
-        ))}
-
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  );
+  return <Routes>{routes}</Routes>;
 };
 
 export { AppRoutes };

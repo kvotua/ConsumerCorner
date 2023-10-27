@@ -5,18 +5,21 @@ interface IButtonEntrepreneur {
   title: string;
   link?: string;
   breakAll?: boolean;
+  handleClick?: () => void;
 }
 
 const ButtonEntrepreneur: FC<IButtonEntrepreneur> = ({
   title,
   link = "",
   breakAll = false,
+  handleClick,
 }) => (
   <Link
     to={link}
     className={`block w-full h-[128px] relative bg-originWhite rounded-ButtonEntrepreneur pl-[16px] pt-[20px] pr-[24px] text-originBlack text-[15px] font-bold decoration-inherit shadow-myShadow ${
       breakAll ? "break-all" : ""
     }`}
+    onClick={handleClick}
   >
     <span>{title}</span>
 

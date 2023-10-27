@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../shared/Buttons/Button/Button";
+import ButtonBack from "../../shared/Buttons/ButtonBack/ButtonBack";
 
 const Proposal = () => {
     const { id } = useParams();
@@ -18,28 +19,26 @@ const Proposal = () => {
             });
     };
     return (
-        <div className='container bg-main pt-[100px]'>
-            <div className=''>
-                <h2 className='text-center text-originWhite text-[30px] font-bold mb-10'>
-                    Предложение
-                </h2>
-                <form>
-                    <textarea
-                        name=''
-                        id=''
-                        cols={30}
-                        rows={10}
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                        className='bg-inherit border rounded-[20px] w-full p-[20px] resize-none text-originWhite font-medium outline-none'></textarea>
-                    <Button
-                        title='Отправить'
-                        type='button'
-                        handleClick={postComment}
-                    />
-                </form>
-            </div>
+      <div className="container bg-main pt-[100px]">
+        <div className="">
+          <h2 className="text-center text-originWhite text-[30px] font-bold mb-10">
+            Предложение
+          </h2>
+          <form>
+            <textarea
+              name=""
+              id=""
+              cols={30}
+              rows={10}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="bg-inherit border rounded-[20px] w-full p-[20px] resize-none text-originWhite font-medium outline-none"
+            ></textarea>
+            <Button title="Отправить" type="button" isActive handleClick={postComment} />
+          </form>
         </div>
+        <ButtonBack />
+      </div>
     );
 };
 

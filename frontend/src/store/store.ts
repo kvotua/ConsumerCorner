@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import registerSlice from './Slices/RegisterSlice'
 import isEntrepreneurSlice from './Slices/isEntrepreneur'
+import tokenSlice from './Slices/token'
 
 export const store = configureStore({
   reducer: {
     registerSlice,
     isEntrepreneurSlice,
+    tokenSlice,
   },
 });
 
