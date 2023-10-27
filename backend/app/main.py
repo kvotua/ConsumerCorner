@@ -1,11 +1,13 @@
 import os
 import json
+import qrcode
+import qrcode.image.svg
 from time import time
 import uuid
 from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import Response, RedirectResponse
 from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter
 from pydantic_extra_types.phone_numbers import PhoneNumber
@@ -87,6 +89,15 @@ async def post_point(token: Token, point: PointBase) -> None:
     proprietors_collection.update_one(
         {"id": proprietorID}, {"$push": {"points_id": point.id}}
     )
+
+
+@app.get("/points/{pointID}/qr", tags=["Points"])
+async def get_point_qr(pointID: PointID) -> Response:
+    data = qrcode.make(
+        f"http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai/points/{pointID}",
+        image_factory=qrcode.image.svg.SvgImage,
+    ).to_string(encoding="unicode")
+    return Response(content=data, media_type="image/svg+xml")
 
 
 @app.delete("/points", tags=["Points"])
