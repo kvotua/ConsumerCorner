@@ -56,9 +56,7 @@ const Register = () => {
                     handleClick={user}
                 />
 
-                <Link to={"/"}>
-                    <Button type='button' title='Назад' />
-                </Link>
+                <Button type='button' title='Назад' link='/' />
             </form>
         </div>
     );
