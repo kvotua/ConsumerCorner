@@ -1,11 +1,12 @@
 import os
 import json
+from typing import Annotated
 import qrcode
 import qrcode.image.svg
 from time import time
 import uuid
 from contextlib import asynccontextmanager
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, RedirectResponse
 from fastapi_limiter import FastAPILimiter
@@ -37,8 +38,13 @@ from app.database import (
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Startup
     await FastAPILimiter.init(redis_database)
+
     yield
+
+    # Shutdown
+    ...
 
 
 debug_mode = os.getenv("DEBUG") is not None
@@ -52,6 +58,7 @@ app.add_middleware(
 )
 
 CODE_EXPIRES_SECONDS = 60 * 15
+POINT_PRICE = 100 * 100
 
 
 @app.post("/comments", tags=["Comments"])
@@ -84,10 +91,17 @@ async def post_point(token: Token, point: PointBase) -> None:
     proprietorID = await redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=404, detail="Wrong token")
+    proprietor_model = proprietors_collection.find_one({"id": proprietorID})
+    if proprietor_model is None:
+        raise HTTPException(status_code=500, detail="Proprietor not exist")
+    proprietor = Proprietor(**proprietor_model)
+    if proprietor.balance < POINT_PRICE:
+        raise HTTPException(status_code=400, detail="Insufficient funds")
     point = Point(**point.model_dump(), owner=proprietorID)
     points_collection.insert_one(point.model_dump())
     proprietors_collection.update_one(
-        {"id": proprietorID}, {"$push": {"points_id": point.id}}
+        {"id": proprietorID},
+        {"$push": {"points_id": point.id}, "$inc": {"balance": -POINT_PRICE}},
     )
 
 
@@ -210,6 +224,17 @@ async def get_proprietor_token(phone_number: PhoneNumber, code: str) -> Token:
     await redis_database.set(f"id:{proprietor.id}", token)
     await redis_database.set(f"token:{token}", proprietor.id)
     return token
+
+
+@app.post("/payments/{proprietorID}", tags=["Payments"])
+def post_payment(
+    proprietorID: ProprietorID, value: Annotated[int, Query(gt=0)]
+) -> None:
+    result = proprietors_collection.update_one(
+        {"id": proprietorID}, {"$inc": {"balance": value}}
+    )
+    if result.matched_count < 1:
+        raise HTTPException(status_code=404, detail="Wrong proprietorID")
 
 
 @app.get(
