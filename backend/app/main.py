@@ -30,8 +30,13 @@ from app.database import (
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Startup
     await FastAPILimiter.init(redis_database)
+
     yield
+
+    # Shutdown
+    ...
 
 
 debug_mode = os.getenv("DEBUG") is not None
@@ -45,6 +50,7 @@ app.add_middleware(
 )
 
 CODE_EXPIRES_SECONDS = 60 * 15
+POINT_PRICE = 100 * 100
 
 
 @app.post("/comments", tags=["Comments"])
@@ -77,10 +83,17 @@ async def post_point(token: Token, point: PointBase) -> None:
     proprietorID = await redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=404, detail="Wrong token")
+    proprietor_model = proprietors_collection.find_one({"id": proprietorID})
+    if proprietor_model is None:
+        raise HTTPException(status_code=500, detail="Proprietor not exist")
+    proprietor = Proprietor(**proprietor_model)
+    if proprietor.balance < POINT_PRICE:
+        raise HTTPException(status_code=400, detail="Insufficient funds")
     point = Point(**point.model_dump(), owner=proprietorID)
     points_collection.insert_one(point.model_dump())
     proprietors_collection.update_one(
-        {"id": proprietorID}, {"$push": {"points_id": point.id}}
+        {"id": proprietorID},
+        {"$push": {"points_id": point.id}, "$inc": {"balance": -POINT_PRICE}},
     )
 
 
