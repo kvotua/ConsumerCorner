@@ -2,8 +2,9 @@ import os
 import qrcode
 import qrcode.image.svg
 import uuid
+from typing import Annotated
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, RedirectResponse
 from fastapi_limiter import FastAPILimiter
@@ -153,13 +154,11 @@ async def patch_proprietor(token: Token, updates: ProprietorUpdate) -> None:
     updates_dict = updates.model_dump(exclude_none=True)
     if updates.phone_number is not None:
         code = codes_collection.find_one_and_delete(
-            {"phone_number": updates.phone_number,
-                "value": updates_dict.pop("code")}
+            {"phone_number": updates.phone_number, "value": updates_dict.pop("code")}
         )
         if code is None:
             raise HTTPException(status_code=400, detail="Wrong code")
-    proprietors_collection.update_one(
-        {"id": proprietorID}, {"$set": updates_dict})
+    proprietors_collection.update_one({"id": proprietorID}, {"$set": updates_dict})
 
 
 @app.get("/proprietors/by/id", tags=["Proprietors"])
@@ -176,18 +175,15 @@ async def get_proprietor(token: Token) -> Proprietor:
     proprietorID = await redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=404, detail="Wrong token")
-    proprietor = Proprietor(
-        **proprietors_collection.find_one({"id": proprietorID}))
+    proprietor = Proprietor(**proprietors_collection.find_one({"id": proprietorID}))
     return proprietor
 
 
 @app.post("/proprietors", tags=["Proprietors"])
 async def post_proprietor(proprietor: ProprietorBase) -> Token:
-    p = proprietors_collection.find_one(
-        {"login": proprietor.login})
+    p = proprietors_collection.find_one({"login": proprietor.login})
     if p is not None:
-        raise HTTPException(
-            status_code=400, detail="Login already in use")
+        raise HTTPException(status_code=400, detail="Login already in use")
     proprietor = Proprietor(**proprietor.model_dump())
     proprietors_collection.insert_one(proprietor.model_dump())
     token = str(uuid.uuid4())
@@ -198,8 +194,7 @@ async def post_proprietor(proprietor: ProprietorBase) -> Token:
 
 @app.get("/proprietors/token", tags=["Proprietors"])
 async def get_proprietor_token(login: str, password: str) -> Token:
-    proprietor = proprietors_collection.find_one(
-        {"login": login, "password": password})
+    proprietor = proprietors_collection.find_one({"login": login, "password": password})
     if proprietor is None:
         raise HTTPException(status_code=404, detail="Wrong login or password")
     proprietor = Proprietor(**proprietor)
@@ -207,6 +202,17 @@ async def get_proprietor_token(login: str, password: str) -> Token:
     await redis_database.set(f"id:{proprietor.id}", token)
     await redis_database.set(f"token:{token}", proprietor.id)
     return token
+
+
+@app.post("/payments/{proprietorID}", tags=["Payments"])
+def post_payment(
+    proprietorID: ProprietorID, value: Annotated[int, Query(gt=0)]
+) -> None:
+    result = proprietors_collection.update_one(
+        {"id": proprietorID}, {"$inc": {"balance": value}}
+    )
+    if result.matched_count < 1:
+        raise HTTPException(status_code=404, detail="Wrong proprietorID")
 
 
 @app.get("/", include_in_schema=False)
