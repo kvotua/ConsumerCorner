@@ -54,7 +54,7 @@ CODE_EXPIRES_SECONDS = 60 * 15
 POINT_PRICE = 100 * 100
 
 
-def proprietorID_by_token(token: Token) -> ProprietorID:
+async def proprietorID_by_token(token: Token) -> ProprietorID:
     proprietorID = await redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Wrong token")
@@ -84,8 +84,8 @@ def proprietor_by_id(proprietorID: ProprietorID) -> Proprietor:
     return Proprietor(**proprietor_model)
 
 
-def proprietor_by_token(token: Token) -> Proprietor:
-    proprietorID = proprietorID_by_token(token)
+async def proprietor_by_token(token: Token) -> Proprietor:
+    proprietorID = await proprietorID_by_token(token)
     return proprietor_by_id(proprietorID)
 
 
@@ -101,7 +101,7 @@ async def post_comment(comment: CommentBase) -> None:
 
 @app.get("/comments/by/pointID", tags=["Comments"])
 async def get_comments(token: Token, pointID: PointID) -> list[Comment]:
-    proprietorID = proprietorID_by_token(token)
+    proprietorID = await proprietorID_by_token(token)
     point = point_by_id(pointID)
     if point.owner != proprietorID:
         raise HTTPException(
@@ -142,7 +142,7 @@ async def delete_point(token: Token, pointID: PointID) -> None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Wrong pointID"
         )
-    proprietorID = proprietorID_by_token(token)
+    proprietorID = await proprietorID_by_token(token)
     if points_collection.find_one({"id": pointID, "owner": proprietorID}) is None:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Only owner can delete point"
@@ -155,7 +155,7 @@ async def delete_point(token: Token, pointID: PointID) -> None:
 
 @app.patch("/points", tags=["Points"])
 async def patch_point(token: Token, pointID: PointID, updates: PointUpdate) -> None:
-    proprietorID = proprietorID_by_token(token)
+    proprietorID = await proprietorID_by_token(token)
     result = points_collection.update_one(
         {"id": pointID, "owner": proprietorID},
         {"$set": updates.model_dump(exclude_none=True)},
@@ -173,7 +173,7 @@ async def get_point(pointID: PointID) -> Point:
 
 @app.patch("/proprietors", tags=["Proprietors"])
 async def patch_proprietor(token: Token, updates: ProprietorUpdate) -> None:
-    proprietorID = proprietorID_by_token(token)
+    proprietorID = await proprietorID_by_token(token)
     updates_dict = updates.model_dump(exclude_none=True)
     proprietors_collection.update_one({"id": proprietorID}, {"$set": updates_dict})
 
