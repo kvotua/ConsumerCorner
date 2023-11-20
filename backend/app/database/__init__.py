@@ -6,6 +6,5 @@ _database = _mongoClient.get_database("backend")
 proprietors_collection = _database.get_collection("proprietors")
 points_collection = _database.get_collection("points")
 comments_collection = _database.get_collection("comments")
-codes_collection = _database.get_collection("codes")
 
 redis_database = _Redis(host="redis", port=6379, decode_responses=True)

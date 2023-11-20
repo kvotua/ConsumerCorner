@@ -1,5 +1,4 @@
 from .IDs import PointID, ProprietorID, Token, CommentID
-from .Code import Code
 from .CommentBase import CommentBase
 from .Comment import Comment
 from .PointUpdate import PointUpdate
