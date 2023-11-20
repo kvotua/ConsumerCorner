@@ -69,7 +69,7 @@ def point_by_id(pointID: PointID) -> Point:
     point = points_collection.find_one({"id": pointID})
     if point is None:
         raise HTTPException(status_code=404, detail="Wrong pointID")
-    point = Point(**point)
+    return Point(**point)
 
 
 def comments_by_pointID(pointID: PointID) -> list[Comment]:
