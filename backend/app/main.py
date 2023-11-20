@@ -112,7 +112,7 @@ async def get_comments(token: Token, pointID: PointID) -> list[Comment]:
 
 @app.post("/points", tags=["Points"])
 async def post_point(token: Token, point: PointBase) -> None:
-    proprietor = proprietor_by_token(token)
+    proprietor = await proprietor_by_token(token)
     if proprietor.balance < POINT_PRICE:
         raise HTTPException(status_code=400, detail="Insufficient funds")
     point = Point(**point.model_dump(), owner=proprietor.id)
@@ -185,7 +185,7 @@ async def get_proprietor_by_id(proprietorID: ProprietorID) -> Proprietor:
 
 @app.get("/proprietors/by/token", tags=["Proprietors"])
 async def get_proprietor_by_token(token: Token) -> Proprietor:
-    return proprietor_by_token(token)
+    return await proprietor_by_token(token)
 
 
 @app.post("/proprietors", tags=["Proprietors"])
