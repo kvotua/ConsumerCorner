@@ -1,4 +1,6 @@
 from .IDs import PointID, ProprietorID, Token, CommentID
+from .INN import INN
+from .OGRN import OGRN
 from .CommentBase import CommentBase
 from .Comment import Comment
 from .PointUpdate import PointUpdate
