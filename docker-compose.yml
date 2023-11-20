@@ -14,8 +14,7 @@ services:
       - mongo
       - redis
     environment:
-      - DEBUG=1
-      - SMS_RU_TOKEN=${SMS_RU_TOKEN}
+      - DEBUG=${DEBUG}
 
   mongo:
     image: mongo:latest
