@@ -1,7 +1,7 @@
 import { FC } from "react"
 import { Route, Routes, Navigate } from "react-router-dom"
 
-import { authRoute, publicRoute } from "./routes"
+import { authRoute, publicRoute } from "src/routes/routes"
 import { useAppSelector } from "src/hooks/useAppSelector"
 import { useAppDispatch } from "src/hooks/useAppDispatch"
 import { setUser } from "src/store/slice/userSlice"
