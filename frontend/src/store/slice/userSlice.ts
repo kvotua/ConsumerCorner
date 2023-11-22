@@ -34,9 +34,7 @@ const userSlice = createSlice({
             };
         },
         removeUser(state) {
-            return{
-                ...state = initialState
-            }
+            Object.assign(state, initialState);
         }
     },
 });
