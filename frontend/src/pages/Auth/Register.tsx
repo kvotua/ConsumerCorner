@@ -1,66 +1,84 @@
-import { useState } from "react";
-import { AuthInput } from "../../shared/Inputs/AuthInput";
-import { Button } from "../../shared/Buttons/Button/Button";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
-import {
-    setName,
-    setPhone,
-    setSurname,
-} from "../../store/Slices/RegisterSlice";
+import { FC } from "react";
+import { useForm, FieldValues } from "react-hook-form";
 
-const Register = () => {
-    const [name, setNameUser] = useState<string>("");
-    const [surname, setSurnameUser] = useState<string>("");
-    const [phone, setPhoneUser] = useState<string>("");
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+import { axiosBase } from "src/axios";
+import { useAppDispatch } from "src/hooks/useAppDispatch";
+import { setUser } from "src/store/slice/userSlice";
+import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack";
+import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit";
+import { Input } from "src/ui/Input/Input";
+import { Logo } from "src/ui/Logo/Logo";
 
-    const user = () => {
-        dispatch(setName(name));
-        dispatch(setSurname(surname));
-        dispatch(setPhone(phone));
-        axios
-            .get(
-                `http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:8000/proprietors/verify/phone?phone_number=%2B${phone}`
-            )
-            .then(() => navigate("/confirm"))
-            .catch(() => {
-                alert("Не правильно набран номер");
-            });
-    };
+const Register: FC = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const dispatch = useAppDispatch();
+  const onSubmit = (data: FieldValues) => {
+    const fullName = data.FIO?.split(" ");
 
-    return (
-        <div className='container bg-main h-screen pt-[100px]'>
-            <h2 className='text-center text-originWhite text-[30px] font-bold'>
-                Регистрация
-            </h2>
-            <form className='flex flex-col gap-[10px] pt-[100px]'>
-                <AuthInput title='Имя' setValue={setNameUser} value={name} />
-                <AuthInput
-                    title='Фамилия'
-                    setValue={setSurnameUser}
-                    value={surname}
-                />
-                <AuthInput
-                    title='Телефон'
-                    setValue={setPhoneUser}
-                    value={phone}
-                />
-
-                <Button
-                    isActive
-                    type='button'
-                    title='Подтвердить'
-                    handleClick={user}
-                />
-
-                <Button type='button' title='Назад' link="/"/>
-            </form>
+    try {
+      axiosBase
+        .post(`/proprietors`, {
+          name: fullName[0],
+          surname: fullName[1],
+          login: data.login,
+          password: data.password,
+        })
+        .then(({ data }) => {
+          dispatch(
+            setUser({
+              name: fullName[0],
+              surname: fullName[1],
+              login: data.login,
+              password: data.password,
+              token: data
+            })
+          );
+          localStorage.setItem("token", data);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  return (
+    <div>
+      <Logo />
+      <h1 className="title">Регистрация</h1>
+      <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+        <Input
+          useForm={register("FIO", { required: "Введите ФИО" })}
+          title="Ф.И.О"
+          isError={!!errors.FIO}
+          errorMessage={errors.FIO?.message}
+        />
+        <Input
+          useForm={register("login", {
+            required: "Логин",
+            minLength: 2,
+          })}
+          title="Логин"
+          isError={!!errors.login}
+          errorMessage={errors.login?.message}
+        />
+        <Input
+          useForm={register("password", {
+            required: "Пароль",
+            minLength: 2,
+          })}
+          title="Пароль"
+          isError={!!errors.password}
+          errorMessage={errors.password?.message}
+        />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px]">
+          <ButtonSubmit isActive title="Дальше" type="submit" />
+          <ButtonBack />
         </div>
-    );
+      </form>
+    </div>
+  );
 };
-``;
 
-export default Register;
+export { Register };

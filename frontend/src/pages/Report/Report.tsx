@@ -1,65 +1,46 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "../../shared/Buttons/Button/Button";
-import axios from "axios";
-import { useState } from "react";
-import loader from "../../assets/Pulse.svg";
-import ButtonBack from "../../shared/Buttons/ButtonBack/ButtonBack";
+import { useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { usePostCommentMutation } from "src/store/RTKSlice/api"
+import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
+import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
+
+import { TitlePoint } from "src/ui/Title/TitlePoint"
 
 const Report = () => {
-  const { id } = useParams();
-  const [comment, setComment] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const navigation = useNavigate();
-  const postComment = () => {
-    setIsLoading(true);
-    axios
-      .post(
-        "http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:8000/comments",
-        {
-          pointID: id,
-          message: comment,
-        }
-      )
-      .then(() => {
-        setIsLoading(false);
-        navigation("/thanks");
-      });
-  };
-  if (isLoading) {
-    return (
-      <div className="container h-screen flex items-center justify-center">
-        <img src={loader} alt="" />
-      </div>
-    );
+  const [value, setValue] = useState("")
+  const [addComment] = usePostCommentMutation()
+  const { pointId } = useParams()
+  const navigate = useNavigate()
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    addComment({
+      pointID: pointId,
+      message: value,
+    }).then(() => navigate("/thanks"))
   }
   return (
-    <div className="container bg-main pt-[100px]">
+    <div>
+      <TitlePoint pointName="123" title="Жалоба" />
       <div className="">
-        <h2 className="text-center text-originWhite text-[30px] font-bold mb-10">
-          Жалоба
-        </h2>
-        <form>
+        <span className="text-white text-18px opacity-70 block pt-[8vh] pb-[2vh]">
+          Пожалуйста, напишите в форму ниже ваше предложение.
+        </span>
+        <form onSubmit={(e) => onSubmit(e)}>
           <textarea
-            name=""
-            id=""
-            cols={30}
-            rows={10}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            className="bg-inherit border rounded-[20px] w-full p-[20px] resize-none text-originWhite font-medium outline-none"
+            required
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            className="resize-none rounded-passiveBorder bg-white w-full h-[30vh] px-[19px] py-[18px] text-18px font-bold text-black"
+            placeholder="Напишите ваше предложение"
           ></textarea>
-          <Button
-            title="Отправить"
-            type="submit"
-            isActive
-            handleClick={postComment}
-          />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px] ">
+            <ButtonSubmit title="Отправить" type="submit" isActive />
+            <ButtonBack />
+          </div>
         </form>
       </div>
-      <ButtonBack />
     </div>
-  );
-};
+  )
+}
 
-export default Report;
+export { Report }

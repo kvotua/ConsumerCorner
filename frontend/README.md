@@ -1,57 +1,27 @@
+# React + TypeScript + Vite
 
-5. QR-код должен открываться в виде избражения, чтобы его можно было скачать
-9. Добавить личный кабинет с возможностью просмореть и изменить имя, фамилию и номер телефона, выйти из аккаунта, также должна отобрадаться Галочка, если аккаунт подтвержден (на данный момент все аккаунты являются подтвержденными)
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+Currently, two official plugins are available:
 
-ПОТРЕБИТЕЛЬ
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-После сканирования QR кода в предприятии потребитель попадает на страницу "точка".
+## Expanding the ESLint configuration
 
-    - Точка: 
-        Логотип уголка
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-        Отображается название предприятия
-        Кнопка - Переход на страницу соц. сетей и сайта предприятия 
-        Кнопка - Переход на страницу документов предприятия
-        Кнопка - Переход на страницу прав покупателя предприятия
-        Кнопка - Переход на страницу жалоб и предложений предприятия
-        Кнопка - Переход на главную страницу приложения
+- Configure the top-level `parserOptions` property like this:
 
-    - Соцю сети и сайт предприятия:
-        Отображается название предприятия
-        Отображаются социальные сети и сайт предприятия
-        Кнопка назад
+```js
+   parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+   },
+```
 
-    - Документы предприятия:
-        Отображается название предприятия
-        Отображаются все их Документы, которые можно скачать по нажатию на кнопку
-        Кнопка назад
-
-    - Права потребителя:
-        Отображается название предприятия
-        Отображаются документ о правах потребителя, которые можно скачать по нажатию на кнопку
-        Кнопка назад
-
-    - Жалобы и предложения:
-        Отображается название предприятия
-        Кнопка - Переход на страницу добавления жалобы
-        Кнопка - Переход на страницу добавления предложения
-        Кнопка назад
-
-    - Страница жалобы:
-        Отображается название предприятии и то что это страница жалобы
-        Инпут для ввода жалобы 
-        Кнопка отправить - отправка и переход на страницу спасибо за отзыв
-        Кнопка назад
-
-    - Страница предложения:
-        Отображается название предприятии и то что это страница предложения
-        Инпут для ввода предложения 
-        Кнопка отправить - отправка и переход на страницу спасибо за отзыв
-        Кнопка назад
-        
-Если потребитель зашел приложение по ссылке или перешел по qr коду, но нажал на кнопу перехода на главную страницу, то потребитель попадает на главную страницу:
-
-    - Главная страница: 
-        -
-
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list

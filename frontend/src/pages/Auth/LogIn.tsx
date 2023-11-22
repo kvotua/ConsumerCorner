@@ -1,50 +1,65 @@
-import { useState } from "react";
-import { Button } from "../../shared/Buttons/Button/Button";
-import { AuthInput } from "../../shared/Inputs/AuthInput";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { setPhone } from "../../store/Slices/RegisterSlice";
+import { FC } from "react"
+import { useForm, FieldValues } from "react-hook-form"
 
-const LogIn = () => {
-    const [phone, setPhoneUser] = useState<string>("");
-    const dispatch = useAppDispatch();
-    const navigation = useNavigate();
+import { axiosBase } from "src/axios"
+import { useAppDispatch } from "src/hooks/useAppDispatch"
+import { setUser } from "src/store/slice/userSlice"
+import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
+import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
+import { Input } from "src/ui/Input/Input"
+import { Logo } from "src/ui/Logo/Logo"
 
-    const getUser = () => {
-        dispatch(setPhone(phone));
-        axios
-            .get(
-                `http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:8000/proprietors/verify/phone?phone_number=%2B${phone}`
-            )
-            .then(() => {
-                navigation("/confirmLogin");
-            })
-            .catch(() => alert("Неправильно набран номер"));
-    };
-    return (
-        <div className='container bg-main h-screen pt-[100px]'>
-            <h2 className='text-center text-originWhite text-[30px] font-bold'>
-                Вход
-            </h2>
-            <form className='flex flex-col gap-[10px] pt-[100px]'>
-                <AuthInput
-                    title='Телефон'
-                    setValue={setPhoneUser}
-                    value={phone}
-                />
-
-                <Button
-                    isActive
-                    type='button'
-                    title='Отправить'
-                    handleClick={getUser}
-                />
-
-                <Button type='button' title='Назад' link='/' />
-            </form>
+interface IDataForm {
+  login: string
+  password: string
+}
+const Login: FC = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm()
+  const dispatch = useAppDispatch()
+  const onSubmit = (data: FieldValues | IDataForm) => {
+    try {
+      axiosBase
+        .get(`/proprietors/token?login=${data.login}&password=${data.password}`)
+        .then(({ data }) => {
+          localStorage.setItem("token", data)
+          dispatch(setUser({ token: data }))
+        })
+    } catch (error) {
+      alert("произошла ошибка")
+    }
+  }
+  return (
+    <div>
+      <Logo />
+      <h1 className="title">Вход</h1>
+      <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+        <Input
+          useForm={register("login", {
+            required: "Введите login",
+          })}
+          title="Логин"
+          isError={!!errors.login}
+          errorMessage={errors.login?.message}
+        />
+        <Input
+          useForm={register("password", {
+            required: "Введите password",
+          })}
+          title="Пароль"
+          isError={!!errors.password}
+          errorMessage={errors.password?.message}
+        />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px]">
+          <ButtonSubmit isActive title="Дальше" type="submit" />
+          <ButtonBack />
         </div>
-    );
-};
+      </form>
+    </div>
+  )
+}
 
-export default LogIn;
+export { Login }

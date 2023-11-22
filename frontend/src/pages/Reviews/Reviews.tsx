@@ -1,44 +1,38 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import ButtonBack from "../../shared/Buttons/ButtonBack/ButtonBack";
-
-interface IComments {
-  pointID: string;
-  message: string;
-  id: string;
-}
+import { Title } from "src/ui/Title/Title"
+import star from "src/assets/starBlack.svg"
+import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
+import { useGetCommentsQuery } from "src/store/RTKSlice/api"
+import { useParams } from "react-router-dom"
 
 const Reviews = () => {
-  const token = localStorage.getItem("token");
-  const { id } = useParams();
-  const [comments, setComments] = useState<IComments[]>([]);
+  const token = localStorage.getItem("token")
+  const { pointId } = useParams()
+  const { data: comments } = useGetCommentsQuery({ token, pointId })
 
-  const getComments = () => {
-    axios
-      .get(
-        `http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai:8000/comments/by/pointID?token=${token}&pointID=${id}`
-      )
-      .then(({ data }) => setComments(data));
-  };
-  useEffect(() => {
-    getComments();
-  }, []);
   return (
-    <div className="container bg-main pt-[100px]">
-      <h2 className="text-center text-originWhite text-[30px] font-bold mb-10">
-        Отзывы
-      </h2>
-      <div className="h-[400px] overflow-scroll rounded-[10px]">
-        {comments.map((comment) => (
-          <p className="w-full block break-words bg-originWhite p-[20px] rounded-[10px] mb-10">
-            {comment.message}
-          </p>
-        ))}
+    <div>
+      <Title title="ОТЗЫВЫ" />
+      <div className="mt-[8vh] h-[60vh] overflow-scroll rounded-passiveBorder">
+        <ul className="flex flex-col gap-[20px]">
+          {comments?.map(({ message }: { message: string }) => (
+            <li className="w-full break-words  p-[18px] bg-white text-black rounded-passiveBorder font-medium">
+              {message}
+              <div className="pt-[10px] flex">
+                <img src={star} alt="" />
+                <img src={star} alt="" />
+                <img src={star} alt="" />
+                <img src={star} alt="" />
+                <img src={star} alt="" />
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
-      <ButtonBack />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px] ">
+        <ButtonBack />
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default Reviews;
+export { Reviews }
