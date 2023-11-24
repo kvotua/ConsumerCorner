@@ -43,7 +43,7 @@ const AddPoint: FC = ({}) => {
         className="mt-[8vh]"
         onSubmit={handleSubmit((data) => onSubmit(data))}
       >
-        <div className="h-[50vh] overflow-scroll flex flex-col gap-[32px]">
+        <div className="overflow-scroll flex flex-col gap-[32px] mb-[8vh]">
           <Input
             useForm={register("ITN", {
               required: "обязательно для заполнения",
@@ -84,7 +84,7 @@ const AddPoint: FC = ({}) => {
           />
         </div>
 
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px] ">
+        <div className="pb-[20px] flex flex-col gap-[10px]">
           <ButtonSubmit isActive title="Добавить точку" type="submit" />
           <ButtonBack />
         </div>

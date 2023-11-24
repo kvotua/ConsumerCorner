@@ -9,14 +9,14 @@ import { Title } from "src/ui/Title/Title"
 const Point: FC = ({}) => {
   const token = localStorage.getItem("token")
   const { pointId } = useParams()
-  const { data } = useGetPointsQuery(pointId)
-
+  const { data: point } = useGetPointsQuery(pointId)
+  localStorage.setItem("pointId", pointId ? pointId : "")
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <Title title={token ? "МОЯ ТОЧКА" : "ТОЧКА"} />
-      <div className="mt-[8vh]">
+      <div className="mt-[8vh] mb-[20px]">
         <address className="text-18px font-medium text-white opacity-70">
-          {data?.address}
+          {point?.address}
         </address>
         {token && (
           <div className=" flex justify-between">
@@ -32,16 +32,17 @@ const Point: FC = ({}) => {
           <Input
             isActive={false}
             title="ИНН юридического лица"
-            value={data?.inn}
+            value={point?.inn}
           />
           <Input
             isActive={false}
             title="ОГРН юридического лица"
-            value={data?.ogrn}
+            value={point?.ogrn}
           />
         </div>
       </div>
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px] ">
+      <div className="flex-grow"></div>
+      <div className="flex flex-col gap-[10px] pb-[10px]">
         {token ? (
           <>
             <div className="flex gap-[10px]">

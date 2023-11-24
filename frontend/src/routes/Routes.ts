@@ -13,6 +13,7 @@ import { Payments } from "src/pages/Payments/Payments";
 import { Point } from "src/pages/Point/Point";
 import { Points } from "src/pages/Points/Points";
 import { Profile } from "src/pages/Profile/Profile";
+import { ProfileEdit } from "src/pages/ProfileEdit/ProfileEdit";
 import { QR } from "src/pages/QR/QR";
 import { Report } from "src/pages/Report/Report";
 import { Reviews } from "src/pages/Reviews/Reviews";
@@ -97,6 +98,10 @@ export const authRoute: IRoute[] = [
     {
         path: "/profile",
         Component: Profile,
+    },
+    {
+        path: "/profile/edit",
+        Component: ProfileEdit,
     },
     {
         path: "/profile/payments",

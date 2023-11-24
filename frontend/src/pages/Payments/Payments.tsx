@@ -1,26 +1,31 @@
-import { FieldValues, useForm } from "react-hook-form";
-import { useAppSelector } from "src/hooks/useAppSelector";
-import { usePostPaymentsMutation } from "src/store/RTKSlice/api";
-import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack";
-import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit";
-import { Input } from "src/ui/Input/Input";
-import { Title } from "src/ui/Title/Title";
+import { FieldValues, useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
+import { useAppSelector } from "src/hooks/useAppSelector"
+import { usePostPaymentsMutation } from "src/store/RTKSlice/api"
+import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
+import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
+import { Input } from "src/ui/Input/Input"
+import { Title } from "src/ui/Title/Title"
 
 const Payments = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const userId = useAppSelector((state) => state.userSlice.id);
-  const [addSum] = usePostPaymentsMutation();
+  } = useForm()
+  const userId = useAppSelector((state) => state.userSlice.id)
+  const [addSum] = usePostPaymentsMutation()
+  const navigate = useNavigate()
   const onSubmit = (data: FieldValues) => {
-    addSum({ userId, value: data.sum });
-  };
+    addSum({ userId, value: data.sum }).then(() => navigate(-1))
+  }
+  const onClick = () => {
+    handleSubmit((data) => onSubmit(data))()
+  }
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <Title title="ПОПОЛНИТЬ БАЛАНС" />
-      <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+      <form className="mt-[20px] mb-[20px]">
         <Input
           isError={!!errors.sum}
           errorMessage={errors.sum?.message}
@@ -30,13 +35,19 @@ const Payments = () => {
           })}
           title="Сумма"
         />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px] ">
-          <ButtonSubmit title="Пополнить" type="submit" isActive />
-          <ButtonBack />
-        </div>
       </form>
+      <div className="flex-grow"></div>
+      <div className=" flex flex-col gap-[10px] pb-[10px]">
+        <ButtonSubmit
+          title="Пополнить"
+          type="submit"
+          isActive
+          handlClick={onClick}
+        />
+        <ButtonBack />
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export { Payments };
+export { Payments }

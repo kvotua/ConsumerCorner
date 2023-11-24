@@ -12,12 +12,12 @@ const Profile = () => {
   );
   const dispatch = useAppDispatch()
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <div className="flex flex-col items-center">
         <div className="w-[100px] h-[100px] bg-white rounded-[50%]"></div>
-        <span>Изменить фото</span>
+        <span className="text-15px text-white">Изменить фото</span>
       </div>
-      <div className="h-[55vh] overflow-scroll">
+      <div className="mb-[20px]">
         <div className="">
           <Input title="Логин" value={login} />
           <Input title="Имя" value={name} />
@@ -31,7 +31,8 @@ const Profile = () => {
           <ButtonLink title="Редактировать" link="edit" />
         </div>
       </div>
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px] ">
+      <div className="flex-grow"></div>
+      <div className="flex flex-col gap-[10px] pb-[10px]">
         <ButtonSubmit
           title="Выйти"
           type="button"

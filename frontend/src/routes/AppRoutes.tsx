@@ -5,19 +5,26 @@ import { authRoute, publicRoute } from "src/routes/Routes.ts"
 import { useAppSelector } from "src/hooks/useAppSelector"
 import { useAppDispatch } from "src/hooks/useAppDispatch"
 import { setUser } from "src/store/slice/userSlice"
-import { useGetUserQuery } from "src/store/RTKSlice/api"
+import { useGetPointsQuery, useGetUserQuery } from "src/store/RTKSlice/api"
+import { setPoint } from "src/store/slice/pointSlice"
 
 const AppRoutes: FC = ({}) => {
-  const token = localStorage.getItem("token")! 
+  const token = localStorage.getItem("token")!
   // const authToken = useAppSelector(state => state.userSlice.token)
   const isAuth = useAppSelector((state) => state.userSlice.isAuth)
   const dispatch = useAppDispatch()
   const { data } = useGetUserQuery(token)
+  const pointId  = localStorage.getItem('pointId')
 
-  if (token !== null) {
-    dispatch(setUser(data))
-  }
   
+  if (token !== null) { 
+    dispatch(setUser(data))
+  } else {
+    const { data: point } = useGetPointsQuery(pointId)
+    const dispatch = useAppDispatch()
+    dispatch(setPoint(point))
+  }
+
   let routes = publicRoute.map(({ path, Component }) => (
     <Route key={path} path={path} element={<Component />} />
   ))
@@ -32,7 +39,7 @@ const AppRoutes: FC = ({}) => {
   }
 
   return (
-    <div className="container pt-[6vh]">
+    <div className="container h-full pt-[6vh]">
       <Routes>{routes}</Routes>
     </div>
   )

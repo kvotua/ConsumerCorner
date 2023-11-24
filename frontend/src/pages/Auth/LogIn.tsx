@@ -32,14 +32,19 @@ const Login: FC = () => {
       alert("произошла ошибка")
     }
   }
+  const onClick = () => {
+    handleSubmit((data) => onSubmit(data))()
+  }
   return (
-    <div>
-      <Logo />
+    <div className="flex flex-col h-full">
+      <div className="">
+        <Logo />
+      </div>
       <h1 className="title">Вход</h1>
-      <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+      <form className="flex flex-col gap-[10px] pb-[20px]">
         <Input
           useForm={register("login", {
-            required: "Введите login",
+            required: "Введите логин",
           })}
           title="Логин"
           isError={!!errors.login}
@@ -47,17 +52,24 @@ const Login: FC = () => {
         />
         <Input
           useForm={register("password", {
-            required: "Введите password",
+            required: "Введите пароль",
           })}
           title="Пароль"
           isError={!!errors.password}
           errorMessage={errors.password?.message}
+          type="password"
         />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px]">
-          <ButtonSubmit isActive title="Дальше" type="submit" />
-          <ButtonBack />
-        </div>
       </form>
+      <div className="flex-grow"></div>
+      <div className="flex flex-col gap-[10px] pb-[10px]">
+        <ButtonSubmit
+          isActive
+          title="Дальше"
+          type="submit"
+          handlClick={onClick}
+        />
+        <ButtonBack />
+      </div>
     </div>
   )
 }

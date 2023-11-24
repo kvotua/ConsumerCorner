@@ -1,6 +1,10 @@
-import { FC } from "react";
-import logo from "src/assets/logo.svg";
+import { FC } from "react"
+import logo from "src/assets/logo.svg"
 
-const Logo: FC = ({}) => <img src={logo} alt='' />;
+const Logo: FC = ({}) => (
+  <div className="">
+    <img src={logo} alt="logo" />;
+  </div>
+)
 
-export { Logo };
+export { Logo }

@@ -14,7 +14,8 @@ const ButtonSubmit: FC<IButtonSubmit> = ({ title, isActive = false, type, handlC
           ? "bg-white rounded-activeBorder text-black"
           : "border border-white rounded-passiveBorder text-white"
               }`}
-      onClick={handlClick}>
+      onClick={handlClick}
+      >
       {title}
     </button>
   );

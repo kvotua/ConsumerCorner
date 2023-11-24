@@ -1,12 +1,14 @@
+import { useAppSelector } from "src/hooks/useAppSelector"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonLong } from "src/ui/Buttons/ButtonLong/ButtonLong"
 import { TitlePoint } from "src/ui/Title/TitlePoint"
 
 const Book = () => {
+  const { title } = useAppSelector((state) => state.pointSlice)
   return (
-    <div>
-      <TitlePoint pointName="123" title="123" />
-      <div className="pt-[34px]">
+    <div className="flex flex-col h-full">
+      <TitlePoint pointName={title} title="Книга отзывов и предложений" />
+      <div className="pt-[34px] mb-[20px]">
         <span className="text-15px text-white opacity-70 font-medium pb-[10px] block">
           Выберите статус
         </span>
@@ -16,7 +18,8 @@ const Book = () => {
           <ButtonLong title="Другое" link="other" />
         </div>
       </div>
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px] ">
+      <div className="flex-grow"></div>
+      <div className="pb-[10px]">
         <ButtonBack />
       </div>
     </div>
