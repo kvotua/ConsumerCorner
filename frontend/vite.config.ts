@@ -9,7 +9,8 @@ export default defineConfig({
             src: "/src",
         },
     },
+
     server: {
-        port: 4173
+        host: true,
     }
 });
