@@ -28,7 +28,9 @@ const AddPoint: FC = ({}) => {
         },
       })
       if (res.error) {
-        alert("что-то пошло не так")
+        res.error.data.detail.map(({ msg }: { msg: string }) => {
+          alert(msg)
+        })
       } else {
         navigate(-1)
       }

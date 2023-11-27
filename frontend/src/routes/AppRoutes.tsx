@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useEffect } from "react"
 import { Route, Routes, Navigate } from "react-router-dom"
 
 import { authRoute, publicRoute } from "src/routes/Routes.ts"
@@ -8,35 +8,37 @@ import { setUser } from "src/store/slice/userSlice"
 import { useGetPointsQuery, useGetUserQuery } from "src/store/RTKSlice/api"
 import { setPoint } from "src/store/slice/pointSlice"
 
-const AppRoutes: FC = ({}) => {
+const AppRoutes: FC = () => {
   const token = localStorage.getItem("token")!
-  // const authToken = useAppSelector(state => state.userSlice.token)
   const isAuth = useAppSelector((state) => state.userSlice.isAuth)
   const dispatch = useAppDispatch()
-  const { data } = useGetUserQuery(token)
-  const pointId  = localStorage.getItem('pointId')
+  const { data: userData } = useGetUserQuery(token)
+  const pointId = localStorage.getItem("pointId")
+  const { data: pointData } = useGetPointsQuery(pointId)
 
-  
-  if (token !== null) { 
-    dispatch(setUser(data))
-  } else {
-    const { data: point } = useGetPointsQuery(pointId)
-    const dispatch = useAppDispatch()
-    dispatch(setPoint(point))
-  }
+  useEffect(() => {
+    if (token !== null) {
+      dispatch(setUser(userData))
+    } else if (pointId) {
+      dispatch(setPoint(pointData))
+    }
+  }, [token, pointId, userData, pointData])
 
-  let routes = publicRoute.map(({ path, Component }) => (
-    <Route key={path} path={path} element={<Component />} />
-  ))
-  routes.push(<Route path="*" key={1} element={<Navigate to="/" replace />} />)
-  if (isAuth) {
-    routes = authRoute.map(({ path, Component }) => (
-      <Route key={path} path={path} element={<Component />} />
-    ))
-    routes.push(
-      <Route path="*" key={2} element={<Navigate to="/points" replace />} />,
-    )
-  }
+  const routes = isAuth
+    ? authRoute.map(({ path, Component }) => (
+        <Route key={path} path={path} element={<Component />} />
+      ))
+    : publicRoute.map(({ path, Component }) => (
+        <Route key={path} path={path} element={<Component />} />
+      ))
+
+  routes.push(
+    <Route
+      path="*"
+      key={isAuth ? 2 : 1}
+      element={<Navigate to={isAuth ? "/points" : "/"} replace />}
+    />,
+  )
 
   return (
     <div className="container h-full pt-[6vh]">
