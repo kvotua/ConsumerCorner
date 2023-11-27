@@ -130,7 +130,7 @@ async def get_point_qr(pointID: PointID) -> Response:
             status_code=status.HTTP_404_NOT_FOUND, detail="Wrong pointID"
         )
     data = qrcode.make(
-        f"http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai/points/{pointID}",
+        f"http://xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai/point/{pointID}",
         image_factory=qrcode.image.svg.SvgImage,
     ).to_string(encoding="unicode")
     return Response(content=data, media_type="image/svg+xml")
