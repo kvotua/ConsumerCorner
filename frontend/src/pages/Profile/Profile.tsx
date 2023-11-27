@@ -10,6 +10,7 @@ const Profile = () => {
   const { balance, login, name, surname } = useAppSelector(
     (state) => state.userSlice
   );
+  const rubles = balance / 100
   const dispatch = useAppDispatch()
   return (
     <div className="h-full flex flex-col">
@@ -23,7 +24,7 @@ const Profile = () => {
           <Input title="Имя" value={name} />
           <Input title="Фамилия" value={surname} />
           <span className="text-18px text-white font-bold mt-[20px] block">
-            Баланс: {balance}
+            Баланс: {rubles} ₽
           </span>
         </div>
         <div className="flex gap-[10px] mt-[20px]">

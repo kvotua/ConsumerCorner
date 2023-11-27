@@ -17,6 +17,8 @@ import { ProfileEdit } from "src/pages/ProfileEdit/ProfileEdit";
 import { QR } from "src/pages/QR/QR";
 import { Report } from "src/pages/Report/Report";
 import { Reviews } from "src/pages/Reviews/Reviews";
+import { Rights } from "src/pages/Rights/Rights";
+import { Socials } from "src/pages/Socials/Socials";
 import { Thanks } from "src/pages/Thanks/Thanks";
 
 interface IRoute {
@@ -65,6 +67,14 @@ export const publicRoute: IRoute[] = [
         Component: Other,
     },
     {
+        path: "/point/:pointId/menu/rights",
+        Component: Rights,
+    },
+    {
+        path: "/point/:pointId/menu/socials",
+        Component: Socials,
+    },
+    {
         path: "/thanks",
         Component: Thanks,
     },
@@ -94,6 +104,14 @@ export const authRoute: IRoute[] = [
     {
         path: "/point/:pointId/qr",
         Component: QR,
+    },
+    {
+        path: "/point/:pointId/menu/rights",
+        Component: Rights,
+    },
+    {
+        path: "/point/:pointId/menu/socials",
+        Component: Socials,
     },
     {
         path: "/profile",

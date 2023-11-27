@@ -17,7 +17,7 @@ const Payments = () => {
   const [addSum] = usePostPaymentsMutation()
   const navigate = useNavigate()
   const onSubmit = (data: FieldValues) => {
-    addSum({ userId, value: data.sum }).then(() => navigate(-1))
+    addSum({ userId, value: data.sum * 100 }).then(() => navigate(-1))
   }
   const onClick = () => {
     handleSubmit((data) => onSubmit(data))()
