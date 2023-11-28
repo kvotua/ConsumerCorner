@@ -1,36 +1,37 @@
 import os
+import uuid
+from contextlib import asynccontextmanager
+from typing import Annotated
+
 import qrcode
 import qrcode.image.svg
-import uuid
-from typing import Annotated
-from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, Query, status
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response, RedirectResponse
-from fastapi_limiter import FastAPILimiter
-from app.models import (
-    ProprietorID,
-    PointID,
-    Token,
-    CommentBase,
-    Comment,
-    ProprietorBase,
-    PointUpdate,
-    PointBase,
-    Point,
-    Proprietor,
-    ProprietorUpdate,
-)
 from app.database import (
-    proprietors_collection,
-    points_collection,
     comments_collection,
+    points_collection,
+    proprietors_collection,
     redis_database,
 )
+from app.models import (
+    Comment,
+    CommentBase,
+    Point,
+    PointBase,
+    PointID,
+    PointUpdate,
+    Proprietor,
+    ProprietorBase,
+    ProprietorID,
+    ProprietorUpdate,
+    Token,
+)
+from fastapi import FastAPI, HTTPException, Query, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse, Response
+from fastapi_limiter import FastAPILimiter
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
     # Startup
     await FastAPILimiter.init(redis_database)
 
@@ -58,7 +59,7 @@ async def proprietorID_by_token(token: Token) -> ProprietorID:
     proprietorID = await redis_database.get(f"token:{token}")
     if proprietorID is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Wrong token")
-    return proprietorID
+    return ProprietorID(proprietorID)
 
 
 def point_exist(pointID: PointID) -> bool:
@@ -68,7 +69,9 @@ def point_exist(pointID: PointID) -> bool:
 def point_by_id(pointID: PointID) -> Point:
     point = points_collection.find_one({"id": pointID})
     if point is None:
-        raise HTTPException(status_code=404, detail="Wrong pointID")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Wrong pointID"
+        )
     return Point(**point)
 
 
@@ -80,7 +83,10 @@ def comments_by_pointID(pointID: PointID) -> list[Comment]:
 def proprietor_by_id(proprietorID: ProprietorID) -> Proprietor:
     proprietor_model = proprietors_collection.find_one({"id": proprietorID})
     if proprietor_model is None:
-        raise HTTPException(status_code=500, detail="Proprietor not exist")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Proprietor not exist",
+        )
     return Proprietor(**proprietor_model)
 
 
@@ -114,7 +120,9 @@ async def get_comments(token: Token, pointID: PointID) -> list[Comment]:
 async def post_point(token: Token, point: PointBase) -> None:
     proprietor = await proprietor_by_token(token)
     if proprietor.balance < POINT_PRICE:
-        raise HTTPException(status_code=400, detail="Insufficient funds")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Insufficient funds"
+        )
     point = Point(**point.model_dump(), owner=proprietor.id)
     points_collection.insert_one(point.model_dump())
     proprietors_collection.update_one(
@@ -192,25 +200,29 @@ async def get_proprietor_by_token(token: Token) -> Proprietor:
 async def post_proprietor(proprietor: ProprietorBase) -> Token:
     p = proprietors_collection.find_one({"login": proprietor.login})
     if p is not None:
-        raise HTTPException(status_code=400, detail="Login already in use")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Login already in use"
+        )
     proprietor = Proprietor(**proprietor.model_dump())
     proprietors_collection.insert_one(proprietor.model_dump())
     token = str(uuid.uuid4())
     await redis_database.set(f"id:{proprietor.id}", token)
     await redis_database.set(f"token:{token}", proprietor.id)
-    return token
+    return Token(token)
 
 
 @app.get("/proprietors/token", tags=["Proprietors"])
 async def get_proprietor_token(login: str, password: str) -> Token:
     proprietor = proprietors_collection.find_one({"login": login, "password": password})
     if proprietor is None:
-        raise HTTPException(status_code=404, detail="Wrong login or password")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Wrong login or password"
+        )
     proprietor = Proprietor(**proprietor)
     token = str(uuid.uuid4())
     await redis_database.set(f"id:{proprietor.id}", token)
     await redis_database.set(f"token:{token}", proprietor.id)
-    return token
+    return Token(token)
 
 
 @app.post("/payments/{proprietorID}", tags=["Payments"])
@@ -221,7 +233,9 @@ def post_payment(
         {"id": proprietorID}, {"$inc": {"balance": value}}
     )
     if result.matched_count < 1:
-        raise HTTPException(status_code=404, detail="Wrong proprietorID")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Wrong proprietorID"
+        )
 
 
 @app.get("/", include_in_schema=False)
