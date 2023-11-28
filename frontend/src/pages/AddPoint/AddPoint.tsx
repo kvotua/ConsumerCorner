@@ -25,6 +25,7 @@ const AddPoint: FC = ({}) => {
           address: data.address,
           inn: data.ITN,
           ogrn: data.MSRN,
+          phone: data.phone
         },
       })
       if (res.error) {
@@ -46,26 +47,28 @@ const AddPoint: FC = ({}) => {
         onSubmit={handleSubmit((data) => onSubmit(data))}
       >
         <div className="overflow-scroll flex flex-col gap-[32px] mb-[8vh]">
-          <Input
-            useForm={register("ITN", {
-              required: "обязательно для заполнения",
-              pattern: /^(?:\d{10}|\d{12})$/,
-            })}
-            isActive={false}
-            title="ИНН юридического лица"
-            isError={!!errors?.ITN}
-            errorMessage={errors.ITN?.message}
-          />
-          <Input
-            useForm={register("MSRN", {
-              required: "обязательно для заполнения",
-              pattern: /^(?:\d{13}|\d{13})$/,
-            })}
-            isActive={false}
-            title="ОГРН юридического лица"
-            isError={!!errors?.MSRN}
-            errorMessage={errors.MSRN?.message}
-          />
+          <div className="flex gap-[10px]">
+            <Input
+              useForm={register("ITN", {
+                required: "обязательно для заполнения",
+                pattern: /^(?:\d{10}|\d{12})$/,
+              })}
+              isActive={false}
+              title="ИНН"
+              isError={!!errors?.ITN}
+              errorMessage={errors.ITN?.message}
+            />
+            <Input
+              useForm={register("MSRN", {
+                required: "обязательно для заполнения",
+                pattern: /^(?:\d{13}|\d{13})$/,
+              })}
+              isActive={false}
+              title="ОГРН"
+              isError={!!errors?.MSRN}
+              errorMessage={errors.MSRN?.message}
+            />
+          </div>
           <Input
             useForm={register("address", {
               required: "обязательно для заполнения",
@@ -83,6 +86,15 @@ const AddPoint: FC = ({}) => {
             title="Название предприятия"
             isError={!!errors?.name}
             errorMessage={errors.name?.message}
+          />
+          <Input
+            useForm={register("phone", {
+              required: "Телефон",
+            })}
+            isActive={false}
+            title="Номер телефона"
+            isError={!!errors?.phone}
+            errorMessage={errors.phone?.message}
           />
         </div>
 

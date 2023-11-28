@@ -20,8 +20,8 @@ const Point: FC = ({}) => {
         </address>
         {token && (
           <div className=" flex justify-between">
-            <Link to={`editAddress`} className="text-white font-bold text-15px">
-              Изменить адрес
+            <Link to={`addDocs`} className="text-white font-bold text-15px">
+              Добавить документ
             </Link>
             <Link to={`qr`} className="text-white font-bold text-15px">
               qr-код

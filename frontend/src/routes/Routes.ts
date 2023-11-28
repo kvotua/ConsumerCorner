@@ -4,7 +4,7 @@ import { Login } from "src/pages/Auth/LogIn";
 import { Register } from "src/pages/Auth/Register";
 import { Book } from "src/pages/Book/Book";
 import { Docs } from "src/pages/Docs/Docs";
-import { EditAddress } from "src/pages/EditAddress/EditAddress";
+import { AddDocs } from "src/pages/AddDocs/AddDocs";
 import { Home } from "src/pages/Home/Home";
 import { Menu } from "src/pages/Menu/Menu";
 import { Offer } from "src/pages/Offer/Offer";
@@ -94,8 +94,8 @@ export const authRoute: IRoute[] = [
         Component: AddPoint,
     },
     {
-        path: "/point/:pointId/editAddress",
-        Component: EditAddress,
+        path: "/point/:pointId/AddDocs",
+        Component: AddDocs,
     },
     {
         path: "/point/:pointId/reviews",
