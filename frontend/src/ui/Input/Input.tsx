@@ -7,16 +7,18 @@ interface IInput extends React.HTMLProps<HTMLInputElement> {
   useForm?: any
   isActive?: boolean
   type?: "text" | "password"
+  defaultValue?: string
 }
-const Input: FC<IInput> = (props: IInput) => {
-  const {
-    title,
-    isError,
-    errorMessage,
-    useForm,
-    isActive = true,
-    type = 'text',
-  }: IInput = props
+const Input: FC<IInput> = ({
+  title,
+  isError,
+  errorMessage,
+  useForm,
+  isActive = true,
+  type = "text",
+  defaultValue,
+  ...props
+}: IInput) => {
   return (
     <label>
       <span
@@ -27,6 +29,7 @@ const Input: FC<IInput> = (props: IInput) => {
         {title}
       </span>
       <input
+        defaultValue={defaultValue}
         {...useForm}
         {...props}
         type={type}

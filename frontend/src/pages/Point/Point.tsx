@@ -21,7 +21,7 @@ const Point: FC = ({}) => {
         {token && (
           <div className=" flex justify-between">
             <Link to={`addDocs`} className="text-white font-bold text-15px">
-              Добавить документ
+              изменить документ
             </Link>
             <Link to={`qr`} className="text-white font-bold text-15px">
               qr-код
@@ -32,12 +32,12 @@ const Point: FC = ({}) => {
           <Input
             isActive={false}
             title="ИНН юридического лица"
-            value={point?.inn}
+            defaultValue={point?.inn}
           />
           <Input
             isActive={false}
             title="ОГРН юридического лица"
-            value={point?.ogrn}
+            defaultValue={point?.ogrn}
           />
         </div>
       </div>

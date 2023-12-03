@@ -39,11 +39,9 @@ const Points: FC = ({}) => {
           </div>
         ) : (
           points.map(({ address, id }) => (
-            <>
-              <li key={id}>
-                <PointItem address={address} pointId={id} />
-              </li>
-            </>
+            <li key={id}>
+              <PointItem address={address} pointId={id} />
+            </li>
           ))
         )}
       </ul>

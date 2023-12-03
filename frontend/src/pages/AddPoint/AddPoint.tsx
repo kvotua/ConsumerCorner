@@ -1,11 +1,14 @@
 import { FC } from "react"
-import { FieldValues, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
+
 import { useAddPointMutation } from "src/store/RTKSlice/api"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
+import { ButtonUpload } from "src/ui/ButtonUpload/ButtonUpload"
 import { Input } from "src/ui/Input/Input"
 import { Title } from "src/ui/Title/Title"
+import { onSubmit } from "./api"
 
 const AddPoint: FC = ({}) => {
   const {
@@ -13,41 +16,17 @@ const AddPoint: FC = ({}) => {
     handleSubmit,
     formState: { errors },
   } = useForm()
-  const token = localStorage.getItem("token")
   const [addPoint] = useAddPointMutation()
   const navigate = useNavigate()
-  const onSubmit = async (data: FieldValues) => {
-    try {
-      const res: any = await addPoint({
-        token,
-        body: {
-          title: data.name,
-          address: data.address,
-          inn: data.ITN,
-          ogrn: data.MSRN,
-          phone: data.phone
-        },
-      })
-      if (res.error) {
-        res.error.data.detail.map(({ msg }: { msg: string }) => {
-          alert(msg)
-        })
-      } else {
-        navigate(-1)
-      }
-    } catch {
-      alert("что-то пошло не так")
-    }
-  }
   return (
     <div>
       <Title title="НОВАЯ ТОЧКА" />
       <form
         className="mt-[8vh]"
-        onSubmit={handleSubmit((data) => onSubmit(data))}
+        onSubmit={handleSubmit((data) => onSubmit(data, addPoint, navigate))}
       >
         <div className="overflow-scroll flex flex-col gap-[32px] mb-[8vh]">
-          <div className="flex gap-[10px]">
+          <div className="grid grid-cols-2 gap-[32px]">
             <Input
               useForm={register("ITN", {
                 required: "обязательно для заполнения",
@@ -97,7 +76,51 @@ const AddPoint: FC = ({}) => {
             errorMessage={errors.phone?.message}
           />
         </div>
-
+        <span className="title">Загрузите документы</span>
+        <div className="flex flex-col gap-[32px] my-[40px]">
+          <ButtonUpload
+            title="Правила торговли"
+            isError={!!errors.rights?.message}
+            errorMessage={errors.rights?.message}
+            useForm={register("rights", { required: "Загрузите документ" })}
+            id="rights"
+          />
+          <ButtonUpload
+            title="Журнал учета проверок"
+            isError={!!errors.jurnal?.message}
+            errorMessage={errors.jurnal?.message}
+            useForm={register("jurnal", { required: "Загрузите документ" })}
+            id="jurnal"
+          />
+          <ButtonUpload
+            title="Лицензии"
+            isError={!!errors.license?.message}
+            errorMessage={errors.license?.message}
+            useForm={register("license", { required: "Загрузите документ" })}
+            id="license"
+          />
+          <ButtonUpload
+            title="Свидетельство об аккредитации"
+            isError={!!errors.acc?.message}
+            errorMessage={errors.acc?.message}
+            useForm={register("acc", { required: "Загрузите документ" })}
+            id="acc"
+          />
+          <ButtonUpload
+            title="Сертификаты"
+            isError={!!errors.Certificates?.message}
+            errorMessage={errors.Certificates?.message}
+            useForm={register("Certificates", {
+              required: "Загрузите документ",
+            })}
+            id="Certificates"
+          />
+        </div>
+        <span className="title">Режим работы</span>
+        <div className="grid grid-cols-2 gap-[32px] my-[40px]">
+          <Input title="Начало рабочего дня" />
+          <Input title="Конец рабочего дня" />
+        </div>
         <div className="pb-[20px] flex flex-col gap-[10px]">
           <ButtonSubmit isActive title="Добавить точку" type="submit" />
           <ButtonBack />

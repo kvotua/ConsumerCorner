@@ -2,16 +2,19 @@
 export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                black: "#313231",
+                white: "#FAFBFF",
+                red: "#EA271B",
+                transparent: 'transparent'
+            },
+        },
         container: {
             padding: "25px",
             center: true,
         },
-        colors: {
-            black: "#313231",
-            white: "#FAFBFF",
-            red: "#EA271B",
-        },
+   
         fontSize: {
             "30px": "30px",
             "15px": "15px",

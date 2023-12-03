@@ -14,8 +14,8 @@ const Reviews = () => {
       <Title title="ОТЗЫВЫ" />
       <div className="mt-[8vh] h-[55vh] overflow-scroll rounded-passiveBorder mb-[20px]">
         <ul className="flex flex-col gap-[20px]">
-          {comments?.map(({ message }: { message: string }) => (
-            <li className="w-full break-words  p-[18px] bg-white text-black rounded-passiveBorder font-medium">
+          {comments?.map(({ message }: { message: string }, id: number) => (
+            <li key={id} className="w-full break-words  p-[18px] bg-white text-black rounded-passiveBorder font-medium">
               {message}
               <div className="pt-[10px] flex">
                 <img src={star} alt="" />

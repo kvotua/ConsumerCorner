@@ -9,6 +9,10 @@
     margin: 0;
     box-sizing: border-box;
     outline: none;
+    scrollbar-width: none;
+}
+*::-webkit-scrollbar{
+    display: none;
 }
 html{
     height: 100%;

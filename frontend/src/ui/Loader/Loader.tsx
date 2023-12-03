@@ -1,5 +1,5 @@
 const Loader = () => (
-  <svg version="1.1" id="L9" x="0px" y="0px" width={'50px'} height={'60px'} enable-background="new 0 0 0 0">
+  <svg version="1.1" id="L9" x="0px" y="0px" width={'50px'} height={'60px'} enableBackground="new 0 0 0 0">
     <rect x="0" y="0" width="10" height="40" fill="#fff">
       <animateTransform
         attributeType="xml"
