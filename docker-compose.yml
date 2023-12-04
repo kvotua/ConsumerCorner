@@ -13,6 +13,8 @@ services:
     depends_on:
       - mongo
       - redis
+    volumes:
+      - files_volume:/files
     environment:
       - DEBUG=${DEBUG}
 
@@ -29,3 +31,4 @@ services:
 volumes:
   mongo_volume:
   redis_volume:
+  files_volume:

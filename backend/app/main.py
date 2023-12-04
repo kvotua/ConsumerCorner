@@ -24,9 +24,9 @@ from app.models import (
     ProprietorUpdate,
     Token,
 )
-from fastapi import FastAPI, HTTPException, Query, status
+from fastapi import FastAPI, HTTPException, Query, status, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse, Response
+from fastapi.responses import FileResponse, RedirectResponse, Response
 from fastapi_limiter import FastAPILimiter
 
 
@@ -131,6 +131,19 @@ async def post_point(token: Token, point: PointBase) -> None:
     )
 
 
+@app.post("/files", tags=["Files"])
+async def post_file(file: UploadFile) -> str:
+    file.filename = str(uuid.uuid4())
+    with open(f"/files/{file.filename}", "wb") as f:
+        f.write(await file.read())
+    return file.filename
+
+
+@app.get("/files/{id}", tags=["Files"])
+async def get_file(id: str) -> FileResponse:
+    return FileResponse(f"/files/{id}")
+
+
 @app.get("/points/{pointID}/qr", tags=["Points"])
 async def get_point_qr(pointID: PointID) -> Response:
     if not point_exist(pointID):
@@ -166,12 +179,44 @@ async def patch_point(token: Token, pointID: PointID, updates: PointUpdate) -> N
     proprietorID = await proprietorID_by_token(token)
     result = points_collection.update_one(
         {"id": pointID, "owner": proprietorID},
-        {"$set": updates.model_dump(exclude_none=True)},
+        {
+            "$set": updates.model_dump(
+                exclude_none=True,
+                exclude={
+                    "license_file_ids_append",
+                    "license_file_ids_delete",
+                    "accreditation_file_ids_append",
+                    "accreditation_file_ids_delete",
+                },
+            ),
+        },
     )
     if result.matched_count < 1:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Wrong pointID"
         )
+    points_collection.update_one(
+        {"id": pointID, "owner": proprietorID},
+        {
+            "$push": {
+                "license_file_ids": {"$each": updates.license_file_ids_append},
+                "accreditation_file_ids": {
+                    "$each": updates.accreditation_file_ids_append
+                },
+            },
+        },
+    )
+    points_collection.update_one(
+        {"id": pointID, "owner": proprietorID},
+        {
+            "$pull": {
+                "license_file_ids": {"$in": updates.license_file_ids_delete},
+                "accreditation_file_ids": {
+                    "$in": updates.accreditation_file_ids_delete
+                },
+            },
+        },
+    )
 
 
 @app.get("/points", tags=["Points"])
