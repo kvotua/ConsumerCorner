@@ -38,7 +38,7 @@ const Points: FC = ({}) => {
             <span className="text-white text-15px">Загрузка</span>
           </div>
         ) : (
-          points.map(({ address, id }) => (
+          points?.map(({ address, id }) => (
             <li key={id}>
               <PointItem address={address} pointId={id} />
             </li>

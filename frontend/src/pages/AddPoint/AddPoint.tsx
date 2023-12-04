@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { useForm } from "react-hook-form"
+import { FieldValues, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 
 import { useAddPointMutation } from "src/store/RTKSlice/api"
@@ -15,15 +15,24 @@ const AddPoint: FC = ({}) => {
     register,
     handleSubmit,
     formState: { errors },
+  
   } = useForm()
   const [addPoint] = useAddPointMutation()
   const navigate = useNavigate()
+  const submit = (data: FieldValues) => {
+    const formData = new FormData()
+    formData.append('file', data.acc[0])
+    formData.append('file', data.acc[0])
+    formData.append('file', data.acc[0])
+    
+    // onSubmit(data, addPoint, navigate)
+  }
   return (
     <div>
       <Title title="НОВАЯ ТОЧКА" />
       <form
         className="mt-[8vh]"
-        onSubmit={handleSubmit((data) => onSubmit(data, addPoint, navigate))}
+        onSubmit={handleSubmit((data) => submit(data))}
       >
         <div className="overflow-scroll flex flex-col gap-[32px] mb-[8vh]">
           <div className="grid grid-cols-2 gap-[32px]">
@@ -79,13 +88,6 @@ const AddPoint: FC = ({}) => {
         <span className="title">Загрузите документы</span>
         <div className="flex flex-col gap-[32px] my-[40px]">
           <ButtonUpload
-            title="Правила торговли"
-            isError={!!errors.rights?.message}
-            errorMessage={errors.rights?.message}
-            useForm={register("rights", { required: "Загрузите документ" })}
-            id="rights"
-          />
-          <ButtonUpload
             title="Журнал учета проверок"
             isError={!!errors.jurnal?.message}
             errorMessage={errors.jurnal?.message}
@@ -106,7 +108,7 @@ const AddPoint: FC = ({}) => {
             useForm={register("acc", { required: "Загрузите документ" })}
             id="acc"
           />
-          <ButtonUpload
+          {/* <ButtonUpload
             title="Сертификаты"
             isError={!!errors.Certificates?.message}
             errorMessage={errors.Certificates?.message}
@@ -114,13 +116,13 @@ const AddPoint: FC = ({}) => {
               required: "Загрузите документ",
             })}
             id="Certificates"
-          />
+          /> */}
         </div>
-        <span className="title">Режим работы</span>
+        {/* <span className="title">Режим работы</span>
         <div className="grid grid-cols-2 gap-[32px] my-[40px]">
-          <Input title="Начало рабочего дня" />
-          <Input title="Конец рабочего дня" />
-        </div>
+          <Input title="Начало рабочего дня" isActive={false} />
+          <Input title="Конец рабочего дня" isActive={false} />
+        </div> */}
         <div className="pb-[20px] flex flex-col gap-[10px]">
           <ButtonSubmit isActive title="Добавить точку" type="submit" />
           <ButtonBack />

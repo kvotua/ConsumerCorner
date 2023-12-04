@@ -13,7 +13,6 @@ interface IButtonUpload {
   errorMessage?: string | FieldError | Merge<FieldError, FieldErrorsImpl<any>>
   useForm?: UseFormRegisterReturn
   id: string
-
 }
 
 const ButtonUpload: FC<IButtonUpload> = ({
@@ -23,25 +22,21 @@ const ButtonUpload: FC<IButtonUpload> = ({
   useForm,
   id,
 }) => {
-  const [fileData, setFileData] = useState<string | null>(null)
-
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const fileInput = event.target
-    const files = fileInput.files!
-
-    setFileData(files[0].name)
+  const [fileName, setFileName] = useState<string | null>(null)
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files!
+    setFileName(file[0].name)
   }
-
   return (
     <label htmlFor={id}>
       <div
         className={`block w-full py-[20px] px-[26px]  rounded-activeBorder relative border-2 bg-white ${
-          isError ? "border-red " : "border-transparent"
+          isError && !fileName ? "border-red " : "border-transparent"
         }`}
       >
         <span
           className={`text-[20px] text-black font-medium ${
-            isError ? "text-red" : ""
+            isError && !fileName ? "text-red" : ""
           }`}
         >
           {title}
@@ -54,17 +49,21 @@ const ButtonUpload: FC<IButtonUpload> = ({
       </div>
       <span
         className={`text-18px font-bold block pt-[10px] ${
-          isError ? "text-red" : "text-white"
+          isError && !fileName ? "text-red" : "text-white"
         }`}
       >
-        {isError ? errorMessage.toString() : fileData ? fileData : ""}
+        {isError && !fileName
+          ? errorMessage.toString()
+          : fileName
+            ? fileName
+            : ""}
       </span>
       <input
         {...useForm}
         type="file"
         id={id}
-        className="hidden"
-        onChange={handleFileChange}
+        className="w-0 h-0 absolute"
+        onChange={onChange}
       />
     </label>
   )
