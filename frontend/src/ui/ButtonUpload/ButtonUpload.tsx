@@ -1,4 +1,3 @@
-import axios from "axios"
 import { FC, ChangeEvent, useState } from "react"
 import {
   FieldError,
@@ -7,7 +6,6 @@ import {
   UseFormRegisterReturn,
 } from "react-hook-form"
 import arrow from "src/assets/arrow.svg"
-import { axiosBase } from "src/axios"
 
 interface IButtonUpload {
   title: string
