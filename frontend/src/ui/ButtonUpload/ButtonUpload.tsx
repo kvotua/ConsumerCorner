@@ -1,3 +1,4 @@
+import axios from "axios"
 import { FC, ChangeEvent, useState } from "react"
 import {
   FieldError,
@@ -6,6 +7,7 @@ import {
   UseFormRegisterReturn,
 } from "react-hook-form"
 import arrow from "src/assets/arrow.svg"
+import { axiosBase } from "src/axios"
 
 interface IButtonUpload {
   title: string
@@ -24,8 +26,10 @@ const ButtonUpload: FC<IButtonUpload> = ({
 }) => {
   const [fileName, setFileName] = useState<string | null>(null)
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files!
-    setFileName(file[0].name)
+    const file = event.target.files![0]
+    setFileName(file.name)
+
+    
   }
   return (
     <label htmlFor={id}>

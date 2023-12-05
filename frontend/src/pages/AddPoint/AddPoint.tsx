@@ -1,6 +1,7 @@
 import { FC } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
+import { AxiosResponse } from "axios"
 
 import { useAddPointMutation } from "src/store/RTKSlice/api"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
@@ -8,24 +9,59 @@ import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
 import { ButtonUpload } from "src/ui/ButtonUpload/ButtonUpload"
 import { Input } from "src/ui/Input/Input"
 import { Title } from "src/ui/Title/Title"
-import { onSubmit } from "./api"
+import { axiosBase } from "src/axios"
 
+interface IPoint {
+  ITN: string
+  MSRN: string
+  address: string
+  name: string
+  phone: string
+  acc: FileList
+  jurnal: FileList
+  license: FileList
+}
 const AddPoint: FC = ({}) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  
   } = useForm()
   const [addPoint] = useAddPointMutation()
   const navigate = useNavigate()
-  const submit = (data: FieldValues) => {
+  const token = localStorage.getItem("token")
+  const uploadFile = async (file: File): Promise<AxiosResponse<any>> => {
     const formData = new FormData()
-    formData.append('file', data.acc[0])
-    formData.append('file', data.acc[0])
-    formData.append('file', data.acc[0])
-    
-    // onSubmit(data, addPoint, navigate)
+    formData.append("file", file)
+
+    return await axiosBase.post("/files", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+  }
+  const submit = async (data: FieldValues | IPoint) => {
+    try {
+      const jurnal = await uploadFile(data.jurnal[0])
+      const license = await uploadFile(data.license[0])
+      const acc = await uploadFile(data.acc[0])
+
+      await addPoint({
+        token,
+        body: {
+          title: data.name,
+          address: data.address,
+          phone_number: data.phone,
+          inn: data.ITN,
+          ogrn: data.MSRN,
+          audit_log_file_id: jurnal.data,
+          license_file_ids: [license.data],
+          accreditation_file_ids: [acc.data],
+        },
+      }).then(() => navigate("/points"))
+    } catch (error) {
+      console.error("Error uploading files", error)
+    }
   }
   return (
     <div>
