@@ -12,17 +12,17 @@ const AppRoutes: FC = () => {
   const token = localStorage.getItem("token")!
   const isAuth = useAppSelector((state) => state.userSlice.isAuth)
   const dispatch = useAppDispatch()
-  const { data: userData } = useGetUserQuery(token)
   const pointId = localStorage.getItem("pointId")
-  const { data: pointData } = useGetPointsQuery(pointId)
+  const { data: userData, error: userError } = useGetUserQuery(token && token)
+  const { data: pointData, error: pointError } = useGetPointsQuery(pointId)
 
   useEffect(() => {
-    if (token !== null) {
+    if (token !== null && userData) {
       dispatch(setUser(userData))
-    } else if (pointId) {
+    } else if (pointId && pointData) {
       dispatch(setPoint(pointData))
     }
-  }, [token, pointId, userData, pointData])
+  }, [token, pointId, userData, pointData, userError, pointError])
 
   const routes = isAuth
     ? authRoute.map(({ path, Component }) => (

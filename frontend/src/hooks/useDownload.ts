@@ -4,7 +4,7 @@ export const useDownload = (fileName: string, url: string) => {
     .then((blob) => {
       var element = document.createElement("a")
       element.href = window.URL.createObjectURL(blob)
-      element.setAttribute("download", fileName + ".svg")
+      element.setAttribute("download", fileName)
       element.style.display = "none"
       document.body.appendChild(element)
       element.click()

@@ -4,29 +4,28 @@
 @tailwind utilities;
 
 * {
-    font-family: "Montserrat", sans-serif;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    outline: none;
-    scrollbar-width: none;
+  font-family: "Montserrat", sans-serif;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+  scrollbar-width: none;
 }
-*::-webkit-scrollbar{
-    display: none;
+*::-webkit-scrollbar {
+  display: none;
 }
-html{
-    height: 100%;
+html {
+  height: 100%;
 }
 body {
-    height: 100%;
-    background-image: url("./assets/bg.svg");
-    background-size: cover;
+  height: 100%;
+  background-image: url("./assets/bg.svg");
+  background-size: cover;
 }
 
-
 .title {
-    color: white;
-    text-align: center;
-    font-size: 30px;
-    font-weight: 700;
+  color: white;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
 }

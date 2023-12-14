@@ -1,6 +1,9 @@
 import { FC } from "react"
-import { Link, useParams } from "react-router-dom"
-import { useGetPointsQuery } from "src/store/RTKSlice/api"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import {
+  useDeletePointMutation,
+  useGetPointsQuery,
+} from "src/store/RTKSlice/api"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonLink } from "src/ui/Buttons/ButtonLink/ButtonLink"
 import { Input } from "src/ui/Input/Input"
@@ -10,7 +13,15 @@ const Point: FC = ({}) => {
   const token = localStorage.getItem("token")
   const { pointId } = useParams()
   const { data: point } = useGetPointsQuery(pointId)
+  const [deletePoint] = useDeletePointMutation()
+  const navigate = useNavigate()
   localStorage.setItem("pointId", pointId ? pointId : "")
+
+  const handleDeletePoint = () => {
+    if (token && pointId) {
+      deletePoint({ token, pointId }).then(() => navigate("/points"))
+    }
+  }
   return (
     <div className="flex flex-col h-full">
       <Title title={token ? "МОЯ ТОЧКА" : "ТОЧКА"} />
@@ -20,9 +31,12 @@ const Point: FC = ({}) => {
         </address>
         {token && (
           <div className=" flex justify-between">
-            <Link to={`addDocs`} className="text-white font-bold text-15px">
-              изменить документ
-            </Link>
+            <div
+              onClick={handleDeletePoint}
+              className="text-red font-bold text-15px"
+            >
+              Удалить
+            </div>
             <Link to={`qr`} className="text-white font-bold text-15px">
               qr-код
             </Link>
@@ -52,10 +66,7 @@ const Point: FC = ({}) => {
             <ButtonBack />
           </>
         ) : (
-          <>
-            <ButtonLink isActive title="Перейти к документам" link="menu" />
-            <ButtonBack />
-          </>
+          <ButtonLink isActive title="Перейти к документам" link="menu" />
         )}
       </div>
     </div>
