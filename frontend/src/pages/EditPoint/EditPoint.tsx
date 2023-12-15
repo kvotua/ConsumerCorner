@@ -9,7 +9,7 @@ import { Input } from "src/ui/Input/Input"
 import { TitlePoint } from "src/ui/Title/TitlePoint"
 
 const EditPoint: FC = ({}) => {
-  const { title, address, id, inn, ogrn, owner } = useAppSelector(
+  const { title, address, inn, ogrn } = useAppSelector(
     (state) => state.pointSlice,
   )
   const {
@@ -19,6 +19,7 @@ const EditPoint: FC = ({}) => {
   } = useForm()
   const onSubmit = async (data: FieldValues) => {
     try {
+      console.log(data)
     } catch {
       alert("что-то пошло не так")
     }
