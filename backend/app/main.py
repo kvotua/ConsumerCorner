@@ -1,4 +1,5 @@
 import os
+import random
 import uuid
 from contextlib import asynccontextmanager
 from typing import Annotated
@@ -28,6 +29,8 @@ from fastapi import FastAPI, HTTPException, Query, status, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse, Response
 from fastapi_limiter import FastAPILimiter
+import smtplib
+from email.message import EmailMessage
 
 
 @asynccontextmanager
@@ -51,8 +54,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-CODE_EXPIRES_SECONDS = 60 * 15
+
 POINT_PRICE = 100 * 100
+password_codes = {}
 
 
 async def proprietorID_by_token(token: Token) -> ProprietorID:
@@ -271,7 +275,7 @@ async def get_proprietor_token(login: str, password: str) -> Token:
 
 
 @app.post("/payments/{proprietorID}", tags=["Payments"])
-def post_payment(
+async def post_payment(
     proprietorID: ProprietorID, value: Annotated[int, Query(gt=0)]
 ) -> None:
     result = proprietors_collection.update_one(
@@ -281,6 +285,34 @@ def post_payment(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Wrong proprietorID"
         )
+
+
+@app.post("/password/reset/{proprietorID}", tags=["Proprietors"])
+async def post_password_reset(proprietorID: ProprietorID) -> None:
+    proprietor = proprietor_by_id(proprietorID)
+    code = password_codes[proprietorID] = random.randrange(10000, 99999)
+    message = EmailMessage()
+    message.set_content(f"Код для сброса пароля: {code}")
+    message["Subject"] = "Сброс пароля"
+    message["From"] = "root@xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai"
+    message["To"] = proprietor.email
+
+    s = smtplib.SMTP("mailserver")
+    s.send_message(message)
+    s.quit()
+
+
+@app.post("/password/change/{proprietorID}", tags=["Proprietors"])
+async def post_password_change(
+    proprietorID: ProprietorID, code: int, new_password=str
+) -> None:
+    proprietor = proprietor_by_id(proprietorID)
+    if code != password_codes.get(proprietorID, None):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Wrong code")
+    password_codes.pop(proprietorID)
+    proprietors_collection.update_one(
+        {"id": proprietor.id}, {"$set": {"password": new_password}}
+    )
 
 
 @app.get("/", include_in_schema=False)

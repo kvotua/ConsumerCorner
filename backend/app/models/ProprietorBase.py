@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 
 
 class ProprietorBase(BaseModel):
@@ -6,3 +6,4 @@ class ProprietorBase(BaseModel):
     surname: str = Field(min_length=1)
     login: str = Field(min_length=6)
     password: str = Field(min_length=6)
+    email: EmailStr
