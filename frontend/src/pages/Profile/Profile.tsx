@@ -13,12 +13,12 @@ const Profile = () => {
   const rubles = balance / 100
   const dispatch = useAppDispatch()
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col container pt-8">
       <div className="flex flex-col items-center">
         <div className="w-[100px] h-[100px] bg-white rounded-[50%]"></div>
         <span className="text-15px text-white">Изменить фото</span>
       </div>
-      <div className="mb-[20px]">
+      <div className="mb-[20px] flex-grow">
         <div className="">
           <Input title="Логин" value={login} />
           <Input title="Имя" value={name} />
@@ -32,7 +32,7 @@ const Profile = () => {
           <ButtonLink title="Редактировать" link="edit" />
         </div>
       </div>
-      <div className="flex-grow"></div>
+
       <div className="flex flex-col gap-[10px] pb-[10px]">
         <ButtonSubmit
           title="Выйти"

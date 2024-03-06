@@ -23,9 +23,9 @@ const Payments = () => {
     handleSubmit((data) => onSubmit(data))()
   }
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full container pt-8">
       <Title title="ПОПОЛНИТЬ БАЛАНС" />
-      <form className="mt-[20px] mb-[20px]">
+      <form className="mt-[20px] mb-[20px] flex-grow">
         <Input
           isError={!!errors.sum}
           errorMessage={errors.sum?.message}
@@ -36,7 +36,6 @@ const Payments = () => {
           title="Сумма"
         />
       </form>
-      <div className="flex-grow"></div>
       <div className=" flex flex-col gap-[10px] pb-[10px]">
         <ButtonSubmit
           title="Пополнить"

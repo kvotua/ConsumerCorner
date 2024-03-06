@@ -1,7 +1,6 @@
 import { FC } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import { AxiosResponse } from "axios"
 
 import { useAddPointMutation } from "src/store/RTKSlice/api"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
@@ -21,7 +20,7 @@ interface IPoint {
   jurnal: FileList
   license: FileList
 }
-const AddPoint: FC = ({}) => {
+const AddPoint: FC = () => {
   const {
     register,
     handleSubmit,
@@ -30,7 +29,7 @@ const AddPoint: FC = ({}) => {
   const [addPoint] = useAddPointMutation()
   const navigate = useNavigate()
   const token = localStorage.getItem("token")
-  const uploadFile = async (file: File): Promise<AxiosResponse<any>> => {
+  const uploadFile = async (file: File) => {
     const formData = new FormData()
     formData.append("file", file)
 
@@ -58,13 +57,16 @@ const AddPoint: FC = ({}) => {
           license_file_ids: [license.data],
           accreditation_file_ids: [acc.data],
         },
-      }).then(() => navigate("/points"))
+      }).then((res) => {
+        if ("error" in res) throw res.error
+        navigate("/points")
+      })
     } catch (error) {
       console.error("Error uploading files", error)
     }
   }
   return (
-    <div>
+    <div className="container">
       <Title title="НОВАЯ ТОЧКА" />
       <form
         className="mt-[8vh]"
@@ -144,21 +146,7 @@ const AddPoint: FC = ({}) => {
             useForm={register("acc", { required: "Загрузите документ" })}
             id="acc"
           />
-          {/* <ButtonUpload
-            title="Сертификаты"
-            isError={!!errors.Certificates?.message}
-            errorMessage={errors.Certificates?.message}
-            useForm={register("Certificates", {
-              required: "Загрузите документ",
-            })}
-            id="Certificates"
-          /> */}
         </div>
-        {/* <span className="title">Режим работы</span>
-        <div className="grid grid-cols-2 gap-[32px] my-[40px]">
-          <Input title="Начало рабочего дня" isActive={false} />
-          <Input title="Конец рабочего дня" isActive={false} />
-        </div> */}
         <div className="pb-[20px] flex flex-col gap-[10px]">
           <ButtonSubmit isActive title="Добавить точку" type="submit" />
           <ButtonBack />

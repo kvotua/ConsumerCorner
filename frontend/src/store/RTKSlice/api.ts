@@ -12,7 +12,7 @@ export const ugolokApi = createApi({
   reducerPath: "ugolokApi",
   tagTypes: ["getUser", "addPoint", "getPoints"],
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL,
+    baseUrl: "http://localhost:8000/",
   }),
   endpoints: (builder) => ({
     getUser: builder.query({

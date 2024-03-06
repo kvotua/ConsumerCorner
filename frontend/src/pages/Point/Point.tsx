@@ -9,7 +9,7 @@ import { ButtonLink } from "src/ui/Buttons/ButtonLink/ButtonLink"
 import { Input } from "src/ui/Input/Input"
 import { Title } from "src/ui/Title/Title"
 
-const Point: FC = ({}) => {
+const Point: FC = () => {
   const token = localStorage.getItem("token")
   const { pointId } = useParams()
   const { data: point } = useGetPointsQuery(pointId)
@@ -23,9 +23,9 @@ const Point: FC = ({}) => {
     }
   }
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full container">
       <Title title={token ? "МОЯ ТОЧКА" : "ТОЧКА"} />
-      <div className="mt-[8vh] mb-[20px]">
+      <div className="mt-[8vh] mb-[20px] flex-grow">
         <address className="text-18px font-medium text-white opacity-70">
           {point?.address}
         </address>
@@ -55,7 +55,7 @@ const Point: FC = ({}) => {
           />
         </div>
       </div>
-      <div className="flex-grow"></div>
+
       <div className="flex flex-col gap-[10px] pb-[10px]">
         {token ? (
           <>

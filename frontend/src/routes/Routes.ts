@@ -20,7 +20,7 @@ import { Reviews } from "src/pages/Reviews/Reviews"
 import { Rights } from "src/pages/Rights/Rights"
 import { Socials } from "src/pages/Socials/Socials"
 import { Thanks } from "src/pages/Thanks/Thanks"
-import EditPoint from "src/pages/EditPoint/EditPoint"
+import { EditPoint } from "src/pages/EditPoint/EditPoint"
 
 interface IRoute {
   path: string

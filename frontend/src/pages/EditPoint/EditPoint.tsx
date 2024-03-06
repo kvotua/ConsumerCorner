@@ -1,35 +1,81 @@
 import { FC } from "react"
 import { FieldValues, useForm } from "react-hook-form"
+import { useNavigate, useParams } from "react-router-dom"
 
-import { useAppSelector } from "src/hooks/useAppSelector"
+import { usePatchPointMutation } from "src/store/RTKSlice/api"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
-import { ButtonUpload } from "src/ui/Buttons/ButtonUpload/ButtonUpload"
+import { ButtonUpload } from "src/ui/ButtonUpload/ButtonUpload"
 import { Input } from "src/ui/Input/Input"
-import { TitlePoint } from "src/ui/Title/TitlePoint"
+import { Title } from "src/ui/Title/Title"
+import { axiosBase } from "src/axios"
 
-const EditPoint: FC = ({}) => {
-  const { title, address, inn, ogrn } = useAppSelector(
-    (state) => state.pointSlice,
-  )
+interface IPoint {
+  ITN: string
+  MSRN: string
+  address: string
+  name: string
+  phone: string
+  acc: FileList
+  jurnal: FileList
+  license: FileList
+}
+const EditPoint: FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm()
-  const onSubmit = async (data: FieldValues) => {
+  const [editPoint] = usePatchPointMutation()
+  const navigate = useNavigate()
+  const token = localStorage.getItem("token")
+  const { pointId } = useParams()
+  const uploadFile = async (file: File) => {
+    const formData = new FormData()
+    formData.append("file", file)
+    return await axiosBase.post("/files", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+  }
+  const submit = async (data: FieldValues | IPoint) => {
     try {
-      console.log(data)
-    } catch {
-      alert("что-то пошло не так")
+      const jurnal = await uploadFile(data.jurnal[0])
+      const license = await uploadFile(data.license[0])
+      const acc = await uploadFile(data.acc[0])
+      if (token && pointId) {
+        await editPoint({
+          token,
+          pointId,
+          body: {
+            title: data.name,
+            address: data.address,
+            phone_number: data.phone,
+            inn: data.ITN,
+            ogrn: data.MSRN,
+            audit_log_file_id: jurnal.data,
+            license_file_ids: [license.data],
+            accreditation_file_ids: [acc.data],
+          },
+        }).then((res) => {
+          if ("error" in res) throw res.error
+          navigate("/points")
+        })
+      }
+    } catch (error) {
+      console.error("Error uploading files", error)
     }
   }
   return (
-    <div className="flex flex-col h-full">
-      <TitlePoint pointName={title} title="РЕДАКТИРОВАНИЕ" />
-      <form className="" onSubmit={handleSubmit((data) => onSubmit(data))}>
-        <div className="overflow-scroll flex flex-col gap-[32px] mt-[20px] mb-[20px]">
-          <div className="grid grid-cols-2 gap-[10px]">
+    <div className="container pt-8">
+      <Title title="НОВАЯ ТОЧКА" />
+      <form
+        className="mt-[8vh]"
+        onSubmit={handleSubmit((data) => submit(data))}
+      >
+        <div className="overflow-scroll flex flex-col gap-[32px] mb-[8vh]">
+          <div className="grid grid-cols-2 gap-[32px]">
             <Input
               useForm={register("ITN", {
                 required: "обязательно для заполнения",
@@ -37,7 +83,6 @@ const EditPoint: FC = ({}) => {
               })}
               isActive={false}
               title="ИНН"
-              defaultValue={inn}
               isError={!!errors?.ITN}
               errorMessage={errors.ITN?.message}
             />
@@ -48,7 +93,6 @@ const EditPoint: FC = ({}) => {
               })}
               isActive={false}
               title="ОГРН"
-              defaultValue={ogrn}
               isError={!!errors?.MSRN}
               errorMessage={errors.MSRN?.message}
             />
@@ -60,7 +104,6 @@ const EditPoint: FC = ({}) => {
             isActive={false}
             title="Адрес препдприятия "
             isError={!!errors?.address}
-            defaultValue={address}
             errorMessage={errors.address?.message}
           />
           <Input
@@ -77,54 +120,35 @@ const EditPoint: FC = ({}) => {
               required: "Телефон",
             })}
             isActive={false}
-            title="Телефон предприятия"
+            title="Номер телефона"
             isError={!!errors?.phone}
             errorMessage={errors.phone?.message}
           />
-          <div className="">
-            <span className="title !text-start block mb-[20px]">Документы</span>
-            <div className=" flex flex-col gap-[10px]">
-              <ButtonUpload
-                useForm={register("jurnal", {
-                  required: "этот файл обязателен",
-                })}
-                title="Журнал учета проверок"
-                typeFile=".pdf"
-                isError={!!errors.jurnal}
-                id="jurnal"
-              />
-              <ButtonUpload
-                useForm={register("license", {
-                  required: "этот файл обязателен",
-                })}
-                title="Лицензии"
-                isMultiple
-                typeFile=".pdf"
-                isError={!!errors.license}
-                id="license"
-              />
-              <ButtonUpload
-                useForm={register("accreditation", {
-                  required: "этот файл обязателен",
-                })}
-                title="Свидетельства об аккредитации"
-                typeFile=".pdf"
-                isError={!!errors.accreditation}
-                id="accreditation"
-              />
-              <ButtonUpload
-                useForm={register("Certificates", {
-                  required: "этот файл обязателен",
-                })}
-                title="Сертификаты"
-                typeFile=".pdf"
-                isError={!!errors.Certificates}
-                id="Certificates"
-              />
-            </div>
-          </div>
         </div>
-
+        <span className="title">Загрузите документы</span>
+        <div className="flex flex-col gap-[32px] my-[40px]">
+          <ButtonUpload
+            title="Журнал учета проверок"
+            isError={!!errors.jurnal?.message}
+            errorMessage={errors.jurnal?.message}
+            useForm={register("jurnal", { required: "Загрузите документ" })}
+            id="jurnal"
+          />
+          <ButtonUpload
+            title="Лицензии"
+            isError={!!errors.license?.message}
+            errorMessage={errors.license?.message}
+            useForm={register("license", { required: "Загрузите документ" })}
+            id="license"
+          />
+          <ButtonUpload
+            title="Свидетельство об аккредитации"
+            isError={!!errors.acc?.message}
+            errorMessage={errors.acc?.message}
+            useForm={register("acc", { required: "Загрузите документ" })}
+            id="acc"
+          />
+        </div>
         <div className="pb-[20px] flex flex-col gap-[10px]">
           <ButtonSubmit isActive title="Добавить точку" type="submit" />
           <ButtonBack />
@@ -134,4 +158,4 @@ const EditPoint: FC = ({}) => {
   )
 }
 
-export default EditPoint
+export { EditPoint }

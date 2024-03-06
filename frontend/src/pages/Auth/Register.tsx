@@ -1,9 +1,11 @@
 import { FC } from "react"
-import { useForm, FieldValues } from "react-hook-form"
+import { useForm } from "react-hook-form"
+import { Navigate } from "react-router-dom"
 
 import { axiosBase } from "src/axios"
 import { useAppDispatch } from "src/hooks/useAppDispatch"
-import { setUser } from "src/store/slice/userSlice"
+import { useAppSelector } from "src/hooks/useAppSelector"
+import { getUser } from "src/store/slice/userSlice"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
 import { Input } from "src/ui/Input/Input"
@@ -16,45 +18,38 @@ const Register: FC = () => {
     formState: { errors },
   } = useForm()
   const dispatch = useAppDispatch()
-  const onSubmit = (data: FieldValues) => {
-    const fullName = data.FIO?.split(" ")
+  const isAuth = useAppSelector((state) => state.userSlice.isAuth)
+  if (isAuth) return <Navigate to={"/points"} />
 
-    try {
-      axiosBase
-        .post(`/proprietors`, {
-          name: fullName[0],
-          surname: fullName[1],
-          login: data.login,
-          password: data.password,
-        })
-        .then(({ data }) => {
-          dispatch(
-            setUser({
-              name: fullName[0],
-              surname: fullName[1],
-              login: data.login,
-              password: data.password,
-              token: data,
-            }),
-          )
-          localStorage.setItem("token", data)
-        })
-    } catch (error) {
-      console.log(error)
-    }
-  }
   const onClick = () => {
-    handleSubmit((data) => onSubmit(data))()
+    handleSubmit((data) => {
+      const fullName = data.FIO?.split(" ")
+      try {
+        axiosBase
+          .post(`/proprietors`, {
+            name: fullName[0],
+            surname: fullName[1],
+            login: data.login,
+            password: data.password,
+            email: "example@example.com",
+          })
+          .then(({ data }) => {
+            dispatch(getUser(data))
+            localStorage.setItem("token", data)
+          })
+      } catch (error) {
+        console.log(error)
+      }
+    })()
   }
+
   return (
-    <div className=" flex flex-col h-full">
+    <div className="flex flex-col h-full container pt-8">
       <div className="">
         <Logo />
       </div>
       <h1 className="title">Регистрация</h1>
-      <form
-        className="flex flex-col gap-[10px] pb-[20px]"
-      >
+      <form className="flex flex-col gap-[10px] pb-[20px] flex-grow">
         <Input
           useForm={register("FIO", { required: "Введите ФИО" })}
           title="Ф.И.О"
@@ -81,8 +76,7 @@ const Register: FC = () => {
           type="password"
         />
       </form>
-      <div className="flex-grow"></div>
-      <div className="flex flex-col gap-[10px]">
+      <div className="flex flex-col gap-[10px] pb-2">
         <ButtonSubmit
           isActive
           title="Дальше"

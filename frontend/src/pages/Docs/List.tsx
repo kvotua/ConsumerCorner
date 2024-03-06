@@ -2,7 +2,7 @@ import { FC } from "react"
 import { useAppSelector } from "src/hooks/useAppSelector"
 import { ButtonLong } from "src/ui/Buttons/ButtonLong/ButtonLong"
 
-const List: FC = ({}) => {
+const List: FC = () => {
   const { audit_log_file_id } = useAppSelector((state) => state.pointSlice)
   const { accreditation_file_ids } = useAppSelector((state) => state.pointSlice)
   const { license_file_ids } = useAppSelector((state) => state.pointSlice)

@@ -8,7 +8,7 @@ import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
 import { ButtonUpload } from "src/ui/Buttons/ButtonUpload/ButtonUpload"
 import { Title } from "src/ui/Title/Title"
 
-const AddDocs: FC = ({}) => {
+const AddDocs: FC = () => {
   const {
     register,
     handleSubmit,
