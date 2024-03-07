@@ -23,9 +23,9 @@ const Offer = () => {
   }
   const { title } = useAppSelector((state) => state.pointSlice)
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full container pt-8">
       <TitlePoint pointName={title} title="Предложение" />
-      <div className="mb-[20px]">
+      <div className="mb-[20px] flex-grow">
         <span className="text-white text-18px opacity-70 block pt-[8vh] pb-[2vh]">
           Пожалуйста, напишите в форму ниже ваше предложение.
         </span>
@@ -39,8 +39,7 @@ const Offer = () => {
           ></textarea>
         </form>
       </div>
-      <div className="flex-grow"></div>
-      <div className=" flex flex-col gap-[10px] pb-[10px]">
+      <div className=" flex flex-col gap-[10px] pb-4">
         <ButtonSubmit
           title="Отправить"
           type="submit"

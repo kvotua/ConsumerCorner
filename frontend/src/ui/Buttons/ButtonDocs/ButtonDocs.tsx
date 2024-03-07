@@ -12,7 +12,7 @@ const ButtonDocs: FC<IButtonDocs> = ({ title, link, handlClick }) => {
   return (
     <Link
       to={link}
-      className="max-w-[185px] h-[128px] bg-white rounded-activeBorder relative px-[16px] py-[20px]"
+      className="w-full h-[128px] bg-white rounded-activeBorder relative px-[16px] py-[20px]"
       onClick={handlClick}
     >
       <span className="text-black text-15px font-semibold">{title}</span>

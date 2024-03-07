@@ -73,7 +73,7 @@ const AddDocs: FC = () => {
           id="Certificates"
         />
       </form>
-      <div className=" flex flex-col gap-[10px] pb-[10px]">
+      <div className=" flex flex-col gap-[10px] pb-4">
         <ButtonSubmit
           isActive
           title="Сохранить"

@@ -1,10 +1,21 @@
 import React, { FC } from "react"
+import {
+  FieldError,
+  FieldErrorsImpl,
+  FieldValues,
+  Merge,
+  UseFormRegisterReturn,
+} from "react-hook-form"
 
 interface IInput extends React.HTMLProps<HTMLInputElement> {
   title: string
   isError?: boolean
-  errorMessage?: any
-  useForm?: any
+  errorMessage?:
+    | string
+    | FieldError
+    | Merge<FieldError, FieldErrorsImpl<FieldValues>>
+    | undefined
+  useForm?: UseFormRegisterReturn
   isActive?: boolean
   type?: "text" | "password"
   defaultValue?: string
@@ -41,7 +52,9 @@ const Input: FC<IInput> = ({
             : " border border-white bg-[transparent] text-white"
         }`}
       />
-      <span className="text-red text-15px">{errorMessage}</span>
+      {isError && (
+        <span className="text-red text-15px">{errorMessage?.toString()}</span>
+      )}
     </label>
   )
 }

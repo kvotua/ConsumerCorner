@@ -24,6 +24,6 @@
             "src/*": ["src/*"]
         }
     },
-    "include": ["src"],
+    "include": ["src", "typings/save-svg-as-png.d.ts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -15,7 +15,10 @@ const Reviews = () => {
       <div className="mt-[8vh] h-[55vh] overflow-scroll rounded-passiveBorder mb-[20px]">
         <ul className="flex flex-col gap-[20px]">
           {comments?.map(({ message }: { message: string }, id: number) => (
-            <li key={id} className="w-full break-words  p-[18px] bg-white text-black rounded-passiveBorder font-medium">
+            <li
+              key={id}
+              className="w-full break-words  p-[18px] bg-white text-black rounded-passiveBorder font-medium"
+            >
               {message}
               <div className="pt-[10px] flex">
                 <img src={star} alt="" />
@@ -29,7 +32,7 @@ const Reviews = () => {
         </ul>
       </div>
       <div className="flex-grow"></div>
-      <div className="pb-[10px]">
+      <div className="pb-4">
         <ButtonBack />
       </div>
     </div>

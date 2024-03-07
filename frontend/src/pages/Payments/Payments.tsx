@@ -36,7 +36,7 @@ const Payments = () => {
           title="Сумма"
         />
       </form>
-      <div className=" flex flex-col gap-[10px] pb-[10px]">
+      <div className=" flex flex-col gap-[10px] pb-4">
         <ButtonSubmit
           title="Пополнить"
           type="submit"

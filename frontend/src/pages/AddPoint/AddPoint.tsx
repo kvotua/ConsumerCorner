@@ -9,6 +9,8 @@ import { ButtonUpload } from "src/ui/ButtonUpload/ButtonUpload"
 import { Input } from "src/ui/Input/Input"
 import { Title } from "src/ui/Title/Title"
 import { axiosBase } from "src/axios"
+import { useAppDispatch } from "src/hooks/useAppDispatch"
+import { getUser } from "src/store/slice/userSlice"
 
 interface IPoint {
   ITN: string
@@ -28,7 +30,7 @@ const AddPoint: FC = () => {
   } = useForm()
   const [addPoint] = useAddPointMutation()
   const navigate = useNavigate()
-  const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token")!
   const uploadFile = async (file: File) => {
     const formData = new FormData()
     formData.append("file", file)
@@ -39,6 +41,7 @@ const AddPoint: FC = () => {
       },
     })
   }
+  const dispatch = useAppDispatch()
   const submit = async (data: FieldValues | IPoint) => {
     try {
       const jurnal = await uploadFile(data.jurnal[0])
@@ -59,6 +62,8 @@ const AddPoint: FC = () => {
         },
       }).then((res) => {
         if ("error" in res) throw res.error
+        dispatch(getUser(token))
+
         navigate("/points")
       })
     } catch (error) {

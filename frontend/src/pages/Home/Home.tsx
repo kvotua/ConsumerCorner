@@ -19,7 +19,7 @@ const Home: FC = () => {
         <ButtonLink title="Регистрация" link="register" isActive />
         <ButtonLink title="Вход" link="login" />
       </div>
-      <p className="text-center text-15px text-white opacity-70 pb-[10px]">
+      <p className="text-center text-15px text-white opacity-70 pb-4">
         Удобные инструменты позволяющие вашему бизнесу быть в курсе и оперативно
         реагировать на пожелания клиента
       </p>

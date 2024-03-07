@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-interface IInitialState {
+interface IPoint {
   title: string
   address: string
   inn: string
@@ -12,7 +12,7 @@ interface IInitialState {
   accreditation_file_ids: string[]
 }
 
-const initialState: IInitialState = {
+const initialState: IPoint = {
   title: "",
   address: "",
   inn: "",
@@ -27,10 +27,9 @@ const pointSlice = createSlice({
   name: "point",
   initialState,
   reducers: {
-    setPoint(state, action: PayloadAction<any>) {
+    setPoint(_, { payload }: PayloadAction<IPoint>) {
       return {
-        ...state,
-        ...action.payload,
+        ...payload,
       }
     },
   },

@@ -54,8 +54,8 @@ const Points: FC = () => {
         </ul>
       )}
 
-      <div className=" flex flex-col gap-[10px] pb-[10px]">
-        <div className="flex gap-[10px]">
+      <div className=" flex flex-col gap-4 pb-4">
+        <div className="flex gap-4">
           <ButtonLink isActive title="Добавить точку" link="add" />
           <ButtonLink isActive title="Мой профиль" link="/profile" />
         </div>

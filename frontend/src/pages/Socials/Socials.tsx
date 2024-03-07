@@ -8,7 +8,7 @@ const Socials = () => {
   const { title } = useAppSelector((state) => state.pointSlice)
   const token = localStorage.getItem("token")
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full container pt-8">
       <TitlePoint pointName={title} title="Соц. сети" />
       <div className="flex-grow"></div>
       <ul className="pt-[20px] flex flex-col gap-[20px]">
@@ -26,7 +26,7 @@ const Socials = () => {
         </li>
       </ul>
       <div className="flex-grow"></div>
-      <div className="mt-auto pb-[10px]">
+      <div className="mt-auto pb-4">
         {token && <ButtonSubmit title="Добавить соц. сеть" type="button" />}
         <ButtonBack />
       </div>

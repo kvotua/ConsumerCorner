@@ -1,8 +1,10 @@
+import { useEffect } from "react"
+import device from "current-device"
+
 import { AppRoutes } from "src/routes/AppRoutes"
 import { useAppDispatch } from "./hooks/useAppDispatch"
-import { useEffect } from "react"
 import { getUser } from "./store/slice/userSlice"
-
+import { DesktopPage } from "./pages/DesktopPage/DesktopPage"
 function App() {
   const dispatch = useAppDispatch()
   const token = localStorage.getItem("token")
@@ -11,6 +13,11 @@ function App() {
       dispatch(getUser(token))
     }
   }, [token])
+
+  if (window.innerWidth > 1024 || device.desktop()) {
+    return <DesktopPage />
+  }
+
   return (
     <>
       <AppRoutes />

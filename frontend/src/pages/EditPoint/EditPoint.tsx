@@ -9,6 +9,7 @@ import { ButtonUpload } from "src/ui/ButtonUpload/ButtonUpload"
 import { Input } from "src/ui/Input/Input"
 import { Title } from "src/ui/Title/Title"
 import { axiosBase } from "src/axios"
+import { useAppSelector } from "src/hooks/useAppSelector"
 
 interface IPoint {
   ITN: string
@@ -30,6 +31,7 @@ const EditPoint: FC = () => {
   const navigate = useNavigate()
   const token = localStorage.getItem("token")
   const { pointId } = useParams()
+  const point = useAppSelector((state) => state.pointSlice)
   const uploadFile = async (file: File) => {
     const formData = new FormData()
     formData.append("file", file)
@@ -69,7 +71,7 @@ const EditPoint: FC = () => {
   }
   return (
     <div className="container pt-8">
-      <Title title="НОВАЯ ТОЧКА" />
+      <Title title={point.title} />
       <form
         className="mt-[8vh]"
         onSubmit={handleSubmit((data) => submit(data))}
