@@ -12,7 +12,7 @@ export const ugolokApi = createApi({
   reducerPath: "ugolokApi",
   tagTypes: ["getUser", "addPoint", "getPoints"],
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/",
+    baseUrl: "http://192.168.0.5:8000/",
   }),
   endpoints: (builder) => ({
     getUser: builder.query({

@@ -1,7 +1,9 @@
-import { FieldValues, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
+import { useAppDispatch } from "src/hooks/useAppDispatch"
 import { useAppSelector } from "src/hooks/useAppSelector"
 import { usePostPaymentsMutation } from "src/store/RTKSlice/api"
+import { getUser } from "src/store/slice/userSlice"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
 import { Input } from "src/ui/Input/Input"
@@ -14,13 +16,18 @@ const Payments = () => {
     formState: { errors },
   } = useForm()
   const userId = useAppSelector((state) => state.userSlice.id)
+  const token = localStorage.getItem("token")!
   const [addSum] = usePostPaymentsMutation()
   const navigate = useNavigate()
-  const onSubmit = (data: FieldValues) => {
-    addSum({ userId, value: data.sum * 100 }).then(() => navigate(-1))
-  }
+
+  const dispatch = useAppDispatch()
   const onClick = () => {
-    handleSubmit((data) => onSubmit(data))()
+    handleSubmit((data) =>
+      addSum({ userId, value: data.sum * 100 }).then(() => {
+        dispatch(getUser(token))
+        navigate(-1)
+      }),
+    )()
   }
   return (
     <div className="flex flex-col h-full container pt-8">

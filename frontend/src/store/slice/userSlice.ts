@@ -27,8 +27,16 @@ const initialState: IUser = {
 export const getUser = createAsyncThunk(
   "get/getUser",
   async (token: string) => {
-    const { data } = await axiosBase.get(`proprietors/by/token?token=${token}`)
-    return data
+    return await axiosBase
+      .get(`proprietors/by/token?token=${token}`)
+      .then(({ data }) => {
+        return data
+      })
+      .catch(({ response }) => {
+        if (response?.data?.detail === "Wrong token") {
+          localStorage.removeItem("token")
+        }
+      })
   },
 )
 

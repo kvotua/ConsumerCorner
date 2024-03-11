@@ -1,5 +1,10 @@
 import { FC } from "react"
-import { UseFormRegisterReturn } from "react-hook-form"
+import {
+  FieldError,
+  FieldErrorsImpl,
+  Merge,
+  UseFormRegisterReturn,
+} from "react-hook-form"
 
 import arrow from "src/assets/arrow.svg"
 
@@ -9,6 +14,10 @@ interface IButtonUpload {
   typeFile: string
   isMultiple?: boolean
   isError: boolean
+  errorMessage?:
+    | string
+    | FieldError
+    | Merge<FieldError, FieldErrorsImpl<FieldError>>
   id: string
 }
 const ButtonUpload: FC<IButtonUpload> = ({
@@ -17,6 +26,7 @@ const ButtonUpload: FC<IButtonUpload> = ({
   typeFile,
   isMultiple = false,
   isError = false,
+  errorMessage,
   id,
 }) => {
   return (
@@ -41,6 +51,13 @@ const ButtonUpload: FC<IButtonUpload> = ({
         id={id}
         className="hidden"
       />
+      <span
+        className={`text-18px font-bold block pt-[10px] ${
+          isError ? "text-red" : "text-white"
+        }`}
+      >
+        {isError && errorMessage && errorMessage.toString()}
+      </span>
     </label>
   )
 }

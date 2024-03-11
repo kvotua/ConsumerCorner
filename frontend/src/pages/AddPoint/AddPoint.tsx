@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom"
 import { useAddPointMutation } from "src/store/RTKSlice/api"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
-import { ButtonUpload } from "src/ui/ButtonUpload/ButtonUpload"
 import { Input } from "src/ui/Input/Input"
 import { Title } from "src/ui/Title/Title"
 import { axiosBase } from "src/axios"
 import { useAppDispatch } from "src/hooks/useAppDispatch"
 import { getUser } from "src/store/slice/userSlice"
+import { ButtonUpload } from "src/ui/Buttons/ButtonUpload/ButtonUpload"
 
 interface IPoint {
   ITN: string
@@ -66,12 +66,14 @@ const AddPoint: FC = () => {
 
         navigate("/points")
       })
-    } catch (error) {
-      console.error("Error uploading files", error)
+    } catch (error: any) {
+      if (error?.data?.detail === "Insufficient funds") {
+        alert("У вас недостаточно средств")
+      }
     }
   }
   return (
-    <div className="container">
+    <div className="container pt-8">
       <Title title="НОВАЯ ТОЧКА" />
       <form
         className="mt-[8vh]"
@@ -134,6 +136,7 @@ const AddPoint: FC = () => {
             title="Журнал учета проверок"
             isError={!!errors.jurnal?.message}
             errorMessage={errors.jurnal?.message}
+            typeFile=".pdf"
             useForm={register("jurnal", { required: "Загрузите документ" })}
             id="jurnal"
           />
@@ -141,6 +144,7 @@ const AddPoint: FC = () => {
             title="Лицензии"
             isError={!!errors.license?.message}
             errorMessage={errors.license?.message}
+            typeFile=".pdf"
             useForm={register("license", { required: "Загрузите документ" })}
             id="license"
           />
@@ -148,6 +152,7 @@ const AddPoint: FC = () => {
             title="Свидетельство об аккредитации"
             isError={!!errors.acc?.message}
             errorMessage={errors.acc?.message}
+            typeFile=".pdf"
             useForm={register("acc", { required: "Загрузите документ" })}
             id="acc"
           />

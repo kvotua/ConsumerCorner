@@ -6,6 +6,7 @@ import {
   useDeletePointMutation,
   useGetPointsQuery,
 } from "src/store/RTKSlice/api"
+import { setPoint } from "src/store/slice/pointSlice"
 import { getUser } from "src/store/slice/userSlice"
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonLink } from "src/ui/Buttons/ButtonLink/ButtonLink"
@@ -17,13 +18,14 @@ const Point: FC = () => {
   const { pointId } = useParams()
   const { data: point } = useGetPointsQuery(pointId)
   const [deletePoint] = useDeletePointMutation()
-  
+
   const navigate = useNavigate()
   const isAuth = useAppSelector((state) => state.userSlice.isAuth)
 
   localStorage.setItem("pointId", pointId ? pointId : "")
 
   const dispatch = useAppDispatch()
+  dispatch(setPoint(point))
   const handleDeletePoint = () => {
     if (token && pointId) {
       deletePoint({ token, pointId }).then((res) => {

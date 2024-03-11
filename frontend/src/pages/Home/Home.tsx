@@ -4,6 +4,7 @@ import { useAppSelector } from "src/hooks/useAppSelector"
 import { ButtonLink } from "src/ui/Buttons/ButtonLink/ButtonLink"
 import { Logo } from "src/ui/Logo/Logo"
 
+
 const Home: FC = () => {
   const isAuth = useAppSelector((state) => state.userSlice.isAuth)
   if (isAuth) return <Navigate to={"/points"} />

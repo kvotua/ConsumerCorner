@@ -7,6 +7,7 @@ import { IsAuth } from "./IsAuth"
 import { useLazyGetPointsQuery } from "src/store/RTKSlice/api"
 import { useAppDispatch } from "src/hooks/useAppDispatch"
 import { setPoint } from "src/store/slice/pointSlice"
+import { NotFound } from "src/pages/NotFound/NotFound"
 
 const AppRoutes: FC = () => {
   const user = useAppSelector((state) => state.userSlice.isAuth)
@@ -37,6 +38,7 @@ const AppRoutes: FC = () => {
           }
         />
       ))}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

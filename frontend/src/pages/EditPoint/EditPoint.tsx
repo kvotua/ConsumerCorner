@@ -9,7 +9,7 @@ import { ButtonUpload } from "src/ui/ButtonUpload/ButtonUpload"
 import { Input } from "src/ui/Input/Input"
 import { Title } from "src/ui/Title/Title"
 import { axiosBase } from "src/axios"
-import { useAppSelector } from "src/hooks/useAppSelector"
+import { useAppSelector } from "src/hooks/useAppSelector" 
 
 interface IPoint {
   ITN: string
@@ -22,16 +22,28 @@ interface IPoint {
   license: FileList
 }
 const EditPoint: FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
   const [editPoint] = usePatchPointMutation()
   const navigate = useNavigate()
   const token = localStorage.getItem("token")
   const { pointId } = useParams()
   const point = useAppSelector((state) => state.pointSlice)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isDirty },
+  } = useForm({
+    defaultValues: {
+      ITN: point.inn,
+      MSRN: point.ogrn,
+      address: point.address,
+      name: point.title,
+      phone: "+79052418161",
+      acc: "123",
+      jurnal: point.audit_log_file_id,
+      license: point.license_file_ids,
+    },
+  })
+
   const uploadFile = async (file: File) => {
     const formData = new FormData()
     formData.append("file", file)
@@ -121,6 +133,7 @@ const EditPoint: FC = () => {
             useForm={register("phone", {
               required: "Телефон",
             })}
+            type="phone"
             isActive={false}
             title="Номер телефона"
             isError={!!errors?.phone}
@@ -152,7 +165,7 @@ const EditPoint: FC = () => {
           />
         </div>
         <div className="pb-[20px] flex flex-col gap-[10px]">
-          <ButtonSubmit isActive title="Добавить точку" type="submit" />
+          {isDirty && <ButtonSubmit isActive title="Сохранить" type="submit" />}
           <ButtonBack />
         </div>
       </form>

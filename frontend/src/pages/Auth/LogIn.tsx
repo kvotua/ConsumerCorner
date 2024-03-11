@@ -27,12 +27,19 @@ const Login: FC = () => {
           .get(
             `/proprietors/token?login=${data.login}&password=${data.password}`,
           )
-          .then(({ data }) => {
-            localStorage.setItem("token", data)
-            dispatch(getUser(data))
+          .then((response) => {
+            localStorage.setItem("token", response.data)
+            dispatch(getUser(response.data))
+            console.log(response)
+          })
+          .catch((err) => {
+            if (err.response.data.detail === "Wrong login or password") {
+              return alert("неправильный логин или пароль")
+            }
+            alert("что-то пошло не так")
           })
       } catch (error) {
-        alert("произошла ошибка")
+        console.log(error)
       }
     })()
   }

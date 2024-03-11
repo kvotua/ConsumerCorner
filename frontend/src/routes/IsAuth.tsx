@@ -7,7 +7,8 @@ const IsAuth = ({
   children: React.ReactNode
   isAuth: boolean
 }) => {
-  if (!isAuth) return <Navigate to={"/"} />
+  const token = localStorage.getItem("token")
+  if (!isAuth && !token) return <Navigate to={"/"} />
   return children
 }
 

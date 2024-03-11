@@ -25,10 +25,10 @@ const ProfileEdit = () => {
   const dispatch = useAppDispatch()
   return (
     <div className="h-full flex flex-col container pt-8">
-      <div className="w-[100px] h-[100px] bg-white rounded-[50%] mx-auto"></div>
-      <span className="inline-block mx-auto text-white font-bold pt-2">
-        Изменить фото
-      </span>
+      <div className="text-center">
+        <div className="w-[100px] h-[100px] bg-white rounded-[50%] mx-auto mb-2"></div>
+        <span className="text-white font-bold">Изменить фото</span>
+      </div>
       <div className="mb-[20px] flex-grow flex flex-col gap-4 pt-4">
         {/* <Input
           title="Логин"
@@ -49,7 +49,7 @@ const ProfileEdit = () => {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-[10px] pb-4">
+      <div className="grid grid-cols-1 gap-[10px] pb-4">
         <ButtonSubmit
           title="Сохранить"
           type="button"
@@ -59,15 +59,7 @@ const ProfileEdit = () => {
             dispatch(setUser(value))
           }}
         />
-        <ButtonSubmit
-          title="Выйти"
-          type="button"
-          isActive
-          handlClick={() => {
-            localStorage.removeItem("token")
-          }}
-        />
-        <ButtonBack className="col-span-2" />
+        <ButtonBack />
       </div>
     </div>
   )

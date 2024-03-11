@@ -15,7 +15,9 @@ const Profile = () => {
   const dispatch = useAppDispatch()
   return (
     <div className="h-full flex flex-col container pt-8">
-      <div className="w-[100px] h-[100px] bg-white rounded-[50%] mx-auto"></div>
+      <div className="flex justify-center items-center">
+        <div className="w-[100px] h-[100px] bg-white rounded-[50%] "></div>
+      </div>
 
       <div className="mb-[20px] flex-grow flex flex-col gap-4 pt-4">
         <Input title="Логин" value={login} disabled={true} />

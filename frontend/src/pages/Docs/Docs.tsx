@@ -17,21 +17,21 @@ const Docs = () => {
         <ul className="flex flex-col gap-[20px]">
           <li>
             <ButtonLong
-              link={`http://localhost:8000/files/${audit_log_file_id}`}
+              link={`http://192.168.0.5:8000/files/${audit_log_file_id}`}
               title="Журнал учета проверок"
             />
           </li>
 
           <li>
             <ButtonLong
-              link={`http://localhost:8000/files/${accreditation_file_ids}`}
+              link={`http://192.168.0.5:8000/files/${accreditation_file_ids}`}
               title="Аккредитация"
             />
           </li>
 
           <li>
             <ButtonLong
-              link={`http://localhost:8000/files/${license_file_ids}`}
+              link={`http://192.168.0.5:8000/files/${license_file_ids}`}
               title="Лицензия"
             />
           </li>

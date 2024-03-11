@@ -1,9 +1,9 @@
+import { AnimatePresence, motion } from "framer-motion"
 import { FC, useEffect, useState } from "react"
 import { PointItem } from "src/Components/PointItem/PointItem"
 
 import { useAppSelector } from "src/hooks/useAppSelector"
 import { useLazyGetPointsQuery } from "src/store/RTKSlice/api"
-import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonLink } from "src/ui/Buttons/ButtonLink/ButtonLink"
 import { Loader } from "src/ui/Loader/Loader"
 import { Title } from "src/ui/Title/Title"
@@ -34,7 +34,7 @@ const Points: FC = () => {
       Promise.all(fetchPoints).then((point) => setPoints(point))
     }
   }, [pointsIds])
-  
+
   return (
     <div className="flex flex-col h-full container pt-8">
       <Title title="МОИ ТОЧКИ" />
@@ -45,21 +45,35 @@ const Points: FC = () => {
           <span className="text-white text-15px">Загрузка</span>
         </div>
       ) : (
-        <ul className="mt-[8vh] h-[55vh] overflow-scroll flex flex-col gap-[50px] mb-[20px] flex-grow">
-          {points?.map(({ address, id }) => (
-            <li key={id}>
-              <PointItem address={address} pointId={id} />
-            </li>
-          ))}
-        </ul>
+        <>
+          {points.length === 0 ? (
+            <div className="mt-[8vh] flex-grow flex justify-center items-center">
+              <span className="text-18px text-white font-bold">
+                У вас пока нет точек
+              </span>
+            </div>
+          ) : (
+            <ul className="mt-[8vh] h-[55vh] overflow-scroll flex flex-col gap-[50px] mb-[20px] flex-grow">
+              <AnimatePresence>
+                {points?.map(({ address, id }, i) => (
+                  <motion.li
+                    key={id}
+                    initial={{ opacity: 0, y: 100 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <PointItem address={address} pointId={id} />
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </ul>
+          )}
+        </>
       )}
 
-      <div className=" flex flex-col gap-4 pb-4">
-        <div className="flex gap-4">
-          <ButtonLink isActive title="Добавить точку" link="add" />
-          <ButtonLink isActive title="Мой профиль" link="/profile" />
-        </div>
-        <ButtonBack />
+      <div className="flex flex-col gap-4 pb-4">
+        <ButtonLink isActive title="Добавить точку" link="add" />
+        <ButtonLink title="Мой профиль" link="/profile" />
       </div>
     </div>
   )

@@ -1,3 +1,4 @@
+import { InputMask } from "@react-input/mask"
 import React, { FC } from "react"
 import {
   FieldError,
@@ -17,7 +18,7 @@ interface IInput extends React.HTMLProps<HTMLInputElement> {
     | undefined
   useForm?: UseFormRegisterReturn
   isActive?: boolean
-  type?: "text" | "password"
+  type?: "text" | "password" | "phone"
   defaultValue?: string
 }
 const Input: FC<IInput> = ({
@@ -39,19 +40,34 @@ const Input: FC<IInput> = ({
       >
         {title}
       </span>
-      <input
-        defaultValue={defaultValue}
-        {...useForm}
-        {...props}
-        type={type}
-        className={`w-full py-[21px] px-[16px]  text-15px rounded-passiveBorder outline-none ${
-          isError ? "border-red text-white bg-[transparent]" : " text-black"
-        } ${
-          isActive
-            ? "bg-white outline-none border border-[transparent]"
-            : " border border-white bg-[transparent] text-white"
-        }`}
-      />
+      {type === "phone" ? (
+        <InputMask
+          {...useForm}
+          mask="+7 ___ ___ __ __"
+          replacement={{ _: /\d/ }}
+          className={`w-full py-[21px] px-[16px]  text-15px rounded-passiveBorder outline-none ${
+            isError ? "border-red text-white bg-[transparent]" : " text-black"
+          } ${
+            isActive
+              ? "bg-white outline-none border border-[transparent]"
+              : " border border-white bg-[transparent] text-white"
+          }`}
+        />
+      ) : (
+        <input
+          defaultValue={defaultValue}
+          {...useForm}
+          {...props}
+          type={type}
+          className={`w-full py-[21px] px-[16px]  text-15px rounded-passiveBorder outline-none ${
+            isError ? "border-red text-white bg-[transparent]" : " text-black"
+          } ${
+            isActive
+              ? "bg-white outline-none border border-[transparent]"
+              : " border border-white bg-[transparent] text-white"
+          }`}
+        />
+      )}
       {isError && (
         <span className="text-red text-15px">{errorMessage?.toString()}</span>
       )}

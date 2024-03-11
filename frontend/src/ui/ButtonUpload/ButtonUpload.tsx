@@ -10,7 +10,7 @@ import arrow from "src/assets/arrow.svg"
 interface IButtonUpload {
   title: string
   isError?: boolean
-  errorMessage?: string | FieldError | Merge<FieldError, FieldErrorsImpl<any>>
+  errorMessage?: string | FieldError | Merge<FieldError, FieldErrorsImpl<FieldError>>
   useForm?: UseFormRegisterReturn
   id: string
 }

@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom"
 import { QRCodeSVG } from "qrcode.react"
+import { motion } from "framer-motion"
 
 import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
 import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
@@ -19,14 +20,15 @@ const QR = () => {
     <div className="container pt-8">
       <Title title="QR-КОД" />
       <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full ">
-        <div className="p-4 bg-white rounded-[20px]">
-          {/* <img
-            src={`http://localhost:8000/points/${pointId}/qr`}
-            alt="qr-код"
-          /> */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ ease: "backOut", duration: 0.5 }}
+          className="p-4 bg-white rounded-[20px]"
+        >
           <QRCodeSVG
-            value={`http://localhost:8000/points/${pointId}/qr`}
-            size={300}
+            value={`http://192.168.0.5:51/point/${pointId}`}
+            size={window.innerWidth / 2}
             id="qr-svg"
             includeMargin
             className="rounded-[20px]"
@@ -35,12 +37,12 @@ const QR = () => {
               src: "/miniLogo.svg",
               x: undefined,
               y: undefined,
-              height: 80,
-              width: 80,
+              height: 60,
+              width: 60,
               excavate: true,
             }}
           />
-        </div>
+        </motion.div>
       </div>
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px] pb-4">
         <ButtonSubmit
