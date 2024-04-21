@@ -27,7 +27,7 @@ const QR: React.FC = () => {
       <div className="flex-grow flex justify-center items-center">
         <Suspense fallback={<>Loading...</>}>
           <QRCodeSVG
-            value={`http://192.168.0.5:51/point/${pointId}`}
+            value={`${import.meta.env.VITE_CLIENT_URL}/point/${pointId}`}
             size={300}
             id="qr-svg"
             includeMargin
