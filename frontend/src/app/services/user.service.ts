@@ -4,6 +4,7 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 import { Cookies } from "react-cookie";
 import { IUser } from "../types/user.type";
 import { setUser } from "../store/slices/userSlice";
+import { IError } from "../types/error.type";
 
 interface IPayments {
   token: string;
@@ -28,6 +29,11 @@ export const useGetUser = () => {
       return null;
     },
     onSuccess: (data) => dispatch(setUser(data)),
+    onError: (err: IError) => {
+      if (err.response?.data.detail === "Wrong token") {
+        new Cookies().remove("token");
+      }
+    },
   });
 };
 
