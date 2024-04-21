@@ -1,91 +1,54 @@
-import { FC } from "react"
-import { Link, useNavigate, useParams } from "react-router-dom"
-import { useAppDispatch } from "src/hooks/useAppDispatch"
-import { useAppSelector } from "src/hooks/useAppSelector"
-import {
-  useDeletePointMutation,
-  useGetPointsQuery,
-} from "src/store/RTKSlice/api"
-import { setPoint } from "src/store/slice/pointSlice"
-import { getUser } from "src/store/slice/userSlice"
-import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
-import { ButtonLink } from "src/ui/Buttons/ButtonLink/ButtonLink"
-import { Input } from "src/ui/Input/Input"
-import { Title } from "src/ui/Title/Title"
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetPointById } from "src/app/services/points.service";
+import { PointScelteton } from "./PointScelteton";
+import { ButtonBase } from "src/shared/Buttons/ButtonBase/ButtonBase";
+import { ButtonBack } from "src/shared/Buttons/ButtonBack/ButtonBack";
+import { useAppSelector } from "src/app/hooks/useAppSelector";
+import { ButtonBig } from "src/shared/Buttons/ButtonBig/ButtonBig";
 
-const Point: FC = () => {
-  const token = localStorage.getItem("token")
-  const { pointId } = useParams()
-  const { data: point } = useGetPointsQuery(pointId)
-  const [deletePoint] = useDeletePointMutation()
+const Point: React.FC = () => {
+  const user = useAppSelector((state) => state.userReduser.user);
+  const { pointId } = useParams();
+  const { data: point, isLoading, isRefetching } = useGetPointById(pointId!);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
-  const isAuth = useAppSelector((state) => state.userSlice.isAuth)
-
-  localStorage.setItem("pointId", pointId ? pointId : "")
-
-  const dispatch = useAppDispatch()
-  dispatch(setPoint(point))
-  const handleDeletePoint = () => {
-    if (token && pointId) {
-      deletePoint({ token, pointId }).then((res) => {
-        if ("error" in res) throw res.error
-        dispatch(getUser(token))
-        navigate("/points")
-      })
-    }
-  }
   return (
-    <div className="flex flex-col h-full container pt-8">
-      <Title title={token ? point?.title : "ТОЧКА"} />
-      <div className="mt-[8vh] mb-[20px] flex-grow">
-        <address className="text-18px font-medium text-white opacity-70">
-          {point?.address}
-        </address>
-        {token && isAuth && (
-          <div className=" flex justify-between">
-            <div
-              onClick={handleDeletePoint}
-              className="text-red font-bold text-15px"
-            >
-              Удалить
+    <section className="wrapper">
+      {isLoading || isRefetching ? (
+        <PointScelteton />
+      ) : (
+        <>
+          <h2 className="title">
+            {user && !user.points_id.includes(pointId!)
+              ? point?.title
+              : "моя точка"}
+          </h2>
+          <p className="text-xl opacity-50 pt-5 break-words">{point?.address}</p>
+          <div className="flex-grow">
+            <div className="py-2 grid grid-cols-2 gap-2">
+              <ButtonBig link="book">Книга отзывов</ButtonBig>
+              <ButtonBig link="rights">Права потребителя</ButtonBig>
+              <ButtonBig link="docs">Документы</ButtonBig>
+              <ButtonBig link="socials">Соц.сети</ButtonBig>
+              <ButtonBig link="info">О точке</ButtonBig>
+              {user && <ButtonBig link="reviews">Отзывы</ButtonBig>}
             </div>
-            <Link to={`qr`} className="text-white font-bold text-15px">
-              qr-код
-            </Link>
+          </div>
+        </>
+      )}
+      <div className="buttons">
+        {user && user.points_id.includes(pointId!) && (
+          <div className="flex gap-2">
+            <ButtonBase link="edit">Изменить точку</ButtonBase>
+            <ButtonBase link="qr">qr-код</ButtonBase>
           </div>
         )}
-        <div className="mt-[4vh] flex flex-col gap-[32px]">
-          <Input
-            isActive={false}
-            title="ИНН юридического лица"
-            defaultValue={point?.inn}
-            disabled={!isAuth}
-          />
-          <Input
-            isActive={false}
-            title="ОГРН юридического лица"
-            defaultValue={point?.ogrn}
-            disabled={!isAuth}
-          />
-        </div>
+        <ButtonBack handleClick={() => navigate("/")}>
+          {user && !user.points_id.includes(pointId!) && "На главную"}
+        </ButtonBack>
       </div>
+    </section>
+  );
+};
 
-      <div className="flex flex-col gap-[10px] pb-4">
-        {token && isAuth ? (
-          <>
-            <div className="flex gap-[10px]">
-              <ButtonLink isActive title="Изменить" link="editPoint" />
-              <ButtonLink isActive title="Отзывы" link="reviews" />
-            </div>
-            <ButtonBack />
-          </>
-        ) : (
-          <ButtonLink isActive title="Перейти к документам" link="menu" />
-        )}
-      </div>
-    </div>
-  )
-}
-
-export { Point }
+export { Point };

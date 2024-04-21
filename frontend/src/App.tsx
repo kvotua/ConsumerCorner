@@ -1,32 +1,19 @@
-import { useEffect } from "react"
-// import device from "current-device"
-
-import { AppRoutes } from "src/routes/AppRoutes"
-import { useAppDispatch } from "./hooks/useAppDispatch"
-import { getUser } from "./store/slice/userSlice"
-// import { DesktopPage } from "./pages/DesktopPage/DesktopPage"
-
+import { useEffect, useState } from "react";
+import { useAppSelector } from "./app/hooks/useAppSelector";
+import { RootRouting } from "./app/routing/RootRouting";
+import "react-toastify/dist/ReactToastify.css";
+import { Preloader } from "./widgets/Preloader/Preloader";
 function App() {
-  const dispatch = useAppDispatch()
-  const token = localStorage.getItem("token")
-  if (token === "undefined" || token === "null") {
-    localStorage.removeItem("token")
-  }
+  const [loading, setLoading] = useState(true);
+  const user = useAppSelector((state) => state.userReduser.user);
   useEffect(() => {
-    if (token) {
-      dispatch(getUser(token))
+    if (user) {
+      setTimeout(() => setLoading(false), 2000);
+    } else {
+      setTimeout(() => setLoading(false), 2000);
     }
-  }, [token])
-
-  // if (window.innerWidth > 1024 || device.desktop()) {
-  //   return <DesktopPage />
-  // }
-
-  return (
-    <>
-      <AppRoutes />
-    </>
-  )
+  }, [user]);
+  return <>{!loading ? <RootRouting /> : <Preloader />}</>;
 }
 
-export default App
+export default App;

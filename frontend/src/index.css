@@ -1,32 +1,38 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-  font-family: "Montserrat", sans-serif;
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  outline: none;
-  scrollbar-width: none;
+body, html {
+    width: 100%;
+    height: 100%;
+    color: #FAFBFF;
 }
-*::-webkit-scrollbar {
-  display: none;
-}
-html {
-  height: 100%;
-}
-body {
-  height: 100%;
-  background-image: url("./assets/bg.svg");
-  background-size: cover;
-  transform: rotate(0deg);
+body{
+    background-image: url('./app/assets/background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
-.title {
-  color: white;
-  text-align: center;
-  font-size: 30px;
-  font-weight: 700;
-}
+.swiper {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    /* background: #fff; */
+  
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }

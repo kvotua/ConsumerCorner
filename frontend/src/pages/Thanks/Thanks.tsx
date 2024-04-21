@@ -1,20 +1,22 @@
-import { ButtonLink } from "src/ui/Buttons/ButtonLink/ButtonLink"
+import { useNavigate } from "react-router-dom";
+import { ButtonBase } from "src/shared/Buttons/ButtonBase/ButtonBase";
 
-const Thanks = () => {
+const Thanks: React.FC = () => {
+  const navigate = useNavigate();
   return (
-    <div className="absolute top-0 left-0 h-screen text-center flex flex-col justify-center items-center container pt-4">
-      <div className="flex-grow flex flex-col justify-center items-center">
-        <h1 className="text-30px font-medium text-white ">Спасибо за отзыв!</h1>
-        <p className="text-18px text-white container ">
+    <section className="wrapper">
+      <div className="flex-grow flex flex-col items-center justify-center gap-5">
+        <span className="font-bold text-3xl">Спасибо за Ваш отзыв!</span>
+        <p className="text-center text-lg">
           Мы учтем Ваши слова при нашей дальнейшей работе и будем стараться
           становиться лучше!
         </p>
       </div>
-      <div className="w-full pb-4">
-        <ButtonLink link="/" title="На главную" isActive />
+      <div className="buttons">
+        <ButtonBase handleClick={() => navigate(-1)}>Вернуться</ButtonBase>
       </div>
-    </div>
-  )
-}
+    </section>
+  );
+};
 
-export { Thanks }
+export { Thanks };

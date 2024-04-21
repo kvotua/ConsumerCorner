@@ -1,68 +1,45 @@
-import { useState } from "react"
-import { axiosBase } from "src/axios"
-import { useAppDispatch } from "src/hooks/useAppDispatch"
-import { useAppSelector } from "src/hooks/useAppSelector"
-import { setUser } from "src/store/slice/userSlice"
-import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
-import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
-import { Input } from "src/ui/Input/Input"
+import { ButtonBack } from "src/shared/Buttons/ButtonBack/ButtonBack";
 
-const ProfileEdit = () => {
-  const { login, name, surname } = useAppSelector((state) => state.userSlice)
-  const token = localStorage.getItem("token")
-  const [value, setValue] = useState({
-    login,
-    name,
-    surname,
-  })
-  const editUser = () => {
-    try {
-      axiosBase.patch(`proprietors?token=${token}`, value)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const dispatch = useAppDispatch()
+const ProfileEdit: React.FC = () => {
+  // const user = useAppSelector((state) => state.userReduser.user);
+  // const {
+  //   register,
+  //   formState: { isDirty },
+  // } = useForm<Partial<IUser>>({
+  //   values: {
+  //     email: user?.email,
+  //     login: user?.login,
+  //     name: user?.name,
+  //     surname: user?.surname,
+  //   },
+  // });
   return (
-    <div className="h-full flex flex-col container pt-8">
-      <div className="text-center">
-        <div className="w-[100px] h-[100px] bg-white rounded-[50%] mx-auto mb-2"></div>
-        <span className="text-white font-bold">Изменить фото</span>
+    <section className="wrapper">
+      {/* <h2 className="title">Редактировать профиль</h2> */}
+      {/* <form className="flex-grow flex flex-col gap-2 py-5">
+        <TextFieldBase {...register("name", { required: true })} label="Имя" />
+        <TextFieldBase
+          {...register("surname", { required: true })}
+          label="Фамилия"
+        />
+        <TextFieldBase
+          {...register("login", { required: true })}
+          label="Логин"
+        />
+        <TextFieldBase
+          {...register("email", { required: true })}
+          label="Эл. почта"
+        />
+      </form> */}
+      <div className="flex-grow flex justify-center items-center text-2xl text-center font-bold">
+        Эта страница скоро будет работать
       </div>
-      <div className="mb-[20px] flex-grow flex flex-col gap-4 pt-4">
-        {/* <Input
-          title="Логин"
-          value={value.login}
-          onChange={(e) => setValue({ ...value, login: e.currentTarget.value })}
-        /> */}
-        <Input
-          title="Имя"
-          value={value.name}
-          onChange={(e) => setValue({ ...value, name: e.currentTarget.value })}
-        />
-        <Input
-          title="Фамилия"
-          value={value.surname}
-          onChange={(e) =>
-            setValue({ ...value, surname: e.currentTarget.value })
-          }
-        />
-      </div>
-
-      <div className="grid grid-cols-1 gap-[10px] pb-4">
-        <ButtonSubmit
-          title="Сохранить"
-          type="button"
-          isActive
-          handlClick={() => {
-            editUser()
-            dispatch(setUser(value))
-          }}
-        />
+      <div className="buttons">
+        {/* {isDirty && <ButtonBase>Сохранить</ButtonBase>} */}
         <ButtonBack />
       </div>
-    </div>
-  )
-}
+    </section>
+  );
+};
 
-export { ProfileEdit }
+export { ProfileEdit };

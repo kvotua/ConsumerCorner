@@ -1,34 +1,34 @@
-import { useParams } from "react-router-dom"
-import { QRCodeSVG } from "qrcode.react"
-import { motion } from "framer-motion"
+import { useParams } from "react-router-dom";
+import { QRCodeSVG } from "qrcode.react";
+import { saveSvgAsPng } from "save-svg-as-png";
 
-import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
-import { ButtonSubmit } from "src/ui/Buttons/ButtonSubmit/ButtonSubmit"
-import { Title } from "src/ui/Title/Title"
-import { saveSvgAsPng } from "save-svg-as-png"
-import { useAppSelector } from "src/hooks/useAppSelector"
+import { ButtonBack } from "src/shared/Buttons/ButtonBack/ButtonBack";
+import { ButtonBase } from "src/shared/Buttons/ButtonBase/ButtonBase";
+import { useGetPointById } from "src/app/services/points.service";
+import { Suspense } from "react";
 
-const QR = () => {
-  const { pointId } = useParams()
-  const point = useAppSelector((state) => state.pointSlice)
+const QR: React.FC = () => {
+  const { pointId } = useParams();
+  const { data: point } = useGetPointById(pointId!);
   const downloadQr = () => {
-    saveSvgAsPng(document.getElementById("qr-svg"), `qr(${point.title}).png`, {
-      scale: 5,
-    })
-  }
+    saveSvgAsPng(
+      document.getElementById("qr-svg"),
+      `Цифрофой-уголок-${point?.title}.png`,
+      {
+        scale: 5,
+      }
+    );
+  };
+
   return (
-    <div className="container pt-8">
-      <Title title="QR-КОД" />
-      <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full ">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ ease: "backOut", duration: 0.5 }}
-          className="p-4 bg-white rounded-[20px]"
-        >
+    <section className="wrapper">
+      <h2 className="title">qr-код</h2>
+
+      <div className="flex-grow flex justify-center items-center">
+        <Suspense fallback={<>Loading...</>}>
           <QRCodeSVG
             value={`http://192.168.0.5:51/point/${pointId}`}
-            size={window.innerWidth / 2}
+            size={300}
             id="qr-svg"
             includeMargin
             className="rounded-[20px]"
@@ -42,19 +42,14 @@ const QR = () => {
               excavate: true,
             }}
           />
-        </motion.div>
+        </Suspense>
       </div>
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 container flex flex-col gap-[10px] pb-4">
-        <ButtonSubmit
-          title="Скачать"
-          type="button"
-          isActive
-          handlClick={() => downloadQr()}
-        />
+      <div className="buttons">
+        <ButtonBase handleClick={downloadQr}>Скачать qr-код</ButtonBase>
         <ButtonBack />
       </div>
-    </div>
-  )
-}
+    </section>
+  );
+};
 
-export { QR }
+export { QR };

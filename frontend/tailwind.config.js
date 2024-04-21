@@ -1,29 +1,71 @@
 /** @type {import('tailwindcss').Config} */
+import { COLORS } from "./src/app/constants/colors.constants";
+import plugin from "tailwindcss/plugin";
+
 export default {
-    content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-    theme: {
-        extend: {
-            colors: {
-                black: "#313231",
-                white: "#FAFBFF",
-                red: "#EA271B",
-                transparent: 'transparent'
-            },
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      container: {
+        center: true,
+        padding: "25px",
+      },
+      colors: COLORS,
+      borderRadius: {
+        right: "10px 10px 0 10px",
+        left: "10px 10px 10px 0",
+        top: "0 10px 10px 10px",
+      },
+      keyframes: {
+        shake: {
+          '0%,100%':  {
+            transform: 'translateX(0)'
+          },
+          '10%, 30%, 50%, 70%': {
+            transform: 'translateX(-10px)'
+          },
+          "20%, 40%, 60%":{
+            transform: 'translateX(10px)'
+          },
+        
+          '80%': {
+            transform: 'translateX(8px)'
+          },
+        
+          '90%': {
+            transform: 'translateX(-8px)'
+          }
         },
-        container: {
-            padding: "25px",
-            center: true,
-        },
-   
-        fontSize: {
-            "30px": "30px",
-            "15px": "15px",
-            "18px": "18px",
-        },
-        borderRadius: {
-            activeBorder: "10px 10px 0px 10px",
-            passiveBorder: "0px 10px 10px 10px",
-        },
+      },
+      animation: {
+        shake: 'shake 0.6s linear',
+      }
     },
-    plugins: [],
+  },
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".wrapper": {
+          "padding-top": "20px",
+          "padding-bottom": "20px",
+          "display": "flex",
+          "flex-direction": "column",
+          "min-height": "100dvh",
+        },
+        ".title": {
+          "font-size": "24px",
+          "font-weight": "700",
+          "text-align": "center"
+        },
+        ".buttons": {
+          "display": "flex",
+          "flex-direction": "column",
+          "gap": "8px",
+          "position": "sticky",
+          "bottom": "20px",
+          "backdrop-filter": "blur(8px)",
+        }
+      });
+    }),
+  ],
 };

@@ -1,48 +1,50 @@
-import { useParams } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useGetComments } from "src/app/services/comments.service";
+import { useGetPointById } from "src/app/services/points.service";
+import { ReviewCard } from "src/entities/ReviewCard/ReviewCard";
+import { ReviewCardSkeleton } from "src/entities/ReviewCard/ReviewCardSkeleton";
+import { ButtonBack } from "src/shared/Buttons/ButtonBack/ButtonBack";
 
-import { Title } from "src/ui/Title/Title"
-import star from "src/assets/starBlack.svg"
-import { ButtonBack } from "src/ui/Buttons/ButtonBack/ButtonBack"
-import { useGetCommentsQuery } from "src/store/RTKSlice/api"
-
-const Reviews = () => {
-  const token = localStorage.getItem("token")
-  const { pointId } = useParams()
-  const { data: comments } = useGetCommentsQuery({ token, pointId })
-
+const Reviews: React.FC = () => {
+  const { pointId } = useParams();
+  //   const navigate = useNavigate();
+  const { data: point } = useGetPointById(pointId!);
+  const { data: comments, isLoading, isError } = useGetComments(pointId!);
+  if (isError) {
+    toast.error("Ошибка при получении комментариев");
+  }
   return (
-    <div className="flex flex-col h-full container pt-4">
-      <Title title="ОТЗЫВЫ" />
-      <div className="mt-[8vh] h-[55vh] overflow-scroll rounded-passiveBorder mb-[20px] flex-grow">
-        <ul className="flex flex-col gap-[20px]">
-          <AnimatePresence>
-            {comments?.map(({ message }: { message: string }, i: number) => (
-              <motion.li
-                key={i}
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="w-full break-words  p-[18px] bg-white text-black rounded-passiveBorder font-medium"
-              >
-                {message}
-                <div className="pt-[10px] flex">
-                  <img src={star} alt="" />
-                  <img src={star} alt="" />
-                  <img src={star} alt="" />
-                  <img src={star} alt="" />
-                  <img src={star} alt="" />
-                </div>
-              </motion.li>
-            ))}
-          </AnimatePresence>
-        </ul>
-      </div>
-      <div className="pb-4">
+    <section className="wrapper">
+      <h2 className="title">Отзывы</h2>
+      <h3 className="text-center text-sm font-bold">{point?.title}</h3>
+
+      {isLoading ? (
+        <div className="flex flex-col gap-5">
+          {[...Array(10)].map((_, i) => (
+            <ReviewCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : comments && comments?.length > 0 ? (
+        <div className="flex-grow flex flex-col gap-5 py-2">
+          {comments.map(({ message, id }) => (
+            <ReviewCard key={id} review={message} />
+          ))}
+        </div>
+      ) : (
+        <span className="flex-grow flex text-2xl font-bold items-center justify-center h-full">
+          Нет отзывов
+        </span>
+      )}
+
+      <div className="buttons">
+        {/* <ButtonBase handleClick={() => navigate(`/point/${pointId}/book`)}>
+          Написать отзыв
+        </ButtonBase> */}
         <ButtonBack />
       </div>
-    </div>
-  )
-}
+    </section>
+  );
+};
 
-export { Reviews }
+export { Reviews };
