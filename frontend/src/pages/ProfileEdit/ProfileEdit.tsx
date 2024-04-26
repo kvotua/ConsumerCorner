@@ -42,4 +42,4 @@ const ProfileEdit: React.FC = () => {
   );
 };
 
-export { ProfileEdit };
+export default ProfileEdit;

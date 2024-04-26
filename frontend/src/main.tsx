@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider } from "react-redux";
 import { store } from "./app/store/index.ts";
 import { UserProvider } from "./app/providers/UserProvider.tsx";
+import { PointDataProvider } from "./app/providers/PointDataProvider.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,14 +18,18 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   // <React.StrictMode>
+
   <BrowserRouter>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <UserProvider>
-          <App />
+          <PointDataProvider>
+            <App />
+          </PointDataProvider>
         </UserProvider>
       </QueryClientProvider>
     </Provider>
   </BrowserRouter>
+
   // </React.StrictMode>
 );

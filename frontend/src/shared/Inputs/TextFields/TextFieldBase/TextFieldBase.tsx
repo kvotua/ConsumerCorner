@@ -51,11 +51,13 @@ const TextFieldBase: React.FC<ITextFieldBase> = forwardRef(
             {...props}
           />
         )}
-        <span
-          className={`text-sm font-medium ${isError ? "text-textColor-error" : ""}`}
-        >
-          {errorMessage?.message ? errorMessage.message : subLabel}
-        </span>
+        {errorMessage && (
+          <span
+            className={`text-sm font-medium ${isError ? "text-textColor-error" : ""}`}
+          >
+            {errorMessage?.message || subLabel}
+          </span>
+        )}
       </label>
     );
   }

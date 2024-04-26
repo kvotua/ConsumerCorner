@@ -1,7 +1,7 @@
-import { ButtonBack } from "src/shared/Buttons/ButtonBack/ButtonBack";
 import { PointsList } from "./PointsList";
 import { ButtonBase } from "src/shared/Buttons/ButtonBase/ButtonBase";
 import { useAppSelector } from "src/app/hooks/useAppSelector";
+import { toast } from "react-toastify";
 
 const Points: React.FC = () => {
   const user = useAppSelector((state) => state.userReduser.user);
@@ -16,14 +16,24 @@ const Points: React.FC = () => {
         </span>
       )}
       <div className="buttons">
-        <div className="flex gap-2">
-          <ButtonBase link="add">Добавить точку</ButtonBase>
-          <ButtonBase link="/profile">Профиль</ButtonBase>
-        </div>
-        <ButtonBack />
+        <ButtonBase
+          link={user?.balance! >= 100 ? "add/step/1" : ""}
+          handleClick={() => {
+            if (user?.balance! <= 100) {
+              toast.warn(
+                "У вас недостаточно средств для создания точки. Перейдите в профиль что бы пополнить"
+              );
+            }
+          }}
+        >
+          Добавить точку
+        </ButtonBase>
+        <ButtonBase isActive={false} link="/profile">
+          Профиль
+        </ButtonBase>
       </div>
     </section>
   );
 };
 
-export { Points };
+export default Points;

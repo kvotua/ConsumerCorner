@@ -26,4 +26,4 @@ const Info: React.FC = () => {
   );
 };
 
-export { Info };
+export default Info;

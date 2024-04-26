@@ -1,48 +1,33 @@
+import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { useGetPointData } from "src/app/providers/PointDataProvider";
 import { ButtonBack } from "src/shared/Buttons/ButtonBack/ButtonBack";
 import { ButtonBase } from "src/shared/Buttons/ButtonBase/ButtonBase";
-import { PointAddForm } from "./PointAddForm";
-import { ProgressContext } from "src/app/providers/ProgressProvider";
-import { useState } from "react";
 
 const PointAdd: React.FC = () => {
-  const [progressAddPoint, setProgressAddPoint] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const step = useParams();
+  const { clearValues } = useGetPointData();
+  const navigate = useNavigate();
   return (
-    <ProgressContext.Provider
-      value={{
-        progress: progressAddPoint,
-        setProgress: setProgressAddPoint,
-        isLoading,
-        setIsLoading
-      }}
-    >
-      <section className="wrapper">
-        <h2 className="title">Добавить точку</h2>
-        <PointAddForm />
-        <div className="buttons">
-          <div className="flex gap-2">
-            {progressAddPoint !== 0 && (
-              <ButtonBase
-                handleClick={() => setProgressAddPoint((prev) => prev - 1)}
-              >
-                обратно
-              </ButtonBase>
-            )}
-            <ButtonBase form="point" disabled={isLoading}>
-              {isLoading ? (
-                <img src="/loading.svg" className="w-6 mx-auto" />
-              ) : progressAddPoint === 2 ? (
-                "Создать точку"
-              ) : (
-                "Далее"
-              )}
+    <section className="wrapper">
+      <h2 className="title">Создать точку</h2>
+      <div className="flex-grow py-5 flex items-center">
+        <Outlet />
+      </div>
+      <div className="buttons">
+        <div className="flex gap-2">
+          {+step["*"]! !== 1 && (
+            <ButtonBase handleClick={() => navigate(-1)} className="next">
+              обратно
             </ButtonBase>
-          </div>
-          <ButtonBack />
+          )}
+          <ButtonBase form="point" className="next">
+            {+step["*"]! === 3 ? "Создать" : "Далее"}
+          </ButtonBase>
         </div>
-      </section>
-    </ProgressContext.Provider>
+        <ButtonBack handleClick={() => clearValues()} link="/points" />
+      </div>
+    </section>
   );
 };
 
-export { PointAdd };
+export default PointAdd ;

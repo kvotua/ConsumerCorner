@@ -23,7 +23,9 @@ const Point: React.FC = () => {
               ? point?.title
               : "моя точка"}
           </h2>
-          <p className="text-xl opacity-50 pt-5 break-words">{point?.address}</p>
+          <p className="text-xl opacity-50 pt-5 break-words">
+            {point?.address}
+          </p>
           <div className="flex-grow">
             <div className="py-2 grid grid-cols-2 gap-2">
               <ButtonBig link="book">Книга отзывов</ButtonBig>
@@ -51,4 +53,4 @@ const Point: React.FC = () => {
   );
 };
 
-export { Point };
+export default Point;

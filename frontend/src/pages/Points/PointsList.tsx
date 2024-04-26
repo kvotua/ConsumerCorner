@@ -10,7 +10,7 @@ const PointsList: React.FC = () => {
     (state) => state.userReduser.user?.points_id
   );
   const { data: points, isLoading } = useQuery({
-    queryKey: "getPoints",
+    queryKey: ["getPoints", userPoints],
     queryFn: async () => {
       return await Promise.all(
         userPoints!.map((id) =>

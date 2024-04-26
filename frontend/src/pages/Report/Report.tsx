@@ -15,4 +15,4 @@ const Report: React.FC = () => {
   );
 };
 
-export { Report };
+export default Report;

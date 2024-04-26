@@ -7,7 +7,6 @@ import { ButtonBack } from "src/shared/Buttons/ButtonBack/ButtonBack";
 import { ButtonBase } from "src/shared/Buttons/ButtonBase/ButtonBase";
 import { InfoField } from "src/shared/InfoField/InfoField";
 
-
 const Profile: React.FC = () => {
   const user = useAppSelector((state) => state.userReduser.user);
   const dispatch = useAppDispatch();
@@ -15,7 +14,7 @@ const Profile: React.FC = () => {
   const alert = () => {
     const price = prompt("Пополнить баланс:");
     if (price && user) {
-      mutate({ token: user.id, price: +price });
+      mutate({ token: user.id, price: +price * 100 });
     }
   };
   return (
@@ -31,7 +30,7 @@ const Profile: React.FC = () => {
         <InfoField info={`${user?.name} ${user?.surname}`} titleInfo="ФИО" />
         <InfoField info={`${user?.email}`} titleInfo="Эл. почта" />
         <div className="flex justify-between items-center">
-          <InfoField info={`${user?.balance} р.`} titleInfo="Баланс" />
+          <InfoField info={`${user?.balance! / 100} р.`} titleInfo="Баланс" />
           <span className="font-bold" onClick={alert}>
             Пополнить
           </span>
@@ -55,4 +54,4 @@ const Profile: React.FC = () => {
   );
 };
 
-export { Profile };
+export default Profile;

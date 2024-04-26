@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { useAddComments } from "src/app/services/comments.service";
-import { TextFieldBig } from "src/shared/Inputs/TextFieldBig/TextFieldBig";
+import { TextFieldBig } from "src/shared/Inputs/TextFields/TextFieldBig/TextFieldBig";
 
 const OfferForm: React.FC = () => {
   const {

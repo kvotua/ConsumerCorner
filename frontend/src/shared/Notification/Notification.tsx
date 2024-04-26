@@ -4,7 +4,6 @@ const Notification: React.FC = () => {
   return (
     <ToastContainer
       position="top-center"
-      theme="colored"
       hideProgressBar
       className={"p-2"}
       toastStyle={{ borderRadius: "20px" }}

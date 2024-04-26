@@ -14,14 +14,12 @@ const ButtonBack: React.FC<IButtonBack> = ({
   return (
     <div
       onClick={() => {
-        if (!handleClick) {
-          if (link) {
-            return navigate(link);
-          }
-          navigate(-1);
+        if (link) {
+          navigate(link);
         } else {
-          handleClick();
+          navigate(-1);
         }
+        handleClick && handleClick();
       }}
       className="relative active:scale-95 duration-100"
     >

@@ -13,4 +13,4 @@ const Docs: React.FC = () => {
   );
 };
 
-export { Docs };
+export default Docs;

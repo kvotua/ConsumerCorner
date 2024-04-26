@@ -1,101 +1,83 @@
-import { Login } from "src/pages/Auth/Login/Login";
-import { Register } from "src/pages/Auth/Register/Register";
-import { Book } from "src/pages/Book/Book";
-import { Docs } from "src/pages/Docs/Docs";
-import { Home } from "src/pages/Home/Home";
-import { Info } from "src/pages/Info/Info";
-import { Offer } from "src/pages/Offer/Offer";
-import { Point } from "src/pages/Point/Point";
-import { PointAdd } from "src/pages/PointAdd/PointAdd";
-import { PointEdit } from "src/pages/PointEdit/PointEdit";
-import { Points } from "src/pages/Points/Points";
-import { Profile } from "src/pages/Profile/Profile";
-import { ProfileEdit } from "src/pages/ProfileEdit/ProfileEdit";
-import { QR } from "src/pages/QR/QR";
-import { Report } from "src/pages/Report/Report";
-import { Reviews } from "src/pages/Reviews/Reviews";
-import { Rights } from "src/pages/Rights/Rights";
-import { Socials } from "src/pages/Socials/Socials";
-import { Thanks } from "src/pages/Thanks/Thanks";
+import { lazy } from "react";
 
 export const publicRoutes = [
   {
     path: "/",
-    Element: Home,
+    Element: lazy(() => import("src/pages/Home/Home")),
   },
   {
     path: "/login",
-    Element: Login,
+    Element: lazy(() => import("src/pages/Auth/Login/Login")),
   },
   {
     path: "/register",
-    Element: Register,
+    Element: lazy(() => import("src/pages/Auth/Register/Register")),
   },
   {
     path: "/point/:pointId",
-    Element: Point,
+    Element: lazy(() => import("src/pages/Point/Point")),
   },
   {
     path: "/point/:pointId/rights",
-    Element: Rights,
+    Element: lazy(() => import("src/pages/Point/Point")),
   },
   {
     path: "/point/:pointId/book",
-    Element: Book,
+    Element: lazy(() => import("src/pages/Book/Book")),
   },
   {
     path: "/point/:pointId/docs",
-    Element: Docs,
+    Element: lazy(() => import("src/pages/Docs/Docs")),
   },
   {
     path: "/point/:pointId/socials",
-    Element: Socials,
+    Element: lazy(() => import("src/pages/Socials/Socials")),
   },
   {
     path: "/point/:pointId/info",
-    Element: Info,
+    Element: lazy(() => import("src/pages/Info/Info")),
   },
   {
     path: "/point/:pointId/book/report",
-    Element: Report,
+    Element: lazy(() => import("src/pages/Report/Report")),
   },
   {
     path: "/point/:pointId/book/Offer",
-    Element: Offer,
+    Element: lazy(() => import("src/pages/Offer/Offer")),
   },
   {
     path: "/thanks",
-    Element: Thanks,
+    Element: lazy(() => import("src/pages/Thanks/Thanks")),
   },
 ];
 
 export const authRoutes = [
   {
     path: "/points",
-    Element: Points,
+    Element: lazy(() => import("src/pages/Points/Points")),
   },
   {
-    path: "/points/add",
-    Element: PointAdd,
+    path: "/points/add/*",
+    Element: lazy(() => import("src/pages/PointAdd/PointAdd")),
   },
   {
     path: "/profile",
-    Element: Profile,
+    Element: lazy(() => import("src/pages/Profile/Profile")),
   },
   {
     path: "/profile/edit",
-    Element: ProfileEdit,
+    Element: lazy(() => import("src/pages/ProfileEdit/ProfileEdit")),
   },
   {
     path: "/point/:pointId/reviews",
-    Element: Reviews,
+    Element: lazy(() => import("src/pages/Reviews/Reviews")),
   },
   {
     path: "/point/:pointId/edit",
-    Element: PointEdit,
+    Element: lazy(() => import("src/pages/PointEdit/PointEdit")),
   },
   {
     path: "/point/:pointId/qr",
-    Element: QR,
+    Element: lazy(() => import("src/pages/QR/QR")),
   },
 ];

@@ -52,4 +52,4 @@ const QR: React.FC = () => {
   );
 };
 
-export { QR };
+export default QR;

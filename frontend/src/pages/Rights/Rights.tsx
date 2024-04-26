@@ -10,10 +10,10 @@ const Rights: React.FC = () => {
         ></iframe>
       </div>
       <div className="buttons !backdrop-blur-none">
-        <ButtonBack className="bg-fillColor"/>
+        <ButtonBack className="bg-fillColor" />
       </div>
     </section>
   );
 };
 
-export { Rights };
+export default Rights;

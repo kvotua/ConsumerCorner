@@ -15,4 +15,4 @@ const Offer: React.FC = () => {
   );
 };
 
-export { Offer };
+export default Offer;

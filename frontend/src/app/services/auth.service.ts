@@ -13,8 +13,8 @@ export const useRegisterUser = () => {
     mutationFn: (body: Omit<IUser, "id" | "points_id" | "balance">) =>
       api
         .post(`/proprietors`, {
-          name: body.name.split(" ")[0],
-          surname: body.name.split(" ")[1],
+          name: body.name,
+          surname: body.surname,
           login: body.login,
           password: body.password,
           email: body.email,
@@ -23,7 +23,7 @@ export const useRegisterUser = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries("getUser");
-      toast.success("Регестрация успещна");
+      toast.success("Регестрация успешна");
     },
     onError: (err: IError) => {
       if (err.response?.data.detail === "Login already in use") {

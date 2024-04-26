@@ -6,17 +6,19 @@ const Thanks: React.FC = () => {
   return (
     <section className="wrapper">
       <div className="flex-grow flex flex-col items-center justify-center gap-5">
-        <span className="font-bold text-3xl">Спасибо за Ваш отзыв!</span>
+        <span className="font-bold text-3xl text-center">
+          Спасибо за Ваш отзыв!
+        </span>
         <p className="text-center text-lg">
           Мы учтем Ваши слова при нашей дальнейшей работе и будем стараться
           становиться лучше!
         </p>
       </div>
       <div className="buttons">
-        <ButtonBase handleClick={() => navigate(-1)}>Вернуться</ButtonBase>
+        <ButtonBase handleClick={() => navigate("/")}>На главную</ButtonBase>
       </div>
     </section>
   );
 };
 
-export { Thanks };
+export default Thanks;

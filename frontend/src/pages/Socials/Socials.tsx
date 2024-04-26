@@ -13,4 +13,4 @@ const Socials: React.FC = () => {
   );
 };
 
-export { Socials };
+export default Socials;
