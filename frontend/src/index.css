@@ -6,13 +6,14 @@ body, html {
     width: 100%;
     height: 100%;
     color: #FAFBFF;
+    overflow-x: hidden;
+    background-image: url('/background.png');
 }
 body{
-    background-image: url('/background.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    overflow-x: hidden;
+
 }
 
 .swiper {

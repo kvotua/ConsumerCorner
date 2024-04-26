@@ -20,9 +20,7 @@ const RootRouting: React.FC = () => {
             path={path}
             element={
               <IsAuth>
-                <Suspense fallback={<>Загрузка</>}>
-                  <Element />
-                </Suspense>
+                <Element />
               </IsAuth>
             }
           />

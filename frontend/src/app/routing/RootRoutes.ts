@@ -19,7 +19,7 @@ export const publicRoutes = [
   },
   {
     path: "/point/:pointId/rights",
-    Element: lazy(() => import("src/pages/Point/Point")),
+    Element: lazy(() => import("src/pages/Rights/Rights")),
   },
   {
     path: "/point/:pointId/book",

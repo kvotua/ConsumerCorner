@@ -9,7 +9,11 @@ const PointsList: React.FC = () => {
   const userPoints = useAppSelector(
     (state) => state.userReduser.user?.points_id
   );
-  const { data: points, isLoading } = useQuery({
+  const {
+    data: points,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ["getPoints", userPoints],
     queryFn: async () => {
       return await Promise.all(
@@ -22,8 +26,8 @@ const PointsList: React.FC = () => {
   return (
     <div className="py-5 flex-grow">
       <ul className="flex flex-col gap-5">
-        {isLoading
-          ? [...Array(10)].map((_, i) => <PointCardSceleton key={i} />)
+        {isLoading || isFetching
+          ? [...Array(5)].map((_, i) => <PointCardSceleton key={i} />)
           : points?.map(({ address, id }, i) => (
               <motion.li
                 initial={{
