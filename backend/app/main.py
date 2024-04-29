@@ -1,36 +1,24 @@
 import os
 import random
+import smtplib
 import uuid
 from contextlib import asynccontextmanager
+from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from typing import Annotated
 
 import qrcode
 import qrcode.image.svg
-from app.database import (
-    comments_collection,
-    points_collection,
-    proprietors_collection,
-    redis_database,
-)
-from app.models import (
-    Comment,
-    CommentBase,
-    Point,
-    PointBase,
-    PointID,
-    PointUpdate,
-    Proprietor,
-    ProprietorBase,
-    ProprietorID,
-    ProprietorUpdate,
-    Token,
-)
-from fastapi import FastAPI, HTTPException, Query, status, UploadFile
+from app.database import (comments_collection, points_collection,
+                          proprietors_collection, redis_database)
+from app.models import (Comment, CommentBase, Point, PointBase, PointID,
+                        PointUpdate, Proprietor, ProprietorBase, ProprietorID,
+                        ProprietorUpdate, Token)
+from fastapi import FastAPI, HTTPException, Query, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse, Response
 from fastapi_limiter import FastAPILimiter
-import smtplib
-from email.message import EmailMessage
 
 
 @asynccontextmanager
@@ -44,6 +32,10 @@ async def lifespan(_: FastAPI):
     ...
 
 
+email = os.getenv("MAIL", "")
+email_password = os.getenv("MAIL_PASSWORD", "")
+if email == "" or email_password == "":
+    raise ValueError("EMAIL or EMAIL_PASSWORD env vars must be set")
 debug_mode = os.getenv("DEBUG") is not None
 app = FastAPI(lifespan=lifespan, debug=debug_mode)
 app.add_middleware(
@@ -291,15 +283,21 @@ async def post_payment(
 async def post_password_reset(proprietorID: ProprietorID) -> None:
     proprietor = proprietor_by_id(proprietorID)
     code = password_codes[proprietorID] = random.randrange(10000, 99999)
-    message = EmailMessage()
-    message.set_content(f"Код для сброса пароля: {code}")
-    message["Subject"] = "Сброс пароля"
-    message["From"] = "root@xn--90abdibneekjf0abcbbqil3bejr0c1r.xn--p1ai"
-    message["To"] = proprietor.email
 
-    s = smtplib.SMTP("mailserver")
-    s.send_message(message)
-    s.quit()
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = "Сброс пароля"
+    msg["From"] = email
+    msg["To"] = proprietor.email
+    email_text = f"Ваш код для сброса пароля: {code}"
+    msg.attach(MIMEText(email_text, "html", "utf-8"))
+
+    server = smtplib.SMTP_SSL("smtp.yandex.ru", 465)
+    # server.set_debuglevel(1)
+    server.ehlo(email)
+    server.login(email, email_password)
+    server.auth_plain()
+    server.sendmail(msg["From"], [msg["To"]], msg.as_string())
+    server.quit()
 
 
 @app.post("/password/change/{proprietorID}", tags=["Proprietors"])
