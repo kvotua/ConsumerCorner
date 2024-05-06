@@ -10,15 +10,16 @@ from typing import Annotated
 
 import qrcode
 import qrcode.image.svg
+from fastapi import FastAPI, HTTPException, Query, UploadFile, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, RedirectResponse, Response
+from fastapi_limiter import FastAPILimiter
+
 from app.database import (comments_collection, points_collection,
                           proprietors_collection, redis_database)
 from app.models import (Comment, CommentBase, Point, PointBase, PointID,
                         PointUpdate, Proprietor, ProprietorBase, ProprietorID,
                         ProprietorUpdate, Token)
-from fastapi import FastAPI, HTTPException, Query, UploadFile, status
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, RedirectResponse, Response
-from fastapi_limiter import FastAPILimiter
 
 
 @asynccontextmanager
@@ -32,8 +33,8 @@ async def lifespan(_: FastAPI):
     ...
 
 
-email = os.getenv("MAIL", "")
-email_password = os.getenv("MAIL_PASSWORD", "")
+email = os.getenv("EMAIL", "")
+email_password = os.getenv("EMAIL_PASSWORD", "")
 if email == "" or email_password == "":
     raise ValueError("EMAIL or EMAIL_PASSWORD env vars must be set")
 debug_mode = os.getenv("DEBUG") is not None

@@ -17,6 +17,8 @@ services:
       - files_volume:/files
     environment:
       - DEBUG=${DEBUG}
+      - EMAIL=${EMAIL}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
 
   mongo:
     image: mongo:latest
