@@ -1,23 +1,21 @@
-import { PointsList } from "./PointsList";
-import { ButtonBase } from "src/shared/Buttons/ButtonBase/ButtonBase";
-import { useAppSelector } from "src/app/hooks/useAppSelector";
+"use client";
+import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
+import { useAppSelector } from "@/root/hooks/useAppSelector";
 import { toast } from "react-toastify";
+import PointsList from "./pointsList";
 
-const Points: React.FC = () => {
+export default function Points() {
   const user = useAppSelector((state) => state.userReduser.user);
   return (
-    <section className="wrapper conatiner">
+    <section className="wrapper container">
       <h2 className="title sticky top-0 bg-fillColor block">Мои точки</h2>
-      {user && user?.points_id.length > 0 ? (
+      <div className="flex-grow">
         <PointsList />
-      ) : (
-        <span className="flex-grow flex justify-center items-center text-4xl text-center font-bold ">
-          У вас пока нет точек
-        </span>
-      )}
+      </div>
+
       <div className="buttons">
         <ButtonBase
-          link={user?.balance! >= 100 ? "add/step/1" : ""}
+          link={user?.balance! >= 100 ? "points/add/1" : ""}
           handleClick={() => {
             if (user?.balance! <= 100) {
               toast.warn(
@@ -28,12 +26,10 @@ const Points: React.FC = () => {
         >
           Добавить точку
         </ButtonBase>
-        <ButtonBase isActive={false} link="/profile">
+        <ButtonBase isActive={false} link={`/profile/${user?.id}`}>
           Профиль
         </ButtonBase>
       </div>
     </section>
   );
-};
-
-export default Points;
+}
