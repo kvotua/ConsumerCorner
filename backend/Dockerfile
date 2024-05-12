@@ -1,6 +1,14 @@
-FROM python:3.11
-WORKDIR /code
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
-COPY ./app /code/app
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]    
+FROM python:3.11-alpine AS base
+
+FROM base AS requirements-stage
+WORKDIR /tmp
+RUN pip install poetry
+COPY ./pyproject.toml ./poetry.lock ./
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+FROM base
+WORKDIR /app
+COPY --from=requirements-stage /tmp/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
+COPY ./app ./app
+CMD fastapi run app/main.py --port ${PORT:-8000}

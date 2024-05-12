@@ -10,27 +10,7 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
-    depends_on:
-      - mongo
-      - redis
     volumes:
-      - files_volume:/files
+      - ./storage:/storage
     environment:
       - DEBUG=${DEBUG}
-      - EMAIL=${EMAIL}
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
-
-  mongo:
-    image: mongo:latest
-    volumes:
-      - mongo_volume:/data/db
-
-  redis:
-    image: redis:alpine
-    volumes:
-      - redis_volume:/data
-
-volumes:
-  mongo_volume:
-  redis_volume:
-  files_volume:
