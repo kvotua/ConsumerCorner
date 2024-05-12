@@ -5,7 +5,7 @@ FROM base AS dev
 WORKDIR /app
 RUN pip install poetry
 COPY ./pyproject.toml ./poetry.lock ./
-RUN poetry install
+RUN poetry install --only main
 COPY ./app ./app
 CMD poetry run fastapi dev app/main.py --host 0.0.0.0 --port ${PORT:-8000}
 
