@@ -10,6 +10,16 @@ COPY ./app ./app
 CMD poetry run fastapi dev app/main.py --host 0.0.0.0 --port ${PORT:-8000}
 
 
+FROM base AS test
+WORKDIR /app
+RUN pip install poetry
+COPY ./pyproject.toml ./poetry.lock ./
+RUN poetry install
+COPY ./app ./app
+COPY ./tests ./tests
+CMD poetry run ptw -n
+
+
 FROM base AS requirements-stage
 WORKDIR /tmp
 RUN pip install poetry

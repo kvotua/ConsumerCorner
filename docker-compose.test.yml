@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  backend:
+    build:
+      target: test
+    environment:
+      - TEST=true
+    develop:
+      watch:
+        - action: sync
+          path: ./backend/app/
+          target: /app/app
+        - action: sync
+          path: ./backend/tests/
+          target: /app/tests
+        - action: rebuild
+          path: ./backend/poetry.lock
