@@ -3,7 +3,7 @@ import uuid
 from contextlib import asynccontextmanager
 from typing import Annotated, AsyncIterator, NewType
 
-from bcrypt import gensalt, hashpw
+from bcrypt import checkpw, gensalt, hashpw
 from fastapi import Body, FastAPI, HTTPException, Response, Security, status
 from fastapi_jwt import (
     JwtAccessBearerCookie,
@@ -144,3 +144,30 @@ async def post_auth_refresh(
     access_token = access_security.create_access_token(credentials.subject)
     access_security.set_access_cookie(response, access_token)
     return AccessTokenSchema(access_token=access_token)
+
+
+@app.post(
+    "/auth",
+    tags=["Auth"],
+)
+async def post_auth(
+    response: Response,
+    credentials: Annotated[AuthSchema, Body(embed=True)],
+) -> TokenPairSchema:
+    result = list(
+        UserModel.scan(
+            UserModel.email.value == credentials.email,  # type: ignore
+            limit=1,
+        )
+    )
+    if len(result) == 0:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "User with this email not found")
+    model = result[0]
+    if not checkpw(credentials.password.encode(), model.password.encode()):
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Wrong password")
+    subject = {"id": model.id}
+    refresh_token = access_security.create_refresh_token(subject)
+    access_token = access_security.create_access_token(subject)
+    refresh_security.set_refresh_cookie(response, refresh_token)
+    access_security.set_access_cookie(response, access_token)
+    return TokenPairSchema(refresh_token=refresh_token, access_token=access_token)
