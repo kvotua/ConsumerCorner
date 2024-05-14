@@ -1,13 +1,15 @@
 import os
-import time
 import uuid
 from contextlib import asynccontextmanager
 from typing import Annotated, AsyncIterator, NewType
 
-import jwt
 from bcrypt import gensalt, hashpw
-from fastapi import Body, Depends, FastAPI, HTTPException, Response, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi import Body, FastAPI, HTTPException, Response, Security, status
+from fastapi_jwt import (
+    JwtAccessBearerCookie,
+    JwtAuthorizationCredentials,
+    JwtRefreshBearerCookie,
+)
 from pydantic import BaseModel, EmailStr
 from pynamodb.attributes import BooleanAttribute, MapAttribute, UnicodeAttribute
 from pynamodb.models import Model
@@ -29,16 +31,16 @@ class UserSchema(BaseModel):
     surname: str
 
 
+class AuthSchema(BaseModel):
+    email: EmailStr
+    password: str
+
+
 class UserRegisterSchema(BaseModel):
     email: EmailStr
     name: str
     surname: str
     password: str
-
-
-class TokenPairSchema(BaseModel):
-    refresh_token: RefreshToken
-    access_token: AccessToken
 
 
 class RefreshTokenSchema(BaseModel):
@@ -47,6 +49,10 @@ class RefreshTokenSchema(BaseModel):
 
 class AccessTokenSchema(BaseModel):
     access_token: AccessToken
+
+
+class TokenPairSchema(RefreshTokenSchema, AccessTokenSchema):
+    pass
 
 
 class EmailModel(MapAttribute):
@@ -88,7 +94,8 @@ JWT_SECRET = "secret"
 debug = os.getenv("DEBUG") is not None
 test = os.getenv("TEST") is not None
 app = FastAPI(debug=debug, lifespan=lifespan)
-security = HTTPBearer()
+access_security = JwtAccessBearerCookie(secret_key=JWT_SECRET)
+refresh_security = JwtRefreshBearerCookie(secret_key=JWT_SECRET)
 
 
 def email_exist(email: str) -> bool:
@@ -96,27 +103,8 @@ def email_exist(email: str) -> bool:
     return len(list(result)) > 0
 
 
-def generate_token(user_id: UserId, expiration_delta: int) -> str:
-    return jwt.encode(
-        {
-            "sub": user_id,
-            "iat": int(time.time()),
-            "exp": int(time.time()) + expiration_delta,
-        },
-        JWT_SECRET,
-    )
-
-
-def generate_refresh_token(user_id: UserId) -> str:
-    return generate_token(user_id, 60 * 60 * 24 * 30)
-
-
-def generate_access_token(user_id: UserId) -> str:
-    return generate_token(user_id, 60 * 60)
-
-
 @app.post(
-    "/users/register",
+    "/users",
     tags=["Users"],
     status_code=status.HTTP_201_CREATED,
     responses={
@@ -137,32 +125,22 @@ async def post_users_register(
         password=hashpw(user.password.encode(), gensalt()).decode(),
     )
     model.save()
-    return TokenPairSchema(
-        refresh_token=generate_refresh_token(UserId(model.id)),
-        access_token=generate_access_token(UserId(model.id)),
-    )
+    subject = {"id": model.id}
+    refresh_token = access_security.create_refresh_token(subject)
+    access_token = access_security.create_access_token(subject)
+    refresh_security.set_refresh_cookie(response, refresh_token)
+    access_security.set_access_cookie(response, access_token)
+    return TokenPairSchema(refresh_token=refresh_token, access_token=access_token)
 
 
 @app.post(
-    "/auth/access",
-    responses={
-        status.HTTP_401_UNAUTHORIZED: {},
-    },
+    "/auth/refresh",
+    tags=["Auth"],
 )
-async def post_auth_access(
-    refresh_token: Annotated[HTTPAuthorizationCredentials, Depends(security)],
+async def post_auth_refresh(
+    response: Response,
+    credentials: JwtAuthorizationCredentials = Security(refresh_security),
 ) -> AccessTokenSchema:
-    try:
-        decoded: dict = jwt.decode(
-            refresh_token.credentials, JWT_SECRET, algorithms=["HS256"]
-        )
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Expired")
-    except jwt.InvalidSignatureError:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid signature")
-    except jwt.InvalidTokenError:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid token")
-    user_id = decoded.get("sub")
-    if user_id is None:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Wrong format")
-    return AccessTokenSchema(access_token=generate_access_token(user_id))
+    access_token = access_security.create_access_token(credentials.subject)
+    access_security.set_access_cookie(response, access_token)
+    return AccessTokenSchema(access_token=access_token)

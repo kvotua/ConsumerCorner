@@ -16,7 +16,7 @@ python = "^3.11"
 fastapi = "^0.111.0"
 pynamodb = "^6.0.0"
 bcrypt = "^4.1.3"
-pyjwt = "^2.8.0"
+fastapi-jwt = {extras = ["authlib"], version = "^0.3.0"}
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.10.0"
