@@ -1,14 +1,15 @@
 from typing import Annotated
 
 from bcrypt import checkpw
-from fastapi import APIRouter, Body, HTTPException, Response, Security, status
+from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query
+from fastapi.responses import RedirectResponse
 from fastapi_jwt import JwtAuthorizationCredentials
 
 from app.users.models import UserModel
 
-from .dependencies import refresh_security
+from .dependencies import refresh_security, email_security
 from .schemas import AccessTokenSchema, AuthSchema, TokenPairSchema
-from .utils import set_access_token, set_token_pair
+from .utils import set_access_token, set_token_pair, decode_email_token
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -43,3 +44,20 @@ async def post_auth(
     if not checkpw(credentials.password.encode(), model.password.encode()):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Wrong password")
     return set_token_pair(response, {"id": model.id})
+
+
+@router.get(
+    "/verify",
+)
+async def post_auth_verify(token: str = Query()) -> RedirectResponse:
+    decoded = decode_email_token(token)
+    try:
+        model = UserModel.get(decoded["id"])
+    except UserModel.DoesNotExist:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "User not found")
+    if model.email.value != decoded["email"]:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Mismatched email")
+    model.email.verified = True
+    model.save()
+    # TODO: env var
+    return RedirectResponse("http://localhost:80")

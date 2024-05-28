@@ -7,7 +7,8 @@ from fastapi_jwt import JwtAuthorizationCredentials
 
 from app.auth.dependencies import access_security
 from app.auth.schemas import TokenPairSchema
-from app.auth.utils import set_token_pair
+from app.auth.utils import set_token_pair, generate_email_verify_link
+from app.users.schemas import UserId
 
 from .dependencies import Emailer
 from .models import EmailModel, UserModel
@@ -35,7 +36,7 @@ async def post_users_register(
 ) -> TokenPairSchema:
     if email_exist(user.email):
         raise HTTPException(status.HTTP_409_CONFLICT, "Email already in use")
-    user_id = str(uuid.uuid4())
+    user_id = UserId(str(uuid.uuid4()))
     UserModel(
         id=user_id,
         email=EmailModel(value=user.email, verified=False),
@@ -44,7 +45,8 @@ async def post_users_register(
         password=hashpw(user.password.encode(), gensalt()).decode(),
     ).save()
     # TODO: send link for email verification
-    emailer.send(user.email, "Подтверждение почты", "link to verify email")
+    link = generate_email_verify_link(user.email, user_id)
+    emailer.send(user.email, "Подтверждение почты", f"Ссылка для подтверждения: {link}")
     return set_token_pair(response, {"id": user_id})
 
 

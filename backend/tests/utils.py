@@ -13,6 +13,13 @@ class UserInfo(BaseModel):
     password: str = "password"
 
 
+class UserGetMeInfo(BaseModel):
+    email: str
+    email_verified: bool
+    name: str
+    surname: str
+
+
 class Tokens(BaseModel):
     access: str
     refresh: str
@@ -42,3 +49,17 @@ def create_user(client: TestClient, user_info: Optional[UserInfo] = None) -> Use
     assert response.status_code == status.HTTP_201_CREATED
     tokens = assert_tokens_pair(response)
     return User(info=user_info, tokens=tokens)
+
+
+def get_me(client: TestClient) -> UserGetMeInfo:
+    response = client.get("/users/me")
+    assert response.status_code == status.HTTP_200_OK
+    data: dict = response.json()
+    assert isinstance(data, dict)
+    email = data.pop("email")
+    user_info = UserGetMeInfo(
+        **data,
+        email=email.get("value"),
+        email_verified=email.get("verified"),
+    )
+    return user_info
