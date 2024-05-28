@@ -44,7 +44,7 @@ async def post_users_register(
         password=hashpw(user.password.encode(), gensalt()).decode(),
     ).save()
     # TODO: send link for email verification
-    emailer.send(user.email, "link to verify email")
+    emailer.send(user.email, "Подтверждение почты", "link to verify email")
     return set_token_pair(response, {"id": user_id})
 
 
