@@ -1,7 +1,7 @@
 import smtplib
+from abc import ABC, abstractmethod
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from abc import ABC, abstractmethod
 
 
 class IEmailer(ABC):

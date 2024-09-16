@@ -7,7 +7,7 @@ from fastapi_jwt import JwtAuthorizationCredentials
 
 from app.auth.dependencies import access_security
 from app.auth.schemas import TokenPairSchema
-from app.auth.utils import set_token_pair, generate_email_verify_link
+from app.auth.utils import generate_email_verify_link, set_token_pair
 from app.users.schemas import UserId
 
 from .dependencies import Emailer

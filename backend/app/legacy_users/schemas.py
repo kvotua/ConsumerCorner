@@ -2,7 +2,7 @@ from typing import NewType
 
 from pydantic import BaseModel, EmailStr
 
-UserId = NewType("UserId", str)
+UserId = NewType("UserId", int)
 
 
 class EmailSchema(BaseModel):

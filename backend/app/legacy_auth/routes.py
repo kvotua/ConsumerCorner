@@ -1,15 +1,15 @@
 from typing import Annotated
 
 from bcrypt import checkpw
-from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query
+from fastapi import APIRouter, Body, HTTPException, Query, Response, Security, status
 from fastapi.responses import RedirectResponse
 from fastapi_jwt import JwtAuthorizationCredentials
 
 from app.users.models import UserModel
 
-from .dependencies import refresh_security, email_security
+from .dependencies import email_security, refresh_security
 from .schemas import AccessTokenSchema, AuthSchema, TokenPairSchema
-from .utils import set_access_token, set_token_pair, decode_email_token
+from .utils import decode_email_token, set_access_token, set_token_pair
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 

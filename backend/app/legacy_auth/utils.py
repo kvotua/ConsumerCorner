@@ -1,12 +1,13 @@
 from typing import Any, Literal
-from fastapi_jwt.jwt_backends.abstract_backend import BackendException
 
-from fastapi import Response, HTTPException, status
+from fastapi import HTTPException, Response, status
+from fastapi_jwt.jwt_backends.abstract_backend import BackendException
 from pydantic import EmailStr
 
-from .dependencies import access_security, refresh_security, email_security
-from .schemas import AccessToken, RefreshToken, TokenPairSchema
 from app.users.schemas import UserId
+
+from .dependencies import access_security, email_security, refresh_security
+from .schemas import AccessToken, RefreshToken, TokenPairSchema
 
 
 def set_access_token(response: Response, subject: dict[str, Any]) -> AccessToken:
