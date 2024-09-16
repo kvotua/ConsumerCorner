@@ -2,29 +2,32 @@ import os
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
+from actions.create_user import create_superuser
+from api import router
+
+from core.config import settings
+from core.models import db_helper
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from app.auth.routes import router as auth_router
-from app.users.models import UserModel
-from app.users.routes import router as users_router
+from fastapi.responses import ORJSONResponse
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator:
-    for table in (UserModel,):
-        if not table.exists():
-            table.create_table(
-                wait=True,
-                read_capacity_units=1,
-                write_capacity_units=1,
-                billing_mode="PAY_PER_REQUEST",
-            )
+    await create_superuser()
+
     yield
+    # shutdown
+    await db_helper.dispose()
 
 
 debug = os.getenv("DEBUG") is not None
-app = FastAPI(debug=debug, lifespan=lifespan)
+app = FastAPI(
+    default_response_class=ORJSONResponse,
+    lifespan=lifespan,
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,5 +36,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(users_router)
-app.include_router(auth_router)
+
+app.include_router(router, prefix=settings.api.prefix)
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "main:app",
+        host=settings.run.host,
+        port=settings.run.port,
+        reload=True,
+    )
