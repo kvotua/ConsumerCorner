@@ -1,5 +1,5 @@
-from core.types import UserIdType
 from sqlalchemy import UUID, ForeignKey
+from core.types import UserIdType
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
