@@ -21,6 +21,10 @@ uvicorn = {extras = ["standard"], version = "^0.30.6"}
 pydantic = {extras = ["email"], version = "^2.9.1"}
 pydantic-settings = "^2.5.2"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.34"}
+asyncpg = "^0.29.0"
+alembic = "^1.13.2"
+orjson = "^3.10.7"
+fastapi-users = {extras = ["sqlalchemy"], version = "^13.0.0"}
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.10.0"
