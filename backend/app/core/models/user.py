@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 
 class User(Base, IdMixin, SQLAlchemyBaseUserTable[UserIdType]):
+    # TODO: одно поле для ФИО
     surname: Mapped[str] = mapped_column(
         nullable=False,
         comment="Фамилия пользователя",

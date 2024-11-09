@@ -18,8 +18,8 @@ class Point(Base, IdMixin):
         comment="Адрес точки",
     )
 
-    # TODO: должен ли быть unique?
-    # TODO: нужна ли валидация?
+    # TODO: нужна валидация +7
+    # TODO: нужна верификации (на потом)
     phone: Mapped[str] = mapped_column(
         nullable=True,
         comment="Телефон точки",
@@ -32,7 +32,7 @@ class Point(Base, IdMixin):
         comment="ИНН",
     )
 
-    # TODO: должен ли быть unique?
+    # TODO: должен ли быть Enum?
     # TODO: нужна ли валидация?
     ogrn: Mapped[str] = mapped_column(
         nullable=False,

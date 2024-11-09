@@ -12,17 +12,18 @@ class Comment(Base, IdMixin):
         comment="Текст комментария",
     )
 
-    # TODO: нужна ли валидация?
-    # TODO: нужно ли ограничение (1-5)?
+    # TODO: нужно ограничение (1-5)
     stars: Mapped[int] = mapped_column(
         nullable=True,
         comment="Оценка",
     )
 
-    max_imgs: Mapped[int] = mapped_column(
-        nullable=False,
-        comment="Максимальное количество изображений",
-    )
+    # TODO: СДЕЛАТЬ ОГРАНИЧЕНИЕ В ENV
+    # # TODO: ограничение (1-20)
+    # max_imgs: Mapped[int] = mapped_column(
+    #     nullable=False,
+    #     comment="Максимальное количество изображений",
+    # )
 
     point_id: Mapped[PointIdType] = mapped_column(
         UUID,

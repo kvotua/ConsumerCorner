@@ -12,6 +12,7 @@ class Enterprise(Base, IdMixin):
         comment="Название компании",
     )
 
+    # TODO: сделать Enum (ИП, ООО, ОАО...)
     type: Mapped[str] = mapped_column(
         nullable=False,
         comment="Тип компании",
