@@ -1,0 +1,14 @@
+.env
+package.json
+package-lock.json
+node_modules/create-react-native-app/README.md
+node_modules/create-react-native-app/LICENSE
+node_modules/create-react-native-app/build/index.js
+node_modules/.package-lock.json
+node_modules/.bin/create-react-native-app.ps1
+node_modules/.bin/create-react-native-app.cmd
+node_modules/.bin/create-react-native-app
+node_modules
+android
+/android
+/android/.gradle
