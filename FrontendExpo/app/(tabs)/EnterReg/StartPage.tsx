@@ -9,23 +9,9 @@ import {
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-type RootStackParamList = {
-  Start: undefined;
-  Register: undefined;
-};
-
-type StartPageNavigationProp = StackNavigationProp<RootStackParamList, "Start">;
-
-interface StartPageProps {
-  navigation: StartPageNavigationProp;
-}
-
-export default function StartPage({ navigation }: StartPageProps) {
+export default function StartPage({ navigation }) {
   return (
-    <ImageBackground
-      source={require("../Img/background.png")}
-      style={styles.background}
-    >
+    <ImageBackground style={styles.background}>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Добро пожаловать!</Text>

@@ -1,24 +1,23 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ImageBackground, TextInput, KeyboardAvoidingView, ScrollView, Image, Platform } from "react-native";
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  ImageBackground,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  Image,
+  Platform,
+} from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-
-type RootStackParamList = {
-    Start: undefined;
-    Register: undefined;
-    CodeConfirm: {phone: string}
-  };
-  
-  type CodePageNavigationProp = StackNavigationProp<RootStackParamList, "Register">;
-  
-  interface CodePageProps {
-    navigation: CodePageNavigationProp;
-  }
-
-export default function CodePage({navigation, route } : CodePageProps) {
-    const { phone } = route.params;
+export default function CodePage({ navigation, route }) {
+  const { phone } = route.params;
   return (
-    <ImageBackground source={require("../Img/background.png")} style={styles.background}>
+    <ImageBackground style={styles.background}>
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -29,8 +28,14 @@ export default function CodePage({navigation, route } : CodePageProps) {
               <Text style={styles.title}>Код подтверждения</Text>
             </View>
             <View style={styles.fields}>
-              <Text style={styles.titleSimple}>Введите код подтверждения из SMS - сообщнеия, отправленного на номер {phone}</Text>
-              <TextInput style={styles.TextField} placeholder="Код подтверждения" />
+              <Text style={styles.titleSimple}>
+                Введите код подтверждения из SMS - сообщнеия, отправленного на
+                номер {phone}
+              </Text>
+              <TextInput
+                style={styles.TextField}
+                placeholder="Код подтверждения"
+              />
               <Text style={styles.subtitle}>Код действует еще .. секунд</Text>
             </View>
 
@@ -39,7 +44,12 @@ export default function CodePage({navigation, route } : CodePageProps) {
                 <Text style={styles.registerText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.loginButton}>
-                <Text style={styles.loginText} onPress={() => navigation.navigate("Register")}>Назад</Text>
+                <Text
+                  style={styles.loginText}
+                  onPress={() => navigation.navigate("Register")}
+                >
+                  Назад
+                </Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -125,8 +135,8 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   subtitle: {
-    marginTop:-10,
+    marginTop: -10,
     fontSize: 13,
-    marginLeft: "-48%"
+    marginLeft: "-48%",
   },
 });

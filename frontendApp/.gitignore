@@ -1,6 +1,4 @@
 .env
-package.json
-package-lock.json
 node_modules/create-react-native-app/README.md
 node_modules/create-react-native-app/LICENSE
 node_modules/create-react-native-app/build/index.js
