@@ -12,8 +12,8 @@ import {
   Image,
   Platform,
 } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { TextInputMask } from "react-native-masked-text";
+import Style from "@/app/Styles/Style";
 
 export default function RegPage({ navigation }) {
   const [password, setPassword] = useState("");
@@ -49,17 +49,17 @@ export default function RegPage({ navigation }) {
   };
 
   return (
-    <ImageBackground style={styles.background}>
-      <SafeAreaView style={styles.container}>
+    <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
+      <SafeAreaView style={Style.container}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.header}>
-              <Text style={styles.title}>Регистрация</Text>
+          <ScrollView contentContainerStyle={Style.scrollContainer}>
+            <View style={Style.header}>
+              <Text style={Style.title}>Регистрация</Text>
             </View>
-            <View style={styles.fields}>
+            <View style={Style.fields}>
               <Text style={styles.titleSimple}>Телефон</Text>
 
               <TextInputMask
@@ -68,7 +68,7 @@ export default function RegPage({ navigation }) {
                   mask: "+7 (999) 999-99-99",
                 }}
                 keyboardType="phone-pad"
-                style={styles.TextField}
+                style={Style.TextField}
                 placeholder="+7 (999) 999 99 99"
                 onChangeText={handlePhoneChange}
               />
@@ -76,7 +76,7 @@ export default function RegPage({ navigation }) {
               <Text style={styles.titleSimple}>Пароль</Text>
               <View style={styles.passwordContainer}>
                 <TextInput
-                  style={styles.TextField}
+                  style={Style.TextField}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={isSecure}
@@ -89,20 +89,20 @@ export default function RegPage({ navigation }) {
               </View>
 
               <Text style={styles.titleSimple}>Ф.И.О</Text>
-              <TextInput style={styles.TextField} placeholder="Ф.И.О" />
+              <TextInput style={Style.TextField} placeholder="Ф.И.О" />
             </View>
 
-            <View style={styles.buttons}>
+            <View style={Style.buttons}>
               <TouchableOpacity
-                style={styles.registerButton}
+                style={Style.WhiteButton}
                 onPress={() =>
                   navigation.navigate("CodeConfirm", { phone: formattedPhone })
                 }
               >
-                <Text style={styles.registerText}>Далее</Text>
+                <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.loginButton}>
-                <Text style={styles.loginText}>Назад</Text>
+              <TouchableOpacity style={Style.DefButton} onPress={() => navigation.navigate("Start")}>
+                <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -143,18 +143,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     marginBottom: 10,
     alignSelf: "flex-start",
-  },
-  fields: {
-    width: "100%",
-    alignItems: "center",
-  },
-  TextField: {
-    width: 350,
-    height: 50,
-    borderRadius: 5,
-    backgroundColor: "white",
-    paddingLeft: 10,
-    marginBottom: 15,
   },
   passwordContainer: {
     position: "relative",

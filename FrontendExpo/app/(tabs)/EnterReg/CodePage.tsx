@@ -12,40 +12,40 @@ import {
   Image,
   Platform,
 } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import Style from "../../Styles/Style"
 
 export default function CodePage({ navigation, route }) {
   const { phone } = route.params;
   return (
-    <ImageBackground style={styles.background}>
-      <SafeAreaView style={styles.container}>
+    <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
+      <SafeAreaView style={Style.container}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.header}>
+          <ScrollView contentContainerStyle={Style.scrollContainer}>
+            <View style={Style.header}>
               <Text style={styles.title}>Код подтверждения</Text>
             </View>
-            <View style={styles.fields}>
+            <View style={Style.fields}>
               <Text style={styles.titleSimple}>
                 Введите код подтверждения из SMS - сообщнеия, отправленного на
                 номер {phone}
               </Text>
               <TextInput
-                style={styles.TextField}
+                style={Style.TextField}
                 placeholder="Код подтверждения"
               />
               <Text style={styles.subtitle}>Код действует еще .. секунд</Text>
             </View>
 
-            <View style={styles.buttons}>
-              <TouchableOpacity style={styles.registerButton}>
-                <Text style={styles.registerText}>Далее</Text>
+            <View style={Style.buttons}>
+              <TouchableOpacity style={Style.WhiteButton}>
+                <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.loginButton}>
+              <TouchableOpacity style={Style.DefButton}>
                 <Text
-                  style={styles.loginText}
+                  style={Style.DefText}
                   onPress={() => navigation.navigate("Register")}
                 >
                   Назад

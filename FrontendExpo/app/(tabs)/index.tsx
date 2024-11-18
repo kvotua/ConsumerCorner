@@ -1,18 +1,17 @@
-import { StyleSheet, SafeAreaView } from "react-native";
-import Navigator from "../navigation/NavigationApp";
+import { StyleSheet} from 'react-native';
+
+import NavigateApp from '../Navigation/NavigationApp';
 
 export default function HomeScreen() {
   return (
-    <SafeAreaView>
-      <Navigator />
-    </SafeAreaView>
+   <NavigateApp/>
   );
 }
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   stepContainer: {
@@ -24,6 +23,6 @@ const styles = StyleSheet.create({
     width: 290,
     bottom: 0,
     left: 0,
-    position: "absolute",
+    position: 'absolute',
   },
 });
