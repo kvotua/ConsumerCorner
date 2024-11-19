@@ -9,13 +9,11 @@ import {
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
-  Image,
   Platform,
 } from "react-native";
 import Style from "../../Styles/Style"
 
-export default function CodePage({ navigation, route }) {
-  const { phone } = route.params;
+export default function CodePage({ navigation}) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.container}>
@@ -30,7 +28,7 @@ export default function CodePage({ navigation, route }) {
             <View style={Style.fields}>
               <Text style={styles.titleSimple}>
                 Введите код подтверждения из SMS - сообщнеия, отправленного на
-                номер {phone}
+                номер
               </Text>
               <TextInput
                 style={Style.TextField}
@@ -40,13 +38,13 @@ export default function CodePage({ navigation, route }) {
             </View>
 
             <View style={Style.buttons}>
-              <TouchableOpacity style={Style.WhiteButton}>
+              <TouchableOpacity style={Style.WhiteButton} onPress={() => navigation.replace("Inn")}>
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton}>
                 <Text
                   style={Style.DefText}
-                  onPress={() => navigation.navigate("Register")}
+                  onPress={() => navigation.replace("Register")}
                 >
                   Назад
                 </Text>

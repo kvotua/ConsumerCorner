@@ -24,11 +24,11 @@ export default function StartPage({ navigation }) {
         <View style={styles.buttons}>
           <TouchableOpacity
             style={styles.WhiteButton}
-            onPress={() => navigation.navigate("Register")}
+            onPress={() => navigation.replace("Register")}
           >
             <Text style={styles.blackText}>Регистрация</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.DefButton}>
+          <TouchableOpacity style={styles.DefButton} onPress={() => navigation.replace("Auth")}>
             <Text style={styles.DefText}>Вход</Text>
           </TouchableOpacity>
         </View>

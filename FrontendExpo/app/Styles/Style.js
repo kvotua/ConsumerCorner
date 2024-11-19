@@ -11,10 +11,14 @@ export default StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         paddingHorizontal: 20,
-        paddingVertical: 40,
+        paddingVertical: 20,
       },
       header: {
         alignItems: "center",
+        marginTop: 20,
+      },
+      headerLeft: {
+        alignItems: "flex-start",
         marginTop: 20,
       },
       title: {
@@ -28,6 +32,12 @@ export default StyleSheet.create({
         fontSize: 14,
         color: "#FFFFFF",
         textAlign: "center",
+      },
+      titleSimple: {
+        fontSize: 18,
+        color: "#FFFFFF",
+        marginBottom: 10,
+        alignSelf: "flex-start",
       },
       //Это можно использовать для View, который располагает кнопки
       buttons: {
@@ -87,5 +97,21 @@ export default StyleSheet.create({
         width: "100%",
         alignItems: "center",
         marginTop: 40
+      },
+      //Эти три стиля предназначены для того, чтбы делать наложения
+      passwordContainer: {
+        position: "relative",
+        width: 350,
+        marginBottom: 15,
+      },
+      iconButton: {
+        position: "absolute",
+        right: 10,
+        top: 12,
+      },
+      icon: {
+        width: 24,
+        height: 24,
+        tintColor: "#007BFF",
       },
   });
