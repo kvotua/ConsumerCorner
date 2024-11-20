@@ -5,7 +5,7 @@ from fastapi import APIRouter, Body, HTTPException, Response, Security, status, 
 from fastapi.responses import RedirectResponse
 from fastapi_jwt import JwtAuthorizationCredentials
 
-from app.users.models import UserModel
+from ConsumerCorner.backend.app.users.models import UserModel
 
 from .dependencies import refresh_security, email_security
 from .schemas import AccessTokenSchema, AuthSchema, TokenPairSchema

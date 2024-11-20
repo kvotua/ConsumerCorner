@@ -5,10 +5,10 @@ from bcrypt import gensalt, hashpw
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, Security, status
 from fastapi_jwt import JwtAuthorizationCredentials
 
-from app.auth.dependencies import access_security
-from app.auth.schemas import TokenPairSchema
-from app.auth.utils import set_token_pair, generate_email_verify_link
-from app.users.schemas import UserId
+from ConsumerCorner.backend.app.auth.dependencies import access_security
+from ConsumerCorner.backend.app.auth.schemas import TokenPairSchema
+from ConsumerCorner.backend.app.auth.utils import set_token_pair, generate_email_verify_link
+from ConsumerCorner.backend.app.users.schemas import UserId
 
 from .dependencies import Emailer
 from .models import EmailModel, UserModel
