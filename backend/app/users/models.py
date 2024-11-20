@@ -16,7 +16,7 @@ class UserModel(Model):
     class Meta:
         table_name = "User"
         region = "dummy"
-        host = "http://dynamodb:8000"
+        host = "http://localhost:8000"
         aws_access_key_id = "dummy"
         aws_secret_access_key = "dummy"
 
