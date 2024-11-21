@@ -1,6 +1,6 @@
 import { StyleSheet} from 'react-native';
 
-import NavigateApp from '../Navigation/NavigationApp';
+import NavigateApp from '../navigation/NavigationApp';
 
 export default function HomeScreen() {
   return (

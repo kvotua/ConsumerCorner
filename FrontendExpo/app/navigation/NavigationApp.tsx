@@ -10,6 +10,9 @@ import InnReg from '../(tabs)/EnterReg/InnPage';
 import RegFirma from '../(tabs)/EnterReg/RegFirmaPage';
 import MarketPoint from '../(tabs)/EnterReg/RegMarketPoint';
 import Enter from '../(tabs)/EnterReg/EnterPage';
+import MenuPage from '../(tabs)/ProfilePages/MenuPage';
+import Documents from '../(tabs)/ProfilePages/MenuPage';
+import Social from '../(tabs)/ProfilePages/MenuPage';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +27,9 @@ export default function App() {
           <Stack.Screen name="Inn" component={InnReg} options={{ headerShown: false }} />
           <Stack.Screen name="RegFirma" component={RegFirma} options={{ headerShown: false }} />
           <Stack.Screen name="MarketInfo" component={MarketPoint} options={{ headerShown: false }} />
+          <Stack.Screen name="MenuPage" component={MenuPage} options={{ headerShown: false }} />
+          <Stack.Screen name="Documents" component={Documents} options={{ headerShown: false }} />
+          <Stack.Screen name="Social" component={Social} options={{ headerShown: false }} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );

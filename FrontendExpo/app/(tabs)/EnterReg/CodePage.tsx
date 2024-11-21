@@ -41,10 +41,9 @@ export default function CodePage({ navigation}) {
               <TouchableOpacity style={Style.WhiteButton} onPress={() => navigation.replace("Inn")}>
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={Style.DefButton}>
+              <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Register")}>
                 <Text
                   style={Style.DefText}
-                  onPress={() => navigation.replace("Register")}
                 >
                   Назад
                 </Text>

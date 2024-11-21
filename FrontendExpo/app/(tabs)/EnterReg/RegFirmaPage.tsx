@@ -81,10 +81,10 @@ export default function RegFirma({ navigation }) {
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() =>
-                  navigation.replace("CodeConfirm")
+                  navigation.replace("MarketInfo")
                 }
               >
-                <Text style={Style.blackText} onPress={() => navigation.replace("MarketInfo")}>Далее</Text>
+                <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Inn")}>
                 <Text style={Style.DefText}>Назад</Text>
