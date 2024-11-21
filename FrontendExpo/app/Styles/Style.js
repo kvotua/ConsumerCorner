@@ -161,23 +161,27 @@ export default StyleSheet.create({
       },
       title: {
         fontSize: 24,
+        fontFamily: 'Montserrat',
         fontWeight: "bold",
         color: "#FFFFFF",
         textAlign: "center",
         marginBottom: 10,
       },
       menuTitle: {
+        fontFamily: 'Montserrat',
         fontSize: 30,
         fontWeight: "bold",
         color: "#FFFFFF",
       },
       subtitle: {
+        fontFamily: 'Montserrat',
         fontSize: 14,
         color: "#FFFFFF",
         textAlign: "center",
       },
       titleSimple: {
         fontSize: 18,
+        fontFamily: 'Montserrat',
         color: "#FFFFFF",
         marginBottom: 10,
         alignSelf: "flex-start",
@@ -216,14 +220,14 @@ export default StyleSheet.create({
       },
       //Это белая кнопка с черным текстом
       WhiteButton: {
-        width: "90%",
+        width: "100%",
         backgroundColor: "#FFFFFF",
         paddingVertical: 15,
         alignItems: "center",
         marginBottom: 15,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        borderBottomLeftRadius: 20,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        borderBottomLeftRadius: 10,
       },
       whiteButtonMenuTopActive: {
         flex: 1,
@@ -263,26 +267,29 @@ export default StyleSheet.create({
         
       },
       blackText: {
+        fontFamily: 'Montserrat',
         fontSize: 15,
         fontWeight: "bold",
         color: "#000000",
       },
       alertText: {
+        fontFamily: 'Montserrat',
         fontSize: 11,
         color: "#D83731",
       },
       //Это кнопка сливающаяся с фоном и текс белый
       DefButton: {
-        width: "90%",
+        width: "100%",
         borderWidth: 2,
         borderColor: "#FFFFFF",
         paddingVertical: 15,
         alignItems: "center",
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        borderBottomRightRadius: 20,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
       },
       DefText: {
+        fontFamily: 'Montserrat',
         fontSize: 16,
         fontWeight: "bold",
         color: "#FFFFFF",
@@ -292,6 +299,7 @@ export default StyleSheet.create({
         fontSize: 12,
         color: "#FFFFFF",
         textAlign: "center",
+        fontFamily: 'Montserrat',
         marginBottom: 20,
       },
       footerDocumentsText: {

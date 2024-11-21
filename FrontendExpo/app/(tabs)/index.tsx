@@ -1,28 +1,40 @@
-import { StyleSheet} from 'react-native';
-
+import React, { useCallback, useEffect, useState } from 'react';
+import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import NavigateApp from '../Navigation/NavigationApp';
 
 export default function HomeScreen() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  // Функция для загрузки шрифтов
+  const loadFonts = useCallback(async () => {
+    try {
+      await SplashScreen.preventAutoHideAsync();
+      await Font.loadAsync({
+        Montserrat: require('../../assets/fonts/Montserrat-Regular.ttf'),
+        'Montserrat-Bold': require('../../assets/fonts/Montserrat-Bold.ttf'),
+      });
+      setFontsLoaded(true); 
+    } catch (e) {
+      console.error('Error loading fonts', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadFonts();
+  }, [loadFonts]);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync(); // Скрыть SplashScreen, когда шрифты готовы
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null; // Пока шрифты не загружены, ничего не рендерим
+  }
+
   return (
-   <NavigateApp/>
+    <NavigateApp onLayout={onLayoutRootView} />
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

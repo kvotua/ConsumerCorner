@@ -22,7 +22,7 @@ export default function Enter({ navigation }) {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <ScrollView contentContainerStyle={Style.scrollContainer}>
+          <ScrollView contentContainerStyle={StyleSheet.flatten([Style.scrollContainer, {marginTop: 150}])}>
             <View style={Style.header}>
               <Text style={Style.title}>Вход</Text>
             </View>
@@ -44,8 +44,11 @@ export default function Enter({ navigation }) {
                 style={Style.TextField}
                 placeholder="Пароль"
                 />
+                <TouchableOpacity>
+                  <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver", marginTop:20, marginLeft: "-55%"}])}>Напомнить пароль</Text>
+                </TouchableOpacity>
 
-                <View style={Style.buttons}>
+                <View style={StyleSheet.flatten([Style.buttons, {marginTop:200}])}>
                 <TouchableOpacity
                     style={Style.WhiteButton}
                     onPress={() =>

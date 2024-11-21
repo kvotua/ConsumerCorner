@@ -1,7 +1,7 @@
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { LayoutChangeEvent } from 'react-native';
 
 import StartPage from '../(tabs)/EnterReg/StartPage';
 import RegPage from '../(tabs)/EnterReg/RegPage';
@@ -20,7 +20,11 @@ import Profile from '../(tabs)/ProfilePages/Profile';
 
 const Stack = createStackNavigator();
 
-export default function App() {
+interface NavigateAppProps {
+  onLayout?: (event: LayoutChangeEvent) => void; // Определяем тип для onLayout
+}
+
+export default function App({ onLayout }: NavigateAppProps) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack.Navigator initialRouteName="Start">
