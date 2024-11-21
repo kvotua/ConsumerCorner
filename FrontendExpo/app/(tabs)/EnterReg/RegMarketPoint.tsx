@@ -23,11 +23,11 @@ export default function MarketPoint({ navigation }) {
         >
             <View style={Style.headerLeft}>
               <Text style={Style.title}>Зарегистрируйте </Text>
-              <Text style={styles.title}>торговую точку</Text>
+              <Text style={Style.title}>торговую точку</Text>
             </View>
           <ScrollView contentContainerStyle={Style.scrollContainer}>
             <View style={Style.fields}>
-              <Text style={styles.titleSimple}>Адресс торговой точки</Text>
+              <Text style={Style.titleSimple}>Адресс торговой точки</Text>
 
               <TextInput
                 keyboardType="phone-pad"
@@ -35,8 +35,8 @@ export default function MarketPoint({ navigation }) {
                 placeholder="ул. Пушкина дом Победы 32"
               />
 
-              <Text style={styles.titleSimple}>Рабочее название магазина</Text>
-              <View style={styles.passwordContainer}>
+              <Text style={Style.titleSimple}>Рабочее название магазина</Text>
+              <View style={Style.passwordContainer}>
                 <TextInput
                     keyboardType="phone-pad"
                     style={Style.TextField}
@@ -44,10 +44,10 @@ export default function MarketPoint({ navigation }) {
                 />
               </View>
 
-              <Text style={styles.titleSimple}>Открытие точки</Text>
+              <Text style={Style.titleSimple}>Открытие точки</Text>
               <TextInput style={StyleSheet.flatten([Style.TextField, {width:"30%", marginLeft: "-70%"}])} placeholder="11:00" />
 
-              <Text style={styles.titleSimple}>Закрытие точки</Text>
+              <Text style={Style.titleSimple}>Закрытие точки</Text>
               <TextInput style={StyleSheet.flatten([Style.TextField, {width:"30%", marginLeft: "-70%"}])} placeholder="22:00" />
             </View>
 
@@ -70,47 +70,3 @@ export default function MarketPoint({ navigation }) {
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  headerLeft: {
-    alignItems: "flex-start",
-    marginTop: -50,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  titleSimple: {
-    fontSize: 18,
-    color: "#FFFFFF",
-    marginBottom: 10,
-    alignSelf: "flex-start",
-  },
-  titleSimple2: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    marginTop: 3,
-    alignSelf: "flex-start",
-  },
-  passwordContainer: {
-    position: "relative",
-    width: 350,
-    marginBottom: 15,
-  },
-  title:{
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-    textAlign: "right",
-    marginBottom: 10,
-    textDecorationLine: "none"
-  },
-  TextField: {
-    width: 350,
-    height: 50,
-    borderRadius: 5,
-    backgroundColor: "white",
-    paddingLeft: 10,
-  },
-});

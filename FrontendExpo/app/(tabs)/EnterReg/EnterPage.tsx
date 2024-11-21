@@ -52,7 +52,7 @@ export default function Enter({ navigation }) {
                     navigation.replace("CodeConfirm")
                     }
                 >
-                    <Text style={Style.blackText}>Далее</Text>
+                    <Text style={Style.blackText} onPress={() => navigation.replace("MenuPage")}>Далее</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Start")}>
                     <Text style={Style.DefText}>Назад</Text>

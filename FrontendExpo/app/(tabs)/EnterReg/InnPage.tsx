@@ -11,7 +11,7 @@ export default function InnReg({navigation}){
                     <Text style={Style.title}>Введите ИНН</Text>
                 </View>
                 <View style={Style.fields}>
-                    <Text style={style.subtitle}>ИНН юридического лица</Text>
+                    <Text style={StyleSheet.flatten([Style.subtitle, {fontSize: 16, color: "#FFFFFF", marginLeft: "-40%"}])}>ИНН юридического лица</Text>
                     <TextInputMask
                     type={"custom"}
                     options={{
@@ -40,11 +40,3 @@ export default function InnReg({navigation}){
 
     );
 };
-
-const style = StyleSheet.create({
-    subtitle: {
-        fontSize: 16,
-        color: "#FFFFFF",
-        marginLeft: "-40%"
-    }
-})

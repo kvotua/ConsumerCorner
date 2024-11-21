@@ -35,7 +35,7 @@ export default function RegPage({ navigation }) {
               <Text style={Style.title}>Регистрация</Text>
             </View>
             <View style={Style.fields}>
-              <Text style={styles.titleSimple}>Телефон</Text>
+              <Text style={Style.titleSimple}>Телефон</Text>
 
               <TextInputMask
                 type={"custom"}
@@ -47,7 +47,7 @@ export default function RegPage({ navigation }) {
                 placeholder="+7 (999) 999 99 99"
               />
 
-              <Text style={styles.titleSimple}>Пароль</Text>
+              <Text style={Style.titleSimple}>Пароль</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
                   style={Style.TextField}
@@ -64,7 +64,7 @@ export default function RegPage({ navigation }) {
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.titleSimple}>Ф.И.О</Text>
+              <Text style={Style.titleSimple}>Ф.И.О</Text>
               <TextInput style={Style.TextField} placeholder="Ф.И.О" />
             </View>
 
@@ -87,68 +87,3 @@ export default function RegPage({ navigation }) {
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 20,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  titleSimple: {
-    fontSize: 18,
-    color: "#FFFFFF",
-    marginBottom: 10,
-    alignSelf: "flex-start",
-  },
-  buttons: {
-    width: "100%",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  registerButton: {
-    width: "90%",
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  registerText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#000000",
-  },
-  loginButton: {
-    width: "90%",
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  loginText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-  },
-});

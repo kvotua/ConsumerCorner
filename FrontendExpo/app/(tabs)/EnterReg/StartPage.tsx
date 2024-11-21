@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
+  StyleSheet,
 } from "react-native";
 import styles from "../../Styles/Style";// <--- это файл глобальных стилей
 
@@ -28,7 +29,7 @@ export default function StartPage({ navigation }) {
           >
             <Text style={styles.blackText}>Регистрация</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.DefButton} onPress={() => navigation.replace("Auth")}>
+          <TouchableOpacity style={StyleSheet.flatten([styles.DefButton, {borderBottomLeftRadius: 20, borderTopLeftRadius: 0}])} onPress={() => navigation.replace("Auth")}>
             <Text style={styles.DefText}>Вход</Text>
           </TouchableOpacity>
         </View>
