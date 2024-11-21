@@ -1,9 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, ImageBackground, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import Style from "../../Styles/Style";
 import { TextInputMask } from "react-native-masked-text";
 
 export default function InnReg({navigation}){
+    const [value, setValue] = useState();
+
+
+    const handleInputChange = (text : string) => {
+      setValue(text);
+    };
     return (
         <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
             <SafeAreaView style={Style.container}>
@@ -15,8 +21,10 @@ export default function InnReg({navigation}){
                     <TextInputMask
                     type={"custom"}
                     options={{
-                    mask: "255 055 034 235",
+                    mask: "999 999 999 999",
                     }}
+                    value={value}
+                    onChangeText={handleInputChange}
                     keyboardType="phone-pad"
                     style={Style.TextField}
                     placeholder="255 055 034 235"

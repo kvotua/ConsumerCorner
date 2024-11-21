@@ -34,7 +34,7 @@ export default function CodePage({ navigation}) {
                 style={Style.TextField}
                 placeholder="Код подтверждения"
               />
-              <Text style={StyleSheet.flatten([Style.subtitle, {marginLeft: "-45%", color:"silver", marginTop: -10,}])}>Код действует еще .. секунд</Text>
+              <Text style={StyleSheet.flatten([Style.subtitle, {marginLeft: "-40%", color:"silver", marginTop: -10,}])}>Код действует еще .. секунд</Text>
             </View>
 
             <View style={Style.buttons}>

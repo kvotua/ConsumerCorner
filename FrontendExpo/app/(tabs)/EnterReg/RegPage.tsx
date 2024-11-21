@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
@@ -18,6 +17,15 @@ import Icon from 'react-native-vector-icons/Feather';
 export default function RegPage({ navigation }) {
   const [password, setPassword] = useState("");
   const [isSecure, setIsSecure] = useState(true);
+  const [value, setValue] = useState("+7 ");
+
+
+  const handleInputChange = (text : string) => {
+    if (!text.startsWith("+7 ")) {
+      text = "+7 " + text.replace("+7 ", "");
+    }
+    setValue(text);
+  };
 
   const toggleSecureTextEntry = () => {
     setIsSecure(!isSecure);
@@ -38,14 +46,16 @@ export default function RegPage({ navigation }) {
               <Text style={Style.titleSimple}>Телефон</Text>
 
               <TextInputMask
-                type={"custom"}
-                options={{
-                  mask: "+7 (999) 999-99-99",
-                }}
-                keyboardType="phone-pad"
-                style={Style.TextField}
-                placeholder="+7 (999) 999 99 99"
-              />
+                  type={"custom"}
+                  options={{
+                    mask: "+9 (999) 999-99-99",
+                  }}
+                  value={value}
+                  onChangeText={handleInputChange}
+                  keyboardType="phone-pad"
+                  style={Style.TextField}
+                  placeholder="+7 (999) 999-99-99"
+                />
 
               <Text style={Style.titleSimple}>Пароль</Text>
               <View style={Style.passwordContainer}>
