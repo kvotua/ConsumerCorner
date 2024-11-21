@@ -32,20 +32,20 @@ export default function Menupage({ navigation }) {
         <View style={styles.menuBottomButtons}>
           <TouchableOpacity
             style={styles.whiteButtonMenuBottomActive}
-            onPress={() => navigation.replace("Documents")}
+            onPress={() => navigation.replace("Reviews")}
           >
             <Text style={styles.blackText}>Отзывы и приложения</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.whiteButtonMenuBottomActive} onPress={() => navigation.replace("Social")}>
+          <TouchableOpacity style={styles.whiteButtonMenuBottomActive} onPress={() => navigation.replace("Firms")}>
             <Text style={styles.blackText}>Фирмы/точки</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.whiteButtonMenuBottomActive}
-            onPress={() => navigation.replace("Documents")}
+            onPress={() => navigation.replace("AdminPanel")}
           >
             <Text style={styles.blackText}>Администрирование</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.whiteButtonMenuBottomActive} onPress={() => navigation.replace("Social")}>
+          <TouchableOpacity style={styles.whiteButtonMenuBottomActive} onPress={() => navigation.replace("Profile")}>
             <Text style={styles.blackText}>Профиль</Text>
           </TouchableOpacity>
         </View>

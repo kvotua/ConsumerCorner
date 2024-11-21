@@ -13,6 +13,117 @@ export default StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 20,
       },
+      containerMainPage: {
+        flex: 1,
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+      },
+      containerProfile: {
+        weight: "100%",
+        paddingHorizontal: 25,
+        marginTop: 20,
+      },
+      containerButtonsDocuments: {
+        width: "100%",
+        marginTop: 91,
+        paddingHorizontal: 25,
+      },
+      containerButtonsSocial: {
+        width: "100%",
+        marginTop: 163,
+        paddingHorizontal: 25,
+      },
+      containerButtonsMenuPages: {
+        width: "100%",
+        height: 120,
+        paddingHorizontal: 25,
+        paddingVertical: 10,
+        marginBottom: 33,
+        flex: 1,
+        justifyContent: 'flex-end',
+      },
+      textDescriptionProfile: {
+        marginBottom: 12,
+        fontSize: 18,
+        fontWeight: "500",
+        color: "#FFFFFF",
+      }, 
+      textInputProfile: {
+        width: "100%",
+        height: 60,
+        alignItems: "flex-start",
+        backgroundColor: "#FFFFFF",
+        borderTopRightRadius: 10,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+        fontSize: 18,
+      },
+      switchContainer: {
+        width: "100%",
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "space-between",
+        marginTop: 36,
+        paddingHorizontal: 25,
+      },
+      switchText: {
+        fontSize: 18,
+        fontWeight: "500",
+        color: "#FFFFFF",
+        marginRight: 10,
+      },
+      buttonMenuPage: {
+        width: "100%",
+        height: 45,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#FAFBFF",
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+        borderBottomLeftRadius: 10,
+      },
+      buttonBackMenuPage: {
+        width: "100%",
+        height: 45,
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: '#FAFBFF',
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+        borderBottomRightRadius: 10,
+      },
+      textInButtonsMenuPage: {
+        fontSize: 18,
+        color: "#313231",
+        fontWeight: "700"
+      },
+      textInButtonsBackMenuPage: {
+        fontSize: 18,
+        color: "#FAFBFF",
+        fontWeight: "600"
+      },
+      buttonDocuments: {
+        width: "100%",
+        height: 45,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#FFFFFF",
+        borderTopRightRadius: 10,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+      },
+      textInButtonsMenuPage: {
+        fontSize: 15,
+        color: "#313231",
+        fontWeight: "500",
+      },
+      footerButtonTextDocuments: {
+        fontSize: 15,
+        fontWeight: "Bold",
+        color: "#FFFFFF",
+        marginTop: 13,
+      },
       header: {
         alignItems: "center",
         marginTop: 20,
@@ -23,6 +134,26 @@ export default StyleSheet.create({
         marginTop: 181,
         marginStart:20,
         paddingLeft: 10,
+      },
+      profileHeader: {
+        width: "100%",
+        alignItems: 'center',
+      },
+      menuPagesFooterHeader: {
+        width: "100%",
+        alignItems: 'flex-start',
+      },
+      menuPagesHeader: {
+        width: "100%",
+        alignItems: 'flex-start',
+        marginTop: 10,
+        marginStart: 25,
+      },
+      menuPagesSecondHeader: {
+        width: "100%",
+        alignItems: 'flex-start',
+        marginTop: 28,
+        marginStart: 25,
       },
       headerLeft: {
         alignItems: "flex-start",
@@ -50,6 +181,12 @@ export default StyleSheet.create({
         color: "#FFFFFF",
         marginBottom: 10,
         alignSelf: "flex-start",
+      },
+      profileTitle: {
+        fontSize: 24,
+        color: "#FFFFFF",
+        fontWeight: "400",
+        marginTop: 142,
       },
       //Это можно использовать для View, который располагает кнопки
       buttons: {
@@ -157,6 +294,13 @@ export default StyleSheet.create({
         textAlign: "center",
         marginBottom: 20,
       },
+      footerDocumentsText: {
+        fontSize: 18,
+        color: "#FFFFFF",
+        marginStart: 25,
+        marginTop: 50,
+        textAlign: "center",
+      },
       TextField: {
         width: 350,
         height: 50,
@@ -190,5 +334,16 @@ export default StyleSheet.create({
         width: 24,
         height: 24,
         tintColor: "#007BFF",
+      },
+      containerLine: {
+        paddingStart: 24,
+        paddingEnd: 91,
+        width: '100%',
+        marginTop: 10,
+      },
+      menuPagesLine: {
+        width: '100%',
+        height: 1, 
+        backgroundColor: '#FFFFFF',
       },
   });
