@@ -1,37 +1,39 @@
 from dadata import Dadata
-from .config import token
+from dotenv import load_dotenv
+import os
+from .schemas import IpSchema,CompanySchema
 
 class INNService:
-    def __init__(self,token):
-        self.token = token
-    def fetch_company_data(self,inn: str) -> dict:
-        dadata = Dadata(self.token)
+    def __init__(self,env_path: str):
+        load_dotenv(dotenv_path=env_path)
+        self.api_token = os.getenv("API_TOKEN_INN")
+    def fetch_company_data(self,inn: str) -> CompanySchema:
+        dadata = Dadata(self.api_token)
         result = dadata.find_by_id("party", inn)
         if not result:
             return None
 
         company_data = result[0]['data']
-        return {
-            "inn": inn,
-            "name": result[0]['value'],
-            "ogrn": company_data['ogrn'],
-            "kpp": company_data['kpp'],
-            "address": company_data['address']['value'],
-        }
+        return CompanySchema(
+            inn=inn,
+            name=result[0]['value'],
+            ogrn=company_data['ogrn'],
+            kpp=company_data['kpp'],
+            address=company_data['address']['value'],
+        )
 
-    def fetch_ip_data(self,inn: str) -> dict:
-        dadata = Dadata(self.token)
+    def fetch_ip_data(self,inn: str) -> IpSchema:
+        dadata = Dadata(self.api_token)
         result = dadata.find_by_id("party", inn)
         data = result[0]['data']
         fio = f'{data['fio']['surname']} {data['fio']['name']} {data['fio']['patronymic']}'
         ogrn = data['ogrn']
         address = data['address']['unrestricted_value']
-        all_info = {
-            'fio': fio,
-            'ogrn': ogrn,
-            'address': address
-        }
-        return(all_info)
+        return IpSchema(
+            fio=fio,
+            ogrn=ogrn,
+            address=address,
+        )
 
     def validate_inn(self,inn: str) -> bool:
         if len(inn) not in [10, 12]:
