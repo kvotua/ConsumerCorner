@@ -139,6 +139,12 @@ export default StyleSheet.create({
         width: "100%",
         alignItems: 'center',
       },
+      firmsAndPointsHeader: {
+        width: "100%",
+        alignItems: 'flex-start',
+        marginTop: 94,
+        marginStart: 25,
+      },
       menuPagesFooterHeader: {
         width: "100%",
         alignItems: 'flex-start',
@@ -353,5 +359,49 @@ export default StyleSheet.create({
         width: '100%',
         height: 1, 
         backgroundColor: '#FFFFFF',
+      },
+      // flatlist
+      firmsAndPointsFlatListContainer: {
+        flex: 1,
+        paddingHorizontal: 25,
+        marginTop: 27,
+        marginBottom: 230
+      },
+      itemFlatList: {
+        flexDirection: "row",
+        alignItems: 'center',
+        marginBottom: 40,
+      },
+      textInFlatList: {
+        fontSize: 18,
+        fontWeight: "500",
+        color: "#FFFFFF",
+        flex: 1, 
+        marginEnd: 22, 
+      },
+      circleContainer: {
+        width: 30,  
+        height: 30,
+        borderRadius: 30, 
+        borderWidth: 1,
+        borderColor: "#FFFFFF", 
+        backgroundColor: "transparent", 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+      },
+      innerCircle: {
+        width: 22.5, 
+        height: 22.5,
+        borderRadius: 22.5,
+        backgroundColor: "#FFFFFF", 
+      },
+      containerButtonsBottomFlatList: {
+        width: "100%",
+        height: 120,  
+        paddingHorizontal: 25,
+        paddingVertical: 10,
+        position: 'absolute', 
+        bottom: 43, 
+       justifyContent: 'flex-end', 
       },
   });
