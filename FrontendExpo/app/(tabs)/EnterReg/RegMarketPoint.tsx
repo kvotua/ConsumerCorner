@@ -22,11 +22,14 @@ export default function MarketPoint({ navigation }) {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
             <View style={Style.headerLeft}>
-              <Text style={Style.title}>Зарегистрируйте </Text>
-              <Text style={Style.title}>торговую точку</Text>
+              <Text style={Style.titleHead}>Зарегистрируйте </Text>
+              <Text style={Style.titleHead}>торговую точку</Text>
+              <View style={StyleSheet.flatten([Style.containerLine, {left: "-7%", top:"-10%"}])}>
+              <View style={Style.menuPagesLine}/>
+              </View>
             </View>
           <ScrollView contentContainerStyle={Style.scrollContainer}>
-            <View style={Style.fields}>
+            <View style={StyleSheet.flatten([Style.fields, {top:"-10%"}])}>
               <Text style={Style.titleSimple}>Адресс торговой точки</Text>
 
               <TextInput

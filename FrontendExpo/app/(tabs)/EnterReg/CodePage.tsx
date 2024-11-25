@@ -23,7 +23,7 @@ export default function CodePage({ navigation}) {
         >
           <ScrollView contentContainerStyle={Style.scrollContainer}>
             <View style={Style.header}>
-              <Text style={Style.title}>Код подтверждения</Text>
+              <Text style={Style.titleHead}>Код подтверждения</Text>
             </View>
             <View style={Style.fields}>
               <Text style={Style.titleSimple}>

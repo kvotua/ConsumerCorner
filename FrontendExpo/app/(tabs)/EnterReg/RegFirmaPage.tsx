@@ -34,13 +34,16 @@ export default function RegFirma({ navigation }) {
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
+        >   
             <View style={Style.headerLeft}>
-              <Text style={Style.title}>Зарегистрируйте </Text>
-              <Text style={Style.title}>фирму</Text>
+              <Text style={Style.titleHead}>Зарегистрируйте </Text>
+              <Text style={Style.titleHead}>фирму</Text>
+              <View style={StyleSheet.flatten([Style.containerLine, {left: "-7%", top:"-10%"}])}>
+              <View style={Style.menuPagesLine}/>
+              </View>
             </View>
-          <ScrollView contentContainerStyle={Style.scrollContainer}>
-            <View style={Style.fields}>
+          <ScrollView contentContainerStyle={StyleSheet.flatten([Style.scrollContainer, {top:"-5%"}])}>
+            <View style={StyleSheet.flatten([Style.fields])}>
               <Text style={Style.titleSimple}>Название фирмы</Text>
 
               <TextInputMask
@@ -51,7 +54,7 @@ export default function RegFirma({ navigation }) {
                     value={value}
                     onChangeText={handleInputChange}
                     keyboardType="phone-pad"
-                    style={Style.TextField}
+                    style={Style.textInputProfile}
                     placeholder="408 02 810 5 0000 1846336"
               />
 
@@ -65,34 +68,34 @@ export default function RegFirma({ navigation }) {
                   value={value2}
                   onChangeText={handleInputChange2}
                   keyboardType="phone-pad"
-                  style={Style.TextField}
+                  style={Style.textInputProfile}
                   placeholder="1147847423899"
               />
               </View>
 
-              <Text style={Style.titleSimple}>Фактический адресс</Text>
-              <TextInput style={Style.TextField} placeholder="ул. Павлика Морозова 74Б" />
+              <Text style={StyleSheet.flatten([Style.titleSimple, {padding:-5}])}>Фактический адресс</Text>
+              <TextInput style={Style.textInputProfile} placeholder="ул. Павлика Морозова 74Б" />
 
               <Text style={Style.titleSimple}>Основной вид деятельности</Text>
-              <TextInput style={Style.TextField} placeholder="Частное предприятие" />
+              <TextInput style={Style.textInputProfile} placeholder="Частное предприятие" />
             </View>
             <View style={Style.passwordContainer}>
-            <Text style={StyleSheet.flatten([Style.titleSimple, {marginTop: -5, fontSize: 14,}])}>Пригласите партнеров и</Text>
-                    <Text style={StyleSheet.flatten([Style.titleSimple, {marginTop: -5, fontSize: 14,}])}>собственников бизнеса</Text>
-                    <TextInput style={Style.TextField}/>
+            <Text style={StyleSheet.flatten([Style.titleSimple, {marginTop: 5, fontSize: 14,}])}>Пригласите партнеров и</Text>
+                    <Text style={StyleSheet.flatten([Style.titleSimple, {marginTop: -10, fontSize: 14,}])}>собственников бизнеса</Text>
+                    <TextInput style={Style.textInputProfile}/>
                     <TouchableOpacity //кнопка копирования
-                    style={StyleSheet.flatten([Style.iconButton, {right:55, top:62}])}
+                    style={StyleSheet.flatten([Style.iconButton, {right:55, top:73}])}
                     >
                     <Icon name={'copy'} size={24} color="#00000" />
                   </TouchableOpacity>
                   <TouchableOpacity //кнопка копирования
-                    style={StyleSheet.flatten([Style.iconButton, {right:10,  top:61}])}
+                    style={StyleSheet.flatten([Style.iconButton, {right:10,  top:73}])}
                     >
                     <Share/>
                   </TouchableOpacity>
             </View>
 
-            <View style={StyleSheet.flatten([Style.buttons, {marginTop:-5}])}>
+            <View style={StyleSheet.flatten([Style.buttons, {alignItems: "center"}])}>
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() =>

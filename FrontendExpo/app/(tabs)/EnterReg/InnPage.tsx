@@ -13,11 +13,14 @@ export default function InnReg({navigation}){
     return (
         <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
             <SafeAreaView style={Style.container}>
-                <View style={Style.header}>
-                    <Text style={Style.title}>Введите ИНН</Text>
+                <View style={StyleSheet.flatten([Style.containerLine, {left: "-7%"}])}>
+                    <View style={StyleSheet.flatten([Style.header, {left: "-13%"}])}>
+                        <Text style={([Style.titleHead])}>Введите ИНН</Text>
+                    </View>
+                    <View style={Style.menuPagesLine}/>
                 </View>
-                <View style={Style.fields}>
-                    <Text style={StyleSheet.flatten([Style.subtitle, {fontSize: 16, color: "#FFFFFF", marginLeft: "-40%"}])}>ИНН юридического лица</Text>
+                <View style={StyleSheet.flatten([Style.fields, {top:"-30%"}])}>
+                    <Text style={StyleSheet.flatten([Style.subtitle, {fontSize: 16, color: "#FFFFFF", right: "18%",}])}>ИНН юридического лица</Text>
                     <TextInputMask
                     type={"custom"}
                     options={{
@@ -26,21 +29,13 @@ export default function InnReg({navigation}){
                     value={value}
                     onChangeText={handleInputChange}
                     keyboardType="phone-pad"
-                    style={Style.TextField}
+                    style={Style.textInputProfile}
                     placeholder="255 055 034 235"
                     />
                 </View>
                 <View style={Style.buttons}>
                         <TouchableOpacity style={Style.WhiteButton} onPress={() => navigation.replace("RegFirma")}>
                         <Text style={Style.blackText}>Далее</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={Style.DefButton}>
-                        <Text
-                        style={Style.DefText}
-                        onPress={() => navigation.replace("CodeConfirm")}
-                        >
-                        Назад
-                        </Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>

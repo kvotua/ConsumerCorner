@@ -40,7 +40,7 @@ export default function RegPage({ navigation }) {
         >
           <ScrollView contentContainerStyle={Style.scrollContainer}>
             <View style={Style.header}>
-              <Text style={Style.title}>Регистрация</Text>
+              <Text style={Style.titleHead}>Регистрация</Text>
             </View>
             <View style={Style.fields}>
               <Text style={Style.titleSimple}>Телефон</Text>
@@ -53,14 +53,14 @@ export default function RegPage({ navigation }) {
                   value={value}
                   onChangeText={handleInputChange}
                   keyboardType="phone-pad"
-                  style={Style.TextField}
+                  style={Style.textInputProfile}
                   placeholder="+7 (999) 999-99-99"
                 />
 
               <Text style={Style.titleSimple}>Пароль</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
-                  style={Style.TextField}
+                  style={Style.textInputProfile}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={isSecure}
@@ -75,7 +75,7 @@ export default function RegPage({ navigation }) {
               </View>
 
               <Text style={Style.titleSimple}>Ф.И.О</Text>
-              <TextInput style={Style.TextField} placeholder="Ф.И.О" />
+              <TextInput style={Style.textInputProfile} placeholder="Ф.И.О" />
             </View>
 
             <View style={Style.buttons}>

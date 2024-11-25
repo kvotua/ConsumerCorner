@@ -165,6 +165,14 @@ export default StyleSheet.create({
         alignItems: "flex-start",
         marginTop: 20,
       },
+      titleHead: {
+        fontSize: 30,
+        fontFamily: 'Montserrat',
+        fontWeight: "bold",
+        color: "#FFFFFF",
+        textAlign: "center",
+        marginBottom: 10,
+      },
       title: {
         fontSize: 24,
         fontFamily: 'Montserrat',
@@ -181,7 +189,7 @@ export default StyleSheet.create({
       },
       subtitle: {
         fontFamily: 'Montserrat',
-        fontSize: 14,
+        fontSize: 16,
         color: "#FFFFFF",
         textAlign: "center",
       },
@@ -331,13 +339,12 @@ export default StyleSheet.create({
       fields: {
         width: "100%",
         alignItems: "center",
-        marginTop: 40
+        marginTop: 30
       },
       //Эти три стиля предназначены для того, чтбы делать наложения
       passwordContainer: {
         position: "relative",
         width: 350,
-        marginBottom: 15,
       },
       iconButton: {
         position: "absolute",
