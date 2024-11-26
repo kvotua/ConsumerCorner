@@ -8,6 +8,7 @@ import {
   TextInput,
   Switch,
   StyleSheet,
+  Image,
 } from "react-native";
 import styles from "../../Styles/Style";
 
@@ -20,19 +21,23 @@ export default function Profile({ navigation }) {
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
         <View style={styles.profileHeader}>
+        <Image
+            source={require("../../../assets/images/profileImage.png")} // Замените на путь к вашей картинке
+            style={localStyles.profileImage} 
+          />
           <Text style={styles.profileTitle}>Акулич В.C</Text>
         </View>
         <View style={styles.containerProfile}>
           <Text style={styles.textDescriptionProfile}>Ф.И.О</Text>
-          <TextInput style={styles.textInputProfile} placeholder="ул. Павлика Морозова 74Б" />
+          <TextInput style={styles.textInputProfile} placeholder="Акулич Виктор Сергеевич" />
           
-          <Text style={[styles.textDescriptionProfile, { marginTop: 41 }]}>Номер телефона</Text>
+          <Text style={[styles.textDescriptionProfile, { marginTop: 40 }]}>Номер телефона</Text>
           <TextInput style={styles.textInputProfile} placeholder="+79113453221" />
           
-          <Text style={[styles.textDescriptionProfile, { marginTop: 41 }]}>Email</Text>
+          <Text style={[styles.textDescriptionProfile, { marginTop: 40 }]}>Email</Text>
           <TextInput style={styles.textInputProfile} placeholder="yyyy@mail.ru" />
           
-          <Text style={[styles.textDescriptionProfile, { marginTop: 41 }]}>Изменить пароль</Text>
+          <Text style={[styles.textDescriptionProfile, { marginTop: 40}]}>Изменить пароль</Text>
           <TextInput style={styles.textInputProfile} placeholder="************" />
         </View>
         <View style={styles.switchContainer}>
@@ -44,7 +49,7 @@ export default function Profile({ navigation }) {
               thumbColor={isEnabled ? "#E6E6E6" : "#E6E6E6"}
               />  
         </View>
-        <View style={[styles.containerButtonsMenuPages, { paddingVertical: 0, marginBottom: 39 }]}>
+        <View style={[styles.containerButtonsMenuPages, { paddingVertical: 0 }]}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
             <Text style={styles.textInButtonsMenuPage}>Вернуться на главную</Text>
         </TouchableOpacity>
@@ -53,5 +58,16 @@ export default function Profile({ navigation }) {
     </ImageBackground>
   );
 }
+
+const localStyles = StyleSheet.create({
+  profileImage: {
+    width: 100,
+    height: 100, 
+    borderRadius: 50,
+    marginBottom: 12, 
+    borderWidth: 1, 
+    borderColor: "#FFFFFF", 
+  },
+});
 
 

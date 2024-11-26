@@ -43,7 +43,7 @@ export default function Firms({ navigation }) {
         <View style={styles.firmsAndPointsHeader}>
           <Text style={styles.menuTitle}>Мои фирмы</Text>
         </View>
-        <View style={[styles.containerLine, { paddingStart: 25, }]}>
+        <View style={styles.containerLine}>
           <View style={styles.menuPagesLine}/>
         </View>
         <View style={styles.firmsAndPointsFlatListContainer}>
