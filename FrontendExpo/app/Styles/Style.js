@@ -15,32 +15,27 @@ export default StyleSheet.create({
       },
       containerMainPage: {
         flex: 1,
-        paddingHorizontal: 20,
-        paddingVertical: 20,
+        padding: 25,
       },
       containerProfile: {
-        weight: "100%",
-        paddingHorizontal: 25,
+        width: "100%",
         marginTop: 20,
       },
       containerButtonsDocuments: {
         width: "100%",
         marginTop: 91,
-        paddingHorizontal: 25,
       },
       containerButtonsSocial: {
         width: "100%",
-        marginTop: 163,
-        paddingHorizontal: 25,
+        flex: 1,
+        marginTop: 162,
       },
       containerButtonsMenuPages: {
         width: "100%",
         height: 120,
-        paddingHorizontal: 25,
         paddingVertical: 10,
-        marginBottom: 33,
-        flex: 1,
         justifyContent: 'flex-end',
+        flex: 1,
       },
       textDescriptionProfile: {
         marginBottom: 12,
@@ -57,14 +52,14 @@ export default StyleSheet.create({
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
         fontSize: 18,
+        paddingStart: 15,
       },
       switchContainer: {
         width: "100%",
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: "space-between",
-        marginTop: 36,
-        paddingHorizontal: 25,
+        marginTop: 10,
       },
       switchText: {
         fontSize: 18,
@@ -96,7 +91,8 @@ export default StyleSheet.create({
       textInButtonsMenuPage: {
         fontSize: 18,
         color: "#313231",
-        fontWeight: "700"
+        fontWeight: "bold",
+        fontFamily: 'Montserrat'
       },
       textInButtonsBackMenuPage: {
         fontSize: 18,
@@ -113,11 +109,6 @@ export default StyleSheet.create({
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
       },
-      textInButtonsMenuPage: {
-        fontSize: 15,
-        color: "#313231",
-        fontWeight: "500",
-      },
       footerButtonTextDocuments: {
         fontSize: 15,
         fontWeight: "Bold",
@@ -131,9 +122,7 @@ export default StyleSheet.create({
       menuHeader: {
         width: '100%',
         alignItems: 'flex-start',
-        marginTop: 181,
-        marginStart:20,
-        paddingLeft: 10,
+        marginTop: 128,
       },
       profileHeader: {
         width: "100%",
@@ -142,8 +131,7 @@ export default StyleSheet.create({
       firmsAndPointsHeader: {
         width: "100%",
         alignItems: 'flex-start',
-        marginTop: 94,
-        marginStart: 25,
+        marginTop: 70,
       },
       menuPagesFooterHeader: {
         width: "100%",
@@ -153,13 +141,11 @@ export default StyleSheet.create({
         width: "100%",
         alignItems: 'flex-start',
         marginTop: 10,
-        marginStart: 25,
       },
       menuPagesSecondHeader: {
         width: "100%",
         alignItems: 'flex-start',
         marginTop: 28,
-        marginStart: 25,
       },
       headerLeft: {
         alignItems: "flex-start",
@@ -184,7 +170,7 @@ export default StyleSheet.create({
       menuTitle: {
         fontFamily: 'Montserrat',
         fontSize: 30,
-        fontWeight: "bold",
+        fontWeight: "700",
         color: "#FFFFFF",
       },
       subtitle: {
@@ -204,7 +190,6 @@ export default StyleSheet.create({
         fontSize: 24,
         color: "#FFFFFF",
         fontWeight: "400",
-        marginTop: 142,
       },
       //Это можно использовать для View, который располагает кнопки
       buttons: {
@@ -215,22 +200,15 @@ export default StyleSheet.create({
       menuTopButtons: {
         width: "100%",
         flexDirection: 'row',
-        justifyContent: 'center',
-        gap: 15,
-        paddingStart: 25,
-        paddingEnd: 24,
+        gap: 10,
         marginTop: 43,
       },
       menuBottomButtons: {
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: 'space-between',
         width: "100%",
         gap: 10,
-        paddingStart: 20,
-        paddingEnd: 40, 
         marginTop: 73,
-        marginBottom: 245,
       },
       //Это белая кнопка с черным текстом
       WhiteButton: {
@@ -284,11 +262,12 @@ export default StyleSheet.create({
         fontFamily: 'Montserrat',
         fontSize: 15,
         fontWeight: "bold",
-        color: "#000000",
+        color: "#313231",
       },
       alertText: {
         fontFamily: 'Montserrat',
         fontSize: 11,
+        fontWeight: "bold",
         color: "#D83731",
       },
       //Это кнопка сливающаяся с фоном и текс белый
@@ -318,9 +297,10 @@ export default StyleSheet.create({
       },
       footerDocumentsText: {
         fontSize: 18,
+        fontFamily: 'Montserrat',
+        fontWeight: "400",
         color: "#FFFFFF",
-        marginStart: 25,
-        marginTop: 50,
+        marginTop: 25,
         textAlign: "center",
       },
       TextField: {
@@ -357,8 +337,7 @@ export default StyleSheet.create({
         tintColor: "#007BFF",
       },
       containerLine: {
-        paddingStart: 24,
-        paddingEnd: 91,
+        paddingEnd: 92,
         width: '100%',
         marginTop: 10,
       },
@@ -370,9 +349,8 @@ export default StyleSheet.create({
       // flatlist
       firmsAndPointsFlatListContainer: {
         flex: 1,
-        paddingHorizontal: 25,
-        marginTop: 27,
-        marginBottom: 230
+        marginTop: 28,
+        marginBottom: 96,
       },
       itemFlatList: {
         flexDirection: "row",
@@ -405,10 +383,7 @@ export default StyleSheet.create({
       containerButtonsBottomFlatList: {
         width: "100%",
         height: 120,  
-        paddingHorizontal: 25,
         paddingVertical: 10,
-        position: 'absolute', 
-        bottom: 43, 
        justifyContent: 'flex-end', 
       },
   });
