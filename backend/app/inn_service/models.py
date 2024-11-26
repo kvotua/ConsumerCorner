@@ -10,13 +10,11 @@ class CompanyModel(Model):
         host = "http://localhost:8000"
         aws_access_key_id = "dummy"
         aws_secret_access_key = "dummy"
-
     inn = UnicodeAttribute(hash_key=True)
     name = UnicodeAttribute()
     ogrn = UnicodeAttribute()
     kpp = UnicodeAttribute()
     address = UnicodeAttribute()
-
     def to_schema(self) -> CompanySchema:
         return CompanySchema(
             inn=self.inn,
@@ -25,8 +23,6 @@ class CompanyModel(Model):
             kpp=self.kpp,
             address=self.address,
         )
-
-
 class IpModel(Model):
     class Meta:
         table_name = "Ip"
@@ -34,12 +30,10 @@ class IpModel(Model):
         host = "http://localhost:8000"
         aws_access_key_id = "dummy"
         aws_secret_access_key = "dummy"
-
     inn = UnicodeAttribute(hash_key=True)
     fio = UnicodeAttribute()
     ogrn = UnicodeAttribute()
     address = UnicodeAttribute()
-
     def to_schema(self) -> IpSchema:
         return IpSchema(
             fio=self.fio,

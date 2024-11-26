@@ -1,18 +1,20 @@
 from dadata import Dadata
 from dotenv import load_dotenv
 import os
-from .schemas import IpSchema,CompanySchema
+from .schemas import IpSchema,CompanySchema,ErrorSchema
 
 class INNService:
     def __init__(self,env_path: str):
         load_dotenv(dotenv_path=env_path)
         self.api_token = os.getenv("API_TOKEN_INN")
-    def fetch_company_data(self,inn: str) -> CompanySchema:
+    def fetch_company_data(self,inn: str) -> CompanySchema or ErrorSchema:
         dadata = Dadata(self.api_token)
         result = dadata.find_by_id("party", inn)
         if not result:
-            return None
-
+            return ErrorSchema(
+                status_code=404,
+                message="data is not found"
+            )
         company_data = result[0]['data']
         return CompanySchema(
             inn=inn,
@@ -21,10 +23,14 @@ class INNService:
             kpp=company_data['kpp'],
             address=company_data['address']['value'],
         )
-
-    def fetch_ip_data(self,inn: str) -> IpSchema:
+    def fetch_ip_data(self,inn: str) -> IpSchema or ErrorSchema:
         dadata = Dadata(self.api_token)
         result = dadata.find_by_id("party", inn)
+        if not result:
+            return ErrorSchema(
+                status_code=404,
+                message="data is not found"
+            )
         data = result[0]['data']
         fio = f'{data['fio']['surname']} {data['fio']['name']} {data['fio']['patronymic']}'
         ogrn = data['ogrn']
@@ -34,25 +40,34 @@ class INNService:
             ogrn=ogrn,
             address=address,
         )
-
-    def validate_inn(self,inn: str) -> bool:
+    def validate_inn(self,inn: str) -> bool or ErrorSchema:
         if len(inn) not in [10, 12]:
-            return False
-
+            return ErrorSchema(
+                status_code=404,
+                message="Wrong number of characters in INN"
+            )
         if not inn.isdigit():
-            return False
-
+            return ErrorSchema(
+                status_code=404,
+                message="INN can only be their numbers"
+            )
         if len(inn) == 10:
             weights = [2, 4, 10, 3, 5, 9, 4, 6, 8]
             control_digit = sum(int(inn[i]) * weights[i] for i in range(9)) % 11 % 10
-            return control_digit == int(inn[9])
-
+            if control_digit == int(inn[9]):
+                return True
+            return ErrorSchema(
+                status_code=404,
+                message="INN is not valid"
+            )
         if len(inn) == 12:
             weights_1 = [7, 2, 4, 10, 3, 5, 9, 4, 6, 8]
             weights_2 = [3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8]
             control_digit_1 = sum(int(inn[i]) * weights_1[i] for i in range(10)) % 11 % 10
             control_digit_2 = sum(int(inn[i]) * weights_2[i] for i in range(11)) % 11 % 10
-
-            return control_digit_1 == int(inn[10]) and control_digit_2 == int(inn[11])
-
-        return False
+            if control_digit_1 == int(inn[10]) and control_digit_2 == int(inn[11]):
+                return True
+            return ErrorSchema(
+                status_code=404,
+                message="INN is not valid"
+            )
