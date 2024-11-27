@@ -8,7 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.auth.routes import router as auth_router
 from app.users.models import UserModel
 from app.users.routes import router as users_router
-
+from app.verifnum.router import router as verif_router
+from app.verifnum.models import Verify
+from app.verifnum import init_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator:
