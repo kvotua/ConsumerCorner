@@ -14,20 +14,11 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-try:
-    with engine.connect() as connection:
-        result = connection.execute(
-            text("SELECT table_schema, table_name FROM information_schema.tables"))
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-        # Получаем все таблицы
-        tables = result.fetchall()
-        if tables:
-            print("Таблицы в базе данных:")
-            for table in tables:
-                # Используем индексы для доступа к значениям
-                print(f"Схема: {table[0]}, Таблица: {table[1]}")
-        else:
-            print("Таблицы не найдены.")
-except Exception as e:
-    print(f"Ошибка подключения: {e}")
 
