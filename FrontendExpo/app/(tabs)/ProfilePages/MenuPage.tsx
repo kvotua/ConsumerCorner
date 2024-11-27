@@ -4,10 +4,10 @@ import {
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
   StyleSheet,
 } from "react-native";
 import styles from "../../Styles/Style";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Menupage({ navigation }) {
   return (

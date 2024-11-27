@@ -4,10 +4,10 @@ import {
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
   FlatList, 
   StyleSheet
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from "../../Styles/Style";
 
 export default function Documents({ navigation }) {
@@ -24,7 +24,7 @@ export default function Documents({ navigation }) {
   
     // Функция рендеринга каждого элемента
   const renderItem = ({ item }) => (
-      <View style={localStyles.itemFlatList}>
+      <View style={styles.documentsItemFlatList}>
         <TouchableOpacity style={localStyles.button}>
             <Text style={localStyles.buttonText}>{item.title}</Text>
         </TouchableOpacity>
@@ -71,12 +71,6 @@ export default function Documents({ navigation }) {
 const localStyles = StyleSheet.create({
   flatListContainer: {
     height: "45%",
-    marginTop: 91,
-  },
-  itemFlatList: {
-    flexDirection: "column",
-    alignItems: 'center',
-    marginBottom: 60,
   },
   button: {
     width: "100%",
@@ -85,8 +79,10 @@ const localStyles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
     borderTopRightRadius: 10,
+    marginTop: 12,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+
   },
   buttonText: {
     fontSize: 18,

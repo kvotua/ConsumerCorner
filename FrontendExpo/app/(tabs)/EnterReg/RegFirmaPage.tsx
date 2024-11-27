@@ -4,13 +4,13 @@ import {
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
   ImageBackground,
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
   Platform,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
@@ -30,7 +30,7 @@ export default function RegFirma({ navigation }) {
   };
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-      <SafeAreaView style={Style.container}>
+      <SafeAreaView style={Style.containerMainPage}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -38,12 +38,12 @@ export default function RegFirma({ navigation }) {
             <View style={Style.headerLeft}>
               <Text style={Style.titleHead}>Зарегистрируйте </Text>
               <Text style={Style.titleHead}>фирму</Text>
-              <View style={StyleSheet.flatten([Style.containerLine, {left: "-7%", top:"-10%"}])}>
+              <View style={StyleSheet.flatten([Style.containerLine])}>
               <View style={Style.menuPagesLine}/>
               </View>
             </View>
-          <ScrollView contentContainerStyle={StyleSheet.flatten([Style.scrollContainer, {top:"-5%"}])}>
-            <View style={StyleSheet.flatten([Style.fields])}>
+          <ScrollView contentContainerStyle={StyleSheet.flatten([Style.scrollContainer])}>
+            <View style={StyleSheet.flatten([localStyles.fields])}>
               <Text style={Style.titleSimple}>Название фирмы</Text>
 
               <TextInputMask
@@ -78,24 +78,33 @@ export default function RegFirma({ navigation }) {
 
               <Text style={Style.titleSimple}>Основной вид деятельности</Text>
               <TextInput style={Style.textInputProfile} placeholder="Частное предприятие" />
-            </View>
-            <View style={Style.passwordContainer}>
-            <Text style={StyleSheet.flatten([Style.titleSimple, {marginTop: 5, fontSize: 14,}])}>Пригласите партнеров и</Text>
-                    <Text style={StyleSheet.flatten([Style.titleSimple, {marginTop: -10, fontSize: 14,}])}>собственников бизнеса</Text>
-                    <TextInput style={Style.textInputProfile}/>
-                    <TouchableOpacity //кнопка копирования
-                    style={StyleSheet.flatten([Style.iconButton, {right:55, top:73}])}
-                    >
-                    <Icon name={'copy'} size={24} color="#00000" />
-                  </TouchableOpacity>
-                  <TouchableOpacity //кнопка копирования
-                    style={StyleSheet.flatten([Style.iconButton, {right:10,  top:73}])}
-                    >
-                    <Share/>
-                  </TouchableOpacity>
-            </View>
 
-            <View style={StyleSheet.flatten([Style.buttons, {alignItems: "center"}])}>
+              <View style={localStyles.passwordContainer}>
+              <Text style={StyleSheet.flatten([Style.titleSimple, {marginTop: 15, fontSize: 12}])}>Пригласите партнеров и</Text>
+              <Text style={StyleSheet.flatten([Style.titleSimple, {marginTop: 0, fontSize: 12}])}>собственников бизнеса</Text>
+              
+              <View style={localStyles.iconButtonContainer}>
+                <TextInput
+                  style={Style.textInputProfile}
+                  placeholder="Введите текст"
+                />
+                <TouchableOpacity // кнопка копирования
+                  style={[localStyles.button, { margin: 35 }]}
+                >
+                  <Icon name={'copy'} size={24} color="#000000" />
+                </TouchableOpacity>
+                <TouchableOpacity // кнопка поделиться
+                  style={[localStyles.button]}
+                >
+                  <Share />
+                </TouchableOpacity>
+              </View>
+            </View>
+            </View>
+           
+          </ScrollView>
+        </KeyboardAvoidingView>
+        <View style={StyleSheet.flatten([Style.buttons, {alignItems: "center"}])}>
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() =>
@@ -108,9 +117,35 @@ export default function RegFirma({ navigation }) {
                 <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>
   );
 }
+
+const localStyles = StyleSheet.create({
+
+  fields: {
+    width: "100%",
+  },
+  passwordContainer: {
+  },
+  iconButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  iconButton: {
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    fontSize: 16,
+    flex: 1, // Take up the remaining space
+  },
+  button: {
+    position: 'absolute', // Position the buttons absolutely
+    right: 5, // Position the buttons to the right
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+});

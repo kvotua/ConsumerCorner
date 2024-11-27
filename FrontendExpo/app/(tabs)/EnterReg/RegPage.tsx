@@ -3,13 +3,13 @@ import {
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
   ImageBackground,
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
   Platform,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
@@ -33,7 +33,7 @@ export default function RegPage({ navigation }) {
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-      <SafeAreaView style={Style.container}>
+      <SafeAreaView style={Style.containerMainPage}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}

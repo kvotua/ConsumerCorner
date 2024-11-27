@@ -1,5 +1,8 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
+const { width } = Dimensions.get('window');
+
+const isTablet = width >= 768;
 
 export default StyleSheet.create({
     //все до следующего комма в основоном действует глобально на страницу
@@ -15,7 +18,7 @@ export default StyleSheet.create({
       },
       containerMainPage: {
         flex: 1,
-        padding: 25,
+        padding: isTablet ? 152 : 25, 
       },
       containerProfile: {
         width: "100%",
@@ -177,13 +180,13 @@ export default StyleSheet.create({
         fontFamily: 'Montserrat',
         fontSize: 16,
         color: "#FFFFFF",
-        textAlign: "center",
       },
       titleSimple: {
+        width:"100%",
         fontSize: 18,
         fontFamily: 'Montserrat',
         color: "#FFFFFF",
-        marginBottom: 10,
+        marginTop:10,
         alignSelf: "flex-start",
       },
       profileTitle: {
@@ -294,6 +297,8 @@ export default StyleSheet.create({
         textAlign: "center",
         fontFamily: 'Montserrat',
         marginBottom: 20,
+        alignSelf: 'flex-end', 
+        justifyContent: 'flex-end'
       },
       footerDocumentsText: {
         fontSize: 18,
@@ -304,7 +309,7 @@ export default StyleSheet.create({
         textAlign: "center",
       },
       TextField: {
-        width: 350,
+        width: "100%",
         height: 50,
         borderRadius: 5,
         backgroundColor: "white",
@@ -318,18 +323,17 @@ export default StyleSheet.create({
       },
       fields: {
         width: "100%",
-        alignItems: "center",
+        marginBottom: 200,
         marginTop: 30
       },
       //Эти три стиля предназначены для того, чтбы делать наложения
       passwordContainer: {
-        position: "relative",
-        width: 350,
+        width: "100%",
       },
       iconButton: {
         position: "absolute",
         right: 10,
-        top: 12,
+        top: 20,
       },
       icon: {
         width: 24,
@@ -385,5 +389,11 @@ export default StyleSheet.create({
         height: 120,  
         paddingVertical: 10,
        justifyContent: 'flex-end', 
+      },
+      //
+      documentsItemFlatList: {
+        flexDirection: "column",
+        alignItems: 'center',
+        marginBottom: isTablet ? 48 : 32, 
       },
   });

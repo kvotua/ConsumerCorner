@@ -1,10 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import NavigateApp from '../Navigation/NavigationApp';
+import NavigateApp from '../navigation/NavigationApp';
+// import ScreenOrientation from 'expo-screen-orientation';
 
 export default function HomeScreen() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  // async function changeScreenOrientation() {
+  //   await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
+  // }
+
+  // changeScreenOrientation();
 
   // Функция для загрузки шрифтов
   const loadFonts = useCallback(async () => {
@@ -35,6 +42,6 @@ export default function HomeScreen() {
   }
 
   return (
-    <NavigateApp onLayout={onLayoutRootView} />
+            <NavigateApp onLayout={onLayoutRootView} />
   );
 }

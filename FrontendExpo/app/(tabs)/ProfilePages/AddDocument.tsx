@@ -4,12 +4,11 @@ import {
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
   TextInput,
   Switch,
   StyleSheet,
-  Image,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from "../../Styles/Style";
 
 export default function AddDocument({ navigation }) {

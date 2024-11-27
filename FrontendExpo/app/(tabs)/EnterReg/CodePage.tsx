@@ -4,19 +4,19 @@ import {
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
   ImageBackground,
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
   Platform,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "../../Styles/Style"
 
 export default function CodePage({ navigation}) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-      <SafeAreaView style={Style.container}>
+      <SafeAreaView style={Style.containerMainPage}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -25,16 +25,16 @@ export default function CodePage({ navigation}) {
             <View style={Style.header}>
               <Text style={Style.titleHead}>Код подтверждения</Text>
             </View>
-            <View style={Style.fields}>
+            <View style={StyleSheet.flatten([Style.fields, {justifyContent: 'flex-start', }])}>
               <Text style={Style.titleSimple}>
                 Введите код подтверждения из SMS - сообщнеия, отправленного на
                 номер
               </Text>
               <TextInput
-                style={Style.TextField}
+                style={Style.textInputProfile}
                 placeholder="Код подтверждения"
               />
-              <Text style={StyleSheet.flatten([Style.subtitle, {marginLeft: "-40%", color:"silver", marginTop: -10,}])}>Код действует еще .. секунд</Text>
+              <Text style={StyleSheet.flatten([Style.subtitle, { color:"silver", textAlign: "left", }])}>Код действует еще .. секунд</Text>
             </View>
 
             <View style={Style.buttons}>

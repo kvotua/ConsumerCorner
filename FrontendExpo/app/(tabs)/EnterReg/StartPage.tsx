@@ -4,11 +4,12 @@ import {
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
   StyleSheet,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from "../Notif/toasts/Toast";
 import styles from "../../Styles/Style"; // Глобальные стили
+
 
 export default function StartPage({ navigation }) {
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
@@ -23,7 +24,7 @@ export default function StartPage({ navigation }) {
       source={require("../../../assets/images/background.png")}
       style={styles.background}
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.containerMainPage}>
         {/* Компонент Toast */}
         {toast.visible && (
           <Toast
@@ -48,7 +49,7 @@ export default function StartPage({ navigation }) {
           </Text>
         </View>
 
-        <View style={StyleSheet.flatten([styles.buttons, {top: "-15%"}])}>
+        <View style={StyleSheet.flatten(styles.buttons)}>
           <TouchableOpacity
             style={styles.WhiteButton}
             onPress={() => navigation.replace("Register")}
@@ -74,17 +75,29 @@ export default function StartPage({ navigation }) {
             <Text style={styles.DefText}>Тест</Text>
           </TouchableOpacity> */}
         </View>
-
-        <Text
-          style={StyleSheet.flatten([
-            styles.footerText,
-            { color: "silver", marginLeft: 15, marginRight: 15 },
-          ])}
-        >
-          Удобные инструменты позволяют вашему бизнесу быть в курсе и оперативно
-          реагировать на пожелания клиента.
-        </Text>
+        
+        <View style={localStyles.footerTextContainer}>
+          <Text style={localStyles.footerText}>
+            Удобные инструменты позволяют вашему бизнесу быть в курсе и оперативно
+            реагировать на пожелания клиента
+          </Text>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
 }
+
+const localStyles = StyleSheet.create({
+  footerText: {
+    fontSize: 16,
+    color: "silver",
+    textAlign: "center",
+    fontFamily: 'Montserrat',
+    marginBottom: 15,
+    fontWeight: "400",
+  },
+  footerTextContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+  }
+});

@@ -4,13 +4,13 @@ import {
   Text,
   View,
   TouchableOpacity,
-  SafeAreaView,
   ImageBackground,
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
   Platform,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 
@@ -51,11 +51,9 @@ export default function Enter({ navigation }) {
                 <View style={StyleSheet.flatten([Style.buttons])}>
                 <TouchableOpacity
                     style={Style.WhiteButton}
-                    onPress={() =>
-                    navigation.replace("CodeConfirm")
-                    }
+                    onPress={() => navigation.replace("MenuPage")}
                 >
-                    <Text style={Style.blackText} onPress={() => navigation.replace("MenuPage")}>Далее</Text>
+                    <Text style={Style.blackText} >Далее</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Start")}>
                     <Text style={Style.DefText}>Назад</Text>

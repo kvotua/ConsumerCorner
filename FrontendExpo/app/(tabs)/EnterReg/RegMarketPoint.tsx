@@ -4,12 +4,12 @@ import {
   Text,
   View,
   ImageBackground,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "@/app/Styles/Style";
 import { TextInput } from "react-native-gesture-handler";
 
