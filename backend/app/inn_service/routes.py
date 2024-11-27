@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query
 from fastapi.requests import Request
 from .services import INNService
-from .schemas import ErrorSchema
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
-
-env_path = Path(__file__).parent / '.env'
+env_path = Path(__file__).parent.parent / '.env'
 router = APIRouter(prefix="/inn_service", tags=["inn_service"])
 inn_service = INNService(env_path)
 @router.get("/inn_info")
