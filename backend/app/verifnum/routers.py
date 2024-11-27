@@ -10,7 +10,7 @@ from .db import get_session
 from .models import Verify, Base
 
 
-router = APIRouter(prefix='/auth')
+router = APIRouter(prefix='/verif')
 http_client = HttpClient()
 
 
