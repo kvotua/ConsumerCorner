@@ -1,0 +1,16 @@
+Index: backend/app/verifnum/router.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from fastapi import APIRouter, HTTPException, Depends, Query\r\nfrom typing import Annotated\r\n\r\nfrom sqlalchemy.ext.asyncio import AsyncSession\r\n\r\nfrom\r\nfrom .utils import HttpClient, generate_code, generate_text\r\nfrom .schemas import Phone\r\nfrom .db import get_session\r\nfrom .models import Verify\r\nfrom .config import user_api, pass_api\r\n\r\nrouter = APIRouter(prefix='/auth')\r\nhttp_client = HttpClient()\r\n\r\n\r\n# @router.get('/all')\r\n# async def all(session: AsyncSession = Depends(get_session)):\r\n#     data = await session.execute(select(Verify))\r\n#     array = data.scalars().all()\r\n#     return [Verify(request_id=item.request_id, sms_code=item.sms_code) for item in array]\r\n\r\n\r\n@router.post(\"/send\")\r\nasync def send_message(\r\n    number: Phone, \r\n    session: AsyncSession = Depends(get_session)\r\n    ):\r\n    code = generate_code()\r\n    params = {\r\n    'to': number.phone,\r\n    'txt': generate_text(code),\r\n    'from': 'test',\r\n    'user': str(user_api),\r\n    'pass': str(pass_api),\r\n    }\r\n    try:\r\n        response = await http_client.send_message(\r\n            'https://api3.greensms.ru/sms/send',\r\n            data=params\r\n        )\r\n        data = Verify(request_id=response, sms_code=code)\r\n        session.add(data)\r\n        await session.commit()\r\n        await session.refresh(data)\r\n        return response\r\n    except Exception as e:\r\n        raise HTTPException(status_code=500, detail=str(e))\r\n    \r\n\r\n@router.get('/check')\r\nasync def check_code(\r\n    req_id: Annotated[str, Query(..., title='ID сессии, полученный после отправки номера', min_length=36, max_length=36)],\r\n    sms_code: Annotated[str, Query(..., title='СМС-код, отправленный на номер', min_length=5, max_length=5)],\r\n    session: AsyncSession = Depends(get_session),\r\n):\r\n    response = await session.get(Verify, req_id)\r\n    \r\n    data_by_db = {\r\n        'request_id': response.request_id,\r\n        'sms_code': response.sms_code,\r\n    }\r\n    data_by_user = {\r\n        'request_id': req_id,\r\n        'sms_code': sms_code,\r\n    }\r\n    if data_by_db == data_by_user:\r\n        pass\r\n\r\n
+===================================================================
+diff --git a/backend/app/verifnum/router.py b/backend/app/verifnum/router.py
+--- a/backend/app/verifnum/router.py	(revision 42e54ef3bcbbe0517ffad2b8f2c1e386c44f79ae)
++++ b/backend/app/verifnum/router.py	(date 1732728147534)
+@@ -3,7 +3,6 @@
+ 
+ from sqlalchemy.ext.asyncio import AsyncSession
+ 
+-from
+ from .utils import HttpClient, generate_code, generate_text
+ from .schemas import Phone
+ from .db import get_session

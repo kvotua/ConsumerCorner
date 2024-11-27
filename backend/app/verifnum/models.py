@@ -1,12 +1,10 @@
-from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
+from sqlalchemy import Column, String
+from sqlalchemy.ext.declarative import declarative_base
 
+Base = declarative_base()
 
-class Base(DeclarativeBase):
-    pass
+class Verification(Base):
+    __tablename__ = 'verification'
 
-
-class Verify(Base):
-    __tablename__ = 'activeverif'
-    
-    request_id: Mapped[str] = mapped_column(primary_key=True)
-    sms_code: Mapped[str] = mapped_column()
+    request_id = Column(String, primary_key=True)
+    sms_code = Column(String)

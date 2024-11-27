@@ -24,6 +24,7 @@ from ConsumerCorner.backend.app.verifnum.routers import router as verifnum_route
 #     yield
 
 
+
 debug = os.getenv("DEBUG") is not None
 app = FastAPI(debug=debug)#, lifespan=lifespan)
 app.add_middleware(

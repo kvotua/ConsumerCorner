@@ -1,20 +1,23 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from ConsumerCorner.backend.app.config import db_url
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine,async_sessionmaker
+from .config import db_url
 
 
-DATABASE_URL = db_url
-engine = create_engine(DATABASE_URL, echo=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_async_engine(
+    url=db_url,
+    echo=True,
+    future=True,
+    )
 
-Base = declarative_base()
+# async def init_db():
+#     async with engine.begin() as conn:
+#         await conn.run_sync(Verify.metadata.create_all)
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
+async def get_session():
+    async_session = async_sessionmaker(
+        bind=engine,
+        class_=AsyncSession,
+        expire_on_commit=False,
+        autoflush=False,
+    )
+    async with async_session() as session:
+        yield session
