@@ -1,13 +1,11 @@
 from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query
 from fastapi.requests import Request
 from .services import INNService
-from pathlib import Path
-from dotenv import load_dotenv
-import os
+from ConsumerCorner.backend.app.config import token
 
-env_path = Path(__file__).parent.parent / '.env'
+
 router = APIRouter(prefix="/inn_service", tags=["inn_service"])
-inn_service = INNService(env_path)
+inn_service = INNService(token)
 @router.get("/inn_info")
 async def result_page(request: Request, inn: str):
     validate_result = inn_service.validate_inn(inn)
