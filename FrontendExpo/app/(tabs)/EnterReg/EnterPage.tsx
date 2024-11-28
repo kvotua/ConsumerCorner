@@ -17,13 +17,12 @@ import Style from "@/app/Styles/Style";
 export default function Enter({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-      <SafeAreaView style={Style.container}>
+      <SafeAreaView style={Style.containerMainPage}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <ScrollView contentContainerStyle={StyleSheet.flatten([Style.scrollContainer])}>
-            <View style={Style.header}>
+            <View style={[Style.menuHeader, {alignItems: "center",}]}>
               <Text style={StyleSheet.flatten([Style.titleHead])}>Вход</Text>
             </View>
             <View style={Style.fields}>
@@ -45,10 +44,10 @@ export default function Enter({ navigation }) {
                 placeholder="Пароль"
                 />
                 <TouchableOpacity>
-                  <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver", marginTop:20, marginLeft: "-55%"}])}>Напомнить пароль</Text>
+                  <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver"}])}>Напомнить пароль</Text>
                 </TouchableOpacity>
 
-                <View style={StyleSheet.flatten([Style.buttons])}>
+                <View style={StyleSheet.flatten([Style.buttons, {marginTop:250}])}>
                 <TouchableOpacity
                     style={Style.WhiteButton}
                     onPress={() => navigation.replace("MenuPage")}
@@ -60,9 +59,14 @@ export default function Enter({ navigation }) {
                 </TouchableOpacity>
                 </View>
             </View>
-          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>
   );
 }
+
+const localStyle = StyleSheet.create({
+  TouchFogotPass:{
+
+  }
+})

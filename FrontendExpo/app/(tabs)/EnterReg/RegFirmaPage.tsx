@@ -103,7 +103,7 @@ export default function RegFirma({ navigation }) {
            
           </ScrollView>
         </KeyboardAvoidingView>
-        <View style={StyleSheet.flatten([Style.buttons, {justifyContent: 'flex-end'}])}>
+        <View style={StyleSheet.flatten([Style.buttons, {justifyContent: 'flex-start'}])}>
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() =>

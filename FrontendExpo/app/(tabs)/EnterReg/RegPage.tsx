@@ -25,8 +25,8 @@ export default function RegPage({ navigation }) {
     setPhoneValue(text);
 
     // Извлекаем только цифры из введенного значения
-    const numericValue = text.replace(/\D/g, ""); // Удаляем всё, кроме цифр
-    setRawPhoneValue(numericValue); // Сохраняем чистое значение
+    const numericValue = text.replace(/\D/g, ""); 
+    setRawPhoneValue(numericValue);
   };
 
   const handleFocus = () => {
@@ -88,7 +88,7 @@ export default function RegPage({ navigation }) {
               <TextInput style={Style.textInputProfile} placeholder="Ф.И.О" />
             </View>
 
-            <View style={[Style.buttons, { marginTop: 200 }]}>
+            <View style={[Style.buttons, {justifyContent: 'flex-start'}]}>
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() => {

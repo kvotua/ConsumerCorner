@@ -16,27 +16,23 @@ import Style from "../../Styles/Style"
 export default function CodePage({ navigation}) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-      <SafeAreaView style={[Style.containerMainPage, {alignSelf:"stretch"}]}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
+      <SafeAreaView style={[Style.containerMainPage]}>
             <View style={[Style.menuHeader, {alignItems: "center",}]}>
-              <Text style={Style.titleHead}>Код подтверждения</Text>
+                <Text style={Style.titleHead}>Код подтверждения</Text>
             </View>
-            <View style={StyleSheet.flatten([Style.fields])}>
-              <Text style={Style.titleSimple}>
-                Введите код подтверждения из SMS - сообщнеия, отправленного на
-                номер
-              </Text>
-              <TextInput
-                style={Style.textInputProfile}
-                placeholder="Код подтверждения"
-              />
-              <Text style={StyleSheet.flatten([Style.subtitle, { color:"silver", textAlign: "left", }])}>Код действует еще .. секунд</Text>
-            </View>
+              <View style={StyleSheet.flatten([Style.fields])}>
+                <Text style={Style.titleSimple}>
+                  Введите код подтверждения из SMS - сообщнеия, отправленного на
+                  номер
+                </Text>
+                <TextInput
+                  style={Style.textInputProfile}
+                  placeholder="Код подтверждения"
+                />
+                <Text style={StyleSheet.flatten([Style.subtitle, { color:"silver"}])}>Код действует еще .. секунд</Text>
+              </View>
 
-            <View style={[Style.buttons, {justifyContent: 'flex-end'}]}>
+            <View style={[Style.buttons, {marginTop:250}]}>
               <TouchableOpacity style={Style.WhiteButton} onPress={() => navigation.replace("Inn")}>
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
@@ -48,7 +44,6 @@ export default function CodePage({ navigation}) {
                 </Text>
               </TouchableOpacity>
             </View>
-        </KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>
   );

@@ -56,11 +56,9 @@ export default function MarketPoint({ navigation }) {
             <View style={[Style.buttons]}>
               <TouchableOpacity
                 style={Style.WhiteButton}
-                onPress={() =>
-                  navigation.replace("CodeConfirm")
-                }
+                onPress={() => navigation.replace("MenuPage")}
               >
-                <Text style={Style.blackText} onPress={() => navigation.replace("MenuPage")}>Завершение регистрации</Text>
+                <Text style={Style.blackText} >Завершение регистрации</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("RegFirma")}>
                 <Text style={Style.DefText}>Назад</Text>
