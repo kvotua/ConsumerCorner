@@ -6,20 +6,23 @@ from sqlalchemy.future import select
 
 from .utils import HttpClient, generate_code, generate_text
 from .schemas import ReqID, Phone, GetReqIdWithSMS
-from app.database import get_session
-from .models import Verify, Base
-from app.config import user_name, user_pass, send_from
+from database import get_session
+from .models import Verification, Base
+from config import user_name, user_pass, send_from
 
 
-router = APIRouter(prefix='/verif')
+router = APIRouter(
+    prefix='/verif',
+    tags=['VerifNum'],
+    )
 http_client = HttpClient()
 
 
 @router.get('/all')
 async def all(session: AsyncSession = Depends(get_session)):
-    data = await session.execute(select(Verify))
+    data = await session.execute(select(Verification))
     array = data.scalars().all()
-    return [Verify(request_id=item.request_id, sms_code=item.sms_code) for item in array]
+    return [Verification(request_id=item.request_id, sms_code=item.sms_code) for item in array]
 
 
 @router.post("/send")
@@ -40,7 +43,7 @@ async def send_message(
             'https://api3.greensms.ru/sms/send',
             data=params
         )
-        data = Verify(request_id=response, sms_code=code)
+        data = Verification(request_id=response, sms_code=code)
         session.add(data)
         await session.commit()
         await session.refresh(data)
@@ -55,7 +58,7 @@ async def check_code(
     sms_code: Annotated[str, Query(..., title='СМС-код, отправленный на номер', min_length=5, max_length=5)],
     session: AsyncSession = Depends(get_session),
 ):
-    response = await session.get(Verify, req_id)
+    response = await session.get(Verification, req_id)
     
     data_by_db = {
         'request_id': response.request_id,
@@ -66,4 +69,3 @@ async def check_code(
         'sms_code': sms_code,
     }
     return data_by_db == data_by_user
-

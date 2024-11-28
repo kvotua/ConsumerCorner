@@ -11,6 +11,7 @@ from ConsumerCorner.backend.app.users.routes import router as users_router
 from ConsumerCorner.backend.app.inn_service.routes import router as inn_service_router
 from ConsumerCorner.backend.app.verifnum.routers import router as verifnum_router
 from ConsumerCorner.backend.app.database import engine
+from database import create_tables
 
 # @asynccontextmanager
 # async def lifespan(app: FastAPI) -> AsyncIterator:
@@ -23,11 +24,15 @@ from ConsumerCorner.backend.app.database import engine
 #                 billing_mode="PAY_PER_REQUEST",
 #             )
 #     yield
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await create_tables()
+    yield
 
-Base.metadata.create_all(bind=engine)
+
 
 debug = os.getenv("DEBUG") is not None
-app = FastAPI(debug=debug)#, lifespan=lifespan)
+app = FastAPI(debug=debug, lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String
 from sqlalchemy.ext.declarative import declarative_base
+from models import Base
 
-Base = declarative_base()
 
 class Verification(Base):
     __tablename__ = 'verification'

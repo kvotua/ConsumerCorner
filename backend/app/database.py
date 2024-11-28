@@ -8,9 +8,10 @@ engine = create_async_engine(
     future=True,
     )
 
-# async def init_db():
-#     async with engine.begin() as conn:
-#         await conn.run_sync(Verify.metadata.create_all)
+async def create_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    await engine.dispose()
 
 async def get_session():
     async_session = async_sessionmaker(
@@ -18,6 +19,7 @@ async def get_session():
         class_=AsyncSession,
         expire_on_commit=False,
         autoflush=False,
+        autocommit=False,
     )
     async with async_session() as session:
         yield session

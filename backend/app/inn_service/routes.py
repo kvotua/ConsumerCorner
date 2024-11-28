@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query
 from fastapi.requests import Request
 from .services import INNService
-from ConsumerCorner.backend.app.config import token
+from config import token
 
 
 router = APIRouter(prefix="/inn_service", tags=["inn_service"])
