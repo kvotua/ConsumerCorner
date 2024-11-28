@@ -5,11 +5,12 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ConsumerCorner.backend.app.auth.routes import router as auth_router
-from ConsumerCorner.backend.app.users.models import UserModel
-from ConsumerCorner.backend.app.users.routes import router as users_router
-from ConsumerCorner.backend.app.inn_service.routes import router as inn_service_router
-from ConsumerCorner.backend.app.verifnum.routers import router as verifnum_router
+from auth.routes import router as auth_router
+from users.models import UserModel
+from users.routes import router as users_router
+from inn_service.routes import router as inn_service_router
+from verifnum.routers import router as verifnum_router
+from database import create_tables, Base
 
 # @asynccontextmanager
 # async def lifespan(app: FastAPI) -> AsyncIterator:
@@ -22,11 +23,15 @@ from ConsumerCorner.backend.app.verifnum.routers import router as verifnum_route
 #                 billing_mode="PAY_PER_REQUEST",
 #             )
 #     yield
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await create_tables()
+    yield
 
 
 
 debug = os.getenv("DEBUG") is not None
-app = FastAPI(debug=debug)#, lifespan=lifespan)
+app = FastAPI(debug=debug, lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

@@ -6,7 +6,7 @@ from pydantic import EmailStr
 
 from .dependencies import access_security, refresh_security, email_security
 from .schemas import AccessToken, RefreshToken, TokenPairSchema
-from  ConsumerCorner.backend.app.users.schemas import UserId
+from users.schemas import UserId
 
 
 def set_access_token(response: Response, subject: dict[str, Any]) -> AccessToken:

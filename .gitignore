@@ -1,2 +1,3 @@
 backend/app/inn_service/.env
 .idea
+.venv
