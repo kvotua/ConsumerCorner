@@ -1,4 +1,4 @@
-from sqlalchemy import text, BigInteger, Text, ForeignKey, func
+from sqlalchemy import text, BigInteger, Text, ForeignKey, func, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column
 import datetime
@@ -32,11 +32,11 @@ class Enterprises(Base):
     name: Mapped[str] = mapped_column()
     type: Mapped[str] = mapped_column()
     create_id: Mapped[str] = mapped_column()
-    inn: Mapped[int] = mapped_column(BigInteger)
+    inn: Mapped[str] = mapped_column()
     ogrn: Mapped[str] = mapped_column()
     general_type_activity: Mapped[str] = mapped_column()
     role_id: Mapped[str] = mapped_column()
-    data_added: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
 class Points(Base):
@@ -48,9 +48,9 @@ class Points(Base):
     address: Mapped[str] = mapped_column()
     phone: Mapped[str] = mapped_column()
     type_activity: Mapped[str] = mapped_column()
-    middle_stars: Mapped[float] = mapped_column()
+    middle_stars: Mapped[float] = mapped_column(Float)
     verify_phone: Mapped[str] = mapped_column()
-    data_added: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
 class Docs(Base):
@@ -66,8 +66,9 @@ class Comments(Base):
     id: Mapped[str] = mapped_column(primary_key=True)
     point_id: Mapped[str] = mapped_column(ForeignKey('points.id'))
     text: Mapped[str] = mapped_column(Text)
-    stars: Mapped[int] = mapped_column(BigInteger)
-    data_added: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+    stars: Mapped[str] = mapped_column()
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+
 
 class Imgs(Base):
     __tablename__ = 'imgs'
