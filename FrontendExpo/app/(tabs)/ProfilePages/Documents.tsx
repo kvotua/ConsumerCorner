@@ -53,6 +53,7 @@ export default function Documents({ navigation }) {
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           ListEmptyComponent={<Text>Нет фирм/точек</Text>}
+          showsVerticalScrollIndicator={false}
         />
       </View>
         <View style={styles.containerButtonsMenuPages}>

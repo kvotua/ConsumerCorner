@@ -22,7 +22,7 @@ export default function Profile({ navigation }) {
       <SafeAreaView style={styles.containerMainPage}>
         <View style={styles.profileHeader}>
         <Image
-            source={require("../../../assets/images/profileImage.png")} // Замените на путь к вашей картинке
+            source={require("../../../assets/images/profileImage.png")}
             style={localStyles.profileImage} 
           />
           <Text style={styles.profileTitle}>Акулич В.C</Text>

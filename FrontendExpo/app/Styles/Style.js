@@ -397,4 +397,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         marginBottom: isTablet ? 48 : 32, 
       },
+      reviewsItemFlatList: {
+        marginBottom: isTablet ? 48 : 32, 
+      },
   });
