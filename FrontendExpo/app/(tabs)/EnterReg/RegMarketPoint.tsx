@@ -16,7 +16,7 @@ import { TextInput } from "react-native-gesture-handler";
 export default function MarketPoint({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-      <SafeAreaView style={Style.container}>
+      <SafeAreaView style={Style.containerMainPage}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -24,12 +24,11 @@ export default function MarketPoint({ navigation }) {
             <View style={Style.headerLeft}>
               <Text style={Style.titleHead}>Зарегистрируйте </Text>
               <Text style={Style.titleHead}>торговую точку</Text>
-              <View style={StyleSheet.flatten([Style.containerLine, {left: "-7%", top:"-10%"}])}>
+              <View style={StyleSheet.flatten([Style.containerLine])}>
               <View style={Style.menuPagesLine}/>
               </View>
             </View>
-          <ScrollView contentContainerStyle={Style.scrollContainer}>
-            <View style={StyleSheet.flatten([Style.fields, {top:"-10%"}])}>
+            <View style={StyleSheet.flatten([Style.fields])}>
               <Text style={Style.titleSimple}>Адресс торговой точки</Text>
 
               <TextInput
@@ -48,13 +47,13 @@ export default function MarketPoint({ navigation }) {
               </View>
 
               <Text style={Style.titleSimple}>Открытие точки</Text>
-              <TextInput style={StyleSheet.flatten([Style.TextField, {width:"30%", marginLeft: "-70%"}])} placeholder="11:00" />
+              <TextInput style={StyleSheet.flatten([Style.TextField, {width:"30%"}])} placeholder="11:00" />
 
               <Text style={Style.titleSimple}>Закрытие точки</Text>
-              <TextInput style={StyleSheet.flatten([Style.TextField, {width:"30%", marginLeft: "-70%"}])} placeholder="22:00" />
+              <TextInput style={StyleSheet.flatten([Style.TextField, {width:"30%"}])} placeholder="22:00" />
             </View>
 
-            <View style={Style.buttons}>
+            <View style={[Style.buttons]}>
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() =>
@@ -67,7 +66,6 @@ export default function MarketPoint({ navigation }) {
                 <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>

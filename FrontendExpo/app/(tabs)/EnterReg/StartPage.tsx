@@ -40,8 +40,7 @@ export default function StartPage({ navigation }) {
           <Text style={StyleSheet.flatten([styles.titleHead])}>Добро пожаловать!</Text>
           <Text
             style={StyleSheet.flatten([
-              styles.subtitle,
-              { marginLeft: 15, marginRight: 15 },
+              styles.subtitle
             ])}
           >
             Войдите или зарегистрируйтесь, чтобы получить полный доступ к
@@ -49,7 +48,7 @@ export default function StartPage({ navigation }) {
           </Text>
         </View>
 
-        <View style={StyleSheet.flatten(styles.buttons)}>
+        <View style={StyleSheet.flatten([styles.buttons, {marginTop:100}])}>
           <TouchableOpacity
             style={styles.WhiteButton}
             onPress={() => navigation.replace("Register")}

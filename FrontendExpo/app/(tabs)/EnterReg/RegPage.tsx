@@ -17,14 +17,23 @@ import Icon from 'react-native-vector-icons/Feather';
 export default function RegPage({ navigation }) {
   const [password, setPassword] = useState("");
   const [isSecure, setIsSecure] = useState(true);
-  const [value, setValue] = useState("+7 ");
+  const [phoneValue, setPhoneValue] = useState(""); // Значение для отображения с маской
+  const [rawPhoneValue, setRawPhoneValue] = useState(""); // Очищенное значение для передачи
 
+  const handleInputChange = (text) => {
+    // Устанавливаем значение с маской для отображения
+    setPhoneValue(text);
 
-  const handleInputChange = (text : string) => {
-    if (!text.startsWith("+7 ")) {
-      text = "+7 " + text.replace("+7 ", "");
+    // Извлекаем только цифры из введенного значения
+    const numericValue = text.replace(/\D/g, ""); // Удаляем всё, кроме цифр
+    setRawPhoneValue(numericValue); // Сохраняем чистое значение
+  };
+
+  const handleFocus = () => {
+    // Устанавливаем маску при первом фокусе
+    if (!phoneValue) {
+      setPhoneValue("+7 () - - -");
     }
-    setValue(text);
   };
 
   const toggleSecureTextEntry = () => {
@@ -46,16 +55,17 @@ export default function RegPage({ navigation }) {
               <Text style={Style.titleSimple}>Телефон</Text>
 
               <TextInputMask
-                  type={"custom"}
-                  options={{
-                    mask: "+9 (999) 999-99-99",
-                  }}
-                  value={value}
-                  onChangeText={handleInputChange}
-                  keyboardType="phone-pad"
-                  style={Style.textInputProfile}
-                  placeholder="+7 (999) 999-99-99"
-                />
+                type={"custom"}
+                options={{
+                  mask: "+7 (999) 999-99-99", // Маска
+                }}
+                value={phoneValue} // Значение с маской
+                onChangeText={handleInputChange} // Обработчик изменения текста
+                keyboardType="phone-pad"
+                style={Style.textInputProfile}
+                placeholder="+7 (999) 999-99-99"
+                onFocus={handleFocus} // Устанавливаем шаблон при фокусе
+              />
 
               <Text style={Style.titleSimple}>Пароль</Text>
               <View style={Style.passwordContainer}>
@@ -78,12 +88,14 @@ export default function RegPage({ navigation }) {
               <TextInput style={Style.textInputProfile} placeholder="Ф.И.О" />
             </View>
 
-            <View style={Style.buttons}>
+            <View style={[Style.buttons, { marginTop: 200 }]}>
               <TouchableOpacity
                 style={Style.WhiteButton}
-                onPress={() =>
-                  navigation.replace("CodeConfirm")
-                }
+                onPress={() => {
+                  // Пример передачи нормализованного значения
+                  console.log("Отправляем номер телефона:", rawPhoneValue);
+                  navigation.replace("CodeConfirm");
+                }}
               >
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>

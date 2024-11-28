@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import NavigateApp from '../navigation/NavigationApp';
+import NavigateApp from '../Navigation/NavigationApp';
 // import ScreenOrientation from 'expo-screen-orientation';
 
 export default function HomeScreen() {

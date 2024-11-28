@@ -54,6 +54,7 @@ export default StyleSheet.create({
         borderTopRightRadius: 10,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
+        marginTop:5,
         fontSize: 18,
         paddingStart: 15,
       },
@@ -186,7 +187,7 @@ export default StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Montserrat',
         color: "#FFFFFF",
-        marginTop:10,
+        marginTop:15,
         alignSelf: "flex-start",
       },
       profileTitle: {
@@ -198,7 +199,7 @@ export default StyleSheet.create({
       buttons: {
         width: "100%",
         alignItems: "center",
-        marginTop: 40,
+        marginTop: 60,
       },
       menuTopButtons: {
         width: "100%",
@@ -323,8 +324,8 @@ export default StyleSheet.create({
       },
       fields: {
         width: "100%",
-        marginBottom: 200,
-        marginTop: 30
+        marginBottom: 100,
+        marginTop: 5
       },
       //Эти три стиля предназначены для того, чтбы делать наложения
       passwordContainer: {

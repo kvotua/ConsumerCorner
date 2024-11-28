@@ -86,7 +86,6 @@ export default function RegFirma({ navigation }) {
               <View style={localStyles.iconButtonContainer}>
                 <TextInput
                   style={Style.textInputProfile}
-                  placeholder="Введите текст"
                 />
                 <TouchableOpacity // кнопка копирования
                   style={[localStyles.button, { margin: 35 }]}
@@ -104,7 +103,7 @@ export default function RegFirma({ navigation }) {
            
           </ScrollView>
         </KeyboardAvoidingView>
-        <View style={StyleSheet.flatten([Style.buttons, {alignItems: "center"}])}>
+        <View style={StyleSheet.flatten([Style.buttons, {justifyContent: 'flex-end'}])}>
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() =>
