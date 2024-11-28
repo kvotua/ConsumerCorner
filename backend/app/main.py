@@ -10,6 +10,7 @@ from ConsumerCorner.backend.app.users.models import UserModel
 from ConsumerCorner.backend.app.users.routes import router as users_router
 from ConsumerCorner.backend.app.inn_service.routes import router as inn_service_router
 from ConsumerCorner.backend.app.verifnum.routers import router as verifnum_router
+from ConsumerCorner.backend.app.database import engine
 
 # @asynccontextmanager
 # async def lifespan(app: FastAPI) -> AsyncIterator:
@@ -23,7 +24,7 @@ from ConsumerCorner.backend.app.verifnum.routers import router as verifnum_route
 #             )
 #     yield
 
-
+Base.metadata.create_all(bind=engine)
 
 debug = os.getenv("DEBUG") is not None
 app = FastAPI(debug=debug)#, lifespan=lifespan)

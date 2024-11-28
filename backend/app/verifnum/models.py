@@ -6,5 +6,5 @@ Base = declarative_base()
 class Verification(Base):
     __tablename__ = 'verification'
 
-    request_id = Column(String, primary_key=True)
-    sms_code = Column(String)
+    request_id: Mapped[str] = mapped_column(primary_key=True)
+    sms_code: Mapped[str] = mapped_column()

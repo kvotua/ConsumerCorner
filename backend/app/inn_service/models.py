@@ -1,20 +1,15 @@
-from pynamodb.attributes import UnicodeAttribute, MapAttribute
-from pynamodb.models import Model
-from .schemas import CompanySchema, IpSchema
+from sqlalchemy import Column, String, Integer, BigInteger, Text, Boolean, Float, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
+import enum
+from sqlalchemy.orm import Mapped, mapped_column
 
 
-class CompanyModel(Model):
-    class Meta:
-        table_name = "Company"
-        region = "dummy"
-        host = "http://localhost:8000"
-        aws_access_key_id = "dummy"
-        aws_secret_access_key = "dummy"
-    inn = UnicodeAttribute(hash_key=True)
-    name = UnicodeAttribute()
-    ogrn = UnicodeAttribute()
-    kpp = UnicodeAttribute()
-    address = UnicodeAttribute()
+class CompanyModel(Base):
+
+    inn: Mapped[int] = mapped_column(BigInteger)
+    name: Mapped[str] = mapped_column()
+    ogrn: Mapped[str] = mapped_column()
+    address: Mapped[str] = mapped_column()
     def to_schema(self) -> CompanySchema:
         return CompanySchema(
             inn=self.inn,
@@ -24,16 +19,10 @@ class CompanyModel(Model):
             address=self.address,
         )
 class IpModel(Model):
-    class Meta:
-        table_name = "Ip"
-        region = "dummy"
-        host = "http://localhost:8000"
-        aws_access_key_id = "dummy"
-        aws_secret_access_key = "dummy"
-    inn = UnicodeAttribute(hash_key=True)
-    fio = UnicodeAttribute()
-    ogrn = UnicodeAttribute()
-    address = UnicodeAttribute()
+    inn: Mapped[int] = mapped_column(BigInteger)
+    fio: Mapped[str] = mapped_column()
+    ogrn: Mapped[str] = mapped_column()
+    address: Mapped[str] = mapped_column()
     def to_schema(self) -> IpSchema:
         return IpSchema(
             fio=self.fio,
