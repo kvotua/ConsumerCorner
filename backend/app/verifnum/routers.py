@@ -6,8 +6,9 @@ from sqlalchemy.future import select
 
 from .utils import HttpClient, generate_code, generate_text
 from .schemas import ReqID, Phone, GetReqIdWithSMS
-from .db import get_session
+from app.database import get_session
 from .models import Verify, Base
+from app.config import user_name, user_pass, send_from
 
 
 router = APIRouter(prefix='/verif')
@@ -30,9 +31,9 @@ async def send_message(
     params = {
     'to': number.phone,
     'txt': generate_text(code),
-    'from': 'test',
-    'user': 'troshkin_a_s',
-    'pass': '123456',
+    'from': send_from,
+    'user': str(user_name),
+    'pass': str(user_pass),
     }
     try:
         response = await http_client.send_message(
