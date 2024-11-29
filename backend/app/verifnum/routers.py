@@ -7,7 +7,7 @@ from sqlalchemy.future import select
 from .utils import HttpClient, generate_code, generate_text
 from .schemas import ReqID, Phone, GetReqIdWithSMS
 from database import get_session
-from .models import Verification, Base
+from .models_verife import Verification, Base, Gigachdy
 from config import user_name, user_pass, send_from
 
 
@@ -20,10 +20,21 @@ http_client = HttpClient()
 
 @router.get('/all')
 async def all(session: AsyncSession = Depends(get_session)):
-    data = await session.execute(select(Verification))
+    data = await session.execute(select(Gigachdy))
     array = data.scalars().all()
-    return [Verification(request_id=item.request_id, sms_code=item.sms_code) for item in array]
+    return [Gigachdy(id=item.id, name=item.name) for item in array]
 
+@router.post('/post')
+async def append(
+    id: int,
+    imya: str,
+    session: AsyncSession = Depends(get_session)
+    ):
+    data = Gigachdy(id=id, name=imya)
+    session.add(data)
+    await session.commit()
+    await session.refresh(data)
+    return imya
 
 @router.post("/send")
 async def send_message(
