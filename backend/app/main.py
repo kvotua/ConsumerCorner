@@ -9,7 +9,6 @@ from auth.routes import router as auth_router
 from users.models import UserModel
 from users.routes import router as users_router
 from inn_service.routes import router as inn_service_router
-from verifnum.routers import router as verifnum_router
 from database import create_tables, Base
 
 # @asynccontextmanager
@@ -42,4 +41,3 @@ app.add_middleware(
 app.include_router(inn_service_router)
 app.include_router(users_router)
 app.include_router(auth_router)
-app.include_router(verifnum_router)

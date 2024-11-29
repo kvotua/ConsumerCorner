@@ -1,6 +1,6 @@
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
-from models import Base
+from ConsumerCorner.backend.app.models import Base
 
 
 class Verification(Base):
