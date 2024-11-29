@@ -1,18 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ImageBackground,
   Text,
   View,
   TouchableOpacity,
+  Modal,
+  TextInput,
+  StyleSheet,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import Icons from "react-native-vector-icons/Feather";
+import Icons1 from "react-native-vector-icons/SimpleLineIcons";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import styles from "../../Styles/Style";
+import styles from "../../Styles/Style"; // Путь к стилям
 
 export default function Social({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [socialName, setSocialName] = useState('');
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
+  const handleAddSocialNetwork = () => {
+    console.log(`Добавлена соц. сеть: ${socialName}`);
+    setModalVisible(false);
+    setSocialName('');
+  };
+
+  const data = [
+    { id: '1', title: "Яндекс" },
+    { id: '2', title: "Telegram" },
+    { id: '3', title: 'ВКонтакте' },
+    { id: '4', title: 'Instagram' },
+    { id: '5', title: 'Facebook' },
+    { id: '6', title: 'Twitter' },
+  ];
+
+  const renderItem = ({ item }) => (
+    <View style={styles.socialItemFlatList}>
+      <TouchableOpacity style={localStyles.button}>
+        <Text style={localStyles.buttonText}>{item.title}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
-      <View style={styles.menuPagesFooterHeader}>
+        <View style={styles.menuPagesFooterHeader}>
           <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
         </View>
         <View style={styles.menuPagesHeader}>
@@ -22,31 +63,168 @@ export default function Social({ navigation }) {
           <Text style={styles.menuTitle}>Социальные сети</Text>
         </View>
         <View style={styles.containerLine}>
-          <View style={styles.menuPagesLine}/>
+          <View style={styles.menuPagesLine} />
         </View>
-        <View style={styles.containerButtonsSocial}>
-        <TouchableOpacity style={[styles.buttonDocuments, { marginBottom: 20 }]} onPress={() => navigation.replace("Documents")}>
-            <Text style={styles.textInButtonsMenuPage}>Яндекс</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonDocuments, { marginBottom: 20 }]} onPress={() => navigation.replace("Documents")}>
-            <Text style={styles.textInButtonsMenuPage}>Telegram</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonDocuments, { marginBottom: 20 }]} onPress={() => navigation.replace("Documents")}>
-            <Text style={styles.textInButtonsMenuPage}>ВКонтакте</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonDocuments} onPress={() => navigation.replace("Documents")}>
-            <Text style={styles.textInButtonsMenuPage}>Сайт</Text>
-        </TouchableOpacity>
+        <View style={localStyles.flatListContainer}>
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            ListEmptyComponent={<Text>Нет соц.сетей</Text>}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
+
+        {/* Кнопка для открытия модального окна */}
         <View style={styles.containerButtonsMenuPages}>
-        <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("Social")}>
+          <TouchableOpacity style={styles.buttonMenuPage} onPress={toggleModal}>
             <Text style={styles.textInButtonsMenuPage}>Добавить соц.сеть</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.buttonBackMenuPage, { marginTop: 10 }]}
+            onPress={() => navigation.replace("MenuPage")}
+          >
             <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
         </View>
+
+        {/* Модальное окно */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={toggleModal}
+        >
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={localStyles.modalOverlay}>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.modalContent}
+              >
+                <TouchableOpacity
+                  style={localStyles.closeButton}
+                  onPress={toggleModal}
+                >
+                  <Icons name="x" size={32} color="#5A7BCB"/>
+                </TouchableOpacity>
+                <Text style={localStyles.modalTitle}>Добавление ссылки</Text>
+                <View style={localStyles.containerIcons}>
+                  <Icon name="telegram" size={40} color="blue" /> 
+                  <Icons name="globe" size={40} color="blue" /> 
+                  <Icon name="whatsapp" size={40} color="blue" /> 
+                  <Icons1 name="social-vkontakte" size={40} color="blue" />
+                </View>
+                <Text style={[{textAlign: "left", width: "100%", color: "#1644B5", fontSize: 18, marginTop: 8}]}>URL</Text>
+                <TextInput
+                  style={localStyles.modalInput}
+                  placeholder="Введите название соц.сети"
+                  value={socialName}
+                  onChangeText={setSocialName}
+                />
+                <TouchableOpacity
+                  style={[localStyles.modalButton, { borderColor: "#D43538" }]}
+                  onPress={handleAddSocialNetwork}
+                >
+                  <Text style={[localStyles.textInButton, { color: "#D43538" }]}>Удалить соц.сеть</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[localStyles.modalButton, { borderColor: '#3563D4' }]}
+                  onPress={toggleModal}
+                >
+                  <Text style={[localStyles.textInButton, { color: "#3563D4" }]}>Готово</Text>
+                </TouchableOpacity>
+              </KeyboardAvoidingView>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </SafeAreaView>
     </ImageBackground>
   );
 }
+
+const localStyles = StyleSheet.create({
+  containerIcons: {
+    width: "100%",
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#3563D4"
+  },
+  modalInput: {
+    width: "100%",
+    height: 60,
+    alignItems: "flex-start",
+    backgroundColor: "#FFFFFF",
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderColor: "#3A6CE9",
+    borderWidth: 1,
+    marginTop:12,
+    fontSize: 12,
+    color: "rgba(22, 68, 181, 0.5)",
+    paddingStart: 15,
+  },
+  modalButton: {
+    width: "100%",
+    height: 60,
+    padding: 10,
+    borderColor: "#BA1737",
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  textInButton: {
+    fontFamily: "Montserrat", 
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  flatListContainer: {
+    height: "55%",
+  },
+  button: {
+    width: "100%",
+    height: 45,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    borderTopRightRadius: 10,
+    marginTop: 12,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontFamily: 'Montserrat',
+    fontWeight: "bold"
+  },
+  closeButton: {
+    position: "absolute",
+    top: 14,
+    left: 16,
+    borderRadius: 10,
+    padding: 5,
+    zIndex: 1,
+  },
+  closeButtonText: {
+    fontSize: 18,
+    color: "#3563D4",
+  },
+});

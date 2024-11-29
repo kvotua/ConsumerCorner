@@ -47,8 +47,7 @@ export default function RegPage({ navigation }) {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <ScrollView contentContainerStyle={Style.scrollContainer}>
-            <View style={Style.header}>
+            <View style={[Style.header, {marginTop:40}]}>
               <Text style={Style.titleHead}>Регистрация</Text>
             </View>
             <View style={Style.fields}>
@@ -85,10 +84,10 @@ export default function RegPage({ navigation }) {
               </View>
 
               <Text style={Style.titleSimple}>Ф.И.О</Text>
-              <TextInput style={Style.textInputProfile} placeholder="Ф.И.О" />
+              <TextInput style={Style.textInputProfile} placeholder="Ф.И.О" autoCapitalize="words" />
             </View>
 
-            <View style={[Style.buttons, {justifyContent: 'flex-start'}]}>
+            <View style={[Style.buttons, {paddingVertical: -10,}]}>
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() => {
@@ -103,7 +102,6 @@ export default function RegPage({ navigation }) {
                 <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>

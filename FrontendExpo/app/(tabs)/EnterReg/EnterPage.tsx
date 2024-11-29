@@ -18,10 +18,6 @@ export default function Enter({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
             <View style={[Style.menuHeader, {alignItems: "center",}]}>
               <Text style={StyleSheet.flatten([Style.titleHead])}>Вход</Text>
             </View>
@@ -34,32 +30,30 @@ export default function Enter({ navigation }) {
                   mask: "+7 (999) 999-99-99",
                 }}
                 keyboardType="phone-pad"
-                style={Style.TextField}
+                style={Style.textInputProfile}
                 placeholder="+7 (999) 999 99 99"
               />
                 <Text style={Style.titleSimple}>Пароль</Text>
 
                 <TextInput
-                style={Style.TextField}
+                style={Style.textInputProfile}
                 placeholder="Пароль"
                 />
                 <TouchableOpacity>
                   <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver"}])}>Напомнить пароль</Text>
                 </TouchableOpacity>
-
-                <View style={StyleSheet.flatten([Style.buttons, {marginTop:250}])}>
+            </View>
+            <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
                 <TouchableOpacity
-                    style={Style.WhiteButton}
+                    style={Style.buttonMenuPage}
                     onPress={() => navigation.replace("MenuPage")}
                 >
                     <Text style={Style.blackText} >Далее</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Start")}>
+                <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Start")}>
                     <Text style={Style.DefText}>Назад</Text>
                 </TouchableOpacity>
                 </View>
-            </View>
-        </KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>
   );

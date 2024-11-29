@@ -5,15 +5,18 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
+  Platform
 } from "react-native";
 import styles from "../../Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Menupage({ navigation }) {
+
+
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
-        <View style={styles.menuHeader}>
+        <View style={[styles.menuHeader, { marginTop: Platform.OS === 'ios' ? 10 : 128, }]}>
           <Text style={styles.menuTitle}>ИП Акулич В.C</Text>
         </View>
 
@@ -40,16 +43,24 @@ export default function Menupage({ navigation }) {
           <TouchableOpacity style={styles.whiteButtonMenuBottomActive} onPress={() => navigation.replace("Firms")}>
             <Text style={styles.blackText}>Фирмы/точки</Text>
           </TouchableOpacity>
+        </View>
+
+        {/* Новый контейнер для кнопок "Администрирование" и "Профиль" */}
+        <View style={localStyles.menuAdminButtons}>
           <TouchableOpacity
             style={styles.whiteButtonMenuBottomActive}
             onPress={() => navigation.replace("AdminPanel")}
           >
             <Text style={styles.blackText}>Администрирование</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.whiteButtonMenuBottomActive} onPress={() => navigation.replace("Profile")}>
+          <TouchableOpacity 
+            style={styles.whiteButtonMenuBottomActive} 
+            onPress={() => navigation.replace("Profile")}
+          >
             <Text style={styles.blackText}>Профиль</Text>
           </TouchableOpacity>
         </View>
+
         <View style={localStyles.footerTextContainer}>
           <Text style={localStyles.footerText}>
             Удобные инструменты позволяют вашему бизнесу быть в курсе и оперативно
@@ -71,7 +82,15 @@ const localStyles = StyleSheet.create({
     fontWeight: "400"
   },
   footerTextContainer: {
-      flex: 1,
-      justifyContent: 'flex-end',
-  }
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  menuAdminButtons: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      width: "100%",
+      gap: 10,
+      marginTop: 10,
+      justifyContent: 'space-between', // Разделяем кнопки с равными промежутками
+  },
 });

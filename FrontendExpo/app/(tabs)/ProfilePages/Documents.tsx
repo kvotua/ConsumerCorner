@@ -71,7 +71,7 @@ export default function Documents({ navigation }) {
 
 const localStyles = StyleSheet.create({
   flatListContainer: {
-    height: "45%",
+    height: "55%",
   },
   button: {
     width: "100%",

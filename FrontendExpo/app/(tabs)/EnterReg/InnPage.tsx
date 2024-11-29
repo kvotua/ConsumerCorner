@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, StyleSheet,} from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, StyleSheet,KeyboardAvoidingView} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "../../Styles/Style";
 import { TextInputMask } from "react-native-masked-text";
@@ -14,6 +14,10 @@ export default function InnReg({navigation}){
     return (
         <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
             <SafeAreaView style={Style.containerMainPage}>
+            <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
                 <View style={StyleSheet.flatten([Style.containerLine])}>
                     <View style={StyleSheet.flatten([Style.header, {alignSelf: "flex-start",}])}>
                         <Text style={([Style.titleHead])}>Введите ИНН</Text>
@@ -21,7 +25,7 @@ export default function InnReg({navigation}){
                     <View style={Style.menuPagesLine}/>
                 </View>
                 <View style={StyleSheet.flatten([Style.fields, {justifyContent: 'flex-start'}])}>
-                    <Text style={StyleSheet.flatten([Style.subtitle, {fontSize: 16, color: "#FFFFFF",}])}>ИНН юридического лица</Text>
+                    <Text style={StyleSheet.flatten([Style.subtitle, {fontSize: 16, color: "#FFFFFF", marginTop: 10}])}>ИНН юридического лица</Text>
                     <TextInputMask
                     type={"custom"}
                     options={{
@@ -39,6 +43,7 @@ export default function InnReg({navigation}){
                         <Text style={Style.blackText}>Далее</Text>
                     </TouchableOpacity>
                 </View>
+            </KeyboardAvoidingView>
             </SafeAreaView>
         </ImageBackground>
 

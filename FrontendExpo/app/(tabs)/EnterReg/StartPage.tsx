@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from "../Notif/toasts/Toast";
@@ -36,7 +37,7 @@ export default function StartPage({ navigation }) {
           />
         )}
 
-        <View style={StyleSheet.flatten([styles.header, { marginTop: 150 }])}>
+        <View style={StyleSheet.flatten([styles.header, { marginTop: 100 }])}>
           <Text style={StyleSheet.flatten([styles.titleHead])}>Добро пожаловать!</Text>
           <Text
             style={StyleSheet.flatten([
@@ -48,7 +49,7 @@ export default function StartPage({ navigation }) {
           </Text>
         </View>
 
-        <View style={StyleSheet.flatten([styles.buttons, {marginTop:100}])}>
+        <View style={StyleSheet.flatten([styles.containerButtonsMenuPages, {justifyContent: 'center', alignItems: "center",}])}>
           <TouchableOpacity
             style={styles.WhiteButton}
             onPress={() => navigation.replace("Register")}

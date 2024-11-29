@@ -18,7 +18,8 @@ export default StyleSheet.create({
       },
       containerMainPage: {
         flex: 1,
-        padding: isTablet ? 152 : 25, 
+        paddingVertical: isTablet ? 192 : 25, 
+        paddingHorizontal: isTablet ? 152 : 25, 
       },
       containerProfile: {
         width: "100%",
@@ -31,7 +32,7 @@ export default StyleSheet.create({
       containerButtonsSocial: {
         width: "100%",
         flex: 1,
-        marginTop: 162,
+        marginTop: 24
       },
       containerButtonsMenuPages: {
         width: "100%",
@@ -197,15 +198,18 @@ export default StyleSheet.create({
       },
       //Это можно использовать для View, который располагает кнопки
       buttons: {
+        flex:1,
         width: "100%",
         alignItems: "center",
         marginTop: 60,
+        justifyContent: 'flex-end'
       },
       menuTopButtons: {
         width: "100%",
         flexDirection: 'row',
         gap: 10,
         marginTop: 43,
+        justifyContent: 'space-between', 
       },
       menuBottomButtons: {
         flexDirection: "row",
@@ -213,6 +217,7 @@ export default StyleSheet.create({
         width: "100%",
         gap: 10,
         marginTop: 73,
+        justifyContent: 'space-between', // Разделяем кнопки с равными промежутками
       },
       //Это белая кнопка с черным текстом
       WhiteButton: {
@@ -250,7 +255,7 @@ export default StyleSheet.create({
         borderBottomLeftRadius: 20,
       },
       whiteButtonMenuBottomActive: {
-        width: '48%',
+        flex: 1, 
         height: 128,
         backgroundColor: "#FFFFFF",
         paddingTop: 23,
@@ -260,7 +265,6 @@ export default StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderBottomLeftRadius: 20,
-        
       },
       blackText: {
         fontFamily: 'Montserrat',
@@ -318,9 +322,8 @@ export default StyleSheet.create({
         marginBottom: 15,
       },
       scrollContainer: {
-        flexGrow: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        flex: 1,
+        marginBottom:100,
       },
       fields: {
         width: "100%",
@@ -399,5 +402,23 @@ export default StyleSheet.create({
       },
       reviewsItemFlatList: {
         marginBottom: isTablet ? 48 : 32, 
+      },
+      socialItemFlatList: {
+        marginBottom: isTablet ? 48 : 16, 
+      },
+      //
+      modalContent: {
+        width: isTablet ? "65%" : "85%",
+        height: isTablet ? "30%" : "45%",
+        padding: 20,
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        alignItems: "center",
+        borderColor: "#5A7BCB",
+        borderWidth: 1,
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        borderBottomLeftRadius: 0,
       },
   });

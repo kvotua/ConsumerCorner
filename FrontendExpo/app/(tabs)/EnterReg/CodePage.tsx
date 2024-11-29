@@ -17,22 +17,23 @@ export default function CodePage({ navigation}) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={[Style.containerMainPage]}>
-            <View style={[Style.menuHeader, {alignItems: "center",}]}>
+            <View style={[Style.menuHeader, {alignItems: "center",  marginTop: 40,}]}>
                 <Text style={Style.titleHead}>Код подтверждения</Text>
             </View>
-              <View style={StyleSheet.flatten([Style.fields])}>
+              <View style={StyleSheet.flatten([Style.fields, {marginTop: 20}])}>
                 <Text style={Style.titleSimple}>
                   Введите код подтверждения из SMS - сообщнеия, отправленного на
                   номер
                 </Text>
                 <TextInput
-                  style={Style.textInputProfile}
+                  style={[Style.textInputProfile, {marginTop: 10}]}
+                  keyboardType="phone-pad"
                   placeholder="Код подтверждения"
                 />
-                <Text style={StyleSheet.flatten([Style.subtitle, { color:"silver"}])}>Код действует еще .. секунд</Text>
+                <Text style={StyleSheet.flatten([Style.subtitle, { color:"silver", marginTop: 4}])}>Код действует еще .. секунд</Text>
               </View>
 
-            <View style={[Style.buttons, {marginTop:250}]}>
+            <View style={[Style.buttons]}>
               <TouchableOpacity style={Style.WhiteButton} onPress={() => navigation.replace("Inn")}>
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
