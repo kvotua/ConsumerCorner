@@ -1,19 +1,22 @@
-from sqlalchemy import Column, String, Integer, BigInteger, Text, Boolean, Float, ForeignKey
+from sqlalchemy import text, BigInteger, Text, ForeignKey, func, Float
 from sqlalchemy.ext.declarative import declarative_base
-import enum
 from sqlalchemy.orm import Mapped, mapped_column
+import datetime
+from typing import Optional
+
 Base = declarative_base()
+
 
 class Users(Base):
     __tablename__ = 'users'
 
-    id: Mapped[str] = mapped_column(primary_key=True)
-    phone: Mapped[int] = mapped_column(BigInteger)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    phone: Mapped[str] = mapped_column()
     fio: Mapped[str] = mapped_column()
     password: Mapped[str] = mapped_column()
-    email: Mapped[str] = mapped_column()
-    verify_phone: Mapped[bool] = mapped_column()
-    verify_email: Mapped[bool] = mapped_column()
+    email: Mapped[Optional[str]] = mapped_column()
+    verify_phone: Mapped[bool] = mapped_column(default=False)
+    verify_email: Mapped[bool] = mapped_column(default=False)
 
 class UserEnterprisesRole(Base):
     __tablename__ = 'user_enterprises_role'
@@ -30,11 +33,11 @@ class Enterprises(Base):
     name: Mapped[str] = mapped_column()
     type: Mapped[str] = mapped_column()
     create_id: Mapped[str] = mapped_column()
-    inn: Mapped[int] = mapped_column(BigInteger)
+    inn: Mapped[str] = mapped_column()
     ogrn: Mapped[str] = mapped_column()
     general_type_activity: Mapped[str] = mapped_column()
     role_id: Mapped[str] = mapped_column()
-    data_added: Mapped[int] = mapped_column(BigInteger)
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
 class Points(Base):
@@ -46,16 +49,16 @@ class Points(Base):
     address: Mapped[str] = mapped_column()
     phone: Mapped[str] = mapped_column()
     type_activity: Mapped[str] = mapped_column()
-    middle_stars: Mapped[float] = mapped_column()
-    verify_phone: Mapped[int] = mapped_column(BigInteger)
-    date_added: Mapped[int] = mapped_column(BigInteger)
+    middle_stars: Mapped[float] = mapped_column(Float)
+    verify_phone: Mapped[str] = mapped_column()
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
 class Docs(Base):
     __tablename__ = 'docs'
 
-    id = Column(String, primary_key=True)
-    point_id = Column(String, ForeignKey('points.id'))
+    id: Mapped[str] = mapped_column(primary_key=True)
+    point_id: Mapped[str] = mapped_column(ForeignKey('points.id'))
 
 
 class Comments(Base):
@@ -64,8 +67,9 @@ class Comments(Base):
     id: Mapped[str] = mapped_column(primary_key=True)
     point_id: Mapped[str] = mapped_column(ForeignKey('points.id'))
     text: Mapped[str] = mapped_column(Text)
-    stars: Mapped[int] = mapped_column(BigInteger)
-    date_added: Mapped[int] = mapped_column(BigInteger)
+    stars: Mapped[str] = mapped_column()
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+
 
 class Imgs(Base):
     __tablename__ = 'imgs'

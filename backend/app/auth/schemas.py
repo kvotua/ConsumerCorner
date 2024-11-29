@@ -7,6 +7,22 @@ RefreshToken = NewType("RefreshToken", str)
 AccessToken = NewType("AccessToken", str)
 
 
+class Phone(BaseModel):
+    phone: Annotated[str, Field(..., title='Номер телефона без +', min_length=11, max_length=14)]
+
+
+class VerifePhone(BaseModel):
+    phone: Annotated[str, Field(..., title='Номер телефона без +', min_length=11, max_length=14)]
+    phone_verif: Annotated[bool, Field(..., title='Верифицирован ли телефон')]
+
+class Register(Phone):
+    fio: Annotated[str, Field(..., title='ФИО пользователя')]
+    password: Annotated[str, Field(..., title='Пароль')]
+
+class Login(Phone):
+    password: Annotated[str, Field(..., title='Пароль')]
+
+
 class AuthSchema(BaseModel):
     email: EmailStr
     password: str
@@ -22,10 +38,6 @@ class AccessTokenSchema(BaseModel):
 
 class TokenPairSchema(RefreshTokenSchema, AccessTokenSchema):
     pass
-
-
-class Phone(BaseModel):
-    phone: Annotated[str, Field(..., title='Номер телефона без +', min_length=11, max_length=14)]
 
 
 class ReqID(BaseModel):

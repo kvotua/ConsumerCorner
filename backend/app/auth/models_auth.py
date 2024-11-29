@@ -8,3 +8,4 @@ class Verification(Base):
 
     request_id: Mapped[str] = mapped_column(String, primary_key=True)
     sms_code: Mapped[str] = mapped_column(String)
+    phone: Mapped[str] = mapped_column(String)

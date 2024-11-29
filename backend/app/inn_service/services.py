@@ -41,7 +41,7 @@ class INNService:
             address=address,
         )
     def validate_inn(self,inn: str) -> bool or ErrorSchema:
-        if len(inn) not in [10, 12]:
+        if len(inn) != 10 or 12:
             return ErrorSchema(
                 status_code=404,
                 message="Wrong number of characters in INN"

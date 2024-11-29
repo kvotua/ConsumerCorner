@@ -37,7 +37,8 @@ async def result_page(request: Request, inn: str,session: AsyncSession = Depends
     try:
         session.add(company_model)
         await session.commit()
+        await session.refresh(company_model)
     except Exception as e:
         if isinstance(e, IntegrityError):
             print('Такой пользователь уже существует')
-        return company_data
+    return company_data
