@@ -1,12 +1,12 @@
 from dadata import Dadata
 from dotenv import load_dotenv
 import os
+from ConsumerCorner.backend.app.config import token
 from .schemas import IpSchema,CompanySchema,ErrorSchema
 
 class INNService:
-    def __init__(self,env_path: str):
-        load_dotenv(dotenv_path=env_path)
-        self.api_token = os.getenv("API_TOKEN_INN")
+    def __init__(self):
+        self.api_token = token
     def fetch_company_data(self,inn: str) -> CompanySchema or ErrorSchema:
         dadata = Dadata(self.api_token)
         result = dadata.find_by_id("party", inn)
@@ -20,7 +20,6 @@ class INNService:
             inn=inn,
             name=result[0]['value'],
             ogrn=company_data['ogrn'],
-            kpp=company_data['kpp'],
             address=company_data['address']['value'],
         )
     def fetch_ip_data(self,inn: str) -> IpSchema or ErrorSchema:
@@ -36,6 +35,7 @@ class INNService:
         ogrn = data['ogrn']
         address = data['address']['unrestricted_value']
         return IpSchema(
+            inn=inn,
             fio=fio,
             ogrn=ogrn,
             address=address,

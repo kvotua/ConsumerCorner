@@ -13,5 +13,5 @@ user_pass = os.getenv('USER_PASS')
 send_from = os.getenv('SEND_FROM')
 algo = os.getenv('ALGORITM')
 
-private_key_path = Path(__file__).parent / "certs" / "jwt-private.pem"
-public_key_path = Path(__file__).parent / "certs" / "jwt-public.pem"
+#private_key_path = Path(__file__).parent / "certs" / "jwt-private.pem"
+#public_key_path = Path(__file__).parent / "certs" / "jwt-public.pem"
