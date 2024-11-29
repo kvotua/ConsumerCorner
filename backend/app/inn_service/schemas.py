@@ -4,9 +4,9 @@ class CompanySchema(BaseModel):
     inn: str
     name: str
     ogrn: str
-    kpp: str
     address: str
 class IpSchema(BaseModel):
+    inn: str
     fio: str
     ogrn: str
     address: str

@@ -84,12 +84,12 @@ async def login_user(
 ) -> TokenPairSchema:
     try:
 
-    
+
 
 
 @router.post("/send")
 async def send_message(
-    number: Phone, 
+    number: Phone,
     session: AsyncSession = Depends(get_session)
     ):
     code = generate_code()
@@ -112,7 +112,7 @@ async def send_message(
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 
 @router.get('/verify')
 async def check_code(
@@ -121,7 +121,7 @@ async def check_code(
     session: AsyncSession = Depends(get_session),
 ):
     response = await session.get(Verification, req_id)
-    
+
     data_by_db = {
         'request_id': response.request_id,
         'sms_code': response.sms_code,
