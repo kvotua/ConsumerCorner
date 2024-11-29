@@ -18,6 +18,7 @@ import Firms from '../(tabs)/ProfilePages/Firms';
 import AdminPanel from '../(tabs)/ProfilePages/AdminPanel';
 import Profile from '../(tabs)/ProfilePages/Profile';
 import AddDocument from '../(tabs)/ProfilePages/AddDocument';
+import Points from '../(tabs)/ProfilePages/Points';
 
 const Stack = createStackNavigator();
 
@@ -44,6 +45,7 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="AdminPanel" component={AdminPanel} options={{ headerShown: false }} />
           <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
           <Stack.Screen name="AddDocument" component={AddDocument} options={{ headerShown: false }} />
+          <Stack.Screen name="Points" component={Points} options={{ headerShown: false }} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );
