@@ -5,7 +5,7 @@ from .models import Base
 
 engine = create_async_engine(
     url=str(db_url),
-    echo=True,
+    echo=False,
     future=True,
     )
 

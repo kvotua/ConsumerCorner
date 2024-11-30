@@ -1,15 +1,11 @@
-from typing import Annotated
-
-from bcrypt import checkpw
-from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query, Depends, Path
-from fastapi.responses import RedirectResponse
-from fastapi_jwt import JwtAuthorizationCredentials
+from typing import Annotated, Optional
+from fastapi import APIRouter, Body, HTTPException, Query, Depends
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from .schemas import Phone, Register, Login, VerifePhone, ReqID, AccessJWTToken
-from .utils import set_access_token, set_token_pair, HttpClient, generate_code, generate_text, validate_phone, create_access_token
+from .utils import HttpClient, generate_code, generate_text, validate_phone, create_access_token, hash_password, validate_password
 from .models_auth import Verification
 from backend.app.config import user_name, user_pass, send_from
 from backend.app.database import get_session
@@ -24,7 +20,7 @@ http_client = HttpClient()
 async def all(session: AsyncSession = Depends(get_session)):
     data = await session.execute(select(Verification))
     array = data.scalars().all()
-    return [Verification(request_id=item.request_id, sms_code=item.sms_code) for item in array]
+    return [Verification(request_id=item.request_id, sms_code=item.sms_code, phone=item.phone) for item in array]
 
 
 @router.post("/send", response_model=ReqID)
@@ -38,7 +34,7 @@ async def send_message(
         result = await session.execute(stmt)
         user = result.scalars().first()
         if user:
-            raise HTTPException(status_code=404, detail='Номер телефона уже зарегистрирован')
+            raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
         code = generate_code()
         params = {
         'to': number.phone,
@@ -52,20 +48,21 @@ async def send_message(
             data=params,
         )
         if response is None:
-            raise HTTPException(status_code=404, detail="Закончились деньги на GREENSMSAPI")
+            raise HTTPException(status_code=400, detail="Закончились деньги на GREENSMSAPI")
         data = Verification(request_id=response, sms_code=code, phone=number.phone)
         session.add(data)
         await session.commit()
         await session.refresh(data)
         return ReqID(req_id=response)
     except Exception as e:
-        raise HTTPException(status_code=404, detail=e)
+        raise HTTPException(status_code=500, detail=e)
 
 
 @router.post('/check', response_model=VerifePhone)
 async def check_code(
-    req_id: Annotated[str, Query(..., title='ID сессии, полученный после отправки номера', examples=['79442f1f-17a8-42bb-9f6f-4affc8788e7e'], min_length=36, max_length=36)],
-    sms_code: Annotated[str, Query(..., title='СМС-код, отправленный на номер', example='12345', min_length=5, max_length=5)],
+    req_id: Annotated[str, Body(..., title='ID сессии, полученный после отправки номера', examples=['79442f1f-17a8-42bb-9f6f-4affc8788e7e'], min_length=36, max_length=36)],
+    sms_code: Annotated[str, Body(..., title='СМС-код, отправленный на номер', examples=['12345'], min_length=5, max_length=5)],
+    jwt_token: AccessJWTToken,#Annotated[AccessJWTToken, Body()],
     session: AsyncSession = Depends(get_session),
 ):
     try:
@@ -83,7 +80,7 @@ async def check_code(
             'sms_code': sms_code,
         }
         if data_by_db != data_by_user:
-            raise HTTPException(status_code=404, detail='Неверный код')
+            raise HTTPException(status_code=400, detail='Неверный код')
         await session.delete(response)
         return VerifePhone(phone=response.phone, phone_verif=True)
     except Exception as e:
@@ -91,9 +88,14 @@ async def check_code(
 
 @router.post('/registration', response_model=AccessJWTToken)
 async def registration(data: Annotated[Register, Body()], session: AsyncSession = Depends(get_session)) -> str:
+    stmt = select(Users).where(Users.phone == data.phone)
+    result = await session.execute(stmt)
+    user = result.scalars().first()
+    if user:
+        raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
     data_for_db = Users(
         phone=data.phone,
-        password=data.password,
+        password=hash_password(data.password).decode('utf-8'),
         fio=data.fio,
         verify_phone=True
     )
@@ -115,9 +117,11 @@ async def registration(data: Annotated[Register, Body()], session: AsyncSession 
 async def login(data: Login, session: AsyncSession = Depends(get_session)):
     stmt = select(Users).where(Users.phone == data.phone)
     result = await session.execute(stmt)
-    data_by_db = result.scalar_one_or_none()
+    data_by_db = result.scalars().first()
     if data_by_db is None:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
+    if not validate_password(data.password, data_by_db.password.encode('utf-8')):
+        raise HTTPException(status_code=404, detail="Неверный пароль")
     payload = {
         'id': data_by_db.id,
         'phone': data_by_db.phone,
