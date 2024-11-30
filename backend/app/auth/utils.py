@@ -12,8 +12,7 @@ from pydantic import EmailStr
 
 from .dependencies import access_security, refresh_security, email_security
 from .schemas import AccessToken, RefreshToken, TokenPairSchema
-from ConsumerCorner.backend.app.users.schemas import UserId
-from ConsumerCorner.backend.app.config import secret_key, algo
+from backend.app.config import secret_key, algo
 
 
 

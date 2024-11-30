@@ -5,10 +5,10 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ConsumerCorner.backend.app.auth.routes import router as auth_router
-from ConsumerCorner.backend.app.users.models import UserModel
+from .auth.routes import router as auth_router
+#from users.models import UserModel
 #from ConsumerCorner.backend.app.users.routes import router as users_router
-from ConsumerCorner.backend.app.inn_service.routes import router as inn_service_router
+from .inn_service.routes import router as inn_service_router
 from .database import create_tables, Base
 
 # @asynccontextmanager

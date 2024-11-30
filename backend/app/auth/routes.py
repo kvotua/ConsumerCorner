@@ -1,34 +1,33 @@
 from typing import Annotated
 
 from bcrypt import checkpw
-from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query, Depends
+from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query, Depends, Path
 from fastapi.responses import RedirectResponse
 from fastapi_jwt import JwtAuthorizationCredentials
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from .dependencies import refresh_security, email_security
-from .schemas import AccessTokenSchema, TokenPairSchema, Phone, AuthSchema, Register, Login, VerifePhone
+from .schemas import Phone, Register, Login, VerifePhone, ReqID, AccessJWTToken
 from .utils import set_access_token, set_token_pair, HttpClient, generate_code, generate_text, validate_phone, create_access_token
 from .models_auth import Verification
-from ConsumerCorner.backend.app.config import user_name, user_pass, send_from
-from ConsumerCorner.backend.app.database import get_session
-from ConsumerCorner.backend.app.models import Users
+from backend.app.config import user_name, user_pass, send_from
+from backend.app.database import get_session
+from backend.app.models import Users
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 http_client = HttpClient()
 
 
-@router.get('/get-session-sms')
+@router.get('/get-sessions-sms')
 async def all(session: AsyncSession = Depends(get_session)):
     data = await session.execute(select(Verification))
     array = data.scalars().all()
     return [Verification(request_id=item.request_id, sms_code=item.sms_code) for item in array]
 
 
-@router.post("/send")
+@router.post("/send", response_model=ReqID)
 async def send_message(
     number: Phone,
     session: AsyncSession = Depends(get_session)
@@ -49,25 +48,24 @@ async def send_message(
         'pass': str(user_pass),
         }
         response = await http_client.send_message(
-        'https://api3.greensms.ru/sms/send',
-        data=params,
+            'https://api3.greensms.ru/sms/send',
+            data=params,
         )
         if response is None:
-            return HTTPException(status_code=404, detail="Закончились деньги на GREENSMSAPI")
+            raise HTTPException(status_code=404, detail="Закончились деньги на GREENSMSAPI")
         data = Verification(request_id=response, sms_code=code, phone=number.phone)
         session.add(data)
         await session.commit()
         await session.refresh(data)
-        return response
+        return ReqID(req_id=response)
     except Exception as e:
-        return HTTPException(status_code=404, detail=e)
+        raise HTTPException(status_code=404, detail=e)
 
 
-@router.post('/check')
+@router.post('/check', response_model=VerifePhone)
 async def check_code(
-    req_id: Annotated[str, Query(..., title='ID сессии, полученный после отправки номера')],
-    sms_code: Annotated[str, Query(..., title='СМС-код, отправленный на номер')],
-    #credentials: Annotated[Register, Body(..., title='Данные пользователя')],
+    req_id: Annotated[str, Query(..., title='ID сессии, полученный после отправки номера', examples=['79442f1f-17a8-42bb-9f6f-4affc8788e7e'], min_length=36, max_length=36)],
+    sms_code: Annotated[str, Query(..., title='СМС-код, отправленный на номер', example='12345', min_length=5, max_length=5)],
     session: AsyncSession = Depends(get_session),
 ):
     try:
@@ -75,7 +73,7 @@ async def check_code(
         result = await session.execute(stmt)
         response = result.scalars().first()
         if response is None:
-            return HTTPException(status_code=404, detail='Невалидная сессия')
+            raise HTTPException(status_code=404, detail='Невалидная сессия')
         data_by_db = {
             'request_id': response.request_id,
             'sms_code': response.sms_code,
@@ -85,14 +83,13 @@ async def check_code(
             'sms_code': sms_code,
         }
         if data_by_db != data_by_user:
-            return HTTPException(status_code=404, detail='Неверный код')
+            raise HTTPException(status_code=404, detail='Неверный код')
         await session.delete(response)
-        #register = await registration()
         return VerifePhone(phone=response.phone, phone_verif=True)
     except Exception as e:
-        return HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
-@router.post('/registration')
+@router.post('/registration', response_model=AccessJWTToken)
 async def registration(data: Annotated[Register, Body()], session: AsyncSession = Depends(get_session)) -> str:
     data_for_db = Users(
         phone=data.phone,
@@ -111,10 +108,10 @@ async def registration(data: Annotated[Register, Body()], session: AsyncSession 
         'phone': data.phone,
         'fio': data.fio,
     }
-    return create_access_token(payload)
+    return AccessJWTToken(access_token=create_access_token(payload))
 
 
-@router.post('/login')
+@router.post('/login', response_model=AccessJWTToken)
 async def login(data: Login, session: AsyncSession = Depends(get_session)):
     stmt = select(Users).where(Users.phone == data.phone)
     result = await session.execute(stmt)
@@ -126,4 +123,4 @@ async def login(data: Login, session: AsyncSession = Depends(get_session)):
         'phone': data_by_db.phone,
         'fio': data_by_db.phone,
     }
-    return create_access_token(payload)
+    return AccessJWTToken(access_token=create_access_token(payload))

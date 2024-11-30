@@ -2,9 +2,9 @@ from fastapi import APIRouter, Body, HTTPException, Response, Security, status, 
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.requests import Request
 from .services import INNService
-from ConsumerCorner.backend.app.config import token
+from backend.app.config import token
 from .models import CompanyModel, IpModel
-from ConsumerCorner.backend.app.database import get_session
+from backend.app.database import get_session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
 

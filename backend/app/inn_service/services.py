@@ -1,7 +1,7 @@
 from dadata import Dadata
 from dotenv import load_dotenv
 import os
-from ConsumerCorner.backend.app.config import token
+from backend.app.config import token
 from .schemas import IpSchema,CompanySchema,ErrorSchema
 
 class INNService:
