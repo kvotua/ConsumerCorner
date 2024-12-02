@@ -16,14 +16,48 @@ export default function Firms({ navigation }) {
   const data = [
     { id: '1', title: "Название ООО, ИНН", type: 'firm', points: [
       'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
+      'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12'
     ] },
     { id: '2', title: "Название ИП, ИНН", type: 'firm', points: [
       'Точка: Москва, ул. Тверская д. 4'
     ] },
-    { id: '3', title: 'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В', type: 'point' },
-    { id: '4', title: 'Точка: Санкт-Петербург, Невский пр., д. 12', type: 'point' },
-    { id: '5', title: 'Точка: Москва, ул. Тверская д. 4', type: 'point' },
+    { id: '3', title: "Название ООО, ИНН", type: 'firm', points: [
+      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
+      'Точка: Санкт-Петербург, Невский пр., д. 12'
+    ] },
+    { id: '4', title: "Название ООО, ИНН", type: 'firm', points: [
+      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
+      'Точка: Санкт-Петербург, Невский пр., д. 12'
+    ] },
+    { id: '5', title: "Название ООО, ИНН", type: 'firm', points: [
+      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
+      'Точка: Санкт-Петербург, Невский пр., д. 12'
+    ] },
+    { id: '6', title: "Название ООО, ИНН", type: 'firm', points: [
+      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
+      'Точка: Санкт-Петербург, Невский пр., д. 12'
+    ] },
+    { id: '7', title: "Название ООО, ИНН", type: 'firm', points: [
+      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
+      'Точка: Санкт-Петербург, Невский пр., д. 12'
+    ] },
+    { id: '8', title: "Название ООО, ИНН", type: 'firm', points: [
+      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
+      'Точка: Санкт-Петербург, Невский пр., д. 12'
+    ] },
+    { id: '9', title: "Название ООО, ИНН", type: 'firm', points: [
+      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
+      'Точка: Санкт-Петербург, Невский пр., д. 12'
+    ] },
+    { id: '10', title: "Название ООО, ИНН", type: 'firm', points: [
+      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
+      'Точка: Санкт-Петербург, Невский пр., д. 12'
+    ] },
+    { id: '11', title: "Название ООО, ИНН", type: 'firm', points: [
+      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
+      'Точка: Санкт-Петербург, Невский пр., д. 12'
+    ] },
+    
   ];
 
   // Функция рендеринга каждого элемента
@@ -65,17 +99,17 @@ export default function Firms({ navigation }) {
           <View style={styles.menuPagesLine}/>
         </View>
         <View style={styles.firmsAndPointsFlatListContainer}>
-          <FlatList
+          <FlatList style={[{ paddingRight: 10 }]}
             data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             ListEmptyComponent={<Text>Нет фирм/точек</Text>}
-            showsVerticalScrollIndicator={false}
+            indicatorStyle="white"
           />
         </View>
         <View style={styles.containerButtonsBottomFlatList}>
           <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("Social")}>
-            <Text style={styles.textInButtonsMenuPage}>Добавить фирму/точку</Text>
+            <Text style={styles.textInButtonsMenuPage}>Добавить фирму</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
             <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>

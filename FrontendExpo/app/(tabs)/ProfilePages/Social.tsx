@@ -7,30 +7,30 @@ import {
   Modal,
   TextInput,
   StyleSheet,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-  Keyboard
+  FlatList
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/Feather";
 import Icons1 from "react-native-vector-icons/SimpleLineIcons";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Icons2 from "react-native-vector-icons/Entypo"
 import styles from "../../Styles/Style"; // Путь к стилям
 
 export default function Social({ navigation }) {
+  // Состояние для управления модальным окном
   const [modalVisible, setModalVisible] = useState(false);
   const [socialName, setSocialName] = useState('');
 
+  // Функция для открытия и закрытия модального окна
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
 
+  // Функция для добавления соц. сети (можно расширить логику)
   const handleAddSocialNetwork = () => {
     console.log(`Добавлена соц. сеть: ${socialName}`);
-    setModalVisible(false);
-    setSocialName('');
+    setModalVisible(false); // Закрываем модальное окно
+    setSocialName(''); // Очищаем поле ввода
   };
 
   const data = [
@@ -66,12 +66,12 @@ export default function Social({ navigation }) {
           <View style={styles.menuPagesLine} />
         </View>
         <View style={localStyles.flatListContainer}>
-          <FlatList
+          <FlatList style={[{ paddingRight: 10, }]}
             data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             ListEmptyComponent={<Text>Нет соц.сетей</Text>}
-            showsVerticalScrollIndicator={false}
+            indicatorStyle="white"
           />
         </View>
 
@@ -95,47 +95,43 @@ export default function Social({ navigation }) {
           visible={modalVisible}
           onRequestClose={toggleModal}
         >
-          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <View style={localStyles.modalOverlay}>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.modalContent}
+          <View style={localStyles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity
+                style={localStyles.closeButton}
+                onPress={toggleModal}
               >
-                <TouchableOpacity
-                  style={localStyles.closeButton}
-                  onPress={toggleModal}
-                >
-                  <Icons name="x" size={32} color="#5A7BCB"/>
-                </TouchableOpacity>
-                <Text style={localStyles.modalTitle}>Добавление ссылки</Text>
-                <View style={localStyles.containerIcons}>
-                  <Icon name="telegram" size={40} color="blue" /> 
-                  <Icons name="globe" size={40} color="blue" /> 
-                  <Icon name="whatsapp" size={40} color="blue" /> 
-                  <Icons1 name="social-vkontakte" size={40} color="blue" />
-                </View>
-                <Text style={[{textAlign: "left", width: "100%", color: "#1644B5", fontSize: 18, marginTop: 8}]}>URL</Text>
-                <TextInput
-                  style={localStyles.modalInput}
-                  placeholder="Введите название соц.сети"
-                  value={socialName}
-                  onChangeText={setSocialName}
-                />
-                <TouchableOpacity
-                  style={[localStyles.modalButton, { borderColor: "#D43538" }]}
-                  onPress={handleAddSocialNetwork}
-                >
-                  <Text style={[localStyles.textInButton, { color: "#D43538" }]}>Удалить соц.сеть</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[localStyles.modalButton, { borderColor: '#3563D4' }]}
-                  onPress={toggleModal}
-                >
-                  <Text style={[localStyles.textInButton, { color: "#3563D4" }]}>Готово</Text>
-                </TouchableOpacity>
-              </KeyboardAvoidingView>
+                <Icons name="x" size={32} color="#5A7BCB"/>
+              </TouchableOpacity>
+              <Text style={localStyles.modalTitle}>Добавление ссылки</Text>
+              <View style={localStyles.containerIcons}>
+                <Icon name="telegram" size={40} color="blue" /> 
+                <Icons name="globe" size={40} color="blue" /> 
+                <Icon name="whatsapp" size={40} color="blue" /> 
+                <Icons2 name="vk-with-circle" size={40} color="blue" />
+
+              </View>
+              <Text style={[{textAlign: "left", width: "100%", color: "#1644B5", fontSize: 18, marginTop: 8}]}>URL</Text>
+              <TextInput
+                style={localStyles.modalInput}
+                placeholder="Введите название соц.сети"
+                value={socialName}
+                onChangeText={setSocialName}
+              />
+              {/* <TouchableOpacity
+                style={[localStyles.modalButton, { borderColor: "#D43538" }]}
+                onPress={handleAddSocialNetwork}
+              >
+                <Text style={[localStyles.textInButton, { color: "#D43538" }]}>Удалить соц.сеть</Text>
+              </TouchableOpacity> */}
+              <TouchableOpacity
+                style={[localStyles.modalButton, { borderColor: '#3563D4' }]}
+                onPress={toggleModal}
+              >
+                <Text style={[localStyles.textInButton, { color: "#3563D4" }]}>Готово</Text>
+              </TouchableOpacity>
             </View>
-          </TouchableWithoutFeedback>
+          </View>
         </Modal>
       </SafeAreaView>
     </ImageBackground>
@@ -164,19 +160,19 @@ const localStyles = StyleSheet.create({
     color: "#3563D4"
   },
   modalInput: {
-    width: "100%",
-    height: 60,
-    alignItems: "flex-start",
-    backgroundColor: "#FFFFFF",
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    borderColor: "#3A6CE9",
-    borderWidth: 1,
-    marginTop:12,
-    fontSize: 12,
-    color: "rgba(22, 68, 181, 0.5)",
-    paddingStart: 15,
+      width: "100%",
+      height: 60,
+      alignItems: "flex-start",
+      backgroundColor: "#FFFFFF",
+      borderTopRightRadius: 10,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+      borderColor: "#3A6CE9",
+      borderWidth: 1,
+      marginTop:12,
+      fontSize: 12,
+      color: "rgba(22, 68, 181, 0.5)",
+      paddingStart: 15,
   },
   modalButton: {
     width: "100%",
@@ -197,7 +193,7 @@ const localStyles = StyleSheet.create({
     fontWeight: "bold",
   },
   flatListContainer: {
-    height: "55%",
+    height: "60%",
   },
   button: {
     width: "100%",
@@ -206,7 +202,7 @@ const localStyles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
     borderTopRightRadius: 10,
-    marginTop: 12,
+    marginTop: 34,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
   },

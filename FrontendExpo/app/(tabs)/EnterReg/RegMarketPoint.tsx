@@ -6,7 +6,8 @@ import {
   ImageBackground,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform
+  Platform, 
+  ScrollView
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "@/app/Styles/Style";
@@ -37,6 +38,7 @@ export default function MarketPoint({ navigation }) {
               <View style={Style.menuPagesLine}/>
               </View>
             </View>
+            <ScrollView contentContainerStyle={[{flexGrow: 1, paddingRight: 10}]} indicatorStyle="white">
             <View style={StyleSheet.flatten([Style.fields])}>
               <Text style={Style.titleSimple}>Адрес торговой точки</Text>
 
@@ -73,6 +75,7 @@ export default function MarketPoint({ navigation }) {
                   onChangeText={handleInputChange2}
               style={StyleSheet.flatten([Style.textInputProfile, {width:"30%"}])} keyboardType="phone-pad" placeholder="22:00" />
             </View>
+            </ScrollView>
 
             <View style={[Style.containerButtonsMenuPages]}>
               <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>

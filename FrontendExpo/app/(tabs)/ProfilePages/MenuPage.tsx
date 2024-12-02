@@ -5,12 +5,20 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  Platform
+  Platform,
+  Image,
+  Dimensions
 } from "react-native";
 import styles from "../../Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Icons from "react-native-vector-icons/Feather";
+
+const { width } = Dimensions.get('window');
+
+const isTablet = width >= 768;
 
 export default function Menupage({ navigation }) {
+
 
 
   return (
@@ -25,11 +33,23 @@ export default function Menupage({ navigation }) {
             style={styles.whiteButtonMenuTopNoActive}
             onPress={() => navigation.replace("Documents")}
           >
-            <Text style={styles.blackText}>Документы</Text>
-            <Text style={styles.alertText}>Не заполнены</Text>
+          <View style={[{flex: 1, justifyContent: "space-between",}]}>
+            <Text style={[styles.blackText, {paddingTop: 25, paddingStart: 15}]}>Документы</Text>
+            <Text style={[styles.alertText, { paddingStart: 15, }]}>Не заполнены</Text>
+            <Image
+            source={require("../../../assets/images/corner.png")}
+            style={[{ width: 25, height: 25, alignSelf: "flex-end", bottom: 20, right: 10}]}
+          />
+        </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.whiteButtonMenuTopActive} onPress={() => navigation.replace("Social")}>
+          <View style={[{flex: 1, justifyContent: "space-between",}]}>
             <Text style={styles.blackText}>Соц. сети</Text>
+            <Image
+            source={require("../../../assets/images/corner.png")}
+            style={[{ width: 25, height: 25, alignSelf: "flex-end", bottom: 10, right: 10}]}
+          />
+          </View>
           </TouchableOpacity>
         </View>
 
@@ -38,10 +58,26 @@ export default function Menupage({ navigation }) {
             style={styles.whiteButtonMenuBottomActive}
             onPress={() => navigation.replace("Reviews")}
           >
-            <Text style={styles.blackText}>Отзывы и приложения</Text>
+            <View style={[{flex: 1, justifyContent: "space-between",}]}>
+                <Text style={styles.blackText}>Отзывы и приложения</Text>
+                <View style={styles.containerBell}>  
+                  <Text style={[{fontSize: 10, fontWeight: "bold", fontFamily: "Montserrat", textAlign: "right", top: 4}]}>4</Text>
+                  <Icons style={[{alignSelf: "flex-end"}]} name="bell" size={22} color="black" />
+            </View>
+            <Image
+                source={require("../../../assets/images/corner.png")}
+                style={[{ width: 25, height: 25, alignSelf: "flex-end", bottom: 10, right: 10}]} 
+              />
+            </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.whiteButtonMenuBottomActive} onPress={() => navigation.replace("Firms")}>
-            <Text style={styles.blackText}>Фирмы/точки</Text>
+            <View style={[{flex: 1, justifyContent: "space-between",}]}>
+                <Text style={styles.blackText}>Фирмы/точки</Text>
+                <Image
+                source={require("../../../assets/images/corner.png")}
+                style={[{ width: 25, height: 25, alignSelf: "flex-end", bottom: 10, right: 10}]} 
+              />
+            </View>
           </TouchableOpacity>
         </View>
 
@@ -51,13 +87,24 @@ export default function Menupage({ navigation }) {
             style={styles.whiteButtonMenuBottomActive}
             onPress={() => navigation.replace("AdminPanel")}
           >
-            <Text style={styles.blackText}>Администрирование</Text>
+          <View style={[{flex: 1, justifyContent: "space-between",}]}>
+            <Text style={[styles.blackText, { paddingEnd: 24 }]}>Админ-панель</Text>
+            <Image
+            source={require("../../../assets/images/corner.png")}
+            style={[{ width: 25, height: 25, alignSelf: "flex-end", bottom: 10, right: 10}]}/>
+          </View>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.whiteButtonMenuBottomActive} 
             onPress={() => navigation.replace("Profile")}
           >
-            <Text style={styles.blackText}>Профиль</Text>
+            <View style={[{flex: 1, justifyContent: "space-between",}]}>
+            <Text style={[styles.blackText, {paddingEnd: 24}]}>Профиль</Text>
+            <Image
+            source={require("../../../assets/images/corner.png")}
+            style={[{ width: 25, height: 25, alignSelf: "flex-end", bottom: 10, right: 10}]} 
+          />
+          </View>
           </TouchableOpacity>
         </View>
 
@@ -74,7 +121,7 @@ export default function Menupage({ navigation }) {
 
 const localStyles = StyleSheet.create({
   footerText: {
-    fontSize: 16,
+    fontSize: isTablet ? 16 : 12 ,
     color: "#EEF3FF",
     textAlign: "center",
     fontFamily: 'Montserrat',

@@ -63,11 +63,12 @@ export default function Profile({ navigation }) {
         </View>
         <View style={styles.switchContainer}>
             <Text style={styles.switchText}>Получать отзывы в Telegram</Text>
-            <Switch 
+            <Switch style={[{ transform: isTablet ? [{ scale: 1 }] : [{ scale: 1.5 }] }]}
               onValueChange={toggleSwitch}
               value={isEnabled}
               trackColor={{ false: "#7B9DF2", true: "#7B9DF2" }}
               thumbColor={isEnabled ? "#E6E6E6" : "#E6E6E6"}
+              
               />  
         </View>
         <View style={[styles.containerButtonsMenuPages, { paddingVertical: 0 }]}>

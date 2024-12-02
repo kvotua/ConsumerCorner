@@ -27,10 +27,10 @@ export default function AddDocument({ navigation }) {
             <View style={styles.menuPagesLine}/>
         </View>
         <View style={localStyles.containerInputBox}>
-            <Text style={localStyles.textTopInput}>Название документа</Text>
+            <Text style={[localStyles.textTopInput, { marginBottom: 10 }]}>Название документа</Text>
             <TextInput style={styles.textInputProfile} placeholder="Барная лицензия" />
         </View>
-        <View style={styles.switchContainer}>
+        <View style={[styles.switchContainer, { marginTop: 28 }]}>
             <Text style={styles.switchText}>Документ имеет срок годности</Text>
             <Switch
               onValueChange={toggleSwitch}
@@ -41,7 +41,7 @@ export default function AddDocument({ navigation }) {
         </View>
         {isEnabled && (
           <View style={localStyles.containerInputBox}>
-            <Text style={localStyles.textTopInput}>Укажите дату окончания действия документа</Text>
+            <Text style={[localStyles.textTopInput, { marginBottom: 10 }]}>Укажите дату окончания действия документа</Text>
             <TextInput style={styles.textInputProfile} placeholder="Мы напомним вам о подходящих сроках" />
         </View>
         )}
@@ -66,7 +66,7 @@ export default function AddDocument({ navigation }) {
 const localStyles = StyleSheet.create({
   containerInputBox: {
     width: "100%",
-    marginTop: 62,
+    marginTop: 28,
   },
   textTopInput: {
     fontFamily: 'Montserrat',

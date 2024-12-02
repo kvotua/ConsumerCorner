@@ -48,12 +48,12 @@ export default function Documents({ navigation }) {
             <View style={styles.menuPagesLine}/>
             </View>
       <View style={localStyles.flatListContainer}>
-        <FlatList
+        <FlatList style={[{ paddingRight: 10, }]}
           data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           ListEmptyComponent={<Text>Нет фирм/точек</Text>}
-          showsVerticalScrollIndicator={false}
+          indicatorStyle="white"
         />
       </View>
         <View style={styles.containerButtonsMenuPages}>
@@ -71,7 +71,7 @@ export default function Documents({ navigation }) {
 
 const localStyles = StyleSheet.create({
   flatListContainer: {
-    height: "55%",
+    height: "60%",
   },
   button: {
     width: "100%",
@@ -80,7 +80,7 @@ const localStyles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
     borderTopRightRadius: 10,
-    marginTop: 12,
+    marginTop: 34,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
 

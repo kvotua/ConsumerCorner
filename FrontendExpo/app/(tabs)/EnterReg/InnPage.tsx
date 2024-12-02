@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, StyleSheet,KeyboardAvoidingView} from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, StyleSheet,KeyboardAvoidingView, Platform} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "../../Styles/Style";
 import { TextInputMask } from "react-native-masked-text";
@@ -40,7 +40,7 @@ export default function InnReg({navigation}){
                 </View>
                 <View style={localStyles.buttons}>
                         <TouchableOpacity style={localStyles.WhiteButton} onPress={() => navigation.replace("RegFirma")}>
-                        <Text style={Style.blackText}>Далее</Text>
+                        <Text style={[Style.blackText, { fontSize: 18 }]}>Далее</Text>
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>

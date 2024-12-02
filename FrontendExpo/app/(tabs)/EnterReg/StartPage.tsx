@@ -6,11 +6,15 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
+  Dimensions
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from "../Notif/toasts/Toast";
 import styles from "../../Styles/Style"; // Глобальные стили
 
+const { width } = Dimensions.get('window');
+
+const isTablet = width >= 768;
 
 export default function StartPage({ navigation }) {
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
@@ -19,6 +23,7 @@ export default function StartPage({ navigation }) {
     setToast({ type, message, subMessage, visible: true });
     setTimeout(() => setToast({ ...toast, visible: false }), 3000); // Авто-скрытие через 3 сек
   };
+
 
   return (
     <ImageBackground
@@ -89,7 +94,7 @@ export default function StartPage({ navigation }) {
 
 const localStyles = StyleSheet.create({
   footerText: {
-    fontSize: 16,
+    fontSize: isTablet ? 16 : 12,
     color: "silver",
     textAlign: "center",
     fontFamily: 'Montserrat',

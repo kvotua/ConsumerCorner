@@ -55,7 +55,6 @@ export default StyleSheet.create({
         borderTopRightRadius: 10,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
-        marginTop:5,
         fontSize: 18,
         paddingStart: 15,
       },
@@ -68,7 +67,7 @@ export default StyleSheet.create({
       },
       switchText: {
         fontSize: 18,
-        fontWeight: "500",
+        fontWeight: "bold",
         color: "#FFFFFF",
         marginRight: 10,
       },
@@ -100,7 +99,7 @@ export default StyleSheet.create({
         fontFamily: 'Montserrat'
       },
       textInButtonsBackMenuPage: {
-        fontSize: 18,
+        fontSize: isTablet ? 20 :  18,
         color: "#FAFBFF",
         fontWeight: "600"
       },
@@ -236,8 +235,6 @@ export default StyleSheet.create({
         backgroundColor: "#FFFFFF",
         paddingTop: 25,
         paddingStart: 15,
-        paddingBottom: 20,
-        paddingEnd:15,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderBottomLeftRadius: 20,
@@ -246,29 +243,24 @@ export default StyleSheet.create({
         flex: 1,
         height: 77,
         backgroundColor: "#C3C2C2",
-        paddingTop: 25,
-        paddingStart: 15,
-        paddingBottom: 20,
-        paddingEnd:15,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderBottomLeftRadius: 20,
       },
       whiteButtonMenuBottomActive: {
+        flexDirection: 'row',
         flex: 1, 
         height: 128,
         backgroundColor: "#FFFFFF",
         paddingTop: 23,
         paddingStart: 16,
-        paddingBottom: 10,
-        paddingEnd: 30,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderBottomLeftRadius: 20,
       },
       blackText: {
         fontFamily: 'Montserrat',
-        fontSize: 15,
+        fontSize: isTablet ? 20 : 15,
         fontWeight: "bold",
         color: "#313231",
       },
@@ -291,7 +283,7 @@ export default StyleSheet.create({
       },
       DefText: {
         fontFamily: 'Montserrat',
-        fontSize: 16,
+        fontSize: isTablet ? 20 : 16,
         fontWeight: "bold",
         color: "#FFFFFF",
       },
@@ -356,9 +348,7 @@ export default StyleSheet.create({
       },
       // flatlist
       firmsAndPointsFlatListContainer: {
-        flex: 1,
-        marginTop: 28,
-        marginBottom: 96,
+        height: "70%"
       },
       itemFlatList: {
         flexDirection: "row",
@@ -371,6 +361,7 @@ export default StyleSheet.create({
         color: "#FFFFFF",
         flex: 1, 
         marginEnd: 22, 
+        marginTop: isTablet ? 16 : 10
       },
       circleContainer: {
         width: 30,  
@@ -398,19 +389,20 @@ export default StyleSheet.create({
       documentsItemFlatList: {
         flexDirection: "column",
         alignItems: 'center',
-        marginBottom: isTablet ? 48 : 32, 
+        marginBottom: isTablet ? 10 : 16, 
       },
       reviewsItemFlatList: {
-        marginBottom: isTablet ? 48 : 32, 
+        marginBottom: isTablet ? 10 : 16, 
       },
       socialItemFlatList: {
-        marginBottom: isTablet ? 48 : 16, 
+        marginBottom: isTablet ? 10 : 16, 
       },
       //
       modalContent: {
         width: isTablet ? "65%" : "85%",
-        height: isTablet ? "30%" : "45%",
+        // height: isTablet ? "35%" : 380,
         padding: 20,
+        paddingBottom: 24,
         backgroundColor: "#fff",
         borderRadius: 10,
         alignItems: "center",
@@ -421,4 +413,9 @@ export default StyleSheet.create({
         borderBottomRightRadius: 20,
         borderBottomLeftRadius: 0,
       },
+      //
+      containerBell: {
+        bottom: isTablet ? 64 : 60,
+        right: 12
+      }
   });

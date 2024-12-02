@@ -26,7 +26,6 @@ export default function AdminPanel({ navigation }) {
       <View style={styles.itemFlatList}>
         <Text style={styles.textInFlatList}>{item.title}</Text>
         <View style={styles.circleContainer}>
-          <View style={styles.innerCircle} />
         </View>
       </View>
     );
@@ -41,12 +40,12 @@ export default function AdminPanel({ navigation }) {
           <View style={styles.menuPagesLine}/>
         </View>
         <View style={styles.firmsAndPointsFlatListContainer}>
-        <FlatList
+        <FlatList style={[{ paddingRight: 10 }]}
           data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           ListEmptyComponent={<Text>Нет фирм/точек</Text>}
-          showsVerticalScrollIndicator={false}
+            indicatorStyle="white"
         />
       </View>
       <View style={styles.containerButtonsBottomFlatList}>

@@ -90,12 +90,12 @@ export default function Reviews({ navigation }) {
           <View style={styles.menuPagesLine} />
         </View>
         <View style={localStyles.flatListContainer}>
-          <FlatList
+          <FlatList style={[{ paddingRight: 10 }]}
             data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             ListEmptyComponent={<Text>Нет отзывов</Text>}
-            showsVerticalScrollIndicator={false}
+            indicatorStyle="white"
           />
         </View>
         <View style={styles.containerButtonsMenuPages}>

@@ -17,18 +17,18 @@ export default function Points({ route, navigation }) {
         </View>
         <View style={styles.firmsAndPointsFlatListContainer}>
           <FlatList
+            style={[{ paddingRight: 10 }]}
             data={points}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <View style={styles.itemFlatList}>
                 <Text style={styles.textInFlatList}>{item}</Text>
                 <View style={styles.circleContainer}>
-                    <View style={styles.innerCircle} />
                 </View>
               </View>
             )}
             
-            showsVerticalScrollIndicator={false}
+            indicatorStyle="white"
           />
         </View>
         <View style={styles.containerButtonsBottomFlatList}>

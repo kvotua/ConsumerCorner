@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TextInput,
   ScrollView,
+  Dimensions
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
@@ -26,6 +27,10 @@ export default function RegFirma({ navigation }) {
     setValue2(text);
   };
 
+  const { width } = Dimensions.get('window');
+
+const isTablet = width >= 768;
+
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
@@ -41,8 +46,7 @@ export default function RegFirma({ navigation }) {
         <ScrollView contentContainerStyle={localStyles.scrollViewContent} indicatorStyle="white">
           <View style={StyleSheet.flatten([localStyles.fields])}>
             <Text style={Style.titleSimple}>Название фирмы</Text>
-            <TextInputMask
-              type={"custom"}
+            <TextInput
               value={value}
               onChangeText={handleInputChange}
               style={Style.textInputProfile}
@@ -71,17 +75,17 @@ export default function RegFirma({ navigation }) {
             <TextInput style={Style.textInputProfile} placeholder="Частное предприятие" />
 
             <View style={localStyles.passwordContainer}>
-              <Text style={StyleSheet.flatten([Style.titleSimple, { marginTop: 15, fontSize: 12 }])}>
+              <Text style={StyleSheet.flatten([Style.titleSimple, { marginTop: 15, fontSize: 16 }])}>
                 Пригласите партнеров и
               </Text>
-              <Text style={StyleSheet.flatten([Style.titleSimple, { marginTop: 0, fontSize: 12 }])}>
+              <Text style={StyleSheet.flatten([Style.titleSimple, { marginTop: 0, fontSize: 16 }])}>
                 собственников бизнеса
               </Text>
 
               <View style={localStyles.iconButtonContainer}>
                 <TextInput style={Style.textInputProfile} placeholder="https://Invite.ru" />
                 <TouchableOpacity
-                  style={[localStyles.button, { margin: 35 }]}
+                  style={[localStyles.button, { marginEnd: 52}]}
                 >
                   <Icon name={'copy'} size={24} color="#000000" />
                 </TouchableOpacity>
@@ -94,7 +98,7 @@ export default function RegFirma({ navigation }) {
         </ScrollView>
 
         {/* Контейнер для кнопок */}
-        <View style={[localStyles.containerButtonsMenuPages, { marginTop: 10 }]}>
+        <View style={[localStyles.containerButtonsMenuPages, { marginTop: 10, height : isTablet ? 150 : "auto" }]}>
         <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("MarketInfo")}>
             <Text style={Style.textInButtonsMenuPage}>Далее</Text>
         </TouchableOpacity>
@@ -117,9 +121,10 @@ const localStyles = StyleSheet.create({
   },
   passwordContainer: {},
   iconButtonContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    justifyContent:"center"
   },
   iconButton: {
     backgroundColor: "#FFFFFF",
@@ -129,11 +134,11 @@ const localStyles = StyleSheet.create({
     flex: 1, // Take up the remaining space
   },
   button: {
+    height: "100%",
     position: 'absolute', // Position the buttons absolutely
-    right: 5, // Position the buttons to the right
-    justifyContent: 'center',
+    right: 20, // Position the buttons to the right
     alignItems: 'center',
-    padding: 10,
+    justifyContent:"center"
   },
   containerButtonsMenuPages: {
     width: "100%",

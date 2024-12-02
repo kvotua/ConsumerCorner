@@ -30,17 +30,17 @@ export default function Enter({ navigation }) {
                   mask: "+7 (999) 999-99-99",
                 }}
                 keyboardType="phone-pad"
-                style={Style.textInputProfile}
+                style={[Style.textInputProfile, {marginTop: 10}]}
                 placeholder="+7 (999) 999 99 99"
               />
                 <Text style={Style.titleSimple}>Пароль</Text>
 
                 <TextInput
-                style={Style.textInputProfile}
+                style={[Style.textInputProfile, {marginTop: 10}]}
                 placeholder="Пароль"
                 />
                 <TouchableOpacity>
-                  <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver"}])}>Напомнить пароль</Text>
+                  <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver", marginTop: 4}])}>Напомнить пароль</Text>
                 </TouchableOpacity>
             </View>
             <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
