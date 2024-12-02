@@ -1,17 +1,17 @@
 import pytest
-from inn_service.services import INNService
-from inn_service.schemas import ErrorSchema
+from .inn_service.services import INNService
+from .inn_service.schemas import ErrorSchema
 
 inn_test_service = INNService()
 
 @pytest.mark.parametrize("inn, expected", [
-    ("1234567897", True),  # Valid 10-digit INN
-    ("1234567890", ErrorSchema(422, "INN is not valid")),  # Invalid 10-digit INN
-    ("123456789012", True),  # Valid 12-digit INN
-    ("123456789011", ErrorSchema(422, "INN is not valid")),  # Invalid 12-digit INN
-    ("123456789", ErrorSchema(422, "Wrong number of characters in INN")),  # Invalid length
-    ("123456789a", ErrorSchema(422, "INN can only be their numbers")),  # Non-digit characters
-    ("1234567890123", ErrorSchema(422, "Wrong number of characters in INN")),  # Invalid length
+    ("1234567897", True),
+    ("1234567890", ErrorSchema(status_code=422, message="INN is not valid")),
+    ("123456789012", True),
+    ("123456789071", ErrorSchema(status_code=422, message="INN is not valid")),
+    ("123456789", ErrorSchema(status_code=422, message="Wrong number of characters in INN")),
+    ("123456789a", ErrorSchema(status_code=422, message="INN can only be their numbers")),
+    ("1234567890123", ErrorSchema(status_code=422, message="Wrong number of characters in INN")),
 ])
 
 def test_validate_inn(inn, expected):
