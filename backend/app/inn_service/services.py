@@ -41,14 +41,14 @@ class INNService:
             address=address,
         )
     def validate_inn(self,inn: str) -> bool or ErrorSchema:
-        if len(inn) != 10 or 12:
+        if len(inn) not in [10,12]:
             return ErrorSchema(
-                status_code=404,
+                status_code=422,
                 message="Wrong number of characters in INN"
             )
         if not inn.isdigit():
             return ErrorSchema(
-                status_code=404,
+                status_code=422,
                 message="INN can only be their numbers"
             )
         if len(inn) == 10:
@@ -57,7 +57,7 @@ class INNService:
             if control_digit == int(inn[9]):
                 return True
             return ErrorSchema(
-                status_code=404,
+                status_code=422,
                 message="INN is not valid"
             )
         if len(inn) == 12:
