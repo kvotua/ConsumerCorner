@@ -1,7 +1,8 @@
 from dadata import Dadata
 from dotenv import load_dotenv
 import os
-from backend.app.config import token
+# from backend.app.config import token
+from ..config import token
 from .schemas import IpSchema,CompanySchema,ErrorSchema
 
 class INNService:
@@ -41,15 +42,14 @@ class INNService:
             address=address,
         )
     def validate_inn(self,inn: str) -> bool or ErrorSchema:
-        if len(num) not in [10,12]:
-            print(len(inn))
+        if len(inn) not in [10,12]:
             return ErrorSchema(
-                status_code=400,
+                status_code=422,
                 message="Wrong number of characters in INN"
             )
         if not inn.isdigit():
             return ErrorSchema(
-                status_code=400,
+                status_code=422,
                 message="INN can only be their numbers"
             )
         if len(inn) == 10:
@@ -57,8 +57,9 @@ class INNService:
             control_digit = sum(int(inn[i]) * weights[i] for i in range(9)) % 11 % 10
             if control_digit == int(inn[9]):
                 return True
+            print(123456)
             return ErrorSchema(
-                status_code=400,
+                status_code=422,
                 message="INN is not valid"
             )
         if len(inn) == 12:
@@ -69,6 +70,6 @@ class INNService:
             if control_digit_1 == int(inn[10]) and control_digit_2 == int(inn[11]):
                 return True
             return ErrorSchema(
-                status_code=400,
+                status_code=422,
                 message="INN is not valid"
             )

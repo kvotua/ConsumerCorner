@@ -6,6 +6,7 @@ import phonenumbers
 from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta, timezone
+import bcrypt
 
 from fastapi import Response, HTTPException, status
 from pydantic import EmailStr
@@ -62,11 +63,16 @@ def validate_phone(phone):
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+def hash_password(password: str) -> bytes:
+    salt = bcrypt.gensalt()
+    pwd_bytes: bytes = password.encode()
+    return bcrypt.hashpw(pwd_bytes, salt)
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+def validate_password(password: str, hashed_password: bytes) -> bool:
+    return bcrypt.checkpw(
+        password.encode(),
+        hashed_password=hashed_password,
+    )
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()

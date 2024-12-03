@@ -1,4 +1,4 @@
-from sqlalchemy import text, BigInteger, Text, ForeignKey, func, Float
+from sqlalchemy import BigInteger, Text, ForeignKey, func, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column
 import datetime
@@ -13,7 +13,7 @@ class Users(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     phone: Mapped[str] = mapped_column()
     fio: Mapped[str] = mapped_column()
-    password: Mapped[str] = mapped_column()
+    password: Mapped[str] = mapped_column(Text)
     email: Mapped[Optional[str]] = mapped_column()
     verify_phone: Mapped[bool] = mapped_column(default=False)
     verify_email: Mapped[bool] = mapped_column(default=False)
