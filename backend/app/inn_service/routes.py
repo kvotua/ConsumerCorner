@@ -7,6 +7,7 @@ from .models import CompanyModel, IpModel
 from backend.app.database import get_session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
+from typing import Annotated
 
 
 router = APIRouter(prefix="/inn_service", tags=["inn_service"])
@@ -14,7 +15,12 @@ router = APIRouter(prefix="/inn_service", tags=["inn_service"])
 def get_inn_service() -> INNService:
     return INNService
 @router.get("/inn_info")
-async def result_page(request: Request, inn: str,session: AsyncSession = Depends(get_session),inn_service: INNService = Depends(get_inn_service())):
+async def result_page(
+        request: Request,
+        inn: Annotated[str,Query(..., title="ИНН компании или ИП", min_length=10,max_length=12)],
+        session: AsyncSession = Depends(get_session),
+        inn_service: INNService = Depends(get_inn_service())
+    ):
     validate_result = inn_service.validate_inn(inn)
     if not isinstance(validate_result, bool):
         return validate_result
@@ -40,5 +46,6 @@ async def result_page(request: Request, inn: str,session: AsyncSession = Depends
         await session.refresh(company_model)
     except Exception as e:
         if isinstance(e, IntegrityError):
-            print('Такой пользователь уже существует')
+            return company_data
+        raise HTTPException(status_code=404, detail="Неизвестная ошибка")
     return company_data

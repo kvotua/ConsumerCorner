@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from .config import db_url
 from .models import Base
+from pymongo import MongoClient
 
 
 engine = create_async_engine(
@@ -8,6 +9,13 @@ engine = create_async_engine(
     echo=True,
     future=True,
     )
+client = MongoClient(
+    'mongodb://localhost:27017',
+    username="root",
+    password="example"
+)
+db = client["mongodb_by_images"]
+collection = db["images"]
 
 async def create_tables():
     async with engine.begin() as conn:
