@@ -32,7 +32,7 @@ class INNService:
                 message="data is not found"
             )
         data = result[0]['data']
-        fio = f'{data['fio']['surname']} {data['fio']['name']} {data['fio']['patronymic']}'
+        fio = f"{data['fio']['surname']} {data['fio']['name']} {data['fio']['patronymic']}"
         ogrn = data['ogrn']
         address = data['address']['unrestricted_value']
         return IpSchema(
@@ -57,7 +57,6 @@ class INNService:
             control_digit = sum(int(inn[i]) * weights[i] for i in range(9)) % 11 % 10
             if control_digit == int(inn[9]):
                 return True
-            print(123456)
             return ErrorSchema(
                 status_code=422,
                 message="INN is not valid"
