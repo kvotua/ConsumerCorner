@@ -16,7 +16,6 @@ async def lifespan(app: FastAPI):
     yield
 
 
-
 debug = os.getenv("DEBUG") is not None
 app = FastAPI(debug=debug, lifespan=lifespan)
 app.add_middleware(
@@ -30,3 +29,4 @@ app.add_middleware(
 app.include_router(inn_service_router)
 app.include_router(users_router)
 app.include_router(auth_router)
+##

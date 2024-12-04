@@ -1,3 +1,4 @@
+import time
 from typing import Any, Literal
 import random
 import aiohttp
@@ -64,6 +65,9 @@ def create_access_token(data: dict) -> str:
 def decode_access_token(jwt_token: str):
     try:
         token_info = jwt.decode(token=jwt_token, key=secret_key, algorithms=[str(algo)])
+        data_now = datetime.now(timezone.utc)
+        if token_info.get("exp") <= data_now:
+            return "Истёк жизненный цикл токена"
         return token_info
     except jose.exceptions.JWTError:
-        return "Signature verification failed"
+        return "Невалидный токен"

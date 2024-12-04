@@ -13,6 +13,7 @@ class CompanyModel(Base):
     ogrn: Mapped[str] = mapped_column()
     address: Mapped[str] = mapped_column()
 
+
 class IpModel(Base):
     __tablename__ = 'ip_info'
 

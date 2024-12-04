@@ -47,6 +47,7 @@ async def send_message(
             'https://api3.greensms.ru/sms/send',
             data=params,
         )
+        await http_client.close_session()
         if response is None:
             raise HTTPException(status_code=400, detail="Закончились деньги на GREENSMSAPI")
         data = Verification(request_id=response, sms_code=code, phone=number.phone)

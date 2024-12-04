@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query,Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.requests import Request
+from typing import Annotated
+
 from .services import INNService
 from backend.app.config import token
 from .models import CompanyModel, IpModel
@@ -14,7 +16,12 @@ router = APIRouter(prefix="/inn_service", tags=["inn_service"])
 def get_inn_service() -> INNService:
     return INNService
 @router.get("/inn_info")
-async def result_page(request: Request, inn: str,session: AsyncSession = Depends(get_session),inn_service: INNService = Depends(get_inn_service())):
+async def result_page(
+        request: Request,
+        inn: Annotated[str, Query(title="ИНН", example='390000001190')],
+        session: AsyncSession = Depends(get_session),
+        inn_service: INNService = Depends(get_inn_service())
+):
     validate_result = inn_service.validate_inn(inn)
     if not isinstance(validate_result, bool):
         return validate_result
