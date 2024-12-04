@@ -3,7 +3,6 @@ from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
-from backend.app.auth.schemas import TokenInfo
 from backend.app.auth.utils import decode_access_token
 from backend.app.users.schemas import UserSchema
 from backend.app.database import get_session
@@ -15,7 +14,6 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get(
     "/me",
-    response_model=UserSchema
 )
 async def get_users_me(
     access_token: Annotated[str, Header(

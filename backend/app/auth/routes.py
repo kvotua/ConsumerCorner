@@ -1,11 +1,12 @@
-from typing import Annotated, Optional
-from fastapi import APIRouter, Body, HTTPException, Query, Depends
+from typing import Annotated
+from fastapi import APIRouter, Body, HTTPException, Depends, Header
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from urllib3.util.wait import select_wait_for_socket
 
-from .schemas import Phone, Register, Login, VerifePhone, ReqID, TokenInfo
-from .utils import HttpClient, generate_code, generate_text, validate_phone, create_access_token, hash_password, validate_password
+from .schemas import Phone, Register, Login, VerifePhone, ReqID, AccessTokenInfo, TokenPair
+from .utils import HttpClient, generate_code, generate_text, validate_phone, create_access_token, hash_password, validate_password, create_tokens_pair, decode_access_token, decode_refresh_token
 from .models_auth import Verification
 from backend.app.config import user_name, user_pass, send_from
 from backend.app.database import get_session
@@ -14,6 +15,35 @@ from backend.app.models import Users
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 http_client = HttpClient()
+
+
+@router.post('/refresh')
+async def refresh_tokens(
+        refresh_token: Annotated[str, Header(
+            title='Refresh JWT токен',
+            example='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZXhwIjoxNzM1OTIxMzg5LCJ0eXBlIjoicmVmcmVzaCJ9.SDZcJf2hmbnYYer5R-VZKyQL2ztSu3WgzcZ6tFojx38',
+        )],
+        session: AsyncSession = Depends(get_session),
+):
+    try:
+        token_data = decode_refresh_token(refresh_token)
+        if isinstance(token_data, str):
+            return HTTPException(status_code=401, detail=token_data)
+        response = select(Users).where(Users.id == token_data.get("id"))
+        result = await session.execute(response)
+        data_by_db = result.scalars().first()
+        payload = {
+            'id': data_by_db.id,
+            'phone': data_by_db.phone,
+            'fio': data_by_db.fio,
+        }
+        jwt_tokens = create_tokens_pair(payload)
+        return TokenPair(
+            access_token=jwt_tokens.get("access_token"),
+            refresh_token=jwt_tokens.get("refresh_token")
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get('/get-sessions-sms')
@@ -86,7 +116,7 @@ async def check_code(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post('/registration', response_model=TokenInfo)
+@router.post('/registration', response_model=AccessTokenInfo)
 async def registration(data: Annotated[Register, Body()], session: AsyncSession = Depends(get_session)) -> str:
     stmt = select(Users).where(Users.phone == data.phone)
     result = await session.execute(stmt)
@@ -112,10 +142,10 @@ async def registration(data: Annotated[Register, Body()], session: AsyncSession 
         'phone': data.phone,
         'fio': data.fio,
     }
-    return TokenInfo(access_token=create_access_token(payload), token_type="Baerer")
+    return AccessTokenInfo(access_token=create_access_token(payload), token_type="Baerer")
 
 
-@router.post('/login', response_model=TokenInfo)
+@router.post('/login', response_model=TokenPair)
 async def login(data: Login, session: AsyncSession = Depends(get_session)):
     stmt = select(Users).where(Users.phone == data.phone)
     result = await session.execute(stmt)
@@ -131,4 +161,8 @@ async def login(data: Login, session: AsyncSession = Depends(get_session)):
         'phone': data_by_db.phone,
         'fio': data_by_db.fio,
     }
-    return TokenInfo(access_token=create_access_token(payload), token_type="Baerer")
+    jwt_tokens = create_tokens_pair(payload)
+    return TokenPair(
+        access_token=jwt_tokens.get("access_token"),
+        refresh_token=jwt_tokens.get("refresh_token")
+    )
