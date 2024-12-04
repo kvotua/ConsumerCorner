@@ -1,18 +1,13 @@
 from typing import Any, Literal
 import random
 import aiohttp
-from fastapi_jwt.jwt_backends.abstract_backend import BackendException
+import jose.exceptions
 import phonenumbers
 from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta, timezone
 import bcrypt
 
-from fastapi import Response, HTTPException, status
-from pydantic import EmailStr
-
-from .dependencies import access_security, refresh_security, email_security
-from .schemas import AccessToken, RefreshToken, TokenPairSchema
 from backend.app.config import secret_key, algo
 
 
@@ -29,21 +24,6 @@ class HttpClient:
             result = await response.json()
             return result.get("request_id")
 
-
-def set_access_token(response: Response, subject: dict[str, Any]) -> AccessToken:
-    access_token = access_security.create_access_token(subject)
-    access_security.set_access_cookie(response, access_token)
-    return AccessToken(access_token)
-
-def set_refresh_token(response: Response, subject: dict[str, Any]) -> RefreshToken:
-    refresh_token = refresh_security.create_refresh_token(subject)
-    refresh_security.set_refresh_cookie(response, refresh_token)
-    return RefreshToken(refresh_token)
-
-def set_token_pair(response: Response, subject: dict[str, Any]) -> TokenPairSchema:
-    refresh_token = set_refresh_token(response, subject)
-    access_token = set_access_token(response, subject)
-    return TokenPairSchema(refresh_token=refresh_token, access_token=access_token)
 
 def generate_code():
     code = ''.join(random.sample('0123456789', k=5))
@@ -80,3 +60,10 @@ def create_access_token(data: dict) -> str:
     to_encode.update({"exp": expire})
     encode_jwt = jwt.encode(to_encode, key=secret_key, algorithm=algo)
     return encode_jwt
+
+def decode_access_token(jwt_token: str):
+    try:
+        token_info = jwt.decode(token=jwt_token, key=secret_key, algorithms=[str(algo)])
+        return token_info
+    except jose.exceptions.JWTError:
+        return "Signature verification failed"

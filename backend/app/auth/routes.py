@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, HTTPException, Query, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from .schemas import Phone, Register, Login, VerifePhone, ReqID, AccessJWTToken
+from .schemas import Phone, Register, Login, VerifePhone, ReqID, TokenInfo
 from .utils import HttpClient, generate_code, generate_text, validate_phone, create_access_token, hash_password, validate_password
 from .models_auth import Verification
 from backend.app.config import user_name, user_pass, send_from
@@ -62,7 +62,6 @@ async def send_message(
 async def check_code(
     req_id: Annotated[str, Body(..., title='ID сессии, полученный после отправки номера', examples=['79442f1f-17a8-42bb-9f6f-4affc8788e7e'], min_length=36, max_length=36)],
     sms_code: Annotated[str, Body(..., title='СМС-код, отправленный на номер', examples=['12345'], min_length=5, max_length=5)],
-    jwt_token: AccessJWTToken,#Annotated[AccessJWTToken, Body()],
     session: AsyncSession = Depends(get_session),
 ):
     try:
@@ -86,19 +85,21 @@ async def check_code(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post('/registration', response_model=AccessJWTToken)
+@router.post('/registration', response_model=TokenInfo)
 async def registration(data: Annotated[Register, Body()], session: AsyncSession = Depends(get_session)) -> str:
     stmt = select(Users).where(Users.phone == data.phone)
     result = await session.execute(stmt)
     user = result.scalars().first()
     if user:
         raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
+    
     data_for_db = Users(
         phone=data.phone,
         password=hash_password(data.password).decode('utf-8'),
         fio=data.fio,
         verify_phone=True
     )
+    
     session.add(data_for_db)
     await session.commit()
     await session.refresh(data_for_db)
@@ -110,21 +111,23 @@ async def registration(data: Annotated[Register, Body()], session: AsyncSession 
         'phone': data.phone,
         'fio': data.fio,
     }
-    return AccessJWTToken(access_token=create_access_token(payload))
+    return TokenInfo(access_token=create_access_token(payload), token_type="Baerer")
 
 
-@router.post('/login', response_model=AccessJWTToken)
+@router.post('/login', response_model=TokenInfo)
 async def login(data: Login, session: AsyncSession = Depends(get_session)):
     stmt = select(Users).where(Users.phone == data.phone)
     result = await session.execute(stmt)
     data_by_db = result.scalars().first()
+    
     if data_by_db is None:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
+    
     if not validate_password(data.password, data_by_db.password.encode('utf-8')):
         raise HTTPException(status_code=404, detail="Неверный пароль")
     payload = {
         'id': data_by_db.id,
         'phone': data_by_db.phone,
-        'fio': data_by_db.phone,
+        'fio': data_by_db.fio,
     }
-    return AccessJWTToken(access_token=create_access_token(payload))
+    return TokenInfo(access_token=create_access_token(payload), token_type="Baerer")

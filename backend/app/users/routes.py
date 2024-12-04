@@ -1,63 +1,40 @@
-# import uuid
-# from typing import Annotated
-#
-# from bcrypt import gensalt, hashpw
-# from fastapi import APIRouter, Body, Depends, HTTPException, Response, Security, status
-# from fastapi_jwt import JwtAuthorizationCredentials
-#
-# from ConsumerCorner.backend.app.auth.dependencies import access_security
-# from ConsumerCorner.backend.app.auth.schemas import TokenPairSchema
-# #from ConsumerCorner.backend.app.auth.utils import set_token_pair, generate_email_verify_link
-# from ConsumerCorner.backend.app.users.schemas import UserId
-#
-# from .dependencies import Emailer
-# from .models import EmailModel, UserModel
-# from .schemas import UserRegisterSchema, UserSchema
-#
-# router = APIRouter(prefix="/users", tags=["Users"])
-#
-#
-# def email_exist(email: str) -> bool:
-#     result = UserModel.scan(UserModel.email.value == email, limit=1)  # type: ignore
-#     return len(list(result)) > 0
-#
-#
-# @router.post(
-#     "/",
-#     status_code=status.HTTP_201_CREATED,
-#     responses={
-#         status.HTTP_409_CONFLICT: {},
-#     },
-# )
-# async def post_users_register(
-#     response: Response,
-#     user: Annotated[UserRegisterSchema, Body(embed=True)],
-#     emailer: Annotated[Emailer, Depends(Emailer)],
-# ) -> TokenPairSchema:
-#     if email_exist(user.email):
-#         raise HTTPException(status.HTTP_409_CONFLICT, "Email already in use")
-#     user_id = UserId(str(uuid.uuid4()))
-#     UserModel(
-#         id=user_id,
-#         email=EmailModel(value=user.email, verified=False),
-#         name=user.name,
-#         surname=user.surname,
-#         password=hashpw(user.password.encode(), gensalt()).decode(),
-#     ).save()
-#     # TODO: send link for email verification
-#     link = generate_email_verify_link(user.email, user_id)
-#     emailer.send(user.email, "Подтверждение почты", f"Ссылка для подтверждения: {link}")
-#     return set_token_pair(response, {"id": user_id})
-#
-#
-# @router.get(
-#     "/me",
-# )
-# async def get_users_me(
-#     credentials: JwtAuthorizationCredentials = Security(access_security),
-# ) -> UserSchema:
-#     try:
-#         model = UserModel.get(credentials.subject.get("id"))
-#     except UserModel.DoesNotExist:
-#         raise HTTPException(status.HTTP_404_NOT_FOUND, "User with this ID not found")
-#     return model.to_schema()
+from fastapi import APIRouter, HTTPException, Depends, Query, Header
+from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Annotated
+
+from backend.app.auth.schemas import TokenInfo
+from backend.app.auth.utils import decode_access_token
+from backend.app.users.schemas import UserSchema
+from backend.app.database import get_session
+from backend.app.models import Users
+
+
+router = APIRouter(prefix="/users", tags=["Users"])
+
+
+@router.get(
+    "/me",
+)
+async def get_users_me(
+    credentials: Annotated[TokenInfo, Query()],
+    session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = decode_access_token(credentials.access_token)
+    user_id = dict_by_token.get('id')
+    if user_id is None:
+        raise HTTPException(status_code=401, detail='Не удалось декодировать токен')
+    response = select(Users).where(Users.id == user_id)
+    result = await session.execute(response)
+    user = result.scalars().first()
+
+    if user is None:
+            raise HTTPException(status_code=404, detail='Такой пользователь не найден')
+    return UserSchema(
+        id=user.id,
+        phone=user.phone,
+        fio=user.fio,
+        email=user.email,
+        verify_phone=user.verify_phone,
+        verify_email=user.verify_email,
+    )
