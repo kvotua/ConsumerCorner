@@ -76,10 +76,12 @@ def create_refresh_token(data: dict) -> str:
     encode_jwt = jwt.encode(to_encode, key=secret_key, algorithm=algo)
     return encode_jwt
 
-def decode_access_token(jwt_token: str):
+def decode_access_token(access_token: str, token_type: str):
     try:
-        token_info = jwt.decode(token=jwt_token, key=secret_key, algorithms=[str(algo)])
+        token_info = jwt.decode(token=access_token, key=secret_key, algorithms=[str(algo)])
         data_now = datetime.now(timezone.utc)
+        if token_type != "Baerer":
+            return "Невалидный токен"
         if token_info.get("exp") <= int(data_now.timestamp()):
             return "Невалидный токен"
         if token_info.get("type") == "refresh":
@@ -107,3 +109,14 @@ def create_tokens_pair(data: dict):
         "access_token": acc_token,
         "refresh_token": ref_token,
     }
+
+def validate_token(access_token: str, token_type: str):
+    if token_type != "Baerer":
+        return 1
+    dict_by_token = decode_access_token(access_token=access_token, token_type=token_type)
+    if isinstance(dict_by_token, str):
+        return 1
+    if dict_by_token.get("verify_phone") is False:
+        return 2
+    else:
+        return dict_by_token

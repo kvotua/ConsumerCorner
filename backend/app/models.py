@@ -4,6 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 import datetime
 from typing import Optional
 
+
 Base = declarative_base()
 
 
@@ -18,11 +19,12 @@ class Users(Base):
     verify_phone: Mapped[bool] = mapped_column(default=False)
     verify_email: Mapped[bool] = mapped_column(default=False)
 
+
 class UserEnterprisesRole(Base):
     __tablename__ = 'user_enterprises_role'
 
-    user_id: Mapped[str] = mapped_column(primary_key=True)
-    enterprise_id: Mapped[str] = mapped_column(ForeignKey('enterprises.id'), primary_key=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    enterprise_id: Mapped[str] = mapped_column(ForeignKey('enterprises.id'))
     role: Mapped[str] = mapped_column()
 
 
@@ -35,8 +37,9 @@ class Enterprises(Base):
     create_id: Mapped[str] = mapped_column()
     inn: Mapped[str] = mapped_column()
     ogrn: Mapped[str] = mapped_column()
+    address: Mapped[str] = mapped_column()
     general_type_activity: Mapped[str] = mapped_column()
-    role_id: Mapped[str] = mapped_column()
+    #role_id: Mapped[str] = mapped_column()
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 

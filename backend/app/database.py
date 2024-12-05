@@ -14,7 +14,7 @@ async def create_tables():
         await conn.run_sync(Base.metadata.create_all)
     await engine.dispose()
 
-async def get_session():
+async def get_session():####
     async_session = async_sessionmaker(
         bind=engine,
         class_=AsyncSession,
