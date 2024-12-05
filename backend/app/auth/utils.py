@@ -1,4 +1,3 @@
-from typing import Any, Literal
 import random
 import aiohttp
 import jose.exceptions
@@ -9,8 +8,11 @@ from datetime import datetime, timedelta, timezone
 import bcrypt
 
 from backend.app.config import secret_key, algo
+from backend.app.auth.schemas import TokenPair
 
 
+TOKEN_TYPE_FIELD = "type"
+ACCESS_TOKEN_TYPE = 'access'
 
 class HttpClient:
     def __init__(self):
@@ -24,6 +26,12 @@ class HttpClient:
             result = await response.json()
             return result.get("request_id")
 
+
+def time_in_30_days():
+    return datetime.now(timezone.utc) + timedelta(days=30)
+
+def time_in_3_days():
+    return datetime.now(timezone.utc) + timedelta(days=3)
 
 def generate_code():
     code = ''.join(random.sample('0123456789', k=5))
@@ -56,14 +64,46 @@ def validate_password(password: str, hashed_password: bytes) -> bool:
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(days=30)
-    to_encode.update({"exp": expire})
+    expire = time_in_3_days()
+    to_encode.update({"exp": expire, "type": "access"})
+    encode_jwt = jwt.encode(to_encode, key=secret_key, algorithm=algo)
+    return encode_jwt
+
+def create_refresh_token(data: dict) -> str:
+    to_encode = {"id": data.get("id")}
+    expire = time_in_30_days()
+    to_encode.update({"exp": expire,  "type": "refresh"})
     encode_jwt = jwt.encode(to_encode, key=secret_key, algorithm=algo)
     return encode_jwt
 
 def decode_access_token(jwt_token: str):
     try:
         token_info = jwt.decode(token=jwt_token, key=secret_key, algorithms=[str(algo)])
+        data_now = datetime.now(timezone.utc)
+        if token_info.get("exp") <= int(data_now.timestamp()):
+            return "Невалидный токен"
+        if token_info.get("type") == "refresh":
+            return "Невалидный токен"
         return token_info
     except jose.exceptions.JWTError:
-        return "Signature verification failed"
+        return "Невалидный токен"
+
+def decode_refresh_token(jwt_token: str):
+    try:
+        token_info = jwt.decode(token=jwt_token, key=secret_key, algorithms=[str(algo)])
+        data_now = datetime.now(timezone.utc)
+        if token_info.get("exp") <= int(data_now.timestamp()):
+            return "Невалидный токен"
+        if token_info.get("type") == "access":
+            return "Невалидный токен"
+        return token_info
+    except jose.exceptions.JWTError:
+        return "Невалидный токен"
+
+def create_tokens_pair(data: dict):
+    acc_token = create_access_token(data)
+    ref_token = create_refresh_token(data)
+    return {
+        "access_token": acc_token,
+        "refresh_token": ref_token,
+    }

@@ -40,9 +40,15 @@ class Login(Phone):
         examples=['password'],)]
 
 
-class TokenInfo(BaseModel):
-    access_token: str
-    token_type: str
+class AccessTokenInfo(BaseModel):
+    access_token: Annotated[str, Field(
+        title='Access JWT токен',
+        examples=['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'],
+    )]
+    token_type: Annotated[str, Field(
+        title='Тип токена',
+        examples=['Baerer']
+    )]
 
 
 class ReqID(BaseModel):
@@ -51,3 +57,9 @@ class ReqID(BaseModel):
         examples=['79442f1f-17a8-42bb-9f6f-4affc8788e7e'],
         min_length=36,
         max_length=36,)]
+
+
+class TokenPair(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "Baerer"
