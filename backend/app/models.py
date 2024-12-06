@@ -1,7 +1,7 @@
-from sqlalchemy import BigInteger, Text, ForeignKey, func, Float
+from sqlalchemy import BigInteger, Text, ForeignKey, func, Float, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column
-import datetime
+import datetime, time
 from typing import Optional
 
 
@@ -49,8 +49,8 @@ class Points(Base):
     enterprise_id : Mapped[int] = mapped_column(ForeignKey('enterprises.id'))
     title: Mapped[str] = mapped_column()
     address: Mapped[str] = mapped_column()
-    opening_time: Mapped[datetime.datetime] = mapped_column()
-    closing_time: Mapped[datetime.datetime] = mapped_column()
+    opening_time: Mapped[time] = mapped_column(Time)
+    closing_time: Mapped[time] = mapped_column(Time)
     phone: Mapped[Optional[str]] = mapped_column()
     type_activity: Mapped[str] = mapped_column()
     middle_stars: Mapped[Optional[float]] = mapped_column(Float)
