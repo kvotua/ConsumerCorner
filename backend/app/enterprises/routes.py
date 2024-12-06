@@ -6,9 +6,10 @@ from sqlalchemy.future import select
 
 from backend.app.config import example_jwt_token
 from backend.app.database import get_session
-from backend.app.models import UserEnterprisesRole, Enterprises
+from backend.app.models import Enterprises, Points
 from backend.app.auth.utils import validate_token
-from .schemas import RegisterCompany, RegisterPoint
+from .schemas import RegisterCompany, RegisterPoint, ResponseSchema
+from .utils import parse_time
 
 
 router = APIRouter(
@@ -17,7 +18,7 @@ router = APIRouter(
 )
 
 
-@router.post("/register-enterprise")
+@router.post("/register-enterprise", response_model=ResponseSchema)
 async def register_company(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -41,7 +42,7 @@ async def register_company(
         data_for_db = Enterprises(
             name=data_company.name,
             type=data_company.type_comp,
-            create_id=str(dict_by_token.get("id")),
+            create_id=dict_by_token.get("id"),
             inn=data_company.inn,
             ogrn=data_company.ogrn,
             address=data_company.address,
@@ -50,13 +51,15 @@ async def register_company(
         session.add(data_for_db)
         await session.commit()
         await session.refresh(data_for_db)
-        return Response(status_code=200)
+        response = select(Enterprises).where(Enterprises.inn == data_company.inn)
+        result = await session.execute(response)
+        return ResponseSchema(status_code=200, detail=result.scalars().first())
 #eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiI3OTIxNjU0NzgzMiIsImZpbyI6Ilx1MDQxOFx1MDQzM1x1MDQzZFx1MDQzMFx1MDQ0Mlx1MDQ0Y1x1MDQzNVx1MDQzMiBcdTA0MTBcdTA0M2JcdTA0MzVcdTA0M2FcdTA0NDFcdTA0MzVcdTA0MzkgXHUwNDEwXHUwNDNiXHUwNDM4XHUwNDM1XHUwNDMyXHUwNDM4XHUwNDQ3IiwidmVyaWZ5X3Bob25lIjp0cnVlLCJleHAiOjE3MzM3NTQ2MTgsInR5cGUiOiJhY2Nlc3MifQ.yzRKJkHkSW3WIpp3zhcATjUMpZyzVv6jrZpbfJZHZyk
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return ResponseSchema(status_code=500, detail=str(e))
 
 
-@router.post("/register-point")
+@router.post("/register-point", response_model=ResponseSchema)
 async def register_trade_point(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -77,10 +80,20 @@ async def register_trade_point(
             return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
         if dict_by_token == 2:
             return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-        user_id = dict_by_token.get('id')
-        return user_id
+        data_for_db = Points(
+            enterprise_id=dict_by_token.get("id"),
+            title=data_point.name,
+            address=data_point.address,
+            opening_time=parse_time(data_point.opening_time),
+            closing_time=parse_time(data_point.closing_time),
+            phone=data_point.phone,
+            type_activity=data_point.type_activity,
+        )
+        session.add(data_for_db)
+        await session.commit()
+        return ResponseSchema(status_code=200, detail="Точка успешно зарегестрирована")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return ResponseSchema(status_code=500, detail=str(e))
 
 
 

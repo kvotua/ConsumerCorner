@@ -34,7 +34,7 @@ class Enterprises(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column()
     type: Mapped[str] = mapped_column()
-    create_id: Mapped[str] = mapped_column()
+    create_id: Mapped[int] = mapped_column()
     inn: Mapped[str] = mapped_column()
     ogrn: Mapped[str] = mapped_column()
     address: Mapped[str] = mapped_column()
@@ -45,14 +45,16 @@ class Enterprises(Base):
 class Points(Base):
     __tablename__ = 'points'
 
-    id: Mapped[str] = mapped_column(primary_key=True)
-    enterprise_id : Mapped[str] = mapped_column(ForeignKey('enterprises.id'))
+    id: Mapped[str] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    enterprise_id : Mapped[int] = mapped_column(ForeignKey('enterprises.id'))
     title: Mapped[str] = mapped_column()
     address: Mapped[str] = mapped_column()
-    phone: Mapped[str] = mapped_column()
+    opening_time: Mapped[datetime.datetime] = mapped_column()
+    closing_time: Mapped[datetime.datetime] = mapped_column()
+    phone: Mapped[Optional[str]] = mapped_column()
     type_activity: Mapped[str] = mapped_column()
-    middle_stars: Mapped[float] = mapped_column(Float)
-    verify_phone: Mapped[str] = mapped_column()
+    middle_stars: Mapped[Optional[float]] = mapped_column(Float)
+    verify_phone: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
