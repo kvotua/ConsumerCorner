@@ -17,33 +17,7 @@ router = APIRouter(
 )
 
 
-# @router.post("/get-to-user-role")
-# async def get_to_user_role(
-#         access_token: Annotated[str, Header(
-#             title="Access-JWT токен",
-#             example=example_jwt_token,
-#         )],
-#         token_type: Annotated[str, Header(
-#             title='Тип токена',
-#             example='Baerer')],
-#         session: AsyncSession = Depends(get_session),
-# ):
-#     try:
-#         dict_by_token = validate_token(
-#             access_token=access_token,
-#             token_type=token_type,
-#         )
-#         if dict_by_token is True:
-#             return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
-#         user_id = dict_by_token.get('id')
-#         data_for_db = UserEnterprisesRole()
-#
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-
-
-
-@router.post("/register_company")
+@router.post("/register-enterprise")
 async def register_company(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -65,12 +39,13 @@ async def register_company(
         if dict_by_token == 2:
             return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
         if len(data_company.inn) == 10:
+            type_enterprise = ""
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/register_trade_point")
+@router.post("/register-point")
 async def register_trade_point(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -98,7 +73,7 @@ async def register_trade_point(
 
 
 
-@router.get("/companies-info")
+@router.get("/enterprises-info")
 async def get_companies_info(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -122,7 +97,13 @@ async def get_companies_info(
         response = select(Enterprises).where(Enterprises.create_id == user_id)
         result = await session.execute(response)
         array = result.scalars().all()
-        return
+        return [Enterprises(id=item.id, name=item,
+                        type=item.type, create_id=item.create_id,
+                        inn=item.inn, ogrn=item.ogrn,
+                        address=item.address,
+                        general_type_activity=item.general_type_activity,
+                        created_at=item.created_ad
+                ) for item in array]
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

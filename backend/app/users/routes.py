@@ -10,7 +10,7 @@ from backend.app.models import Users
 from backend.app.config import example_jwt_token
 
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/profile", tags=["Profile"])
 
 
 @router.get(
@@ -51,3 +51,18 @@ async def get_users_me(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put(
+    "/me/change",
+)
+async def get_users_me(
+    access_token: Annotated[str, Header(
+        title='jwt_token пользователя',
+        example=example_jwt_token)],
+    token_type: Annotated[str, Header(
+        title='Тип токена',
+        example='Baerer')],
+    session: AsyncSession = Depends(get_session),
+):
+    pass

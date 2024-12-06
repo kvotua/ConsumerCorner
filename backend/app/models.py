@@ -39,7 +39,6 @@ class Enterprises(Base):
     ogrn: Mapped[str] = mapped_column()
     address: Mapped[str] = mapped_column()
     general_type_activity: Mapped[str] = mapped_column()
-    #role_id: Mapped[str] = mapped_column()
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 

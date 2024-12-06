@@ -8,7 +8,6 @@ from datetime import datetime, timedelta, timezone
 import bcrypt
 
 from backend.app.config import secret_key, algo
-from backend.app.auth.schemas import TokenPair
 
 
 TOKEN_TYPE_FIELD = "type"

@@ -16,7 +16,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 http_client = HttpClient()
 
 
-@router.post('/refresh')
+@router.post('/refresh', response_model=TokenPair)
 async def refresh_tokens(
         refresh_token: Annotated[str, Header(
             title='Refresh JWT токен',
@@ -27,7 +27,7 @@ async def refresh_tokens(
     try:
         token_data = decode_refresh_token(refresh_token)
         if isinstance(token_data, str):
-            return HTTPException(status_code=401, detail=token_data)
+            raise HTTPException(status_code=401, detail=token_data)
         response = select(Users).where(Users.id == token_data.get("id"))
         result = await session.execute(response)
         data_by_db = result.scalars().first()
@@ -45,14 +45,14 @@ async def refresh_tokens(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get('/get-sessions-sms')
+@router.get('/get-sessions-sms',)
 async def all(session: AsyncSession = Depends(get_session)):
     data = await session.execute(select(Verification))
     array = data.scalars().all()
     return [Verification(request_id=item.request_id, sms_code=item.sms_code, phone=item.phone) for item in array]
 
 
-@router.post("/send")
+@router.post("/send",response_model=ReqID)
 async def send_message(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -69,7 +69,7 @@ async def send_message(
             token_type=token_type,
         )
         if dict_by_token == "Невалидный токен":
-            return HTTPException(status_code=400, detail="Невалидный токен")
+            raise HTTPException(status_code=400, detail="Невалидный токен")
         number = dict_by_token.get('phone')
         phone = validate_phone(number)
         stmt = select(Users).where(Users.phone == phone)
@@ -101,7 +101,7 @@ async def send_message(
         raise HTTPException(status_code=500, detail=e)
 
 
-@router.post('/check', response_model=VerifePhone)
+@router.post('/check', response_model=VerifePhone,  response_model_exclude_unset=True)
 async def check_code(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -120,7 +120,7 @@ async def check_code(
             token_type=token_type,
         )
         if dict_by_token == "Невалидный токен":
-            return HTTPException(status_code=400, detail="Невалидный токен")
+            raise HTTPException(status_code=400, detail="Невалидный токен")
         user_id = dict_by_token.get("id")
         stmt = select(Verification).where(Verification.request_id == req_id)
         result = await session.execute(stmt)
@@ -136,7 +136,7 @@ async def check_code(
             'sms_code': sms_code,
         }
         if data_by_db != data_by_user:
-            return HTTPException(status_code=400, detail='Неверный код')
+            raise HTTPException(status_code=400, detail='Неверный код')
         await session.delete(response)
 
         model = select(Users).where(Users.phone == response.phone)
@@ -151,7 +151,7 @@ async def check_code(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post('/registration', response_model=AccessTokenInfo)
+@router.post('/registration', response_model=AccessTokenInfo,  response_model_exclude_unset=True)
 async def registration(data: Annotated[Register, Body()], session: AsyncSession = Depends(get_session)) -> str:
     stmt = select(Users).where(Users.phone == data.phone)
     result = await session.execute(stmt)
