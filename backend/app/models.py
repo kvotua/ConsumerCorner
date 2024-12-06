@@ -31,7 +31,7 @@ class UserEnterprisesRole(Base):
 class Enterprises(Base):
     __tablename__ = 'enterprises'
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column()
     type: Mapped[str] = mapped_column()
     create_id: Mapped[str] = mapped_column()

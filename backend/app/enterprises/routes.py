@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Header, Depends, HTTPException, Body
+from fastapi import APIRouter, Header, Depends, HTTPException, Body, Response
 from typing import Annotated
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,9 +38,20 @@ async def register_company(
             return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
         if dict_by_token == 2:
             return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-        if len(data_company.inn) == 10:
-            type_enterprise = ""
-
+        data_for_db = Enterprises(
+            name=data_company.name,
+            type=data_company.type_comp,
+            create_id=str(dict_by_token.get("id")),
+            inn=data_company.inn,
+            ogrn=data_company.ogrn,
+            address=data_company.address,
+            general_type_activity=data_company.general_type_activity,
+        )
+        session.add(data_for_db)
+        await session.commit()
+        await session.refresh(data_for_db)
+        return Response(status_code=200)
+#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiI3OTIxNjU0NzgzMiIsImZpbyI6Ilx1MDQxOFx1MDQzM1x1MDQzZFx1MDQzMFx1MDQ0Mlx1MDQ0Y1x1MDQzNVx1MDQzMiBcdTA0MTBcdTA0M2JcdTA0MzVcdTA0M2FcdTA0NDFcdTA0MzVcdTA0MzkgXHUwNDEwXHUwNDNiXHUwNDM4XHUwNDM1XHUwNDMyXHUwNDM4XHUwNDQ3IiwidmVyaWZ5X3Bob25lIjp0cnVlLCJleHAiOjE3MzM3NTQ2MTgsInR5cGUiOiJhY2Nlc3MifQ.yzRKJkHkSW3WIpp3zhcATjUMpZyzVv6jrZpbfJZHZyk
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
