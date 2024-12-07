@@ -1,25 +1,19 @@
 import os
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.auth.routes import router as auth_router
-from app.users.models import UserModel
-from app.users.routes import router as users_router
-
+from backend.app.auth.routes import router as auth_router
+from backend.app.users.routes import router as users_router
+from backend.app.inn_service.routes import router as inn_service_router
+from backend.app.database import create_tables, Base
+from backend.app.enterprises.routes import router as enterprises_router
+from backend.app.mongodb.routes import router as mongodb_router
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator:
-    for table in (UserModel,):
-        if not table.exists():
-            table.create_table(
-                wait=True,
-                read_capacity_units=1,
-                write_capacity_units=1,
-                billing_mode="PAY_PER_REQUEST",
-            )
+async def lifespan(app: FastAPI):
+    # await create_tables()
     yield
 
 
@@ -33,5 +27,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(inn_service_router)
 app.include_router(users_router)
 app.include_router(auth_router)
+app.include_router(enterprises_router)
+app.include_router(mongodb_router)

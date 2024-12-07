@@ -7,3 +7,6 @@ node_modules/.bin/create-react-native-app.ps1
 node_modules/.bin/create-react-native-app.cmd
 node_modules/.bin/create-react-native-app
 node_modules
+backend/app/.env
+.idea
+.venv
