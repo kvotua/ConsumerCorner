@@ -24,7 +24,7 @@ class UserEnterprisesRole(Base):
     __tablename__ = 'user_enterprises_role'
 
     user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
-    enterprise_id: Mapped[str] = mapped_column(ForeignKey('enterprises.id'))
+    enterprise_id: Mapped[str] = mapped_column(BigInteger, ForeignKey('enterprises.id'))
     role: Mapped[str] = mapped_column()
 
 
@@ -34,7 +34,7 @@ class Enterprises(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column()
     type: Mapped[str] = mapped_column()
-    create_id: Mapped[int] = mapped_column()
+    create_id: Mapped[int] = mapped_column(BigInteger)
     inn: Mapped[str] = mapped_column()
     ogrn: Mapped[str] = mapped_column()
     address: Mapped[str] = mapped_column()
@@ -45,8 +45,9 @@ class Enterprises(Base):
 class Points(Base):
     __tablename__ = 'points'
 
-    id: Mapped[str] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     enterprise_id : Mapped[int] = mapped_column(ForeignKey('enterprises.id'))
+    create_id: Mapped[int] = mapped_column(BigInteger)
     title: Mapped[str] = mapped_column()
     address: Mapped[str] = mapped_column()
     opening_time: Mapped[time] = mapped_column(Time)
@@ -61,22 +62,22 @@ class Points(Base):
 class Docs(Base):
     __tablename__ = 'docs'
 
-    id: Mapped[str] = mapped_column(primary_key=True)
-    point_id: Mapped[str] = mapped_column(ForeignKey('points.id'))
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
 
 
 class Comments(Base):
     __tablename__ = 'comments'
 
-    id: Mapped[str] = mapped_column(primary_key=True)
-    point_id: Mapped[str] = mapped_column(ForeignKey('points.id'))
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
     text: Mapped[str] = mapped_column(Text)
-    stars: Mapped[str] = mapped_column()
+    stars: Mapped[int] = mapped_column()
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
 class Imgs(Base):
     __tablename__ = 'imgs'
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     comment_id: Mapped[str] = mapped_column()
