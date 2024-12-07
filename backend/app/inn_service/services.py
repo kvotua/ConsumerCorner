@@ -32,7 +32,7 @@ class INNService:
                 message="data is not found"
             )
         data = result[0]['data']
-        fio = f'{data['fio']['surname']} {data['fio']['name']} {data['fio']['patronymic']}'
+        fio = f"{data['fio']['surname']} {data['fio']['name']} {data['fio']['patronymic']}"
         ogrn = data['ogrn']
         address = data['address']['unrestricted_value']
         return IpSchema(
