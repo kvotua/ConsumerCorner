@@ -4,13 +4,14 @@ from gridfs import GridFS
 from .mongodb import MongoDBClient
 from .models import ImageModel, DocumentModel, UploadImageModel, UploadDocumentModel
 from typing import Annotated
-from backend.app.database import get_session
+from app.database import get_session
+
+from app.config import mongodb_db
 
 import traceback
 
 router = APIRouter(prefix="/mongo", tags=["mongodb"])
-mongo = MongoDBClient("test_db", "image", "doc")
-# fs = GridFS(mongo.db)
+mongo = MongoDBClient("image", "doc")
 
 @router.get('/image/{id}',
             response_model=ImageModel)
@@ -24,15 +25,9 @@ async def get_image(
 
 @router.post('/image', response_model=UploadImageModel)
 async def upload_image(file: UploadFile = File(...)):
-    try:
-        contents = await file.read()
-
-        info = await mongo.upload_image(file, contents)
-
-        return JSONResponse(content={"id": info['_id']}, status_code=200)
-    except Exception as e:
-        print(traceback.format_exc())
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+    contents = await file.read()
+    info = await mongo.upload_image(file, contents)
+    return JSONResponse(content={"id": info['_id']}, status_code=200)
 
 
 @router.get('/document/{id}',
@@ -47,12 +42,6 @@ async def get_document(
 
 @router.post('/document', response_model=UploadDocumentModel)
 async def upload_document(file: UploadFile = File(...)):
-    try:
-        contents = await file.read()
-
-        info = await mongo.upload_document(file, contents)
-
-        return JSONResponse(content={"id": info['_id']}, status_code=200)
-    except Exception as e:
-        print(traceback.format_exc())
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+    contents = await file.read()
+    info = await mongo.upload_document(file, contents)
+    return JSONResponse(content={"id": info['_id']}, status_code=200)

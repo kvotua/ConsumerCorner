@@ -7,9 +7,9 @@ from sqlalchemy.future import select
 from .schemas import Register, Login, VerifePhone, ReqID, AccessTokenInfo, TokenPair
 from .utils import HttpClient, generate_code, generate_text, validate_phone, create_access_token, hash_password, validate_password, create_tokens_pair, decode_refresh_token, decode_access_token
 from .models_auth import Verification
-from backend.app.config import user_name, user_pass, send_from, example_jwt_token
-from backend.app.database import get_session
-from backend.app.models import Users
+from app.config import user_name, user_pass, send_from, example_jwt_token
+from app.database import get_session
+from app.models import Users
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])

@@ -3,18 +3,21 @@ from fastapi import UploadFile
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
 from datetime import datetime
 from bson import ObjectId
-from ..config import mongodb_url
+from ..config import mongodb_url, mongodb_db, mongodb_password, mongodb_user
 from typing import Optional, Any
+from pymongo import MongoClient
 
 import base64
 
 class MongoDBClient:
-    def __init__(self, database_name: str, image_collection_name: str, document_collection_name: str):
+    def __init__(self, image_collection_name: str, document_collection_name: str):
         self.client = AsyncIOMotorClient(mongodb_url)
-        self.db = self.client[database_name]
+        self.db = self.client[mongodb_db]
         self.image_collection = self.db[image_collection_name]
         self.document_collection = self.db[document_collection_name]
         self.fs = AsyncIOMotorGridFSBucket(self.db)
+
+
 
     async def get_image_by_id(self, image_id: str):
         if not ObjectId.is_valid(image_id):
@@ -32,7 +35,7 @@ class MongoDBClient:
             "upload_date": image["upload_date"].isoformat(),
             "image_data": base64.b64encode(image_data).decode('utf-8')
         }
-    
+
     async def upload_image(self, file: UploadFile, contents):
         file_id = await self.fs.upload_from_stream(
             file.filename,

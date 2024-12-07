@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Integer, BigInteger, Text, Boolean, Float
 from sqlalchemy.ext.declarative import declarative_base
 import enum
 from sqlalchemy.orm import Mapped, mapped_column
-from backend.app.models import Base
+from app.models import Base
 
 
 class CompanyModel(Base):

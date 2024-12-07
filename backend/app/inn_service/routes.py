@@ -4,9 +4,9 @@ from fastapi.requests import Request
 from typing import Annotated
 
 from .services import INNService
-from backend.app.config import token
+from app.config import token
 from .models import CompanyModel, IpModel
-from backend.app.database import get_session
+from app.database import get_session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
 
