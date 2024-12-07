@@ -2,18 +2,20 @@ from fastapi import APIRouter, HTTPException, Depends, Body, Header, Path
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
+from sqlalchemy import delete
 
 from backend.app.auth.utils import validate_token
 from backend.app.database import get_session
 from backend.app.config import example_jwt_token
-from .schemas import RegisterPoint
+from backend.app.models import Points
+from .schemas import RegisterPoint, PointInfo
 from .utils import parse_time
 
 
 router = APIRouter(prefix="/points", tags=["Points"])
 
 
-@router.post("/register-point")
+@router.post("/register", response_model=HTTPException)
 async def register_point(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -46,12 +48,12 @@ async def register_point(
         )
         session.add(data_for_db)
         await session.commit()
-        return HTTPException(status_code=200, detail="Точка успешно зарегестрирована")
+        return HTTPException(status_code=201, detail="Точка успешно зарегестрирована")
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/points-info")
+@router.get("/")
 async def get_points_info(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -88,7 +90,7 @@ async def get_points_info(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.put("/point-change/{point_id}")
+@router.put("/change/{point_id}", response_model=HTTPException)
 async def change_point(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -120,7 +122,7 @@ async def change_point(
             point.phone=new_point_info.phone
             point.type_activity=new_point_info.type_activity
             await session.commit()
-            return HTTPException(status_code=200, detail="Успешное изменение")
+            return HTTPException(status_code=201, detail="Успешное изменение")
         else:
             return HTTPException(status_code=404, detail="Не найдена точка")
 
@@ -128,7 +130,7 @@ async def change_point(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/point-delete/{point_id}", response_model=ResponseSchema)
+@router.delete("/delete/{point_id}")
 async def delete_point(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",

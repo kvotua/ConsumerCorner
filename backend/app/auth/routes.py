@@ -11,6 +11,7 @@ from backend.app.config import user_name, user_pass, send_from, example_jwt_toke
 from backend.app.database import get_session
 from backend.app.models import Users
 
+
 router = APIRouter(prefix="/auth", tags=["Auth"])
 http_client = HttpClient()
 
@@ -23,25 +24,22 @@ async def refresh_tokens(
         )],
         session: AsyncSession = Depends(get_session),
 ):
-    try:
-        token_data = decode_refresh_token(refresh_token)
-        if isinstance(token_data, str):
-            raise HTTPException(status_code=401, detail=token_data)
-        response = select(Users).where(Users.id == token_data.get("id"))
-        result = await session.execute(response)
-        data_by_db = result.scalars().first()
-        payload = {
-            'id': data_by_db.id,
-            'phone': data_by_db.phone,
-            'fio': data_by_db.fio,
-        }
-        jwt_tokens = create_tokens_pair(payload)
-        return TokenPair(
-            access_token=jwt_tokens.get("access_token"),
-            refresh_token=jwt_tokens.get("refresh_token"),
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    token_data = decode_refresh_token(refresh_token)
+    if isinstance(token_data, str):
+        raise HTTPException(status_code=401, detail=token_data)
+    response = select(Users).where(Users.id == token_data.get("id"))
+    result = await session.execute(response)
+    data_by_db = result.scalars().first()
+    payload = {
+        'id': data_by_db.id,
+        'phone': data_by_db.phone,
+        'fio': data_by_db.fio,
+    }
+    jwt_tokens = create_tokens_pair(payload)
+    return TokenPair(
+        access_token=jwt_tokens.get("access_token"),
+        refresh_token=jwt_tokens.get("refresh_token"),
+    )
 
 
 @router.get('/get-sessions-sms', )
@@ -100,7 +98,7 @@ async def send_message(
         raise HTTPException(status_code=500, detail=e)
 
 
-@router.post('/check', response_model=VerifePhone, response_model_exclude_unset=True)
+@router.post('/check', response_model=VerifePhone)
 async def check_code(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",

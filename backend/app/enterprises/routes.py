@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Header, Depends, HTTPException, Body, Path
 from typing import Annotated
 
-from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 

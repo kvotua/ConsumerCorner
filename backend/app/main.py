@@ -11,10 +11,12 @@ from backend.app.database import create_tables, Base
 from backend.app.enterprises.routes import router as enterprises_router
 from backend.app.reviews.routes import router as reviews_router
 from backend.app.mongodb.routes import router as mongodb_router
+from backend.app.points.routes import router as point_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # await create_tables()
+    await create_tables()
     yield
 
 
@@ -33,4 +35,5 @@ app.include_router(users_router)
 app.include_router(auth_router)
 app.include_router(enterprises_router)
 app.include_router(reviews_router)
+app.include_router(point_router)
 app.include_router(mongodb_router)
