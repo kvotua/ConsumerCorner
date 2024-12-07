@@ -151,7 +151,7 @@ async def check_code(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post('/registration', response_model=AccessTokenInfo,  response_model_exclude_unset=True)
+@router.post('/registration', response_model=TokenPair)
 async def registration(data: Annotated[Register, Body()], session: AsyncSession = Depends(get_session)) -> str:
     stmt = select(Users).where(Users.phone == data.phone)
     result = await session.execute(stmt)
@@ -177,7 +177,11 @@ async def registration(data: Annotated[Register, Body()], session: AsyncSession 
         'fio': data.fio,
         'verify_phone': user_data.verify_phone,
     }
-    return AccessTokenInfo(access_token=create_access_token(payload), token_type="Baerer")
+    jwt_tokens = create_tokens_pair(payload)
+    return TokenPair(
+        access_token=jwt_tokens.get("access_token"),
+        refresh_token=jwt_tokens.get("refresh_token")
+    )
 
 
 @router.post('/login', response_model=TokenPair)

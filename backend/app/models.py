@@ -47,6 +47,7 @@ class Points(Base):
 
     id: Mapped[str] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     enterprise_id : Mapped[int] = mapped_column(ForeignKey('enterprises.id'))
+    create_id: Mapped[int] = mapped_column(BigInteger)
     title: Mapped[str] = mapped_column()
     address: Mapped[str] = mapped_column()
     opening_time: Mapped[time] = mapped_column(Time)

@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Header, Depends, HTTPException, Body, Response
+from fastapi import APIRouter, Header, Depends, HTTPException, Body
 from typing import Annotated
 
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -51,10 +52,10 @@ async def register_company(
         session.add(data_for_db)
         await session.commit()
         await session.refresh(data_for_db)
-        response = select(Enterprises).where(Enterprises.inn == data_company.inn)
+        response = select(Enterprises.id).where(Enterprises.inn == data_company.inn)
         result = await session.execute(response)
         return ResponseSchema(status_code=200, detail=result.scalars().first())
-#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiI3OTIxNjU0NzgzMiIsImZpbyI6Ilx1MDQxOFx1MDQzM1x1MDQzZFx1MDQzMFx1MDQ0Mlx1MDQ0Y1x1MDQzNVx1MDQzMiBcdTA0MTBcdTA0M2JcdTA0MzVcdTA0M2FcdTA0NDFcdTA0MzVcdTA0MzkgXHUwNDEwXHUwNDNiXHUwNDM4XHUwNDM1XHUwNDMyXHUwNDM4XHUwNDQ3IiwidmVyaWZ5X3Bob25lIjp0cnVlLCJleHAiOjE3MzM3NTQ2MTgsInR5cGUiOiJhY2Nlc3MifQ.yzRKJkHkSW3WIpp3zhcATjUMpZyzVv6jrZpbfJZHZyk
+
     except Exception as e:
         return ResponseSchema(status_code=500, detail=str(e))
 
@@ -81,7 +82,8 @@ async def register_trade_point(
         if dict_by_token == 2:
             return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
         data_for_db = Points(
-            enterprise_id=dict_by_token.get("id"),
+            enterprise_id=data_point.enterpise_id,
+            create_id=dict_by_token.get("id"),
             title=data_point.name,
             address=data_point.address,
             opening_time=parse_time(data_point.opening_time),
@@ -126,7 +128,7 @@ async def get_companies_info(
                         inn=item.inn, ogrn=item.ogrn,
                         address=item.address,
                         general_type_activity=item.general_type_activity,
-                        created_at=item.created_ad
+                        created_at=item.created_at,
                 ) for item in array]
 
     except Exception as e:
@@ -154,7 +156,19 @@ async def get_companies_info(
         if dict_by_token == 2:
             return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
         user_id = dict_by_token.get('id')
-        return user_id
+        response = select(Points).where(Points.create_id == user_id)
+        result = await session.execute(response)
+        array = result.scalars().all()
+        return [Points(id=item.id, enterprise_id=item.enterprise_id,
+                       title=item.title, address=item.address,
+                       opening_time=item.opening_time,
+                       closing_time=item.closing_time,
+                       phone=item.phone, type_activity=item.type_activity,
+                       middle_stars=item.middle_stars,
+                       verify_phone=item.verify_phone,
+                       created_at=item.created_at,
+                       )for item in array]
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -185,8 +199,8 @@ async def get_companies_info(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/point-delete")
-async def get_companies_info(
+@router.delete("/point-delete", response_model=ResponseSchema)
+async def delete_point(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
             example=example_jwt_token,
@@ -194,18 +208,23 @@ async def get_companies_info(
         token_type: Annotated[str, Header(
             title='Тип токена',
             example='Baerer')],
+        point_id: Annotated[int, Body(title='ID точки', examples=[1])],
         session: AsyncSession = Depends(get_session),
 ):
-    try:
-        dict_by_token = validate_token(
-            access_token=access_token,
-            token_type=token_type,
-        )
-        if dict_by_token == 1:
-            return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
-        if dict_by_token == 2:
-            return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-        user_id = dict_by_token.get('id')
-        return user_id
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    dict_by_token = validate_token(
+        access_token=access_token,
+        token_type=token_type,
+    )
+    if dict_by_token == 1:
+        return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
+    if dict_by_token == 2:
+        return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
+
+    for_delete = delete(Points).where(Points.id == point_id, Points.create_id == dict_by_token.get('id'))
+    result = await session.execute(for_delete)
+
+    if result.rowcount == 0:
+        raise HTTPException(status_code=404, detail="Запись не найдена или не может быть удалена")
+
+    await session.commit()
+    return ResponseSchema(status_code=200, detail="Точка успешно удалена")

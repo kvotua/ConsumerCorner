@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Any
 
 
 class RegisterCompany(BaseModel):
@@ -13,7 +13,7 @@ class RegisterCompany(BaseModel):
 
 class ResponseSchema(BaseModel):
     status_code: Annotated[int, Field()]
-    detail: Annotated[str, Field()]
+    detail: Annotated[Any, Field()]
 
 
 class RegisterPoint(BaseModel):
