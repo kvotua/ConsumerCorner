@@ -132,6 +132,7 @@ async def get_companies_info(
         )for item in array]
 
 
+
 @router.get("/points-info")
 async def get_points_info(
         access_token: Annotated[str, Header(
