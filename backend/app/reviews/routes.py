@@ -21,6 +21,7 @@ async def add_review(
     token_type: Annotated[str, Header(
         title='Тип токена',
         example='Baerer')],
+    point_id: Annotated[int, Path()],
     comment_data: CommentData,
     session: AsyncSession = Depends(get_session),
 ):
@@ -32,7 +33,7 @@ async def add_review(
         raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
     if dict_by_token == 2:
         raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-    response = Comments(text=comment_data.text, stars=comment_data.stars)
+    response = Comments(point_id=point_id, text=comment_data.text, stars=comment_data.stars)
     session.add(response)
     await session.commit()
     return HTTPException(status_code=201 , detail="Комментарий успешно добавлен")

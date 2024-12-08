@@ -30,33 +30,29 @@ async def register_company(
         data_company: Annotated[RegisterCompany, Body()],
         session: AsyncSession = Depends(get_session),
 ):
-    try:
-        dict_by_token = validate_token(
-            access_token=access_token,
-            token_type=token_type,
-        )
-        if dict_by_token == 1:
-            raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
-        if dict_by_token == 2:
-            raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-        data_for_db = Enterprises(
-            name=data_company.name,
-            type=data_company.type_comp,
-            create_id=dict_by_token.get("id"),
-            inn=data_company.inn,
-            ogrn=data_company.ogrn,
-            address=data_company.address,
-            general_type_activity=data_company.general_type_activity,
-        )
-        session.add(data_for_db)
-        await session.commit()
-        await session.refresh(data_for_db)
-        response = select(Enterprises.id).where(Enterprises.inn == data_company.inn)
-        result = await session.execute(response)
-        return ResponseSchema(status_code=200, detail=result.scalars().first())
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    dict_by_token = validate_token(
+        access_token=access_token,
+        token_type=token_type,
+    )
+    if dict_by_token == 1:
+        raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
+    if dict_by_token == 2:
+        raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
+    data_for_db = Enterprises(
+        name=data_company.name,
+        type=data_company.type_comp,
+        create_id=dict_by_token.get("id"),
+        inn=data_company.inn,
+        ogrn=data_company.ogrn,
+        address=data_company.address,
+        general_type_activity=data_company.general_type_activity,
+    )
+    session.add(data_for_db)
+    await session.commit()
+    await session.refresh(data_for_db)
+    response = select(Enterprises.id).where(Enterprises.inn == data_company.inn)
+    result = await session.execute(response)
+    return ResponseSchema(status_code=200, detail=result.scalars().first())
 
 
 @router.get("/enterprises-info", response_model=List[EnterpriseInfo])

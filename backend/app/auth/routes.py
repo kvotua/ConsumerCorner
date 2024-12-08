@@ -43,7 +43,7 @@ async def refresh_tokens(
 
 
 @router.get('/get-sessions-sms', )
-async def all(session: AsyncSession = Depends(get_session)):
+async def only_for_testing(session: AsyncSession = Depends(get_session)):
     data = await session.execute(select(Verification))
     array = data.scalars().all()
     return [Verification(request_id=item.request_id, sms_code=item.sms_code, phone=item.phone) for item in array]
@@ -60,42 +60,39 @@ async def send_message(
             example='Baerer')],
         session: AsyncSession = Depends(get_session)
 ):
-    try:
-        dict_by_token = decode_access_token(
-            access_token=access_token,
-            token_type=token_type,
-        )
-        if dict_by_token == "Невалидный токен":
-            raise HTTPException(status_code=400, detail="Невалидный токен")
-        number = dict_by_token.get('phone')
-        phone = validate_phone(number)
-        stmt = select(Users).where(Users.phone == phone)
-        result = await session.execute(stmt)
-        user = result.scalars().first()
-        if user.verify_phone is True:
-            raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
-        code = generate_code()
-        params = {
-            'to': number,
-            'txt': generate_text(code),
-            'from': send_from,
-            'user': str(user_name),
-            'pass': str(user_pass),
-        }
-        response = await http_client.send_message(
-            'https://api3.greensms.ru/sms/send',
-            data=params,
-        )
-        await http_client.close_session()
-        if response is None:
-            raise HTTPException(status_code=400, detail="Закончились деньги на GREENSMSAPI")
-        data = Verification(request_id=response, sms_code=code, phone=number)
-        session.add(data)
-        await session.commit()
-        await session.refresh(data)
-        return ReqID(req_id=response)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=e)
+    dict_by_token = decode_access_token(
+        access_token=access_token,
+        token_type=token_type,
+    )
+    if dict_by_token == "Невалидный токен":
+        raise HTTPException(status_code=400, detail="Невалидный токен")
+    number = dict_by_token.get('phone')
+    phone = validate_phone(number)
+    stmt = select(Users).where(Users.phone == phone)
+    result = await session.execute(stmt)
+    user = result.scalars().first()
+    if user.verify_phone is True:
+        raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
+    code = generate_code()
+    params = {
+        'to': number,
+        'txt': generate_text(code),
+        'from': send_from,
+        'user': str(user_name),
+        'pass': str(user_pass),
+    }
+    response = await http_client.send_message(
+        'https://api3.greensms.ru/sms/send',
+        data=params,
+    )
+    await http_client.close_session()
+    if response is None:
+        raise HTTPException(status_code=400, detail="Закончились деньги на GREENSMSAPI")
+    data = Verification(request_id=response, sms_code=code, phone=number)
+    session.add(data)
+    await session.commit()
+    await session.refresh(data)
+    return ReqID(req_id=response)
 
 
 @router.post('/check', response_model=VerifePhone)
@@ -113,40 +110,37 @@ async def check_code(
             str, Body(..., title='СМС-код, отправленный на номер', examples=['12345'], min_length=5, max_length=5)],
         session: AsyncSession = Depends(get_session),
 ):
-    try:
-        dict_by_token = decode_access_token(
-            access_token=access_token,
-            token_type=token_type,
-        )
-        if dict_by_token == "Невалидный токен":
-            raise HTTPException(status_code=400, detail="Невалидный токен")
-        stmt = select(Verification).where(Verification.request_id == req_id)
-        result = await session.execute(stmt)
-        response = result.scalars().first()
-        if response is None:
-            raise HTTPException(status_code=404, detail='Невалидная сессия')
-        data_by_db = {
-            'request_id': response.request_id,
-            'sms_code': response.sms_code,
-        }
-        data_by_user = {
-            'request_id': req_id,
-            'sms_code': sms_code,
-        }
-        if data_by_db != data_by_user:
-            raise HTTPException(status_code=400, detail='Неверный код')
-        await session.delete(response)
+    dict_by_token = decode_access_token(
+        access_token=access_token,
+        token_type=token_type,
+    )
+    if dict_by_token == "Невалидный токен":
+        raise HTTPException(status_code=400, detail="Невалидный токен")
+    stmt = select(Verification).where(Verification.request_id == req_id)
+    result = await session.execute(stmt)
+    response = result.scalars().first()
+    if response is None:
+        raise HTTPException(status_code=404, detail='Невалидная сессия')
+    data_by_db = {
+        'request_id': response.request_id,
+        'sms_code': response.sms_code,
+    }
+    data_by_user = {
+        'request_id': req_id,
+        'sms_code': sms_code,
+    }
+    if data_by_db != data_by_user:
+        raise HTTPException(status_code=400, detail='Неверный код')
+    await session.delete(response)
 
-        model = select(Users).where(Users.phone == response.phone)
-        second_res = await session.execute(model)
-        second_result = second_res.scalars().first()
-        second_result.verify_phone = True
-        session.add(second_result)
-        await session.commit()
+    model = select(Users).where(Users.phone == response.phone)
+    second_res = await session.execute(model)
+    second_result = second_res.scalars().first()
+    second_result.verify_phone = True
+    session.add(second_result)
+    await session.commit()
 
-        return VerifePhone(phone=response.phone, phone_verif=True)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return VerifePhone(phone=response.phone, phone_verif=True)
 
 
 @router.post('/registration', response_model=TokenPair)
@@ -173,7 +167,7 @@ async def registration(data: Annotated[Register, Body()], session: AsyncSession 
         'id': user_data.id,
         'phone': data.phone,
         'fio': data.fio,
-        'verify_phone': True,
+        'verify_phone': user_data.verify_phone,
     }
 
     jwt_tokens = create_tokens_pair(payload)

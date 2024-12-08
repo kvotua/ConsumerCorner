@@ -52,7 +52,7 @@ class Points(Base):
     address: Mapped[str] = mapped_column()
     opening_time: Mapped[time] = mapped_column(Time)
     closing_time: Mapped[time] = mapped_column(Time)
-    phone: Mapped[Optional[str]] = mapped_column()
+    phone: Mapped[Optional[str]] = mapped_column(nullable=True)
     type_activity: Mapped[str] = mapped_column()
     middle_stars: Mapped[Optional[float]] = mapped_column(Float)
     verify_phone: Mapped[bool] = mapped_column(default=False)
