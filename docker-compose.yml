@@ -6,7 +6,7 @@ services:
     build:
       context: ./backend
     ports:
-      - "8000:80"
+      - "8765:80"
     volumes:
       - ./storage:/storage
     depends_on:
@@ -43,7 +43,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./mongodbdata:/data/db
-      - ./init-mongo:/docker-entrypoint-initdb.d
-    command: >
-      bash -c "mongod --bind_ip_all & sleep 5 && mongo --eval 'db = db.getSiblingDB(\"mongodb\"); db.createUser({user: \"mongouser\", pwd: \"mongopassword\", roles: [{ role: \"readWrite\", db: \"mongodb\" }]});' && mongod --bind_ip_all"
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
