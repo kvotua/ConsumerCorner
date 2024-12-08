@@ -1,21 +1,27 @@
 from fastapi import APIRouter, HTTPException, Depends, Body, Header, Path
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Annotated
+from typing import Annotated, List
 from sqlalchemy import delete
 
 from backend.app.auth.utils import validate_token
 from backend.app.database import get_session
 from backend.app.config import example_jwt_token
 from backend.app.models import Points
-from .schemas import RegisterPoint, PointInfo
+from backend.app.enterprises.schemas import ResponseSchema
+from backend.app import crud
+from .schemas import RegisterPoint, PointInfo, ChangePointSchema
 from .utils import parse_time
 
 
 router = APIRouter(prefix="/points", tags=["Points"])
 
 
-@router.post("/register", response_model=HTTPException)
+async def add_point(session, point_data):
+    return await crud.add_points(session=session, point_data=point_data)
+
+
+@router.post("/register", response_model=ResponseSchema)
 async def register_point(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -33,13 +39,13 @@ async def register_point(
             token_type=token_type,
         )
         if dict_by_token == 1:
-            return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
+            raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
         if dict_by_token == 2:
-            return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
+            raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
         data_for_db = Points(
-            enterprise_id=data_point.enterpise_id,
+            enterprise_id=data_point.enterprise_id,
             create_id=dict_by_token.get("id"),
-            title=data_point.name,
+            title=data_point.title,
             address=data_point.address,
             opening_time=parse_time(data_point.opening_time),
             closing_time=parse_time(data_point.closing_time),
@@ -48,12 +54,12 @@ async def register_point(
         )
         session.add(data_for_db)
         await session.commit()
-        return HTTPException(status_code=201, detail="Точка успешно зарегестрирована")
+        return ResponseSchema(status_code=201, detail="Точка успешно зарегистрирована")
     except Exception as e:
-        return HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/")
+@router.get("/", response_model=List[PointInfo])
 async def get_points_info(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -70,27 +76,31 @@ async def get_points_info(
             token_type=token_type,
         )
         if dict_by_token == 1:
-            return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
+            raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
         if dict_by_token == 2:
-            return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
+            raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
         response = select(Points).where(Points.create_id == dict_by_token.get("id"))
         result = await session.execute(response)
         array = result.scalars().all()
-        return [Points(id=item.id, enterprise_id=item.enterprise_id,
-                       title=item.title, address=item.address,
-                       opening_time=item.opening_time,
-                       closing_time=item.closing_time,
-                       phone=item.phone, type_activity=item.type_activity,
-                       middle_stars=item.middle_stars,
-                       verify_phone=item.verify_phone,
-                       created_at=item.created_at,
-                       )for item in array]
+        return [PointInfo(
+            id=item.id,
+            title=item.title,
+            enterprise_id=item.enterprise_id,
+            address=item.address,
+            opening_time=item.opening_time,
+            closing_time=item.closing_time,
+            phone=item.phone,
+            type_activity=item.type_activity,
+            middle_stars=item.middle_stars,
+            verify_phone=item.verify_phone,
+            created_at=item.created_at,
+        )for item in array]
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.put("/change/{point_id}", response_model=HTTPException)
+@router.put("/change/{point_id}", response_model=ResponseSchema)
 async def change_point(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -100,7 +110,7 @@ async def change_point(
             title='Тип токена',
             example='Baerer')],
         point_id: Annotated[str, Path(title="ID точки")],
-        new_point_info: PointInfo,
+        new_point_info: ChangePointSchema,
         session: AsyncSession = Depends(get_session),
 ):
     try:
@@ -109,9 +119,9 @@ async def change_point(
             token_type=token_type,
         )
         if dict_by_token == 1:
-            return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
+            raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
         if dict_by_token == 2:
-            return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
+            raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
         response = await session.execute(select(Points).where(Points.id == int(point_id)))
         point = response.scalars().first()
         if point:
@@ -122,15 +132,15 @@ async def change_point(
             point.phone=new_point_info.phone
             point.type_activity=new_point_info.type_activity
             await session.commit()
-            return HTTPException(status_code=201, detail="Успешное изменение")
+            return ResponseSchema(status_code=201, detail="Успешное изменение")
         else:
-            return HTTPException(status_code=404, detail="Не найдена точка")
+            raise HTTPException(status_code=404, detail="Не найдена точка")
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/delete/{point_id}")
+@router.delete("/delete/{point_id}", response_model=ResponseSchema)
 async def delete_point(
         access_token: Annotated[str, Header(
             title="Access-JWT токен",
@@ -147,9 +157,9 @@ async def delete_point(
         token_type=token_type,
     )
     if dict_by_token == 1:
-        return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
+        raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
     if dict_by_token == 2:
-        return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
+        raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
 
     for_delete = delete(Points).where(Points.id == int(point_id), Points.create_id == dict_by_token.get('id'))
     result = await session.execute(for_delete)
@@ -158,4 +168,4 @@ async def delete_point(
         raise HTTPException(status_code=404, detail="Запись не найдена или не может быть удалена")
 
     await session.commit()
-    return HTTPException(status_code=200, detail="Точка успешно удалена")
+    return ResponseSchema(status_code=200, detail="Точка успешно удалена")

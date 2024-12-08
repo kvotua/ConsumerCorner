@@ -120,7 +120,6 @@ async def check_code(
         )
         if dict_by_token == "Невалидный токен":
             raise HTTPException(status_code=400, detail="Невалидный токен")
-        user_id = dict_by_token.get("id")
         stmt = select(Verification).where(Verification.request_id == req_id)
         result = await session.execute(stmt)
         response = result.scalars().first()

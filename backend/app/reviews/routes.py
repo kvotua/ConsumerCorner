@@ -55,9 +55,9 @@ async def get_reviews(
         token_type=token_type,
     )
     if dict_by_token == 1:
-        return HTTPException(status_code=400, detail="Невалидный тип токена или токен")
+        raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
     if dict_by_token == 2:
-        return HTTPException(status_code=400, detail="Не верифицирован номер телефона")
+        raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
 
     response = select(Comments).where(Comments.point_id == int(point_id_path))
     result = await session.execute(response)
