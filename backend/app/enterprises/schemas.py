@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Annotated, Optional, Any
 from datetime import datetime
 
@@ -13,17 +13,17 @@ class RegisterCompany(BaseModel):
 
 
 class EnterpriseInfo(BaseModel):
-    id: Annotated[int, Field(title="ID компании", examples=[1])]
-    name: Annotated[str, Field(title="Название фирмы", examples=["Имя компании"])]
-    type_comp: Annotated[Optional[str], Field(title="Тип фирмы (ИП, ООО и т.д.)", examples=["ИП"])]
-    inn: Annotated[str, Field(title="ИНН", examples=["390000001190"], min_length=10, max_length=12)]
-    ogrn: Annotated[str, Field(title="ОГРН юридического лица", examples=['1027700132195'],min_length=13, max_length=13)]
-    address: Annotated[str, Field(title="Фактический адрес", examples=['ул. Павлика Морозова 74Б'])]
-    general_type_activity: Annotated[str, Field(title='Основной тип деятельности', examples=["Частное предприятие"])]
-    created_at: Annotated[datetime, Field(title="Дата регистрации компании в приложении", examples=["2024-12-07 03:21:37.273427"])]
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:
-        from_attributes = True
+    id: Annotated[Optional[int], Field(title="ID компании", examples=[1])]
+    name: Annotated[Optional[str], Field(title="Название фирмы", examples=["Имя компании"])]
+    type: Annotated[Optional[str], Field(title="Тип фирмы (ИП, ООО и т.д.)", examples=["ИП"])]
+    create_id: Annotated[Optional[int], Field(title="ID пользователя - создателя", examples=[1])]
+    inn: Annotated[Optional[str], Field(title="ИНН", examples=["390000001190"], min_length=10, max_length=12)]
+    ogrn: Annotated[Optional[str], Field(title="ОГРН юридического лица", examples=['1027700132195'],min_length=13, max_length=13)]
+    address: Annotated[Optional[str], Field(title="Фактический адрес", examples=['ул. Павлика Морозова 74Б'])]
+    general_type_activity: Annotated[Optional[str], Field(title='Основной тип деятельности', examples=["Частное предприятие"])]
+    created_at: Annotated[Optional[datetime], Field(title="Дата регистрации компании в приложении", examples=["2024-12-07 03:21:37.273427"])]
 
 
 class ResponseSchema(BaseModel):

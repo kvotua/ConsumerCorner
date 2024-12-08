@@ -3,14 +3,14 @@ from fastapi import APIRouter, Body, HTTPException, Depends, Header
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import delete
 
 from .crud import add_verify_session, get_verify_session
 from .schemas import Register, Login, VerifePhone, ReqID, TokenPair
-from .utils import HttpClient, generate_code, generate_text, validate_phone, hash_password, validate_password, create_tokens_pair, decode_refresh_token, decode_access_token
+from .utils import HttpClient, generate_code, generate_text, validate_phone, validate_password, create_tokens_pair, decode_refresh_token, decode_access_token
 from .models_auth import Verification
 from backend.app.config import user_name, user_pass, send_from, example_jwt_token
 from backend.app.database import get_session
-from backend.app.models import Users
 from backend.app.users.crud import get_user_by_id
 from . import crud
 
@@ -70,9 +70,8 @@ async def send_message(
         raise HTTPException(status_code=400, detail="Невалидный токен")
     number = dict_by_token.get('phone')
     phone = validate_phone(number)
-    #check_phone = await crud.get_verify_phone(session=session, phone=phone)
     if await crud.get_verify_phone(session=session, phone=phone):
-        raise HTTPException(status_code=400, detail=f'Номер телефона уже зарегистрирован {check_phone}')
+        raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
     code = generate_code()
     params = {
         'to': number,

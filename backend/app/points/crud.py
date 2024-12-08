@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, Result
+from sqlalchemy import select, Result, delete
 from backend.app.models import Points, Enterprises
 from backend.app.points.schemas import RegisterPoint, ChangePointSchema
 from .utils import parse_time

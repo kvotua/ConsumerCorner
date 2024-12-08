@@ -34,6 +34,7 @@ class Register(Phone):
         title='Пароль',
         examples=['password'],)]
 
+
 class Login(Phone):
     password: Annotated[str, Field(
         title='Пароль',

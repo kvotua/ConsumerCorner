@@ -13,6 +13,7 @@ from backend.app.config import secret_key, algo
 TOKEN_TYPE_FIELD = "type"
 ACCESS_TOKEN_TYPE = 'access'
 
+
 class HttpClient:
     def __init__(self):
         self.session = aiohttp.ClientSession()
@@ -47,8 +48,6 @@ def validate_phone(phone):
             if i.isdigit():
                 valid_phone += i
         return valid_phone
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> bytes:
     salt = bcrypt.gensalt()
