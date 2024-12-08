@@ -4,12 +4,15 @@ from fastapi import APIRouter, Body, HTTPException, Depends, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from .crud import add_verify_session, get_verify_session
 from .schemas import Register, Login, VerifePhone, ReqID, TokenPair
 from .utils import HttpClient, generate_code, generate_text, validate_phone, hash_password, validate_password, create_tokens_pair, decode_refresh_token, decode_access_token
 from .models_auth import Verification
 from backend.app.config import user_name, user_pass, send_from, example_jwt_token
 from backend.app.database import get_session
 from backend.app.models import Users
+from backend.app.users.crud import get_user_by_id
+from . import crud
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -27,13 +30,12 @@ async def refresh_tokens(
     token_data = decode_refresh_token(refresh_token)
     if isinstance(token_data, str):
         raise HTTPException(status_code=401, detail=token_data)
-    response = select(Users).where(Users.id == token_data.get("id"))
-    result = await session.execute(response)
-    data_by_db = result.scalars().first()
+    data_by_db = await get_user_by_id(session=session, user_id=token_data.get("id"))
     payload = {
         'id': data_by_db.id,
         'phone': data_by_db.phone,
         'fio': data_by_db.fio,
+        'verify_phone': data_by_db.verify_phone,
     }
     jwt_tokens = create_tokens_pair(payload)
     return TokenPair(
@@ -68,11 +70,9 @@ async def send_message(
         raise HTTPException(status_code=400, detail="Невалидный токен")
     number = dict_by_token.get('phone')
     phone = validate_phone(number)
-    stmt = select(Users).where(Users.phone == phone)
-    result = await session.execute(stmt)
-    user = result.scalars().first()
-    if user.verify_phone is True:
-        raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
+    #check_phone = await crud.get_verify_phone(session=session, phone=phone)
+    if await crud.get_verify_phone(session=session, phone=phone):
+        raise HTTPException(status_code=400, detail=f'Номер телефона уже зарегистрирован {check_phone}')
     code = generate_code()
     params = {
         'to': number,
@@ -88,10 +88,8 @@ async def send_message(
     await http_client.close_session()
     if response is None:
         raise HTTPException(status_code=400, detail="Закончились деньги на GREENSMSAPI")
-    data = Verification(request_id=response, sms_code=code, phone=number)
-    session.add(data)
-    await session.commit()
-    await session.refresh(data)
+    if await add_verify_session(session=session, request_id=response, sms_code=code, phone=phone) is None:
+        raise HTTPException(status_code=500, detail="Ошибка добавления сессии в базу данных")
     return ReqID(req_id=response)
 
 
@@ -116,53 +114,26 @@ async def check_code(
     )
     if dict_by_token == "Невалидный токен":
         raise HTTPException(status_code=400, detail="Невалидный токен")
-    stmt = select(Verification).where(Verification.request_id == req_id)
-    result = await session.execute(stmt)
-    response = result.scalars().first()
+    response = await get_verify_session(session=session, request_id=req_id, sms_code=sms_code)
     if response is None:
-        raise HTTPException(status_code=404, detail='Невалидная сессия')
-    data_by_db = {
-        'request_id': response.request_id,
-        'sms_code': response.sms_code,
-    }
-    data_by_user = {
-        'request_id': req_id,
-        'sms_code': sms_code,
-    }
-    if data_by_db != data_by_user:
-        raise HTTPException(status_code=400, detail='Неверный код')
+        raise HTTPException(status_code=401, detail='Невалидная сессия или смс-код')
     await session.delete(response)
-
-    model = select(Users).where(Users.phone == response.phone)
-    second_res = await session.execute(model)
-    second_result = second_res.scalars().first()
-    second_result.verify_phone = True
-    session.add(second_result)
-    await session.commit()
-
-    return VerifePhone(phone=response.phone, phone_verif=True)
+    if await crud.change_verify_phone_status(session=session, user_id=dict_by_token.get("id")):
+        return VerifePhone(phone=response.phone, phone_verif=True)
+    raise HTTPException(status_code=500, detail="Ошибка сервера")
 
 
 @router.post('/registration', response_model=TokenPair)
-async def registration(data: Annotated[Register, Body()], session: AsyncSession = Depends(get_session)) -> str:
-    stmt = select(Users).where(Users.phone == data.phone)
-    result = await session.execute(stmt)
-    user = result.scalars().first()
-    if user:
+async def registration(
+        data: Annotated[Register, Body()],
+        session: AsyncSession = Depends(get_session)
+):
+    if await crud.get_verify_phone(session=session, phone=data.phone):
         raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
 
-    data_for_db = Users(
-        phone=data.phone,
-        password=hash_password(data.password).decode('utf-8'),
-        fio=data.fio,
-    )
+    await crud.sing_up_user(session=session, data=data)
 
-    session.add(data_for_db)
-    await session.commit()
-    await session.refresh(data_for_db)
-    stmt = select(Users).where(Users.phone == data.phone)
-    result = await session.execute(stmt)
-    user_data = result.scalars().first()
+    user_data = await crud.get_user_by_phone(session=session, phone=data.phone)
     payload = {
         'id': user_data.id,
         'phone': data.phone,
@@ -178,10 +149,11 @@ async def registration(data: Annotated[Register, Body()], session: AsyncSession 
 
 
 @router.post('/login', response_model=TokenPair)
-async def login(data: Login, session: AsyncSession = Depends(get_session)):
-    stmt = select(Users).where(Users.phone == data.phone)
-    result = await session.execute(stmt)
-    data_by_db = result.scalars().first()
+async def login(
+        data: Login,
+        session: AsyncSession = Depends(get_session)
+):
+    data_by_db = await crud.get_user_by_phone(session=session, phone=data.phone)
 
     if data_by_db is None:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
