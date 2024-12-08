@@ -9,6 +9,7 @@ from backend.app.models import Users
 from backend.app.config import example_jwt_token
 from backend.app.enterprises.schemas import ResponseSchema
 from .schemas import ChangeUserSchema, UserSchema
+from . import crud
 
 
 router = APIRouter(prefix="/profile", tags=["Profile"])
@@ -32,25 +33,10 @@ async def get_users_me(
         raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
     if dict_by_token == 2:
         raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-    user_id = dict_by_token.get('id')
-    response = select(Users).where(Users.id == user_id)
-    result = await session.execute(response)
-    user = result.scalars().first()
-    if user is None:
-        raise HTTPException(status_code=404, detail='Такой пользователь не найден')
-
-    return UserSchema(
-        id=user.id,
-        phone=user.phone,
-        fio=user.fio,
-        email=user.email,
-        verify_phone=user.verify_phone,
-        verify_email=user.verify_email,
-    )
+    return await crud.get_user_by_id(session=session, user_id=dict_by_token.get("id"))
 
 
-
-@router.put("/change", response_model=ResponseSchema)
+@router.patch("/change", response_model=ResponseSchema)
 async def get_users_me(
     access_token: Annotated[str, Header(
         title='jwt_token пользователя',
@@ -69,21 +55,13 @@ async def get_users_me(
         raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
     if dict_by_token == 2:
         raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-    response = await session.execute(select(Users).where(Users.id == dict_by_token.get("id")))
-    user = response.scalars().first()
-    if user:
-        if user.phone != user_data.new_phone:
-            user.phone = user_data.new_phone
-            user.verify_phone = False
-        user.fio = user_data.new_fio
-        if user.email != user_data.new_email:
-            user.email = user_data.new_email
-            user.verify_email = False
-
-        await session.commit()
-        return ResponseSchema(status_code=200, detail="Успешное изменение")
-    else:
-        raise HTTPException(status_code=404, detail="Не найден пользователь")
+    user = await crud.get_user_by_id(session=session, user_id=dict_by_token.get("id"))
+    await crud.update_user(
+        session=session,
+        user=user,
+        update_user_data=user_data,
+    )
+    return ResponseSchema(status_code=200, detail="Успешное изменение")
 
 
 # @router.post("/docs/add")

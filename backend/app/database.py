@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 
 engine = create_async_engine(
     url=str(db_url),
-    echo=False,
+    echo=True,
     future=True,
     )
 

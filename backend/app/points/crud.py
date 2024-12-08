@@ -55,4 +55,3 @@ async def get_enterprises_id_by_user_id(session: AsyncSession, user_id: int):
     result: Result = await session.execute(stmt)
     enterprises_id = result.scalars().all()
     return enterprises_id
-
