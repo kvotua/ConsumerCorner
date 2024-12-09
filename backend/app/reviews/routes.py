@@ -55,4 +55,6 @@ async def get_reviews(
         raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
     if dict_by_token == 2:
         raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
+    if point_id_path not in await crud.get_points_id(session=session):
+        raise HTTPException(status_code=404, detail="Точка не найдена")
     return await crud.get_all_comments(session=session, point_id=point_id_path)

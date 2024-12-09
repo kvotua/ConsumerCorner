@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
-from backend.app.models import Comments
+
+from backend.app.models import Comments, Points
 from .schemas import CommentData, CommentsSchema
 
 
@@ -17,3 +18,9 @@ async def get_all_comments(session: AsyncSession, point_id: int) -> list[Comment
     result: Result = await session.execute(stmt)
     comments = result.scalars().all()
     return list(comments)
+
+async def get_points_id(session: AsyncSession):
+    stmt = select(Points.id)
+    result: Result = await session.execute(stmt)
+    reviews_id = result.scalars().all()
+    return list(reviews_id)
