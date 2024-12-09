@@ -4,17 +4,20 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.app.auth.routes import router as auth_router
-from backend.app.users.routes import router as users_router
-from backend.app.inn_service.routes import router as inn_service_router
-from backend.app.database import create_tables, Base
-from backend.app.enterprises.routes import router as enterprises_router
-from backend.app.reviews.routes import router as reviews_router
-from backend.app.mongodb.routes import router as mongodb_router
+from .auth.routes import router as auth_router
+from .users.routes import router as users_router
+from .inn_service.routes import router as inn_service_router
+from .database import create_tables, Base
+from .enterprises.routes import router as enterprises_router
+from .mongodb.routes import router as mongodb_router
+
+from .logger.config import setup_logging
+
+setup_logging()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # await create_tables()
+    await create_tables()
     yield
 
 

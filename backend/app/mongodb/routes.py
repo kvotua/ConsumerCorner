@@ -1,38 +1,34 @@
 from fastapi import APIRouter, HTTPException, File, UploadFile
 from fastapi.responses import JSONResponse
-from gridfs import GridFS
 from .mongodb import MongoDBClient
 from .models import ImageModel, DocumentModel, UploadImageModel, UploadDocumentModel
-from typing import Annotated
-from backend.app.database import get_session
 
-import traceback
+import logging
 
 router = APIRouter(prefix="/mongo", tags=["mongodb"])
-mongo = MongoDBClient("test_db", "image", "doc")
-# fs = GridFS(mongo.db)
+mongo = MongoDBClient("image", "doc")
+logger = logging.getLogger(__name__)
+
 
 @router.get('/image/{id}',
             response_model=ImageModel)
 async def get_image(
     id: str,
 ):
+    logger.info(f"GET /image with ID: {id}")
     image = await mongo.get_image_by_id(id)
     if image:
-        return image
-    raise HTTPException(status_code=404, detail=f"Image {id} not found")
+        return JSONResponse(content=image, status_code=image['status_code'])
+    return JSONResponse(status_code=404, content={"message": f"Image not found",
+                                                 "id": id,
+                                                 "status_code": 404})
 
 @router.post('/image', response_model=UploadImageModel)
 async def upload_image(file: UploadFile = File(...)):
-    try:
-        contents = await file.read()
-
-        info = await mongo.upload_image(file, contents)
-
-        return JSONResponse(content={"id": info['_id']}, status_code=200)
-    except Exception as e:
-        print(traceback.format_exc())
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+    logger.info(f"POST /image")
+    contents = await file.read()
+    info = await mongo.upload_image(file, contents)
+    return JSONResponse(content={"id": info['_id']}, status_code=200)
 
 
 @router.get('/document/{id}',
@@ -40,19 +36,17 @@ async def upload_image(file: UploadFile = File(...)):
 async def get_document(
     id: str,
 ):
+    logger.info(f"GET /document with ID: {id}")
     document = await mongo.get_document_by_id(id)
     if document:
-        return document
-    raise HTTPException(status_code=404, detail=f"Document {id} not found")
+        return JSONResponse(content=document, status_code=document['status_code'])
+    return JSONResponse(status_code=404, content={"message": f"Document not found",
+                                                 "id": id,
+                                                 "status_code": 404})
 
 @router.post('/document', response_model=UploadDocumentModel)
 async def upload_document(file: UploadFile = File(...)):
-    try:
-        contents = await file.read()
-
-        info = await mongo.upload_document(file, contents)
-
-        return JSONResponse(content={"id": info['_id']}, status_code=200)
-    except Exception as e:
-        print(traceback.format_exc())
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+    logger.info(f"POST /document")
+    contents = await file.read()
+    info = await mongo.upload_document(file, contents)
+    return JSONResponse(content={"id": info['_id']}, status_code=200)

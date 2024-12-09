@@ -1,7 +1,7 @@
 from dadata import Dadata
 from dotenv import load_dotenv
 import os
-# from backend.app.config import token
+# from app.config import token
 from ..config import token
 from .schemas import IpSchema,CompanySchema,ErrorSchema
 

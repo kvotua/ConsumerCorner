@@ -7,7 +7,7 @@ from jose import jwt
 from datetime import datetime, timedelta, timezone
 import bcrypt
 
-from backend.app.config import secret_key, algo
+from app.config import secret_key, algo
 
 
 TOKEN_TYPE_FIELD = "type"

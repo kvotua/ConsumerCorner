@@ -5,12 +5,12 @@ from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from backend.app.config import example_jwt_token
-from backend.app.database import get_session
-from backend.app.models import Enterprises, Points
-from backend.app.auth.utils import validate_token
-from .schemas import RegisterCompany, RegisterPoint, ResponseSchema, PointInfo
-from .utils import parse_time
+from app.config import example_jwt_token
+from app.database import get_session
+from app.models import UserEnterprisesRole, Enterprises
+from app.auth.utils import validate_token
+from .schemas import RegisterCompany, RegisterPoint
+
 
 
 router = APIRouter(
