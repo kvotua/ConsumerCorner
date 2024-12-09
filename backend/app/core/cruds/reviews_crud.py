@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
 
-from backend.app.models import Comments, Points
-from .schemas import CommentData, CommentsSchema
+from backend.app.models.models import Comments, Points
+from backend.app.schemas.reviews_schemas import CommentData, CommentsSchema
 
 
 async def add_comment(session: AsyncSession, point_id: int, comment_data: CommentData):

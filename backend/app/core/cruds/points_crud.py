@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
-from backend.app.models import Points, Enterprises
-from backend.app.points.schemas import RegisterPoint, ChangePointSchema
-from .utils import parse_time
+from backend.app.models.models import Points, Enterprises
+from backend.app.schemas.points_schemas import RegisterPoint, ChangePointSchema
+from backend.app.services.points_services import parse_time
 
 
 async def add_points(session: AsyncSession, point_data: RegisterPoint, user_id: int):

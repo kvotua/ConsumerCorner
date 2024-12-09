@@ -1,17 +1,14 @@
-from fastapi import APIRouter, Body, HTTPException, Response, Security, status, Query,Depends
+from fastapi import APIRouter, Query,Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.requests import Request
 from typing import Annotated
 
-from .services import INNService
-from backend.app.config import token
-from .models import CompanyModel, IpModel
-from backend.app.database import get_session
+from backend.app.services.inn_services import INNService
+from backend.app.models.inn_models import CompanyModel, IpModel
+from backend.app.core.databases.postgresdb import get_session
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.future import select
 
-
-router = APIRouter(prefix="/inn_service", tags=["inn_service"])
+router = APIRouter(prefix="/inn", tags=["inn"])
 
 def get_inn_service() -> INNService:
     return INNService

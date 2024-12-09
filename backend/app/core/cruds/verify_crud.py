@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
 
-from .schemas import Register
-from .models_auth import Verification
-from .utils import hash_password
-from backend.app.models import Users
-from backend.app.users.crud import get_user_by_id
+from backend.app.schemas.schemas_verify import Register
+from backend.app.models.verify_models import Verification
+from backend.app.services.verify_services import hash_password
+from backend.app.models.models import Users
+from backend.app.core.cruds.users_crud import get_user_by_id
 
 
 async def get_verify_phone(session: AsyncSession, phone: str) -> Users:

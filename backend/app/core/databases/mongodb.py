@@ -3,7 +3,7 @@ from fastapi import UploadFile
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
 from datetime import datetime
 from bson import ObjectId
-from ..config import mongodb_url
+from backend.app.config import mongodb_url
 from typing import Optional, Any
 
 import base64

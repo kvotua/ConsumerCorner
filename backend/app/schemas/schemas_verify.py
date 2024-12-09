@@ -7,6 +7,18 @@ RefreshToken = NewType("RefreshToken", str)
 AccessToken = NewType("AccessToken", str)
 
 
+class RefreshTokenSchema(BaseModel):
+    refresh_token: RefreshToken
+
+
+class AccessTokenSchema(BaseModel):
+    access_token: AccessToken
+
+
+class TokenPairSchema(RefreshTokenSchema, AccessTokenSchema):
+    pass
+
+
 class Phone(BaseModel):
     phone: Annotated[str, Field(
         title='Номер телефона без +',
@@ -63,4 +75,3 @@ class ReqID(BaseModel):
 class TokenPair(BaseModel):
     access_token: str
     refresh_token: str
-    token_type: str = "Baerer"

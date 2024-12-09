@@ -1,60 +1,40 @@
-from fastapi import APIRouter, HTTPException, Depends, Header
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Annotated
 
-from backend.app.auth.utils import validate_token
-from backend.app.database import get_session
-from backend.app.config import example_jwt_token
-from backend.app.enterprises.schemas import ResponseSchema
-from .schemas import ChangeUserSchema, UserSchema
-from . import crud
+from backend.app.core.databases.postgresdb import get_session
+from backend.app.services.auth_handler import decode_jwt
+from backend.app.schemas.enterprises_schemas import ResponseSchema
+from backend.app.schemas.users_schemas import ChangeUserSchema, UserSchema
+from backend.app.core.cruds import users_crud
+from backend.app.services.auth_bearer import dependencies
 
 
-router = APIRouter(prefix="/profile", tags=["Profile"])
+router = APIRouter(prefix="/profile", tags=["Profile"], dependencies=dependencies)
 
 
 @router.get("/me", response_model=UserSchema)
 async def get_users_me(
-    access_token: Annotated[str, Header(
-        title='jwt_token пользователя',
-        example=example_jwt_token)],
-    token_type: Annotated[str, Header(
-        title='Тип токена',
-        example='Baerer')],
+    request: Request,
     session: AsyncSession = Depends(get_session),
 ):
-    dict_by_token = validate_token(
-        access_token=access_token,
-        token_type=token_type,
-    )
-    if dict_by_token == 1:
-        raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
-    if dict_by_token == 2:
-        raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-    return await crud.get_user_by_id(session=session, user_id=dict_by_token.get("id"))
+    headers = request.headers
+    token_list = headers.get("authorization").split()
+    dict_by_token = decode_jwt(token_list[1])
+    return await users_crud.get_user_by_id(session=session, user_id=dict_by_token.get("id"))
 
 
 @router.patch("/change", response_model=ResponseSchema)
 async def get_users_me(
-    access_token: Annotated[str, Header(
-        title='jwt_token пользователя',
-        example=example_jwt_token)],
-    token_type: Annotated[str, Header(
-        title='Тип токена',
-        example='Baerer')],
+    request: Request,
     user_data: ChangeUserSchema,
     session: AsyncSession = Depends(get_session),
 ):
-    dict_by_token = validate_token(
-        access_token=access_token,
-        token_type=token_type,
-    )
-    if dict_by_token == 1:
-        raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
-    if dict_by_token == 2:
-        raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-    user = await crud.get_user_by_id(session=session, user_id=dict_by_token.get("id"))
-    await crud.update_user(
+    headers = request.headers
+    token_list = headers.get("authorization").split()
+    dict_by_token = decode_jwt(token_list[1])
+
+    user = await users_crud.get_user_by_id(session=session, user_id=dict_by_token.get("id"))
+    await users_crud.update_user(
         session=session,
         user=user,
         update_user_data=user_data,

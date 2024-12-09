@@ -1,10 +1,7 @@
 from fastapi import APIRouter, HTTPException, File, UploadFile
 from fastapi.responses import JSONResponse
-from gridfs import GridFS
-from .mongodb import MongoDBClient
-from .models import ImageModel, DocumentModel, UploadImageModel, UploadDocumentModel
-from typing import Annotated
-from backend.app.database import get_session
+from backend.app.core.databases.mongodb import MongoDBClient
+from backend.app.models.mongo_models import ImageModel, DocumentModel, UploadImageModel, UploadDocumentModel
 
 import traceback
 

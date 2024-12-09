@@ -1,12 +1,8 @@
 from dadata import Dadata
-from dotenv import load_dotenv
-import os
-from fastapi.responses import JSONResponse
 # from backend.app.config import token
-from ..config import token
-from .schemas import IpSchema,CompanySchema, ErrorSchema
-from fastapi import HTTPException, Request
-import json
+from backend.app.config import token
+from backend.app.schemas.inn_schemas import IpSchema,CompanySchema
+from fastapi import HTTPException
 
 
 class INNService:
