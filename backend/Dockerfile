@@ -5,6 +5,6 @@ WORKDIR /backend
 COPY ./ ./
 RUN pip install --no-cache-dir -r /backend/requirements.txt
 # TODO TEST
-# RUN pip install pytest
-# RUN pytest ./app/tests
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+RUN pip install pytest
+RUN pytest ./
+# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
 from app.auth.utils import validate_token
-from app.users.schemas import UserSchema
+from app.users.schemas import UserSchema, NewUserSchema
 from app.database import get_session
 from app.models import Users
 from app.config import example_jwt_token

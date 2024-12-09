@@ -10,6 +10,7 @@ from .inn_service.routes import router as inn_service_router
 from .database import create_tables, Base
 from .enterprises.routes import router as enterprises_router
 from .mongodb.routes import router as mongodb_router
+from .reviews.routes import router as reviews_router
 
 from .logger.config import setup_logging
 

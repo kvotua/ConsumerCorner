@@ -1,6 +1,6 @@
 import pytest
-from inn_service.services import INNService
-from inn_service.schemas import ErrorSchema, IpSchema, CompanySchema
+from app.inn_service.services import INNService
+from app.inn_service.schemas import ErrorSchema, IpSchema, CompanySchema
 
 inn_test_service = INNService()
 
