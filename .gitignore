@@ -1,3 +1,5 @@
+.env
+node_modules
 backend/app/.env
 .idea
 .venv
@@ -5,3 +7,4 @@ backend/app/.env
 data
 mongodbdata
 .pytest_cache
+
