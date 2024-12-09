@@ -1,3 +1,7 @@
 backend/app/.env
 .idea
 .venv
+.env
+data
+mongodbdata
+.pytest_cache

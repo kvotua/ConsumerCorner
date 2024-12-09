@@ -1,8 +1,11 @@
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from .CriticalError import CriticalError
 
-env_path = Path(__file__).parent / '.env'
+env_path = Path(__file__).parent.parent.parent / '.env'
+if (not os.path.isfile(env_path)):
+    raise CriticalError("File .env not found!")
 load_dotenv(dotenv_path=env_path)
 
 token = os.getenv('API_TOKEN_INN')
