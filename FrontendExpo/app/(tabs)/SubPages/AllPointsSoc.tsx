@@ -11,21 +11,14 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/Feather";
-import Icons1 from "react-native-vector-icons/SimpleLineIcons";
+import Icons1 from "react-nat`ive-vector-icons/SimpleLineIcons";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons2 from "react-native-vector-icons/Entypo"
 import styles from "../../Styles/Style"; // Путь к стилям
 
-export default function Social({ navigation}) {
-  const [data, setData] = useState([
-    { id: '1', title: "Яндекс" },
-    { id: '2', title: "Telegram" },
-    { id: '3', title: 'ВКонтакте' },
-    { id: '4', title: 'Instagram' },
-    { id: '5', title: 'Facebook' },
-    { id: '6', title: 'Twitter' },
-  ]);
-    // Состояние для управления модальным окном
+export default function AllPointsSoc({ navigation, route}) {
+    const {social} = route.params;
+  // Состояние для управления модальным окном
   const [modalVisible, setModalVisible] = useState(false);
   const [socialName, setSocialName] = useState('');
 
@@ -41,12 +34,15 @@ export default function Social({ navigation}) {
     setSocialName(''); // Очищаем поле ввода
   };
 
+  const data = [
+    { id: '1', title: "Точка 1" },
+    { id: '2', title: "Точка 1" },
+    { id: '3', title: 'Точка 1' },
+  ];
+
   const renderItem = ({ item }) => (
     <View style={styles.socialItemFlatList}>
-      <TouchableOpacity 
-        style={localStyles.button} 
-        onPress={() => navigation.navigate("AllPointsSoc", { social: item.title })}
-      >
+      <TouchableOpacity style={localStyles.button} onPress={() => toggleModal()}>
         <Text style={localStyles.buttonText}>{item.title}</Text>
       </TouchableOpacity>
     </View>
@@ -79,8 +75,8 @@ export default function Social({ navigation}) {
 
         {/* Кнопка для открытия модального окна */}
         <View style={styles.containerButtonsMenuPages}>
-          <TouchableOpacity style={styles.buttonMenuPage} onPress={toggleModal}>
-            <Text style={styles.textInButtonsMenuPage}>Добавить соц.сеть</Text>
+          <TouchableOpacity style={[styles.buttonMenuPage, {backgroundColor:"red"}]} onPress={() => navigation.goBack()}>
+            <Text style={[styles.textInButtonsMenuPage]}>Удалить</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.buttonBackMenuPage, { marginTop: 10 }]}
@@ -120,19 +116,19 @@ export default function Social({ navigation}) {
                 value={socialName}
                 onChangeText={setSocialName}
               />
-              <Text style={[{textAlign: "left", width: "100%", color: "#1644B5", fontSize: 18, marginTop: 8}]}>Пометка</Text>
+            <Text style={[{textAlign: "left", width: "100%", color: "#1644B5", fontSize: 18, marginTop: 8}]}>Пометка</Text>
               <TextInput
                 style={localStyles.modalInput}
                 placeholder=""
                 value={socialName}
                 onChangeText={setSocialName}
               />
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 style={[localStyles.modalButton, { borderColor: "#D43538" }]}
                 onPress={handleAddSocialNetwork}
               >
                 <Text style={[localStyles.textInButton, { color: "#D43538" }]}>Удалить соц.сеть</Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
               <TouchableOpacity
                 style={[localStyles.modalButton, { borderColor: '#3563D4' }]}
                 onPress={toggleModal}
