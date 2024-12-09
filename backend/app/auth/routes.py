@@ -3,7 +3,6 @@ from fastapi import APIRouter, Body, HTTPException, Depends, Header
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import delete
 
 from .crud import add_verify_session, get_verify_session
 from .schemas import Register, Login, VerifePhone, ReqID, TokenPair

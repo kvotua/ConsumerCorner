@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.config import example_jwt_token
 from backend.app.database import get_session
-from backend.app.models import Enterprises
 from backend.app.auth.utils import validate_token
 from .schemas import RegisterCompany, ResponseSchema, EnterpriseInfo
 from . import crud

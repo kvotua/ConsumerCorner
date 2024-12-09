@@ -1,13 +1,12 @@
-from fastapi import APIRouter, HTTPException, Depends, Header, Path
-from sqlalchemy.future import select
+from fastapi import APIRouter, HTTPException, Depends, Header, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
 from backend.app.auth.utils import validate_token
 from backend.app.database import get_session
-from backend.app.models import Comments
 from backend.app.config import example_jwt_token
-from .schemas import CommentData
+from .schemas import CommentData, ResponseSchema, CommentsSchema
+from . import crud
 
 
 router = APIRouter(prefix='/reviews', tags=['Reviews'])
@@ -33,11 +32,8 @@ async def add_review(
         raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
     if dict_by_token == 2:
         raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-    response = Comments(point_id=point_id, text=comment_data.text, stars=comment_data.stars)
-    session.add(response)
-    await session.commit()
-    return HTTPException(status_code=201 , detail="Комментарий успешно добавлен")
-
+    await crud.add_comment(session=session, point_id=point_id, comment_data=comment_data)
+    return ResponseSchema(status_code=200, detail="OK")
 
 
 @router.get("/{point_id}")
@@ -48,9 +44,9 @@ async def get_reviews(
     token_type: Annotated[str, Header(
         title='Тип токена',
         example='Baerer')],
-    point_id_path: Annotated[str, Path(title="ID точки", examples=[1])],
+    point_id_path: Annotated[int, Query(title="ID точки", examples=[1])],
     session: AsyncSession = Depends(get_session),
-):
+) -> list[CommentsSchema]:
     dict_by_token = validate_token(
         access_token=access_token,
         token_type=token_type,
@@ -59,12 +55,4 @@ async def get_reviews(
         raise HTTPException(status_code=400, detail="Невалидный тип токена или токен")
     if dict_by_token == 2:
         raise HTTPException(status_code=400, detail="Не верифицирован номер телефона")
-
-    response = select(Comments).where(Comments.point_id == int(point_id_path))
-    result = await session.execute(response)
-    array_comments = result.scalars().all()
-    return [Comments(
-        id=item.id, point_id=item.point_id,
-        text=item.text, stars=item.stars,
-        create_at=item.created_at)
-        for item in array_comments]
+    return await crud.get_all_comments(session=session, point_id=point_id_path)

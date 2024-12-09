@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, Result, delete
+from sqlalchemy import select, Result
 
 from .schemas import Register
 from .models_auth import Verification

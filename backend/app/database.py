@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from .config import db_url
-from .models import Base, Points
-from sqlalchemy.future import select
+from .models import Base
 
 
 engine = create_async_engine(

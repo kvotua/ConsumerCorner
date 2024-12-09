@@ -8,7 +8,6 @@ from backend.app.config import example_jwt_token
 from backend.app.enterprises.schemas import ResponseSchema
 from . import crud
 from .schemas import RegisterPoint, PointInfo, ChangePointSchema
-from .utils import parse_time
 
 
 router = APIRouter(prefix="/points", tags=["Points"])
