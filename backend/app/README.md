@@ -1,4 +1,0 @@
-# .env файл
-
-1.Создайте .env файл в директории app/\
-2.Добавьте туда свои API_TOKEN_INN, DATABASE_URL, USER_NAME, USER_PASS, SEND_FROM
