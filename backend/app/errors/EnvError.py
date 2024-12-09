@@ -1,6 +1,6 @@
-class CriticalError(Exception):    
+class EnvError(Exception):    
     def __init__(self, message):
         super().__init__(message)
 
     def __str__(self):
-        return f"CriticalError: {self.args[0]}"
+        return f"EnvError: {self.args[0]}"
