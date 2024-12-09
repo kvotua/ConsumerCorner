@@ -36,7 +36,7 @@ export default function InnReg({navigation}){
             return
         }
 
-        const url = `http://127.0.0.1:8000/inn_service/inn_info?inn=${inn}`;
+        const url = `http://127.0.0.1:8080/inn_service/inn_info?inn=${inn}`;
         try {
           const response = await fetch(url, {
             method: "GET",

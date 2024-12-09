@@ -6,40 +6,67 @@ import {
   TouchableOpacity,
   ImageBackground,
   TextInput,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Toast from "../Notif/toasts/Toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
+import {decodeJwt} from "../../AsyncStore/Decode"
+import JWT from "expo-jwt";
 
 export default function Enter({ navigation }) {
   const [password, setPassword] = useState("");
   const [isSecure, setIsSecure] = useState(true);
-  const [phoneValue, setPhoneValue] = useState(""); // Значение для отображения с маской
-  const [rawPhoneValue, setRawPhoneValue] = useState(""); // Очищенное значение для передачи
+  const [phoneValue, setPhoneValue] = useState(""); 
+  const [rawPhoneValue, setRawPhoneValue] = useState(""); 
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
   const showToast = (type :string, message:string, subMessage:string) => {
     setToast({ type, message, subMessage, visible: true });
-    setTimeout(() => setToast({ ...toast, visible: false }), 3000); // Авто-скрытие через 3 сек
+    setTimeout(() => setToast({ ...toast, visible: false }), 3000); 
   };
 
   const handleInputChange = (text) => {
-    // Устанавливаем значение с маской для отображения
     setPhoneValue(text);
 
-    // Извлекаем только цифры из введенного значения
     const numericValue = text.replace(/\D/g, ""); 
     setRawPhoneValue(numericValue);
+  };
+
+  const SendNumber = async () => {
+    const token = await AccessGetToken();
+
+    const url = 'http://127.0.0.1:8080/auth/send';
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "access-token" : `${token}`,
+          "token-type" : "Baerer"
+        },
+        body: JSON.stringify({ 
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Ошибка сервера");
+      }
+
+      const data = await response.json();
+      await AsyncStorage.setItem("Ses_id", data.req_id)
+    } catch (error) {
+      showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
+    }
   };
 
   
   const handleNext = async () => {
 
-    const url = 'http://127.0.0.1:8000/auth/login';
+    const url = 'http://127.0.0.1:8080/auth/login';
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -55,18 +82,31 @@ export default function Enter({ navigation }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Неверный логин или пароль");
+        throw new Error(errorData.message ||"Неверный логин или пароль");
       }
 
       const data = await response.json();
-      navigation.replace("MenuPage")
+      await AsyncStorage.setItem("access_token", data.access_token);
+      await AsyncStorage.setItem("refresh_token", data.refresh_token);
+      try {
+        const token = await AccessGetToken()
+        const decodeToken =  decodeJwt(token);
+        if(decodeToken.verify_phone != false)
+          navigation.replace("MenuPage");
+        else{
+          await SendNumber();
+          navigation.replace("CodeConfirmEnt");
+        }
+
+      } catch (error) {
+        console.log(error.message)
+      }
     } catch (error) {
       showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
     }
   };
 
   const handleFocus = () => {
-    // Устанавливаем маску при первом фокусе
     if (!phoneValue) {
       setPhoneValue("+7 () - - -");
     }
@@ -80,7 +120,7 @@ export default function Enter({ navigation }) {
                     message={toast.message}
                     subMessage={toast.subMessage}
                     visible={toast.visible}
-                    onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
+                    onDismiss={() => setToast({ ...toast, visible: false })}
                 />
                 )}
             <View style={[Style.menuHeader, {alignItems: "center",}]}>
@@ -92,14 +132,14 @@ export default function Enter({ navigation }) {
               <TextInputMask
                 type={"custom"}
                 options={{
-                  mask: "+7 (999) 999-99-99", // Маска
+                  mask: "+7 (999) 999-99-99",
                 }}
-                value={phoneValue} // Значение с маской
-                onChangeText={handleInputChange} // Обработчик изменения текста
+                value={phoneValue}
+                onChangeText={handleInputChange}
                 keyboardType="phone-pad"
                 style={Style.textInputProfile}
                 placeholder="+7 (999) 999-99-99"
-                onFocus={handleFocus} // Устанавливаем шаблон при фокусе
+                onFocus={handleFocus}
               />
                 <Text style={Style.titleSimple}>Пароль</Text>
 
@@ -129,9 +169,3 @@ export default function Enter({ navigation }) {
     </ImageBackground>
   );
 }
-
-const localStyle = StyleSheet.create({
-  TouchFogotPass:{
-
-  }
-})

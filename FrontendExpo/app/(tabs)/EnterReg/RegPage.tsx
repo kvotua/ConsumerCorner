@@ -46,7 +46,7 @@ export default function RegPage({ navigation }) {
 
   const handleNext = async () => {
 
-    const url = 'http://127.0.0.1:8000/auth/registration';
+    const url = 'http://127.0.0.1:8080/auth/registration';
     try {
       const response = await fetch(url, {
         method: "POST",
