@@ -7,4 +7,3 @@ backend/app/.env
 data
 mongodbdata
 .pytest_cache
-
