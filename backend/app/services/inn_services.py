@@ -1,9 +1,7 @@
 from dadata import Dadata
-# from backend.app.config import token
-from backend.app.config import token
-from backend.app.schemas.inn_schemas import IpSchema,CompanySchema
+from app.config import token
+from app.schemas.inn_schemas import IpSchema,CompanySchema
 from fastapi import HTTPException
-
 
 class INNService:
     def __init__(self):

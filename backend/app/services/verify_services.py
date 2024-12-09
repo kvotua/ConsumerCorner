@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 import bcrypt
 from typing import Any
 
-from backend.app.schemas.schemas_verify import AccessToken, RefreshToken, TokenPairSchema
+from app.schemas.schemas_verify import AccessToken, RefreshToken, TokenPairSchema
 
 TOKEN_TYPE_FIELD = "type"
 ACCESS_TOKEN_TYPE = 'access'

@@ -2,9 +2,9 @@ from fastapi import APIRouter, HTTPException, Depends, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
-from backend.app.core.databases.postgresdb import get_session
-from backend.app.schemas.reviews_schemas import CommentData, ResponseSchema, CommentsSchema
-from backend.app.core.cruds import reviews_crud
+from app.core.databases.postgresdb import get_session
+from app.schemas.reviews_schemas import CommentData, ResponseSchema, CommentsSchema
+from app.core.cruds import reviews_crud
 
 
 router = APIRouter(prefix='/reviews', tags=['Reviews'])

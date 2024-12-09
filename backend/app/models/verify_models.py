@@ -1,7 +1,6 @@
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
-from backend.app.models.models import Base
-
+from app.models.models import Base
 
 class Verification(Base):
     __tablename__ = 'verification'

@@ -2,13 +2,13 @@ from typing import Annotated
 from fastapi import APIRouter, Body, HTTPException, Depends, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.services.auth_handler import set_token_pair, decode_refresh_jwt, sign_jwt
-from backend.app.schemas.schemas_verify import Register, Login, TokenPair
-from backend.app.services.verify_services import validate_password
-from backend.app.core.databases.postgresdb import get_session
-from backend.app.config import example_jwt_token
-from backend.app.core.cruds.users_crud import get_user_by_id
-from backend.app.core.cruds import verify_crud
+from app.services.auth_handler import set_token_pair, decode_refresh_jwt, sign_jwt
+from app.schemas.schemas_verify import Register, Login, TokenPair
+from app.services.verify_services import validate_password
+from app.core.databases.postgresdb import get_session
+from app.config import example_jwt_token
+from app.core.cruds.users_crud import get_user_by_id
+from app.core.cruds import verify_crud
 
 
 router = APIRouter(tags=['auth'])

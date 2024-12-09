@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, Body, Request
 from typing import Annotated, List
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.core.databases.postgresdb import get_session
-from backend.app.schemas.enterprises_schemas import RegisterCompany, ResponseSchema, EnterpriseInfo
-from backend.app.services.auth_handler import decode_jwt
-from backend.app.core.cruds import enterprises_crud
-from backend.app.services.auth_bearer import dependencies
+from app.core.databases.postgresdb import get_session
+from app.schemas.enterprises_schemas import RegisterCompany, ResponseSchema, EnterpriseInfo
+from app.services.auth_handler import decode_jwt
+from app.core.cruds import enterprises_crud
+from app.services.auth_bearer import dependencies
 
 router = APIRouter(
     prefix='/enterprises',

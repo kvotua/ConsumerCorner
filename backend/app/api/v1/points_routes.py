@@ -2,12 +2,12 @@ from fastapi import APIRouter, HTTPException, Depends, Body, Path, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, List
 
-from backend.app.core.databases.postgresdb import get_session
-from backend.app.schemas.enterprises_schemas import ResponseSchema
-from backend.app.schemas.points_schemas import RegisterPoint, PointInfo, ChangePointSchema
-from backend.app.services.auth_handler import decode_jwt
-from backend.app.core.cruds import points_crud
-from backend.app.services.auth_bearer import dependencies
+from app.core.databases.postgresdb import get_session
+from app.schemas.enterprises_schemas import ResponseSchema
+from app.schemas.points_schemas import RegisterPoint, PointInfo, ChangePointSchema
+from app.services.auth_handler import decode_jwt
+from app.core.cruds import points_crud
+from app.services.auth_bearer import dependencies
 
 
 

@@ -1,7 +1,7 @@
 from typing import Dict
 import jwt
 from datetime import datetime, timedelta, timezone
-from backend.app.config import secret_key, algo
+from app.config import secret_key, algo
 
 
 def sign_jwt(data: dict) -> str:

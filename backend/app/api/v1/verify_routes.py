@@ -4,15 +4,15 @@ from fastapi import APIRouter, HTTPException, Depends, Request, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from backend.app.services.auth_handler import decode_jwt_for_verify
-from backend.app.core.cruds.verify_crud import add_verify_session
-from backend.app.schemas.schemas_verify import ReqID, VerifePhone
-from backend.app.services.verify_services import HttpClient, generate_code, generate_text, validate_phone
-from backend.app.models.verify_models import Verification
-from backend.app.config import user_name, user_pass, send_from
-from backend.app.core.databases.postgresdb import get_session
-from backend.app.core.cruds import verify_crud
-from backend.app.services.auth_bearer import dependencies
+from app.services.auth_handler import decode_jwt_for_verify
+from app.core.cruds.verify_crud import add_verify_session
+from app.schemas.schemas_verify import ReqID, VerifePhone
+from app.services.verify_services import HttpClient, generate_code, generate_text, validate_phone
+from app.models.verify_models import Verification
+from app.config import user_name, user_pass, send_from
+from app.core.databases.postgresdb import get_session
+from app.core.cruds import verify_crud
+from app.services.auth_bearer import dependencies
 
 
 router = APIRouter(prefix="/auth", tags=["verify"])

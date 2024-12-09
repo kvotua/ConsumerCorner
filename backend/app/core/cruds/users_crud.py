@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
-from backend.app.models.models import Users
-from backend.app.schemas.users_schemas import UserSchema, ChangeUserSchema
-from backend.app.services.verify_services import validate_phone
-from backend.app.services.users_services import validate_fio, validate_email_address
+from app.models.models import Users
+from app.schemas.users_schemas import UserSchema, ChangeUserSchema
+from app.services.verify_services import validate_phone
+from app.services.users_services import validate_fio, validate_email_address
 
 
 async def get_user_by_id(session: AsyncSession, user_id: int) -> Users:

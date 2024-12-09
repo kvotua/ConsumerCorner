@@ -2,10 +2,9 @@ from fastapi import APIRouter, Query,Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.requests import Request
 from typing import Annotated
-
-from backend.app.services.inn_services import INNService
-from backend.app.models.inn_models import CompanyModel, IpModel
-from backend.app.core.databases.postgresdb import get_session
+from app.services.inn_services import INNService
+from app.models.inn_models import CompanyModel, IpModel
+from app.core.databases.postgresdb import get_session
 from sqlalchemy.exc import IntegrityError
 
 router = APIRouter(prefix="/inn", tags=["inn"])

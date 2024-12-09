@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
 
-from backend.app.schemas.enterprises_schemas import RegisterCompany
-from backend.app.models.models import Enterprises
+from app.schemas.enterprises_schemas import RegisterCompany
+from app.models.models import Enterprises
 
 
 async def add_enterprise(session: AsyncSession, data: RegisterCompany, user_id: int):

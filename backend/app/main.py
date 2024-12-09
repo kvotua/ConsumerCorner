@@ -4,17 +4,21 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.app.api.v1.verify_routes import router as verify_router
-from backend.app.services.auth_bearer import JWTBearer
-from backend.app.api.v1.users_routes import router as users_router
-from backend.app.api.v1.inn_routes import router as inn_service_router
-from backend.app.core.databases.postgresdb import create_tables
-from backend.app.api.v1.enterprises_routes import router as enterprises_router
-from backend.app.api.v1.reviews_routes import router as reviews_router
-from backend.app.api.v1.mongo_routes import router as mongodb_router
-from backend.app.api.v1.points_routes import router as point_router
-from backend.app.api.v1.auth_routes import router as auth_router
+from app.api.v1.verify_routes import router as verify_router
+from app.services.auth_bearer import JWTBearer
+from app.api.v1.users_routes import router as users_router
+from app.api.v1.inn_routes import router as inn_service_router
+from app.core.databases.postgresdb import create_tables
+from app.api.v1.enterprises_routes import router as enterprises_router
+from app.api.v1.reviews_routes import router as reviews_router
+from app.api.v1.mongo_routes import router as mongodb_router
+from app.api.v1.points_routes import router as point_router
+from app.api.v1.auth_routes import router as auth_router
 
+
+from .logger.config import setup_logging
+
+setup_logging()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
