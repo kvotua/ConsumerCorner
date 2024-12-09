@@ -50,3 +50,4 @@ services:
       - "27019:27017"
     volumes:
       - ./mongodbdata:/data/db
+
