@@ -10,6 +10,7 @@ cd ваш_репозиторий
 
 ```bash
 cp .env.example .env
+cp .env ./backend/.env
 ```
 
 Запустите проект:
