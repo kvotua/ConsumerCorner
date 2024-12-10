@@ -2,7 +2,6 @@ import pytest
 from app.services.inn_services import INNService
 from app.schemas.inn_schemas import IpSchema, CompanySchema
 from fastapi import HTTPException
-
 inn_test_service = INNService()
 
 @pytest.mark.parametrize("inn, expected", [
