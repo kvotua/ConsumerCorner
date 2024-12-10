@@ -5,6 +5,7 @@ import phonenumbers
 from datetime import datetime, timedelta, timezone
 import bcrypt
 from typing import Any
+import asyncio
 
 from app.schemas.schemas_verify import AccessToken, RefreshToken, TokenPairSchema
 
@@ -14,7 +15,8 @@ ACCESS_TOKEN_TYPE = 'access'
 
 class HttpClient:
     def __init__(self):
-        self.session = aiohttp.ClientSession()
+        self.loop = asyncio.get_event_loop() if asyncio.get_event_loop() is not None else asyncio.new_event_loop()
+        self.session = aiohttp.ClientSession(loop=self.loop)
 
     async def close_session(self):
         await self.session.close()
