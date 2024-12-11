@@ -1,8 +1,6 @@
-from sqlalchemy import Column, String, Integer, BigInteger, Text, Boolean, Float, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-import enum
 from sqlalchemy.orm import Mapped, mapped_column
 from app.models.models import Base
+
 
 class CompanyModel(Base):
     __tablename__ = 'company_info'

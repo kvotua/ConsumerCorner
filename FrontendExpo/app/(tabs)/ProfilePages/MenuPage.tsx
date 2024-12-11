@@ -42,7 +42,7 @@ export default function Menupage({ navigation }) {
           />
         </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.whiteButtonMenuTopActive} onPress={() => navigation.replace("Social")}>
+          <TouchableOpacity style={styles.whiteButtonMenuTopActive} onPress={() => navigation.replace("FirmsSoc")}>
           <View style={[{flex: 1, justifyContent: "space-between",}]}>
             <Text style={styles.blackText}>Соц. сети</Text>
             <Image

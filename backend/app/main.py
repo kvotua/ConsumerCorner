@@ -1,11 +1,10 @@
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.verify_routes import router as verify_router
-from app.services.auth_bearer import JWTBearer
 from app.api.v1.users_routes import router as users_router
 from app.api.v1.inn_routes import router as inn_service_router
 from app.core.databases.postgresdb import create_tables
@@ -35,6 +34,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 app.include_router(auth_router)

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import Annotated, Optional, Any
 from datetime import datetime
 
@@ -10,6 +10,20 @@ class RegisterCompany(BaseModel):
     ogrn: Annotated[str, Field(title="ОГРН юридического лица", min_length=13, max_length=13)]
     address: Annotated[str, Field(title="Фактический адрес", examples=['ул. Павлика Морозова 74Б'])]
     general_type_activity: Annotated[str, Field(title='Основной тип деятельности', examples=["Частное предприятие"])]
+
+    @model_validator(mode="before")
+    def check_inn_ogrn(cls, values):
+        inn = values.get('inn')
+        if inn and not inn.isdigit():
+            raise ValueError('The INN must contain only numbers.')
+        if len(inn) != 10 or 12:
+            raise ValueError('The must contain 10 or 12 digits')
+
+        ogrn = values.get('ogrn')
+        if ogrn and not ogrn.isdigit():
+            raise ValueError('The OGRN should contain only numbers.')
+
+        return values
 
 
 class EnterpriseInfo(BaseModel):
