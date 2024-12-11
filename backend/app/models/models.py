@@ -79,5 +79,5 @@ class Comments(Base):
 class Imgs(Base):
     __tablename__ = 'imgs'
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True)
     comment_id: Mapped[str] = mapped_column()

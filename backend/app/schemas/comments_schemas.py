@@ -12,6 +12,10 @@ class ResponseSchema(BaseModel):
     status_code: Annotated[int, Field(title="Status code", examples=[200])]
     detail: Annotated[Any, Field(title="detail", examples=["OK"])]
 
+class ImageData(BaseModel):
+    id: Annotated[str, Field(title="ID фотографии", examples=['5f2fcae09b58c38603442a4f'])]
+    comment_id: Annotated[int, Field(title="ID комментария", examples=[1])]
+
 
 class CommentsSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
