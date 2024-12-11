@@ -4,7 +4,7 @@ import re
 from email_validator import validate_email
 
 from app.services.verify_services import validate_phone
-from app.config import pattern_fio, pattern_email
+from app.config import pattern_fio
 
 
 class UserSchema(BaseModel):
