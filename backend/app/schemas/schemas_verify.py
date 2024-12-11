@@ -1,22 +1,9 @@
-from typing import NewType, Annotated
+from typing import Annotated
+import re
 
-from pydantic import BaseModel,Field
-
-
-RefreshToken = NewType("RefreshToken", str)
-AccessToken = NewType("AccessToken", str)
-
-
-class RefreshTokenSchema(BaseModel):
-    refresh_token: RefreshToken
-
-
-class AccessTokenSchema(BaseModel):
-    access_token: AccessToken
-
-
-class TokenPairSchema(RefreshTokenSchema, AccessTokenSchema):
-    pass
+from pydantic import BaseModel, Field, field_validator, model_validator
+from app.config import pattern_password, pattern_fio
+from app.services.verify_services import validate_phone
 
 
 class Phone(BaseModel):
@@ -25,6 +12,14 @@ class Phone(BaseModel):
         examples=['79216547832'],
         min_length=11,
         max_length=14,)]
+
+    @field_validator("phone", mode="before")
+    def check_phone(cls, phone):
+        try:
+            valid_phone = validate_phone(phone)
+            return valid_phone
+        except:
+            return ValueError("Invalid phone number")
 
 
 class VerifePhone(BaseModel):
@@ -44,24 +39,28 @@ class Register(Phone):
         examples=['Игнатьев Алексей Алиевич'],)]
     password: Annotated[str, Field(
         title='Пароль',
-        examples=['password'],)]
+        examples=['password'])]
+
+    @model_validator(mode="before")
+    def check_fio_password(cls, values):
+        user_fio = values.get('fio')
+        if re.match(pattern=pattern_fio, string=user_fio) is None:
+            raise ValueError('Invalid full name')
+
+        user_password = values.get('password')
+        if re.match(pattern=pattern_password, string=user_password) is None:
+            raise ValueError(
+                "The password is too simple. The password must contain at least 8 characters, including letters in all cases, numbers and special characters.")
+
+        return values
+
+
 
 
 class Login(Phone):
     password: Annotated[str, Field(
         title='Пароль',
         examples=['password'],)]
-
-
-class AccessTokenInfo(BaseModel):
-    access_token: Annotated[str, Field(
-        title='Access JWT токен',
-        examples=['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'],
-    )]
-    token_type: Annotated[str, Field(
-        title='Тип токена',
-        examples=['Baerer']
-    )]
 
 
 class ReqID(BaseModel):

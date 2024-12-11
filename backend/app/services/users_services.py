@@ -9,8 +9,10 @@ def validate_fio(fio):
         return None
 
 def validate_email_address(email):
-    try:
-        validated_email = validate_email(email)
-        return validated_email['email']
-    except EmailNotValidError as e:
-        return None
+    if email:
+        try:
+            validated_email = validate_email(email)
+            return validated_email['email']
+        except EmailNotValidError as e:
+            return None
+    return None

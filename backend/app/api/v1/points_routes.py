@@ -5,7 +5,7 @@ from typing import Annotated, List
 from app.core.databases.postgresdb import get_session
 from app.schemas.enterprises_schemas import ResponseSchema
 from app.schemas.points_schemas import RegisterPoint, PointInfo, ChangePointSchema
-from app.services.auth_handler import decode_jwt
+from app.services.auth_handler import get_token_data_verify
 from app.core.cruds import points_crud
 from app.services.auth_bearer import dependencies
 
@@ -20,9 +20,9 @@ async def register_point(
         data_point: Annotated[RegisterPoint, Body()],
         session: AsyncSession = Depends(get_session),
 ):
-    headers = request.headers
-    token_list = headers.get("authorization").split()
-    dict_by_token = decode_jwt(token_list[1])
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     user_id = dict_by_token.get("id")
     enterprises_ids = await points_crud.get_enterprises_id_by_user_id(session=session, user_id=user_id)
     if data_point.enterprise_id not in enterprises_ids:
@@ -32,14 +32,15 @@ async def register_point(
 
 
 
-@router.get("/", response_model=List[PointInfo])
+@router.get("/", response_model=List[PointInfo], dependencies=dependencies)
 async def get_points_info(
         request: Request,
         session: AsyncSession = Depends(get_session),
 ):
-    headers = request.headers
-    token_list = headers.get("authorization").split()
-    dict_by_token = decode_jwt(token_list[1])
+
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     return await points_crud.get_all_points(session=session, user_id=dict_by_token.get("id"))
 
 
@@ -50,9 +51,9 @@ async def change_point(
         new_point_info: ChangePointSchema,
         session: AsyncSession = Depends(get_session),
 ):
-    headers = request.headers
-    token_list = headers.get("authorization").split()
-    dict_by_token = decode_jwt(token_list[1])
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     user_id = dict_by_token.get("id")
     points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
 
@@ -77,12 +78,14 @@ async def delete_point(
 ):
     headers = request.headers
     token_list = headers.get("authorization").split()
-    dict_by_token = decode_jwt(token_list[1])
+    dict_by_token = decode_jwt_with_verify(token_list[1])
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     user_id = dict_by_token.get("id")
 
     points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
     if point_id not in points_id:
         raise HTTPException(status_code=403, detail='Пользователь не владеет данной точкой')
 
-    await points_crud.delete_point(session=session, point=await crud.get_point_by_id(session=session, point_id=point_id))
+    await points_crud.delete_point(session=session, point=await points_crud.get_point_by_id(session=session, point_id=point_id))
     return ResponseSchema(status_code=200, detail="Точка успешно удалена")

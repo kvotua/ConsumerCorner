@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends, Request, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.services.auth_handler import decode_jwt_for_verify
+from app.services.auth_handler import get_token_data
 from app.core.cruds.verify_crud import add_verify_session
 from app.schemas.schemas_verify import ReqID, VerifePhone
 from app.services.verify_services import HttpClient, generate_code, generate_text, validate_phone
@@ -31,9 +31,7 @@ async def send_message(
         request: Request,
         session: AsyncSession = Depends(get_session)
 ):
-    headers =request.headers
-    token_list = headers.get("authorization").split()
-    dict_by_token = decode_jwt_for_verify(token_list[1])
+    dict_by_token = get_token_data(request)
     number = dict_by_token.get('phone')
     phone = validate_phone(number)
     if await verify_crud.get_verify_phone(session=session, phone=phone):
@@ -67,9 +65,7 @@ async def check_code(
             str, Body(..., title='СМС-код, отправленный на номер', examples=['12345'], min_length=5, max_length=5)],
         session: AsyncSession = Depends(get_session),
 ):
-    headers = request.headers
-    token_list = headers.get("authorization").split()
-    dict_by_token = decode_jwt_for_verify(token_list[1])
+    dict_by_token = get_token_data(request)
     response = await verify_crud.get_verify_session(session=session, request_id=req_id, sms_code=sms_code)
     if response is None:
         raise HTTPException(status_code=401, detail='Невалидная сессия или смс-код')

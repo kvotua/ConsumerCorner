@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import Annotated, Optional, Any
 from datetime import datetime, time
+
+from app.services.verify_services import validate_phone
 
 
 class RegisterPoint(BaseModel):
@@ -9,8 +11,20 @@ class RegisterPoint(BaseModel):
     address: Annotated[str, Field(title="Адрес торговой точки", examples=["ул. Павлика Морозова 74, Б"])]
     opening_time: Annotated[str, Field(title="Время открытия точки", examples=['11:00'])]
     closing_time: Annotated[str, Field(title="Время закрытия точки", examples=['19:00'])]
-    phone: Annotated[Optional[str], Field(title="Номер телефона", examples=['79219876543'], min_length=11, max_length=14)]
+    phone: Annotated[Optional[str], Field(title="Номер телефона", examples=['79219876543'], min_length=11, max_length=14, default=None)]
     type_activity: Annotated[str, Field(title="Вид деятельности", examples=["Продажа"])]
+
+    @field_validator("phone", mode="before")
+    def check_phone(cls, phone):
+        if phone == "" or None:
+            return None
+        try:
+            valid_phone = validate_phone(phone)
+            if valid_phone is None:
+                raise ValueError("Invalid phone number")
+            return valid_phone
+        except:
+            raise ValueError("Invalid phone number")
 
 
 class PointInfo(BaseModel):
@@ -36,6 +50,18 @@ class ChangePointSchema(BaseModel):
     closing_time: Annotated[Optional[str], Field(title="Время открытия точки", examples=["20:00"], default=None)]
     phone: Annotated[Optional[str], Field(title="Номер телефона точки", examples=['79219876543'], max_length=14, default=None)]
     type_activity: Annotated[Optional[str], Field(title="Тип активности", examples=["Продажи"], default=None)]
+
+    @field_validator("phone", mode="before")
+    def check_phone(cls, phone):
+        if phone == "" or None:
+            return None
+        try:
+            valid_phone = validate_phone(phone)
+            if valid_phone is None:
+                raise ValueError("Invalid phone number")
+            return valid_phone
+        except:
+            raise ValueError("Invalid phone number")
 
 
 class ResponseSchema(BaseModel):
