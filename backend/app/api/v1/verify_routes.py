@@ -15,17 +15,17 @@ from app.core.cruds import verify_crud
 from app.services.auth_bearer import dependencies
 
 
-router = APIRouter(prefix="/auth", tags=["verify"])
+router = APIRouter(prefix="/verify", tags=["verify"])
 
 
 @router.get('/get-sessions-sms', )
 async def only_for_testing(session: AsyncSession = Depends(get_session)):
     data = await session.execute(select(Verification))
     array = data.scalars().all()
-    return [Verification(request_id=item.request_id, sms_code=item.sms_code, phone=item.phone) for item in array]
+    return [Verification(request_id=item.request_id, sms_code=item.sms_code, phone=item.phone, created_at=item.created_at) for item in array]
 
 
-@router.post("/send", response_model=ReqID, dependencies=dependencies)
+@router.post("/phone/send", response_model=ReqID, dependencies=dependencies)
 async def send_message(
         request: Request,
         session: AsyncSession = Depends(get_session)
@@ -56,7 +56,7 @@ async def send_message(
     return ReqID(req_id=response)
 
 
-@router.post('/check', response_model=VerifePhone, dependencies=dependencies)
+@router.post('/phone/check', response_model=VerifePhone, dependencies=dependencies)
 async def check_code(
         request: Request,
         req_id: Annotated[str, Body(..., title='ID сессии, полученный после отправки номера',
@@ -75,3 +75,13 @@ async def check_code(
         access_token = sign_jwt(dict_by_token)
         return VerifePhone(phone=response.phone, phone_verif=True, access_token=access_token)
     raise HTTPException(status_code=500, detail="Ошибка сервера")
+
+
+@router.post('/email/send', dependencies=dependencies)
+async def send_email(
+        request: Request,
+        session: AsyncSession = Depends(get_session)
+):
+    pass
+
+
