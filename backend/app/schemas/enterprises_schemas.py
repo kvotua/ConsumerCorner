@@ -16,6 +16,8 @@ class RegisterCompany(BaseModel):
         inn = values.get('inn')
         if inn and not inn.isdigit():
             raise ValueError('The INN must contain only numbers.')
+        if len(inn) != 10 or 12:
+            raise ValueError('The must contain 10 or 12 digits')
 
         ogrn = values.get('ogrn')
         if ogrn and not ogrn.isdigit():

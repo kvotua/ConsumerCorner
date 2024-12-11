@@ -16,15 +16,15 @@ class RegisterPoint(BaseModel):
 
     @field_validator("phone", mode="before")
     def check_phone(cls, phone):
-        if phone == "" or None:
-            return None
-        try:
-            valid_phone = validate_phone(phone)
-            if valid_phone is None:
-                raise ValueError("Invalid phone number")
-            return valid_phone
-        except:
-            raise ValueError("Invalid phone number")
+        if phone:
+            if phone and not phone.isdigit():
+                raise ValueError('Invalid phone number')
+            try:
+                valid_phone = validate_phone(phone)
+                if valid_phone is None:
+                    raise ValueError("Invalid phone number")
+            except:
+                return ValueError("Invalid phone number")
 
 
 class PointInfo(BaseModel):
