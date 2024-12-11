@@ -29,7 +29,7 @@ async def registration(
         'id': user_data.id,
         'phone': data.phone,
         'fio': data.fio,
-        'verify_phone': True, # user_data.verify_phone
+        'verify_phone': user_data.verify_phone,
     }
 
     jwt_tokens = set_token_pair(payload)

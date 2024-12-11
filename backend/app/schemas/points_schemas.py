@@ -1,8 +1,10 @@
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import Annotated, Optional, Any
 from datetime import datetime, time
+import re
 
 from app.services.verify_services import validate_phone
+from app.config import pattern_time
 
 
 class RegisterPoint(BaseModel):
@@ -14,17 +16,32 @@ class RegisterPoint(BaseModel):
     phone: Annotated[Optional[str], Field(title="Номер телефона", examples=['79219876543'], min_length=11, max_length=14, default=None)]
     type_activity: Annotated[str, Field(title="Вид деятельности", examples=["Продажа"])]
 
-    @field_validator("phone", mode="before")
-    def check_phone(cls, phone):
-        if phone:
-            if phone and not phone.isdigit():
+
+    @model_validator(mode="before")
+    def check_model(cls, values):
+        user_phone = values.get('phone')
+        if user_phone:
+            if user_phone and not user_phone.isdigit():
                 raise ValueError('Invalid phone number')
             try:
-                valid_phone = validate_phone(phone)
+                valid_phone = validate_phone(user_phone)
+
                 if valid_phone is None:
                     raise ValueError("Invalid phone number")
             except:
                 return ValueError("Invalid phone number")
+        opening_time = values.get("opening_time")
+        if opening_time:
+            if re.match(pattern=pattern_time, string=opening_time) is None:
+                raise ValueError('Invalid time')
+
+        closing_time = values.get("closing_time")
+        if opening_time:
+            if re.match(pattern=pattern_time, string=closing_time) is None:
+                raise ValueError('Invalid time')
+
+        return values
+
 
 
 class PointInfo(BaseModel):
@@ -51,17 +68,31 @@ class ChangePointSchema(BaseModel):
     phone: Annotated[Optional[str], Field(title="Номер телефона точки", examples=['79219876543'], max_length=14, default=None)]
     type_activity: Annotated[Optional[str], Field(title="Тип активности", examples=["Продажи"], default=None)]
 
-    @field_validator("phone", mode="before")
-    def check_phone(cls, phone):
-        if phone == "" or None:
-            return None
-        try:
-            valid_phone = validate_phone(phone)
-            if valid_phone is None:
-                raise ValueError("Invalid phone number")
-            return valid_phone
-        except:
-            raise ValueError("Invalid phone number")
+    @model_validator(mode="before")
+    def check_model(cls, values):
+        user_phone = values.get('phone')
+        if user_phone:
+            if user_phone and not user_phone.isdigit():
+                raise ValueError('Invalid phone number')
+            try:
+                valid_phone = validate_phone(user_phone)
+                if valid_phone is None:
+                    raise ValueError("Invalid phone number")
+            except:
+                return ValueError("Invalid phone number")
+
+        opening_time = values.get("opening_time")
+        if opening_time:
+            if re.match(pattern=pattern_time, string=opening_time) is None:
+                raise ValueError('Invalid time')
+
+        closing_time = values.get("closing_time")
+        if opening_time:
+            if re.match(pattern=pattern_time, string=closing_time) is None:
+                raise ValueError('Invalid time')
+
+        return values
+
 
 
 class ResponseSchema(BaseModel):

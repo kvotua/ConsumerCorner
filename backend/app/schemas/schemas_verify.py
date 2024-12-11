@@ -80,6 +80,8 @@ class Login(BaseModel):
                 return ValueError("Invalid phone number")
         return values
 
+        return values
+
 class ReqID(BaseModel):
     req_id: Annotated[str, Field(
         title='ID сессии, полученный после отправки номера',

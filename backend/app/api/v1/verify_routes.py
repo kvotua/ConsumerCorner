@@ -7,7 +7,7 @@ from sqlalchemy.future import select
 from app.services.auth_handler import get_token_data, sign_jwt
 from app.core.cruds.verify_crud import add_verify_session
 from app.schemas.schemas_verify import ReqID, VerifePhone
-from app.services.verify_services import HttpClient, generate_code, generate_text, validate_phone
+from app.services.verify_services import httpclient, generate_code, generate_text, validate_phone
 from app.models.verify_models import Verification
 from app.config import user_name, user_pass, send_from
 from app.core.databases.postgresdb import get_session
@@ -16,7 +16,6 @@ from app.services.auth_bearer import dependencies
 
 
 router = APIRouter(prefix="/auth", tags=["verify"])
-http_client = HttpClient()
 
 
 @router.get('/get-sessions-sms', )
@@ -44,13 +43,14 @@ async def send_message(
         'user': str(user_name),
         'pass': str(user_pass),
     }
-    response = await http_client.send_message(
+    response = await httpclient.send_message(
         'https://api3.greensms.ru/sms/send',
         data=params,
     )
-    await http_client.close_session()
+    await httpclient.close_session()
     if response is None:
         raise HTTPException(status_code=400, detail="Закончились деньги на GREENSMSAPI")
+
     if await add_verify_session(session=session, request_id=response, sms_code=code, phone=phone) is None:
         raise HTTPException(status_code=500, detail="Ошибка добавления сессии в базу данных")
     return ReqID(req_id=response)

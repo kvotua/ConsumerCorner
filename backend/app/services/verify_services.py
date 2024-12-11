@@ -14,13 +14,14 @@ class HttpClient:
         await self.session.close()
 
     async def send_message(self, url, data):
-        async with self.session.post(url, data=data) as response:
-            result = await response.json()
-            return result.get("request_id")
+        try:
+            async with self.session.post(url, data=data) as response:
+                result = await response.json()
+                return result.get("request_id")
+        except:
+            return None
 
-    def __del__(self):
-        self.session.close()
-
+httpclient = HttpClient()
 
 def time_in_30_days():
     return datetime.now(timezone.utc) + timedelta(days=30)
