@@ -41,6 +41,12 @@ async def get_users_me(
     )
     return ResponseSchema(status_code=200, detail="Успешное изменение")
 
+@router.get("/all")
+async def get_all_users(
+        session: AsyncSession = Depends(get_session),
+):
+    return await users_crud.get_all_users(session=session)
+
 
 # @router.post("/docs/add")
 # async def add_docs(

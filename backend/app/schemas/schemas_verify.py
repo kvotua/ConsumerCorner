@@ -1,25 +1,9 @@
 from typing import Annotated
 import re
 
-from pydantic import BaseModel, Field, field_validator, model_validator
-from app.config import pattern_password, pattern_fio
+from pydantic import BaseModel, Field, model_validator
+from app.config import pattern_password, pattern_fio, example_jwt_token
 from app.services.verify_services import validate_phone
-
-
-class Phone(BaseModel):
-    phone: Annotated[str, Field(
-        title='Номер телефона без +',
-        examples=['79216547832'],
-        min_length=11,
-        max_length=14,)]
-
-    @field_validator("phone", mode="before")
-    def check_phone(cls, phone):
-        try:
-            valid_phone = validate_phone(phone)
-            return valid_phone
-        except:
-            return ValueError("Invalid phone number")
 
 
 class VerifePhone(BaseModel):
@@ -31,9 +15,15 @@ class VerifePhone(BaseModel):
     phone_verif: Annotated[bool, Field(
         title='Верифицирован ли телефон',
         examples=[True],)]
+    access_token: Annotated[str, Field(title="Access-токен", examples=[example_jwt_token])]
 
 
-class Register(Phone):
+class Register(BaseModel):
+    phone: Annotated[str, Field(
+        title='Номер телефона без +',
+        examples=['79216547832'],
+        min_length=11,
+        max_length=14, )]
     fio: Annotated[str, Field(
         title='ФИО пользователя',
         examples=['Игнатьев Алексей Алиевич'],)]
@@ -43,6 +33,17 @@ class Register(Phone):
 
     @model_validator(mode="before")
     def check_fio_password(cls, values):
+        user_phone = values.get('phone')
+        if user_phone:
+            if user_phone and not user_phone.isdigit():
+                raise ValueError('Invalid phone number')
+            try:
+                valid_phone = validate_phone(user_phone)
+                if valid_phone is None:
+                    raise ValueError("Invalid phone number")
+            except:
+                return ValueError("Invalid phone number")
+
         user_fio = values.get('fio')
         if user_fio:
             user_list = user_fio.split()
@@ -61,11 +62,26 @@ class Register(Phone):
 
 
 
-class Login(Phone):
+class Login(BaseModel):
+    phone: Annotated[str, Field(
+        title='Номер телефона без +',
+        examples=['79216547832'],
+        min_length=11,
+        max_length=14, )]
     password: Annotated[str, Field(
         title='Пароль',
         examples=['password'],)]
 
+    @model_validator(mode="before")
+    def check_fio_password(cls, values):
+        user_phone = values.get('phone')
+        if user_phone:
+            try:
+                valid_phone = validate_phone(user_phone)
+                if valid_phone is None:
+                    raise ValueError("Invalid phone number")
+            except:
+                return ValueError("Invalid phone number")
 
 class ReqID(BaseModel):
     req_id: Annotated[str, Field(

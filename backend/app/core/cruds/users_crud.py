@@ -6,6 +6,12 @@ from app.services.verify_services import validate_phone
 from app.services.users_services import validate_fio, validate_email_address
 
 
+async def get_all_users(session: AsyncSession):
+    stmt = select(Users)
+    result: Result = await session.execute(stmt)
+    array = result.scalars().all()
+    return array
+
 async def get_user_by_id(session: AsyncSession, user_id: int) -> Users:
     stmt = select(Users).where(Users.id == user_id)
     result: Result = await session.execute(stmt)
