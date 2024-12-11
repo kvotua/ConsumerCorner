@@ -16,6 +16,7 @@ class RegisterPoint(BaseModel):
     phone: Annotated[Optional[str], Field(title="Номер телефона", examples=['79219876543'], min_length=11, max_length=14, default=None)]
     type_activity: Annotated[str, Field(title="Вид деятельности", examples=["Продажа"])]
 
+
     @model_validator(mode="before")
     def check_model(cls, values):
         user_phone = values.get('phone')
@@ -24,11 +25,11 @@ class RegisterPoint(BaseModel):
                 raise ValueError('Invalid phone number')
             try:
                 valid_phone = validate_phone(user_phone)
+
                 if valid_phone is None:
                     raise ValueError("Invalid phone number")
             except:
                 return ValueError("Invalid phone number")
-
         opening_time = values.get("opening_time")
         if opening_time:
             if re.match(pattern=pattern_time, string=opening_time) is None:
@@ -40,6 +41,7 @@ class RegisterPoint(BaseModel):
                 raise ValueError('Invalid time')
 
         return values
+
 
 
 class PointInfo(BaseModel):

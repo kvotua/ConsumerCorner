@@ -26,20 +26,19 @@ class ChangeUserSchema(BaseModel):
 
     @model_validator(mode="before")
     def check_phone(cls, values):
-        try:
-            phone = values.get("new_phone")
-            if phone:
-                valid_phone = validate_phone(phone)
+        user_phone = values.get('new_phone')
+        if user_phone:
+            if user_phone and not user_phone.isdigit():
+                raise ValueError('Invalid phone number')
+            try:
+                valid_phone = validate_phone(user_phone)
                 if valid_phone is None:
                     raise ValueError("Invalid phone number")
-        except:
-            raise ValueError("Invalid phone number")
+            except:
+                return ValueError("Invalid phone number")
 
         user_fio = values.get('new_fio')
         if user_fio:
-            user_list = user_fio.split()
-            if len(user_list[0]) and len(user_list[1]) < 3:
-                raise ValueError('Invalid full name')
             if re.match(pattern=pattern_fio, string=user_fio) is None:
                 raise ValueError('Invalid full name')
 

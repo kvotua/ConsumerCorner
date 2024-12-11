@@ -6,11 +6,11 @@ import { useCookies } from "react-cookie";
 export default function AuthLayout({ children }: PropsWithChildren<unknown>) {
   const { push } = useRouter();
   const [{ token }] = useCookies();
-  useEffect(() => {
-    if (!token) {
-      push("/");
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (!token) {
+  //     push("/");
+  //   }
+  // }, [token]);
 
   return children;
 }
