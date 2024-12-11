@@ -1,17 +1,8 @@
-from fastapi import Response
 import random
 import aiohttp
 import phonenumbers
 from datetime import datetime, timedelta, timezone
 import bcrypt
-from typing import Any
-import asyncio
-
-from app.schemas.schemas_verify import AccessToken, RefreshToken, TokenPairSchema
-
-TOKEN_TYPE_FIELD = "type"
-ACCESS_TOKEN_TYPE = 'access'
-
 
 class HttpClient:
     def __init__(self):
@@ -22,9 +13,12 @@ class HttpClient:
         await self.session.close()
 
     async def send_message(self, url, data):
-        async with (self.session.post(url, data=data) as response):
+        async with self.session.post(url, data=data) as response:
             result = await response.json()
             return result.get("request_id")
+
+    def __del__(self):
+        self.session.close()
 
 
 def time_in_30_days():
