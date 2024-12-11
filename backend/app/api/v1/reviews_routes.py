@@ -11,7 +11,7 @@ from app.services.auth_bearer import dependencies
 router = APIRouter(prefix='/reviews', tags=['Reviews'])
 
 
-@router.post("/point_id=", dependencies=dependencies)
+@router.post("/point_id", dependencies=dependencies)
 async def add_review(
     point_id: Annotated[int, Query()],
     comment_data: CommentData,
