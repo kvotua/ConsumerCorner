@@ -15,19 +15,19 @@ mongo = MongoDBClient("image", "doc")
 @router.post("/{point_id}")
 async def add_coment(
     point_id: Annotated[int, Path()],
-    text: str = Form(...),  # Используем Form для текстовых данных
-    stars: int = Form(...),  # Если у вас есть поле "stars"
-    # comment_data: CommentData,
+    text: str = Form(...),
+    stars: int = Form(...),
     session: AsyncSession = Depends(get_session),
-    images: Optional[List[UploadFile]] = File(None),
+    images: Optional[List[UploadFile]] = File([]),  # Установите значение по умолчанию как пустой список
 ):
     comment_data = CommentData(text=text, stars=stars)
     comment_id = await comments_crud.add_comment(session=session, point_id=point_id, comment_data=comment_data)
-    for image in images:
-        contents = await image.read()
-        info = await mongo.upload_image(image, contents)
-        image_data = ImageData(id=info['_id'], comment_id=comment_id)
-        await comments_crud.add_image(session=session, image_data=image_data)
+    if images:
+        for image in images:
+            contents = await image.read()
+            info = await mongo.upload_image(image, contents)
+            image_data = ImageData(id=info['_id'], comment_id=comment_id)
+            await comments_crud.add_image(session=session, image_data=image_data)
     return ResponseSchema(status_code=200, detail="OK")
 
 

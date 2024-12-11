@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
+from sqlalchemy.orm import joinedload
 
 from app.models.models import Comments, Points, Imgs
 from app.schemas.comments_schemas import CommentData, CommentsSchema, ImageData
@@ -26,6 +27,46 @@ async def get_all_comments(session: AsyncSession, point_id: int) -> list[Comment
     result: Result = await session.execute(stmt)
     comments = result.scalars().all()
     return list(comments)
+
+async def get_all_comments(session: AsyncSession, point_id: int) -> list[CommentsSchema]:
+    # Получаем все комментарии для заданной точки
+    stmt_comments = (
+        select(Comments)
+        .where(Comments.point_id == point_id)
+    )
+    result_comments: Result = await session.execute(stmt_comments)
+    comments = result_comments.scalars().all()
+
+    # Получаем все изображения, связанные с комментариями
+    comment_ids = [comment.id for comment in comments]
+    stmt_imgs = (
+        select(Imgs)
+        .where(Imgs.comment_id.in_(comment_ids))
+    )
+    result_imgs: Result = await session.execute(stmt_imgs)
+    imgs = result_imgs.scalars().all()
+
+    # Создаем словарь для быстрого доступа к изображениям по comment_id
+    images_dict = {}
+    for img in imgs:
+        if img.comment_id not in images_dict:
+            images_dict[img.comment_id] = []
+        images_dict[img.comment_id].append(img.id)
+
+    # Формируем список CommentsSchema
+    comments_data = [
+        CommentsSchema(
+            id=comment.id,
+            point_id=comment.point_id,
+            text=comment.text,
+            stars=comment.stars,
+            created_at=comment.created_at,
+            images_data=images_dict.get(comment.id, [])  # Получаем id изображений или пустой список
+        )
+        for comment in comments
+    ]
+
+    return comments_data
 
 async def get_points_id(session: AsyncSession):
     stmt = select(Points.id)
