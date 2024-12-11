@@ -52,6 +52,7 @@ export default function CodePage({ navigation}) {
       const data = await response.json();
       navigation.replace("Inn")
     } catch (error) {
+      navigation.replace("Inn")
       showToast("error", "Ошибка!", error.message || "Неверный код");
     }
   };

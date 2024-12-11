@@ -1,16 +1,14 @@
-import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const SendNumber = async (token) => {
-
+  console.log(token)
     const url = 'http://localhost:8765/auth/send';
     try {
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "Accept": "application/json",
-          "access-token" : token,
-          "token-type" : "Baerer"
+          "Authorization" : `Bearer ${token}` 
         },
         body: JSON.stringify({ 
         }),

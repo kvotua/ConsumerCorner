@@ -37,12 +37,10 @@ const showToast = (type :string, message:string, subMessage:string) => {
 
   const SendtoServer = async () =>{
     try {
-      console.log(rawPhoneValue, password)
-      const data = handleNext(rawPhoneValue, password)
+      const data = await handleNext(rawPhoneValue, password)
 
       if(data.message == "Input should be a valid dictionary or object to extract fields from")
         showToast("error", "Ошибка!", data.message || "Неверный логин или пароль");
-      
       await AsyncStorage.setItem("access_token", data.access_token);
       await AsyncStorage.setItem("refresh_token", data.refresh_token);
       try {

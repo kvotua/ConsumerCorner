@@ -31,8 +31,8 @@ export default function CodePage({ navigation}) {
     const handleNext = async () => {
       const token = await AccessGetToken();
       const ses = await SesIdToken();
-  
-      const url = 'http://127.0.0.1:8080/auth/check';
+      navigation.replace("MenuPage")
+      const url = 'http://localhost:8765/auth/check';
       try {
         const response = await fetch(url, {
           method: "POST",

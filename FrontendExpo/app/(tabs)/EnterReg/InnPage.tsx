@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "../../Styles/Style";
 import { TextInputMask } from "react-native-masked-text";
 import Toast from "../Notif/toasts/Toast";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function InnReg({navigation}){
     const [value, setValue] = useState("");
@@ -35,8 +36,8 @@ export default function InnReg({navigation}){
             showToast("error", "Ошибка!", "ИНН должен содержать только цифры");
             return
         }
-
-        const url = `http://127.0.0.1:8080/inn_service/inn_info?inn=${inn}`;
+        await AsyncStorage.setItem("Inn", inn)
+        const url = `http://localhost:8765/inn/inn_info?inn=${inn}`;
         try {
           const response = await fetch(url, {
             method: "GET",
@@ -51,6 +52,7 @@ export default function InnReg({navigation}){
           }
     
           const data = await response.json();
+          await AsyncStorage.setItem("TypeFirm", data.type)
           navigation.replace("RegFirma", { companyData: data });
         } catch (error) {
           showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");

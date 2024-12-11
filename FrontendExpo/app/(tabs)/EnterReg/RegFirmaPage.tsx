@@ -14,13 +14,15 @@ import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
 import Share from "../../../assets/images/svg/share.svg";
+import { SendInfFirm } from "@/Api/RegFirmaRoot";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function RegFirma({ navigation, route}) {
   const {companyData} = route.params;
-  const [value, setValue] = useState();
-  const [value2, setValue2] = useState();
-  const [value3, setValue3] = useState();
-  const [value4, setValue4] = useState();
+  const [NameFima, setValue] = useState();
+  const [OGRN, setValue2] = useState();
+  const [Adress, setValue3] = useState();
+  const [VidDo, setValue4] = useState();
   const [isAddressFilled, setIsAddressFilled] = useState(false); // Состояние для отслеживания заполненности адреса
   const [isOgrnFilled, setIsOgrnFilled] = useState(false); // Состояние для отслеживания заполненности ОГРН
 
@@ -33,6 +35,14 @@ export default function RegFirma({ navigation, route}) {
       setIsAddressFilled(!!companyData.address); // Устанавливаем состояние в зависимости от наличия адреса
     }
   }, [companyData]);
+
+  const SendToServerReg = async () =>{
+    const token = await AccessGetToken()
+    const res = await SendInfFirm(token, NameFima, OGRN, Adress, VidDo)
+    if(!res)
+      return
+    navigation.replace("MarketInfo")
+  }
 
 
   const handleInputChange = (text : string) => {
@@ -72,7 +82,7 @@ const isTablet = width >= 768;
           <View style={StyleSheet.flatten([localStyles.fields])}>
             <Text style={Style.titleSimple}>Название фирмы</Text>
             <TextInput
-              value={value}
+              value={NameFima}
               onChangeText={handleInputChange}
               style={Style.textInputProfile}
               placeholder="Строй Загарод"
@@ -85,7 +95,7 @@ const isTablet = width >= 768;
                 options={{
                   mask: "9999999999999",
                 }}
-                value={value2}
+                value={OGRN}
                 onChangeText={handleInputChange2}
                 keyboardType="phone-pad"
                 style={[
@@ -100,11 +110,11 @@ const isTablet = width >= 768;
             <TextInput               style={[
                 Style.textInputProfile,
                 isAddressFilled ? { backgroundColor: '#fddb67' } : {}
-              ]} placeholder="ул. Павлика Морозова 74Б" value={value3}
+              ]} placeholder="ул. Павлика Морозова 74Б" value={Adress}
                 onChangeText={handleInputChange3}/>
 
             <Text style={Style.titleSimple}>Основной вид деятельности</Text>
-            <TextInput style={Style.textInputProfile} placeholder="Частное предприятие"                 value={value4}
+            <TextInput style={Style.textInputProfile} placeholder="Частное предприятие"                 value={VidDo}
                 onChangeText={handleInputChange4}/>
 
             <View style={localStyles.passwordContainer}>
@@ -132,7 +142,7 @@ const isTablet = width >= 768;
 
         {/* Контейнер для кнопок */}
         <View style={[localStyles.containerButtonsMenuPages, { marginTop: 10, height : isTablet ? 150 : "auto" }]}>
-        <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("MarketInfo")}>
+        <TouchableOpacity style={Style.buttonMenuPage} onPress={() => SendToServerReg()}>
             <Text style={Style.textInButtonsMenuPage}>Далее</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Inn")}>

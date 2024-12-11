@@ -108,7 +108,7 @@ export default function FirmsSoc({ navigation }) {
           />
         </View>
         <View style={styles.containerButtonsBottomFlatList}>
-          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Social")}>
+          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
             <Text style={styles.textInButtonsBackMenuPage}>← Назад</Text>
           </TouchableOpacity>
         </View>
