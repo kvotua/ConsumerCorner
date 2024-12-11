@@ -1,6 +1,8 @@
-import { Getinn, GetTypeFirma } from "@/app/AsyncStore/StoreTokens";
+import { AccessGetToken, Getinn, GetTypeFirma } from "@/app/AsyncStore/StoreTokens";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const SendInfFirm = async (token, NameFima, OGRN, Adress, VidDo) => {
+export const SendInfFirm = async (NameFima, OGRN, Adress, VidDo) => {
+    const token = await AccessGetToken();
     const inn = await Getinn();
     const type = await GetTypeFirma();
       const url = 'http://localhost:8765/enterprises/register-enterprise';
@@ -14,7 +16,7 @@ export const SendInfFirm = async (token, NameFima, OGRN, Adress, VidDo) => {
           },
           body: JSON.stringify({ 
             "name": `${NameFima}`,
-            "type": `${type}`,
+            "type": `ООО`,
             "inn": `${inn}`,
             "ogrn": `${OGRN}`,
             "address": `${Adress}`,
@@ -24,7 +26,7 @@ export const SendInfFirm = async (token, NameFima, OGRN, Adress, VidDo) => {
   
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || "Ошибка сервера");
+          throw new Error(errorData.message);
         }
   
         const data = await response.json();

@@ -53,7 +53,6 @@ export default function CodePage({ navigation}) {
         }
   
         const data = await response.json();
-        navigation.replace("MenuPage")
       } catch (error) {
         showToast("error", "Ошибка!", error.message || "Неверный код");
       }

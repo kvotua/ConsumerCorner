@@ -15,7 +15,6 @@ import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
 import Share from "../../../assets/images/svg/share.svg";
 import { SendInfFirm } from "@/Api/RegFirmaRoot";
-import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function RegFirma({ navigation, route}) {
   const {companyData} = route.params;
@@ -37,8 +36,8 @@ export default function RegFirma({ navigation, route}) {
   }, [companyData]);
 
   const SendToServerReg = async () =>{
-    const token = await AccessGetToken()
-    const res = await SendInfFirm(token, NameFima, OGRN, Adress, VidDo)
+    console.log(NameFima, OGRN, Adress, VidDo)
+    const res = await SendInfFirm(NameFima, OGRN, Adress, VidDo)
     if(!res)
       return
     navigation.replace("MarketInfo")
@@ -142,7 +141,7 @@ const isTablet = width >= 768;
 
         {/* Контейнер для кнопок */}
         <View style={[localStyles.containerButtonsMenuPages, { marginTop: 10, height : isTablet ? 150 : "auto" }]}>
-        <TouchableOpacity style={Style.buttonMenuPage} onPress={() => SendToServerReg()}>
+        <TouchableOpacity style={Style.buttonMenuPage} onPress={async () => await SendToServerReg()}>
             <Text style={Style.textInButtonsMenuPage}>Далее</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Inn")}>

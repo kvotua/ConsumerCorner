@@ -28,7 +28,7 @@ export default function CodePage({ navigation}) {
   const handleNext = async () => {
     const token = await AccessGetToken();
     const ses = await SesIdToken();
-
+    navigation.replace("Inn")
     const url = 'http://127.0.0.1:8080/auth/check';
     try {
       const response = await fetch(url, {
@@ -52,7 +52,6 @@ export default function CodePage({ navigation}) {
       const data = await response.json();
       navigation.replace("Inn")
     } catch (error) {
-      navigation.replace("Inn")
       showToast("error", "Ошибка!", error.message || "Неверный код");
     }
   };

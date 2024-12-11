@@ -62,7 +62,6 @@ export default function RegPage({ navigation }) {
   };
 
   const handleNext = async () => {
-    navigation.replace("CodeConfirm")
     if (!validateInputs()) {
       showToast("error", "Ошибка!", errorMessage);
       return;
