@@ -13,8 +13,7 @@ import Style from "@/app/Styles/Style";
 import Toast from "../Notif/toasts/Toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
-// import {decodeJwt} from "../../AsyncStore/Decode"
-// import JWT from "expo-jwt";
+import {decodeJwt} from "../../AsyncStore/Decode"
 
 export default function Enter({ navigation }) {
   const [password, setPassword] = useState("");
@@ -64,47 +63,47 @@ export default function Enter({ navigation }) {
   };
 
   
-  // const handleNext = async () => {
+  const handleNext = async () => {
 
-  //   const url = 'http://127.0.0.1:8080/auth/login';
-  //   try {
-  //     const response = await fetch(url, {
-  //       method: "POST",
-  //       headers: {
-  //         "Accept": "application/json",
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({ 
-  //         phone: `${rawPhoneValue}`,          
-  //         password: password   
-  //       }),
-  //     });
+    const url = 'http://127.0.0.1:8080/auth/login';
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          phone: `${rawPhoneValue}`,          
+          password: password   
+        }),
+      });
 
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       throw new Error(errorData.message ||"Неверный логин или пароль");
-  //     }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message ||"Неверный логин или пароль");
+      }
 
-  //     const data = await response.json();
-  //     await AsyncStorage.setItem("access_token", data.access_token);
-  //     await AsyncStorage.setItem("refresh_token", data.refresh_token);
-  //     try {
-  //       const token = await AccessGetToken()
-  //       const decodeToken =  decodeJwt(token);
-  //       if(decodeToken.verify_phone != false)
-  //         navigation.replace("MenuPage");
-  //       else{
-  //         await SendNumber();
-  //         navigation.replace("CodeConfirmEnt");
-  //       }
+      const data = await response.json();
+      await AsyncStorage.setItem("access_token", data.access_token);
+      await AsyncStorage.setItem("refresh_token", data.refresh_token);
+      try {
+        const token = await AccessGetToken()
+        const decodeToken =  decodeJwt(token);
+        if(decodeToken.verify_phone != false)
+          navigation.replace("MenuPage");
+        else{
+          await SendNumber();
+          navigation.replace("CodeConfirmEnt");
+        }
 
-  //     } catch (error) {
-  //       console.log(error.message)
-  //     }
-  //   } catch (error) {
-  //     showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
-  //   }
-  // };
+      } catch (error) {
+        console.log(error.message)
+      }
+    } catch (error) {
+      showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
+    }
+  };
 
   const handleFocus = () => {
     if (!phoneValue) {
@@ -157,7 +156,7 @@ export default function Enter({ navigation }) {
             <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
                 <TouchableOpacity
                     style={Style.buttonMenuPage}
-                    onPress={() => navigation.replace("MenuPage")}
+                    onPress={() => handleNext()}
                 >
                     <Text style={Style.blackText} >Далее</Text>
                 </TouchableOpacity>

@@ -12,13 +12,20 @@ import {
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "../../Styles/Style"
+import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken, SesIdToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function CodePage({ navigation}) {
     const [code, setcode] = useState("");
+    const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
     const handleInputChange = (text) => {
       setcode(text);
+    };
+
+    const showToast = (type :string, message:string, subMessage:string) => {
+      setToast({ type, message, subMessage, visible: true });
+      setTimeout(() => setToast({ ...toast, visible: false }), 3000); 
     };
     
     const handleNext = async () => {
@@ -42,7 +49,7 @@ export default function CodePage({ navigation}) {
   
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || "Ошибка сервера");
+          throw new Error(errorData.message || "Неверный код");
         }
   
         const data = await response.json();
@@ -54,6 +61,15 @@ export default function CodePage({ navigation}) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={[Style.containerMainPage]}>
+          {toast.visible && (
+                    <Toast
+                        type={toast.type}
+                        message={toast.message}
+                        subMessage={toast.subMessage}
+                        visible={toast.visible}
+                        onDismiss={() => setToast({ ...toast, visible: false })}
+                    />
+                    )}
             <View style={[Style.menuHeader, {alignItems: "center",  marginTop: 40,}]}>
                 <Text style={Style.titleHead}>Код подтверждения</Text>
             </View>
@@ -72,7 +88,7 @@ export default function CodePage({ navigation}) {
               </View>
 
             <View style={[Style.buttons]}>
-              <TouchableOpacity style={Style.WhiteButton} onPress={() => handleNext()}>
+              <TouchableOpacity style={Style.WhiteButton} onPress={() => handleNext()} disabled={code.trim() === ""}>
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
             </View>
