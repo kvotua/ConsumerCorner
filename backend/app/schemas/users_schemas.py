@@ -37,6 +37,9 @@ class ChangeUserSchema(BaseModel):
 
         user_fio = values.get('new_fio')
         if user_fio:
+            user_list = user_fio.split()
+            if len(user_list[0]) and len(user_list[1]) < 3:
+                raise ValueError('Invalid full name')
             if re.match(pattern=pattern_fio, string=user_fio) is None:
                 raise ValueError('Invalid full name')
 

@@ -44,8 +44,12 @@ class Register(Phone):
     @model_validator(mode="before")
     def check_fio_password(cls, values):
         user_fio = values.get('fio')
-        if re.match(pattern=pattern_fio, string=user_fio) is None:
-            raise ValueError('Invalid full name')
+        if user_fio:
+            user_list = user_fio.split()
+            if len(user_list[0]) and len(user_list[1]) < 3:
+                raise ValueError('Invalid full name')
+            if re.match(pattern=pattern_fio, string=user_fio) is None:
+                raise ValueError('Invalid full name')
 
         user_password = values.get('password')
         if re.match(pattern=pattern_password, string=user_password) is None:
