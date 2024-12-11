@@ -14,5 +14,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "src/**/*"
-  ]
+, "app/AsyncStore/StoreTokens.js"  ]
 }

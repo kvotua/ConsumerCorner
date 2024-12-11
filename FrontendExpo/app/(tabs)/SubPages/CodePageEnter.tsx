@@ -16,61 +16,60 @@ import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken, SesIdToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function CodePage({ navigation}) {
-  const [code, setcode] = useState("");
-  const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
+    const [code, setcode] = useState("");
+    const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
-  const handleInputChange = (text) => {
-    setcode(text);
-  };
+    const handleInputChange = (text) => {
+      setcode(text);
+    };
 
-  const showToast = (type :string, message:string, subMessage:string) => {
-    setToast({ type, message, subMessage, visible: true });
-    setTimeout(() => setToast({ ...toast, visible: false }), 3000); 
-  };
+    const showToast = (type :string, message:string, subMessage:string) => {
+      setToast({ type, message, subMessage, visible: true });
+      setTimeout(() => setToast({ ...toast, visible: false }), 3000); 
+    };
+    
+    const handleNext = async () => {
+      const token = await AccessGetToken();
+      const ses = await SesIdToken();
   
-  const handleNext = async () => {
-    const token = await AccessGetToken();
-    const ses = await SesIdToken();
-
-    const url = 'http://127.0.0.1:8080/auth/check';
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "access-token" : `${token}`,
-          "Content-Type" : "application/json"
-        },
-        body: JSON.stringify({ 
-          "req_id": `${ses}`,
-          "sms_code": `${code}`
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Неверный код");
+      const url = 'http://127.0.0.1:8080/auth/check';
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "access-token" : `${token}`,
+            "Content-Type" : "application/json"
+          },
+          body: JSON.stringify({ 
+            "req_id": `${ses}`,
+            "sms_code": `${code}`
+          }),
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Неверный код");
+        }
+  
+        const data = await response.json();
+        navigation.replace("MenuPage")
+      } catch (error) {
+        showToast("error", "Ошибка!", error.message || "Неверный код");
       }
-
-      const data = await response.json();
-      navigation.replace("Inn")
-    } catch (error) {
-      showToast("error", "Ошибка!", error.message || "Неверный код");
-    }
-  };
-  
+    };
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={[Style.containerMainPage]}>
-                 {toast.visible && (
-                <Toast
-                    type={toast.type}
-                    message={toast.message}
-                    subMessage={toast.subMessage}
-                    visible={toast.visible}
-                    onDismiss={() => setToast({ ...toast, visible: false })}
-                />
-                )}
+          {toast.visible && (
+                    <Toast
+                        type={toast.type}
+                        message={toast.message}
+                        subMessage={toast.subMessage}
+                        visible={toast.visible}
+                        onDismiss={() => setToast({ ...toast, visible: false })}
+                    />
+                    )}
             <View style={[Style.menuHeader, {alignItems: "center",  marginTop: 40,}]}>
                 <Text style={Style.titleHead}>Код подтверждения</Text>
             </View>
@@ -92,13 +91,6 @@ export default function CodePage({ navigation}) {
               <TouchableOpacity style={Style.WhiteButton} onPress={() => handleNext()} disabled={code.trim() === ""}>
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Register")}>
-                <Text
-                  style={Style.DefText}
-                >
-                  Назад
-                </Text>
-              </TouchableOpacity>
             </View>
       </SafeAreaView>
     </ImageBackground>
@@ -106,5 +98,5 @@ export default function CodePage({ navigation}) {
 }
 
 function showToast(arg0: string, arg1: string, arg2: any) {
-  throw new Error("Function not implemented.");
+    throw new Error("Function not implemented.");
 }

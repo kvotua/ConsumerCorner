@@ -12,7 +12,10 @@ module.exports = (() => {
   config.resolver = {
     ...resolver,
     assetExts: resolver.assetExts.filter((ext) => ext !== "svg"),
-    sourceExts: [...resolver.sourceExts, "svg"]
+    sourceExts: [...resolver.sourceExts, "svg"],
+    extraNodeModules: {
+      stream: require.resolve("stream-browserify"),
+  },
   };
 
   return config;

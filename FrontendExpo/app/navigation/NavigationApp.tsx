@@ -19,6 +19,9 @@ import AdminPanel from '../(tabs)/ProfilePages/AdminPanel';
 import Profile from '../(tabs)/ProfilePages/Profile';
 import AddDocument from '../(tabs)/ProfilePages/AddDocument';
 import Points from '../(tabs)/ProfilePages/Points';
+import CodePageEnter from '../(tabs)/SubPages/CodePageEnter';
+import AllPointsSoc from '../(tabs)/SubPages/AllPointsSoc';
+import FirmsSoc from '../(tabs)/SubPages/FirmsSoc';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +37,7 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="Auth" component={Enter} options={{ headerShown: false }}/>
           <Stack.Screen name="Register" component={RegPage} options={{ headerShown: false }} />
           <Stack.Screen name="CodeConfirm" component={CodePage} options={{ headerShown: false }} />
+          <Stack.Screen name="CodeConfirmEnt" component={CodePageEnter} options={{ headerShown: false }} />
           <Stack.Screen name="Inn" component={InnReg} options={{ headerShown: false }} />
           <Stack.Screen name="RegFirma" component={RegFirma} options={{ headerShown: false }} />
           <Stack.Screen name="MarketInfo" component={MarketPoint} options={{ headerShown: false }} />
@@ -46,6 +50,8 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
           <Stack.Screen name="AddDocument" component={AddDocument} options={{ headerShown: false }} />
           <Stack.Screen name="Points" component={Points} options={{ headerShown: false }} />
+          <Stack.Screen name="AllPointsSoc" component={AllPointsSoc} options={{ headerShown: false }} />
+          <Stack.Screen name="FirmsSoc" component={FirmsSoc} options={{ headerShown: false }} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );

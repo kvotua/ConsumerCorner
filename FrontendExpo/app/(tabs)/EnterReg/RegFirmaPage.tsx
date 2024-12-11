@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -15,16 +15,41 @@ import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
 import Share from "../../../assets/images/svg/share.svg";
 
-export default function RegFirma({ navigation }) {
+export default function RegFirma({ navigation, route}) {
+  const {companyData} = route.params;
   const [value, setValue] = useState();
   const [value2, setValue2] = useState();
+  const [value3, setValue3] = useState();
+  const [value4, setValue4] = useState();
+  const [isAddressFilled, setIsAddressFilled] = useState(false); // Состояние для отслеживания заполненности адреса
+  const [isOgrnFilled, setIsOgrnFilled] = useState(false); // Состояние для отслеживания заполненности ОГРН
+
+
+  useEffect(() => {
+    if (companyData) {
+      setValue2(companyData.ogrn);
+      setValue3(companyData.address);
+      setIsOgrnFilled(!!companyData.ogrn); // Устанавливаем состояние в зависимости от наличия ОГРН
+      setIsAddressFilled(!!companyData.address); // Устанавливаем состояние в зависимости от наличия адреса
+    }
+  }, [companyData]);
+
 
   const handleInputChange = (text : string) => {
     setValue(text);
+
   };
 
   const handleInputChange2 = (text : string) => {
     setValue2(text);
+  };
+
+  const handleInputChange3 = (text : string) => {
+    setValue3(text);
+  };
+
+  const handleInputChange4 = (text : string) => {
+    setValue4(text);
   };
 
   const { width } = Dimensions.get('window');
@@ -63,16 +88,24 @@ const isTablet = width >= 768;
                 value={value2}
                 onChangeText={handleInputChange2}
                 keyboardType="phone-pad"
-                style={Style.textInputProfile}
+                style={[
+                  Style.textInputProfile,
+                  isOgrnFilled ? { backgroundColor: '#fddb67' } : {}
+                ]}
                 placeholder="1147847423899"
               />
             </View>
 
             <Text style={StyleSheet.flatten([Style.titleSimple, { padding: -5 }])}>Фактический адрес</Text>
-            <TextInput style={Style.textInputProfile} placeholder="ул. Павлика Морозова 74Б" />
+            <TextInput               style={[
+                Style.textInputProfile,
+                isAddressFilled ? { backgroundColor: '#fddb67' } : {}
+              ]} placeholder="ул. Павлика Морозова 74Б" value={value3}
+                onChangeText={handleInputChange3}/>
 
             <Text style={Style.titleSimple}>Основной вид деятельности</Text>
-            <TextInput style={Style.textInputProfile} placeholder="Частное предприятие" />
+            <TextInput style={Style.textInputProfile} placeholder="Частное предприятие"                 value={value4}
+                onChangeText={handleInputChange4}/>
 
             <View style={localStyles.passwordContainer}>
               <Text style={StyleSheet.flatten([Style.titleSimple, { marginTop: 15, fontSize: 16 }])}>
