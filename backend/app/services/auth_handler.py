@@ -11,7 +11,6 @@ def sign_jwt(data: dict) -> str:
     payload.update({"exp": expire, "type": "access"})
     return jwt.encode(payload, secret_key, algorithm=algo)
 
-
 def decode_jwt(token: str) -> dict:
     try:
         decoded_token = jwt.decode(token, secret_key, algorithms=[algo])

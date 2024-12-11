@@ -13,6 +13,10 @@ class RegisterCompany(BaseModel):
 
     @model_validator(mode="before")
     def check_inn_ogrn(cls, values):
+        type_ = values.get('type')
+        if type_ not in ["ИП", "ООО", "ОАО", "ЗАО", "ПАО"]:
+            raise ValueError('Invalid type enterprise')
+
         inn = values.get('inn')
         if inn and not inn.isdigit():
             raise ValueError('The INN must contain only numbers.')

@@ -13,7 +13,7 @@ router = APIRouter(prefix='/reviews', tags=['Reviews'])
 
 @router.post("/point_id=", dependencies=dependencies)
 async def add_review(
-    point_id: Annotated[int, Query()],
+    point_id: Annotated[int, Query(title="ID точки", examples=[1])],
     comment_data: CommentData,
     session: AsyncSession = Depends(get_session),
 ):

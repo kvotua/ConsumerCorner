@@ -46,9 +46,6 @@ class Register(BaseModel):
 
         user_fio = values.get('fio')
         if user_fio:
-            user_list = user_fio.split()
-            if len(user_list[0]) and len(user_list[1]) < 3:
-                raise ValueError('Invalid full name')
             if re.match(pattern=pattern_fio, string=user_fio) is None:
                 raise ValueError('Invalid full name')
 
@@ -82,6 +79,8 @@ class Login(BaseModel):
                     raise ValueError("Invalid phone number")
             except:
                 return ValueError("Invalid phone number")
+
+        return values
 
 class ReqID(BaseModel):
     req_id: Annotated[str, Field(
