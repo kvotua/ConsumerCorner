@@ -23,7 +23,7 @@ export const useRegisterUser = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries("getUser");
-      toast.success("Регестрация успешна");
+      toast.success("Регистрация успешна");
     },
     onError: (err: IError) => {
       if (err.response?.data.detail === "Login already in use") {
