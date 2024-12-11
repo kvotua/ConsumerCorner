@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends, Request, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.services.auth_handler import get_token_data
+from app.services.auth_handler import get_token_data, sign_jwt
 from app.core.cruds.verify_crud import add_verify_session
 from app.schemas.schemas_verify import ReqID, VerifePhone
 from app.services.verify_services import HttpClient, generate_code, generate_text, validate_phone
@@ -71,5 +71,7 @@ async def check_code(
         raise HTTPException(status_code=401, detail='Невалидная сессия или смс-код')
     await session.delete(response)
     if await verify_crud.change_verify_phone_status(session=session, user_id=dict_by_token.get("id")):
-        return VerifePhone(phone=response.phone, phone_verif=True)
+        dict_by_token['verify_phone'] = True
+        access_token = sign_jwt(dict_by_token)
+        return VerifePhone(phone=response.phone, phone_verif=True, access_token=access_token)
     raise HTTPException(status_code=500, detail="Ошибка сервера")

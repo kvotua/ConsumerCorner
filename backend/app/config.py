@@ -20,7 +20,7 @@ user_pass = os.getenv('USER_PASS')
 send_from = os.getenv('SEND_FROM')
 secret_key = os.getenv('SECRET_KEY')
 algo = os.getenv('ALGORITHM')
-pattern_password = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$'
-pattern_fio = r"^[А-ЯЁ][а-яё]+\s[А-ЯЁ][а-яё]+(\s[А-ЯЁ][а-яё]+)?$"
+pattern_password = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};\'":\\|,.<>?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};\'":\\|,.<>?]{8,}$'
+pattern_fio = r'^[А-ЯЁ][а-яё]{2,} [А-ЯЁ][а-яё]{2,}( [А-ЯЁ][а-яё]+)?$'
 
 example_jwt_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZXhwIjoxNzM1OTIxMzg5LCJ0eXBlIjoicmVmcmVzaCJ9.SDZcJf2hmbnYYer5R-VZKyQL2ztSu3WgzcZ6tFojx38"
