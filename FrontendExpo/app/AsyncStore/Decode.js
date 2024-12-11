@@ -19,6 +19,6 @@ export const decodeJwt = (token) =>{
         console.log(payload);
         return payload;
     } catch (error) {
-        console.log("lox");
+        console.log(error.message);
     }
 }

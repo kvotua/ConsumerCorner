@@ -22,6 +22,23 @@ export default function RegPage({ navigation }) {
   const [phoneValue, setPhoneValue] = useState(""); // Значение для отображения с маской
   const [rawPhoneValue, setRawPhoneValue] = useState(""); // Очищенное значение для передачи
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const validateInputs = () => {
+    if (!regexPass.test(password)) {
+      setErrorMessage("Пароль должен содержать минимум 8 символов, заглавные буквы, цифры и спец символы.");
+      return false;
+    }
+    if (!regexFio.test(fio)) { // Здесь вы можете заменить phoneValue на поле ФИО, если оно у вас есть
+      setErrorMessage("ФИО должно быть в формате 'Фамилия Имя' или 'Фамилия Имя Отчество'.");
+      return false;
+    }
+    setErrorMessage(""); // Сбросить сообщение об ошибке, если все в порядке
+    return true;
+  };
+
+  const regexPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+  const regexFio = /^(?:[А-ЯЁ][а-яё]+(?:\s+[А-ЯЁ][а-яё]+){1,2})$/u;
 
   const handleInputChange = (text) => {
     // Устанавливаем значение с маской для отображения
@@ -45,8 +62,11 @@ export default function RegPage({ navigation }) {
   };
 
   const handleNext = async () => {
-
-    const url = 'http://127.0.0.1:8080/auth/registration';
+    if (!validateInputs()) {
+      showToast("error", "Ошибка!", errorMessage);
+      return;
+    }
+    const url = 'http://localhost:8765/registration';
     try {
       const response = await fetch(url, {
         method: "POST",

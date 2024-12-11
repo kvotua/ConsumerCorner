@@ -61,7 +61,6 @@ class Register(BaseModel):
 
 
 
-
 class Login(BaseModel):
     phone: Annotated[str, Field(
         title='Номер телефона без +',
@@ -82,6 +81,7 @@ class Login(BaseModel):
                     raise ValueError("Invalid phone number")
             except:
                 return ValueError("Invalid phone number")
+        return values
 
 class ReqID(BaseModel):
     req_id: Annotated[str, Field(
