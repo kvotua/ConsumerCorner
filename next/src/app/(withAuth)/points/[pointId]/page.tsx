@@ -28,7 +28,7 @@ function Point() {
           <h2 className="title">
             {user && !user.points_id.includes(pointId as string)
               ? point?.title
-              : "моя точка"}
+              : "Название точки"}
           </h2>
           <p className="text-xl opacity-50 pt-5 break-words">
             {point?.address}
@@ -43,7 +43,6 @@ function Point() {
               </ButtonBig>
               <ButtonBig link={`/points/${pointId}/docs`}>Документы</ButtonBig>
               <ButtonBig link={`/points/${pointId}/socials`}>Соц.сети</ButtonBig>
-              <ButtonBig link={`/points/${pointId}/info`}>О точке</ButtonBig>
               {user && <ButtonBig link={`/points/${pointId}/reviews`}>Отзывы</ButtonBig>}
             </div>
           </div>
