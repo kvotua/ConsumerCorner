@@ -26,3 +26,21 @@ export const SesIdToken = async () => {
         return null;
     }
 }
+
+export const Getinn = async () => {
+    try {
+        const token = await AsyncStorage.getItem("Inn")
+        return token;
+    } catch (error) {
+        return null;
+    }
+}
+
+export const GetTypeFirma = async () => {
+    try {
+        const token = await AsyncStorage.getItem("TypeFirm")
+        return token;
+    } catch (error) {
+        return null;
+    }
+}

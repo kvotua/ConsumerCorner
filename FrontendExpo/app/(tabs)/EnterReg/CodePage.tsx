@@ -6,9 +6,6 @@ import {
   TouchableOpacity,
   ImageBackground,
   TextInput,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "../../Styles/Style"
@@ -55,6 +52,7 @@ export default function CodePage({ navigation}) {
       const data = await response.json();
       navigation.replace("Inn")
     } catch (error) {
+      navigation.replace("Inn")
       showToast("error", "Ошибка!", error.message || "Неверный код");
     }
   };

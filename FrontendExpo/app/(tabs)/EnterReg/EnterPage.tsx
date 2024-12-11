@@ -11,9 +11,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Toast from "../Notif/toasts/Toast";
+import { handleNext, SendNumber } from "@/Api/EnterRoot";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
-import {decodeJwt} from "../../AsyncStore/Decode"
+import { decodeJwt } from "@/app/AsyncStore/Decode";
 
 export default function Enter({ navigation }) {
   const [password, setPassword] = useState("");
@@ -22,11 +23,11 @@ export default function Enter({ navigation }) {
   const [rawPhoneValue, setRawPhoneValue] = useState(""); 
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
-  const showToast = (type :string, message:string, subMessage:string) => {
+const showToast = (type :string, message:string, subMessage:string) => {
     setToast({ type, message, subMessage, visible: true });
     setTimeout(() => setToast({ ...toast, visible: false }), 3000); 
   };
-
+  
   const handleInputChange = (text) => {
     setPhoneValue(text);
 
@@ -34,57 +35,12 @@ export default function Enter({ navigation }) {
     setRawPhoneValue(numericValue);
   };
 
-  const SendNumber = async () => {
-    const token = await AccessGetToken();
-
-    const url = 'http://127.0.0.1:8080/auth/send';
+  const SendtoServer = async () =>{
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "access-token" : `${token}`,
-          "token-type" : "Baerer"
-        },
-        body: JSON.stringify({ 
-        }),
-      });
+      const data = await handleNext(rawPhoneValue, password)
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Ошибка сервера");
-      }
-
-      const data = await response.json();
-      await AsyncStorage.setItem("Ses_id", data.req_id)
-    } catch (error) {
-      showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
-    }
-  };
-
-  
-  const handleNext = async () => {
-
-    const url = 'http://127.0.0.1:8080/auth/login';
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          phone: `${rawPhoneValue}`,          
-          password: password   
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message ||"Неверный логин или пароль");
-      }
-
-      const data = await response.json();
+      if(data.message == "Input should be a valid dictionary or object to extract fields from")
+        showToast("error", "Ошибка!", data.message || "Неверный логин или пароль");
       await AsyncStorage.setItem("access_token", data.access_token);
       await AsyncStorage.setItem("refresh_token", data.refresh_token);
       try {
@@ -93,7 +49,8 @@ export default function Enter({ navigation }) {
         if(decodeToken.verify_phone != false)
           navigation.replace("MenuPage");
         else{
-          await SendNumber();
+          const token = await AccessGetToken();
+          await SendNumber(token);
           navigation.replace("CodeConfirmEnt");
         }
 
@@ -103,7 +60,8 @@ export default function Enter({ navigation }) {
     } catch (error) {
       showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
     }
-  };
+    
+  }
 
   const handleFocus = () => {
     if (!phoneValue) {
@@ -156,7 +114,7 @@ export default function Enter({ navigation }) {
             <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
                 <TouchableOpacity
                     style={Style.buttonMenuPage}
-                    onPress={() => handleNext()}
+                    onPress={() => SendtoServer()}
                 >
                     <Text style={Style.blackText} >Далее</Text>
                 </TouchableOpacity>
