@@ -62,7 +62,7 @@ class Points(Base):
 class Docs(Base):
     __tablename__ = 'docs'
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True)
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
 
 

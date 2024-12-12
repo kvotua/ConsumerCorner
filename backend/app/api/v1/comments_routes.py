@@ -18,7 +18,7 @@ async def add_coment(
     text: str = Form(...),
     stars: int = Form(...),
     session: AsyncSession = Depends(get_session),
-    images: Optional[List[UploadFile]] = File([]),  # Установите значение по умолчанию как пустой список
+    images: Optional[List[UploadFile]] = File([]),
 ):
     comment_data = CommentData(text=text, stars=stars)
     comment_id = await comments_crud.add_comment(session=session, point_id=point_id, comment_data=comment_data)
