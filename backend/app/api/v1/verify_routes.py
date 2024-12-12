@@ -1,17 +1,18 @@
 from typing import Annotated
-from fastapi import APIRouter, HTTPException, Depends, Request, Body
+from fastapi import APIRouter, HTTPException, Depends, Request, Body, Path
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.services.auth_handler import get_token_data, sign_jwt
+from app.services.auth_handler import get_token_data, sign_jwt, sing_email_jwt, decode_email_token
 from app.core.cruds.verify_crud import add_verify_session
-from app.schemas.schemas_verify import ReqID, VerifePhone
-from app.services.verify_services import httpclient, generate_code, generate_text, validate_phone
+from app.schemas.schemas_verify import ReqID, VerifePhone, EmailSchema
+from app.schemas.points_schemas import ResponseSchema
+from app.services.verify_services import httpclient, sendemail, generate_code, generate_text, validate_phone
 from app.models.verify_models import Verification
 from app.config import user_name, user_pass, send_from
 from app.core.databases.postgresdb import get_session
-from app.core.cruds import verify_crud
+from app.core.cruds import verify_crud, users_crud
 from app.services.auth_bearer import dependencies
 
 
@@ -80,8 +81,25 @@ async def check_code(
 @router.post('/email/send', dependencies=dependencies)
 async def send_email(
         request: Request,
-        session: AsyncSession = Depends(get_session)
+        user_email: Annotated[EmailSchema, Body()]
 ):
-    pass
+    dict_by_token = get_token_data(request)
+    token = sing_email_jwt(user_id=dict_by_token.get("id"), email=user_email.email)
+    try:
+        sendemail.send_message(to_send=user_email.email, token=token)
+        return ResponseSchema(status_code=200, detail="Письмо отправлено!")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
+
+@router.get('/email/{code}', response_model=ResponseSchema)
+async def check_email(
+        code: str = Path(),
+        session: AsyncSession = Depends(get_session),
+):
+    token_data = decode_email_token(code)
+    if isinstance(token_data, str):
+        raise HTTPException(status_code=403, detail=token_data)
+    await verify_crud.verify_email_for_user(session=session, user_id=token_data.get("id"), new_email=token_data.get("email"))
+    return ResponseSchema(status_code=200, detail="Успешная верификация почты")

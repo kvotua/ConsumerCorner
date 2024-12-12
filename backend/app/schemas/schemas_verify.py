@@ -1,7 +1,7 @@
 from typing import Annotated
 import re
+from pydantic import BaseModel, Field, model_validator, EmailStr
 
-from pydantic import BaseModel, Field, model_validator
 from app.config import pattern_password, pattern_fio, example_jwt_token
 from app.services.verify_services import validate_phone
 
@@ -89,6 +89,8 @@ class ReqID(BaseModel):
         min_length=36,
         max_length=36,)]
 
+class EmailSchema(BaseModel):
+    email: Annotated[EmailStr, Field(title="Электронная почта", examples=['example@gmail.com'], default=None)]
 
 class TokenPair(BaseModel):
     access_token: str

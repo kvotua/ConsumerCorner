@@ -1,9 +1,15 @@
 import random
+import smtplib
 import aiohttp
 import phonenumbers
 from datetime import datetime, timedelta, timezone
 import bcrypt
 import asyncio
+from email.mime.text import  MIMEText
+from email.header import Header
+
+from app.config import from_email, email_password, email_host
+
 
 class HttpClient:
     def __init__(self):
@@ -21,7 +27,47 @@ class HttpClient:
         except:
             return None
 
+    def __del__(self):
+        self.session.close()
+
+
 httpclient = HttpClient()
+
+class SendEmail:
+    def __init__(self,
+                 email: str = from_email,
+                 password: str =email_password,
+                 email_host: str = email_host,
+        ):
+        self.email = email
+        self.server = smtplib.SMTP(host=email_host, port=587)
+        try:
+            self.server.starttls()
+            self.server.login(email, password=password)
+        except smtplib.SMTPAuthenticationError:
+            raise Exception("Ошибка аутентификации. Проверьте ваш email и пароль.")
+        except Exception as e:
+            raise Exception(f"Не удалось подключиться к SMTP-серверу: {e}")
+
+    def send_message(self, to_send: str, token: str):
+        msg = MIMEText(f"Ваша ссылка для верификации: {token}", 'plain', 'utf-8')
+        msg['Subject'] = Header("Верификация почты")
+        msg['From'] = self.email
+        msg['To'] = to_send
+        try:
+            self.server.sendmail(
+                from_addr=self.email,
+                to_addrs=[to_send],
+                msg=msg.as_string(),
+            )
+        except Exception as e:
+            raise Exception(f"Ошибка при отправке сообщения: {e}")
+
+    def __def__(self):
+        self.server.quit()
+
+sendemail = SendEmail()
+
 
 def time_in_30_days():
     return datetime.now(timezone.utc) + timedelta(days=30)
