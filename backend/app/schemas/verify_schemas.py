@@ -95,10 +95,9 @@ class EmailSchema(BaseModel):
 
     @field_validator('email', mode='before')
     def check_email(cls, value):
-        new_email = value.get("email")
-        if new_email is not None:
+        if value is not None:
             try:
-                validated_email = validate_email(new_email)
+                validated_email = validate_email(value)
                 if validated_email is None:
                     raise ValueError("Invalid email.")
             except:
