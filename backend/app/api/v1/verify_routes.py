@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 
 from app.services.auth_handler import get_token_data, sign_jwt, sing_email_jwt, decode_email_token
 from app.core.cruds.verify_crud import add_verify_session
-from app.schemas.schemas_verify import ReqID, VerifePhone, EmailSchema
+from app.schemas.verify_schemas import ReqID, VerifePhone, EmailSchema
 from app.schemas.points_schemas import ResponseSchema
 from app.services.verify_services import httpclient, sendemail, generate_code, generate_text, validate_phone
 from app.models.verify_models import Verification

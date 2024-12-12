@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result, update
 
-from app.schemas.schemas_verify import Register
+from app.schemas.verify_schemas import Register
 from app.models.verify_models import Verification
 from app.services.verify_services import hash_password
 from app.models.models import Users

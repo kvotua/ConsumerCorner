@@ -3,7 +3,7 @@ from fastapi import APIRouter, Body, HTTPException, Depends, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.auth_handler import set_token_pair, decode_refresh_jwt, sign_jwt
-from app.schemas.schemas_verify import Register, Login, TokenPair
+from app.schemas.verify_schemas import Register, Login, TokenPair
 from app.services.verify_services import validate_password
 from app.core.databases.postgresdb import get_session
 from app.config import example_jwt_token

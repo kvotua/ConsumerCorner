@@ -1,6 +1,7 @@
 from typing import Annotated
 import re
-from pydantic import BaseModel, Field, model_validator, EmailStr
+from pydantic import BaseModel, Field, model_validator, field_validator
+from email_validator import validate_email
 
 from app.config import pattern_password, pattern_fio, example_jwt_token
 from app.services.verify_services import validate_phone
@@ -90,7 +91,20 @@ class ReqID(BaseModel):
         max_length=36,)]
 
 class EmailSchema(BaseModel):
-    email: Annotated[EmailStr, Field(title="Электронная почта", examples=['example@gmail.com'], default=None)]
+    email: Annotated[str, Field(title="Электронная почта", examples=['example@gmail.com'], default=None)]
+
+    @field_validator('email', mode='before')
+    def check_email(cls, value):
+        new_email = value.get("email")
+        if new_email is not None:
+            try:
+                validated_email = validate_email(new_email)
+                if validated_email is None:
+                    raise ValueError("Invalid email.")
+            except:
+                raise ValueError("Invalid email.")
+
+        return value
 
 class TokenPair(BaseModel):
     access_token: str
