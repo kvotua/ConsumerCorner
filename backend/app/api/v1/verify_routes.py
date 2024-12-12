@@ -90,6 +90,8 @@ async def send_email(
         return ResponseSchema(status_code=200, detail="Письмо отправлено!")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        sendemail.close()
 
 
 

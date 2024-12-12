@@ -63,7 +63,7 @@ class SendEmail:
         except Exception as e:
             raise Exception(f"Ошибка при отправке сообщения: {e}")
 
-    def __def__(self):
+    def close(self):
         self.server.quit()
 
 sendemail = SendEmail()
