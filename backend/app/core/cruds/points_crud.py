@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
-from app.models.models import Points, Enterprises
-from app.schemas.points_schemas import RegisterPoint, ChangePointSchema
+from app.models.models import Points, Enterprises, Docs
+from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo
 from app.services.points_services import parse_time
 
 
@@ -19,11 +19,49 @@ async def add_points(session: AsyncSession, point_data: RegisterPoint, user_id: 
     session.add(data_for_db)
     await session.commit()
 
-async def get_all_points(session: AsyncSession, user_id: int) -> list[Points]:
-    stmt = select(Points).where(Points.create_id == user_id)
-    result: Result = await session.execute(stmt)
-    points = result.scalars().all()
-    return list(points)
+async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]:
+    stmt_points = select(Points).where(Points.create_id == user_id)
+    result_points = await session.execute(stmt_points)
+    points = result_points.scalars().all()
+
+    point_ids = [point.id for point in points]
+    stmt_docs = select(Docs).where(Docs.point_id.in_(point_ids))
+    result_docs = await session.execute(stmt_docs)
+    docs = result_docs.scalars().all()
+
+    docs_dict = {}
+    for doc in docs:
+        if doc.point_id not in docs_dict:
+            docs_dict[doc.point_id] = []
+        docs_dict[doc.point_id].append(doc.id)
+
+    points_data = [
+        PointInfo(
+            id=point.id,
+            enterprise_id=point.enterprise_id,
+            title=point.title,
+            address=point.address,
+            opening_time=point.opening_time,
+            closing_time=point.closing_time,
+            phone=point.phone,
+            type_activity=point.type_activity,
+            middle_stars=point.middle_stars,
+            verify_phone=point.verify_phone,
+            created_at=point.created_at,
+            documents_data=docs_dict.get(point.id, [])
+        )
+        for point in points
+    ]
+
+    return points_data
+
+async def add_document(session: AsyncSession, document_data: DocumentData):
+    data_for_db = Docs(
+        id=document_data.id,
+        point_id=document_data.point_id
+    )
+    session.add(data_for_db)
+    await session.commit()
 
 async def get_point_by_user_id(session: AsyncSession, user_id: int):
     stmt = select(Points.id).where(Points.create_id == user_id)

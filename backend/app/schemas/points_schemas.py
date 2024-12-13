@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict, model_validator
-from typing import Annotated, Optional, Any
+from typing import Annotated, Optional, Any, List
 from datetime import datetime, time
 import re
 
@@ -58,6 +58,7 @@ class PointInfo(BaseModel):
     middle_stars: Annotated[Optional[float], Field(title="Средняя оценка", examples=[3.9], ge=0, lt=5)]
     verify_phone: Annotated[Optional[bool], Field(title="Верифицирован ли номер телефона", examples=[False])]
     created_at: Annotated[datetime, Field(title="Дата регистрации компании в приложении", examples=["2024-12-07 03:21:37.273427"])]
+    documents_data: Annotated[List[str], Field(title="ID документов точки", examples=[["5f2fcae09b58c38603442a4f"]])]
 
 
 class ChangePointSchema(BaseModel):
@@ -98,3 +99,7 @@ class ChangePointSchema(BaseModel):
 class ResponseSchema(BaseModel):
     status_code: Annotated[int, Field(title="Status code", examples=[200])]
     detail: Annotated[Any, Field(title="detail", examples=["OK"])]
+
+class DocumentData(BaseModel):
+    id: Annotated[str, Field(title="ID документа", examples=['5f2fcae09b58c38603442a4f'])]
+    point_id: Annotated[int, Field(title="ID точки", examples=[1])]
