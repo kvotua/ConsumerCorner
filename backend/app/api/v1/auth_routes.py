@@ -19,24 +19,24 @@ async def registration(
         data: Annotated[Register, Body()],
         session: AsyncSession = Depends(get_session)
 ):
-    if await verify_crud.get_verify_phone(session=session, phone=data.phone):
+    if await verify_crud.get_user_by_phone(session=session, phone=data.phone):
         raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
 
     await verify_crud.sing_up_user(session=session, data=data)
-
     user_data = await verify_crud.get_user_by_phone(session=session, phone=data.phone)
-    payload = {
-        'id': user_data.id,
-        'phone': data.phone,
-        'fio': data.fio,
-        'verify_phone': user_data.verify_phone,
-    }
+    if user_data:
+        payload = {
+            'id': user_data.id,
+            'phone': data.phone,
+            'fio': data.fio,
+            'verify_phone': user_data.verify_phone,
+        }
 
-    jwt_tokens = set_token_pair(payload)
-    return TokenPair(
-        access_token=jwt_tokens.get("access_token"),
-        refresh_token=jwt_tokens.get("refresh_token")
-    )
+        jwt_tokens = set_token_pair(payload)
+        return TokenPair(
+            access_token=jwt_tokens.get("access_token"),
+            refresh_token=jwt_tokens.get("refresh_token")
+        )
 
 
 @router.post('/login', response_model=TokenPair)
@@ -45,7 +45,6 @@ async def login(
         session: AsyncSession = Depends(get_session)
 ):
     data_by_db = await verify_crud.get_user_by_phone(session=session, phone=data.phone)
-
     if data_by_db is None:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
 

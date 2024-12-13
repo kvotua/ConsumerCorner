@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, HTTPException, Depends, Request, Body, Path
+from fastapi import APIRouter, HTTPException, Depends, Request, Body, Query
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -95,12 +95,12 @@ async def send_email(
 
 
 
-@router.get('/email/{code}', response_model=ResponseSchema)
+@router.get('/', response_model=ResponseSchema)
 async def check_email(
-        code: str = Path(),
+        email_code: str = Query(),
         session: AsyncSession = Depends(get_session),
 ):
-    token_data = decode_email_token(code)
+    token_data = decode_email_token(email_code)
     if isinstance(token_data, str):
         raise HTTPException(status_code=403, detail=token_data)
     await verify_crud.verify_email_for_user(session=session, user_id=token_data.get("id"), new_email=token_data.get("email"))

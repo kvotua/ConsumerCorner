@@ -87,7 +87,7 @@ def validate_phone(phone):
     valid = phonenumbers.parse(phone, 'RU')
     if phonenumbers.is_valid_number(valid):
         valid_phone = ''
-        for i in phonenumbers.format_number(valid, phonenumbers.PhoneNumberFormat.INTERNATIONAL):
+        for i in phonenumbers.format_number(valid, phonenumbers.PhoneNumberFormat.NATIONAL):
             if i.isdigit():
                 valid_phone += i
         return valid_phone

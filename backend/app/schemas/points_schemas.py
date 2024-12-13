@@ -19,15 +19,16 @@ class RegisterPoint(BaseModel):
 
     @model_validator(mode="before")
     def check_model(cls, values):
-        user_phone = values.get('phone')
-        if user_phone:
-            if user_phone and not user_phone.isdigit():
+        point_phone = values.get('phone')
+        if point_phone:
+            if point_phone and not point_phone.isdigit():
                 raise ValueError('Invalid phone number')
             try:
-                valid_phone = validate_phone(user_phone)
-
+                valid_phone = validate_phone(point_phone)
                 if valid_phone is None:
                     raise ValueError("Invalid phone number")
+                else:
+                    values['phone'] = valid_phone
             except:
                 return ValueError("Invalid phone number")
         opening_time = values.get("opening_time")

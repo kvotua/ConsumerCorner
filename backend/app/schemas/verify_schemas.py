@@ -36,12 +36,12 @@ class Register(BaseModel):
     def check_fio_password(cls, values):
         user_phone = values.get('phone')
         if user_phone:
-            if user_phone and not user_phone.isdigit():
-                raise ValueError('Invalid phone number')
             try:
                 valid_phone = validate_phone(user_phone)
                 if valid_phone is None:
                     raise ValueError("Invalid phone number")
+                else:
+                    values["phone"] = valid_phone
             except:
                 return ValueError("Invalid phone number")
 
@@ -58,7 +58,6 @@ class Register(BaseModel):
         return values
 
 
-
 class Login(BaseModel):
     phone: Annotated[str, Field(
         title='Номер телефона без +',
@@ -70,18 +69,19 @@ class Login(BaseModel):
         examples=['password'],)]
 
     @model_validator(mode="before")
-    def check_fio_password(cls, values):
+    def check_phone_password(cls, values):
         user_phone = values.get('phone')
         if user_phone:
             try:
                 valid_phone = validate_phone(user_phone)
                 if valid_phone is None:
                     raise ValueError("Invalid phone number")
+                else:
+                    values["phone"] = valid_phone
             except:
                 return ValueError("Invalid phone number")
         return values
 
-        return values
 
 class ReqID(BaseModel):
     req_id: Annotated[str, Field(

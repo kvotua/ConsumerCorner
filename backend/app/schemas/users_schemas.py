@@ -28,12 +28,12 @@ class ChangeUserSchema(BaseModel):
     def check_phone(cls, values):
         user_phone = values.get('new_phone')
         if user_phone:
-            if user_phone and not user_phone.isdigit():
-                raise ValueError('Invalid phone number')
             try:
                 valid_phone = validate_phone(user_phone)
                 if valid_phone is None:
                     raise ValueError("Invalid phone number")
+                else:
+                    values["phone"] = valid_phone
             except:
                 return ValueError("Invalid phone number")
 
