@@ -114,7 +114,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
             <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
                 <TouchableOpacity
                     style={Style.buttonMenuPage}
-                    onPress={() => SendtoServer()}
+                    onPress={() => navigation.replace("MenuPage")}
                 >
                     <Text style={Style.blackText} >Далее</Text>
                 </TouchableOpacity>

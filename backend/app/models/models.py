@@ -62,7 +62,7 @@ class Points(Base):
 class Docs(Base):
     __tablename__ = 'docs'
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True)
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
 
 
@@ -78,7 +78,6 @@ class Comments(Base):
 
 class Imgs(Base):
     __tablename__ = 'imgs'
-
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     comment_id: Mapped[str] = mapped_column()
 
@@ -97,3 +96,4 @@ class SocialPoint(Base):
 
     social_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('social.id'))
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
+

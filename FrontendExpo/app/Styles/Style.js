@@ -73,7 +73,7 @@ export default StyleSheet.create({
       },
       buttonMenuPage: {
         width: "100%",
-        height: 45,
+        height: 55,
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#FAFBFF",
@@ -83,10 +83,11 @@ export default StyleSheet.create({
       },
       buttonBackMenuPage: {
         width: "100%",
-        height: 45,
+        height: 55,
+        flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: '#FAFBFF',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
@@ -215,7 +216,7 @@ export default StyleSheet.create({
         flexWrap: "wrap",
         width: "100%",
         gap: 10,
-        marginTop: 73,
+        marginTop: isTablet? 72 : 48,
         justifyContent: 'space-between', // Разделяем кнопки с равными промежутками
       },
       //Это белая кнопка с черным текстом
@@ -348,12 +349,14 @@ export default StyleSheet.create({
       },
       // flatlist
       firmsAndPointsFlatListContainer: {
-        height: "70%"
+        flex: 1,
+        marginBottom: 12
       },
       itemFlatList: {
         flexDirection: "row",
         alignItems: 'center',
-        marginBottom: 40,
+        marginBottom: 30,
+        marginTop: 10
       },
       textInFlatList: {
         fontSize: 18,
@@ -382,7 +385,6 @@ export default StyleSheet.create({
       containerButtonsBottomFlatList: {
         width: "100%",
         height: 120,  
-        paddingVertical: 10,
        justifyContent: 'flex-end', 
       },
       //

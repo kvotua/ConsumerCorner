@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict, model_validator
-from typing import Annotated, Optional, Any
+from typing import Annotated, Optional, Any, List
 from datetime import datetime, time
 import re
 
@@ -61,6 +61,7 @@ class PointInfo(BaseModel):
     created_at: Annotated[datetime, Field(title="The date of registration of the point in the application", examples=["2024-12-07 03:21:37.273427"])]
 
 
+
 class ChangePointSchema(BaseModel):
     title: Annotated[Optional[str], Field(title="The working name of the point", examples=["Виктория"], default=None)]
     address: Annotated[Optional[str], Field(title='The address of the point', examples=["ул. Павлика Морозова 74, Б"], default=None)]
@@ -99,3 +100,7 @@ class ChangePointSchema(BaseModel):
 class ResponseSchema(BaseModel):
     status_code: Annotated[int, Field(title="Status code", examples=[200])]
     detail: Annotated[Any, Field(title="detail", examples=["OK"])]
+
+class DocumentData(BaseModel):
+    id: Annotated[str, Field(title="ID документа", examples=['5f2fcae09b58c38603442a4f'])]
+    point_id: Annotated[int, Field(title="ID точки", examples=[1])]

@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Icons from "react-native-vector-icons/Feather";
 import styles from "../../Styles/Style";
 
 export default function AddDocument({ navigation }) {
@@ -42,7 +43,7 @@ export default function AddDocument({ navigation }) {
         {isEnabled && (
           <View style={localStyles.containerInputBox}>
             <Text style={[localStyles.textTopInput, { marginBottom: 10 }]}>Укажите дату окончания действия документа</Text>
-            <TextInput style={styles.textInputProfile} placeholder="Мы напомним вам о подходящих сроках" />
+            <TextInput style={styles.textInputProfile} placeholder="Мы напомним вам о сроках" />
         </View>
         )}
         <View style={localStyles.containerButtonAddFile}>
@@ -50,11 +51,12 @@ export default function AddDocument({ navigation }) {
             <Text style={localStyles.textInButtonAdd}>Прикреепить файл (5 мб)</Text>
         </TouchableOpacity>
         </View>
-        <View style={styles.containerButtonsMenuPages}>
+        <View style={localStyles.containerButtonsMenuPages}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddDocument")}>
             <Text style={styles.textInButtonsMenuPage}>Добавить документ</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
+        <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Documents")}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
             <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
         </TouchableOpacity>
         </View>
@@ -64,6 +66,12 @@ export default function AddDocument({ navigation }) {
 }
 
 const localStyles = StyleSheet.create({
+  containerButtonsMenuPages: {
+    width: "100%",
+    height: 120,
+    justifyContent: 'flex-end',
+    flex: 1,
+  },
   containerInputBox: {
     width: "100%",
     marginTop: 28,
