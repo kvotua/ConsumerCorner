@@ -20,7 +20,7 @@ async def registration(
         session: AsyncSession = Depends(get_session)
 ):
     if await verify_crud.get_user_by_phone(session=session, phone=data.phone):
-        raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
+        raise HTTPException(status_code=400, detail='The phone number has already been registered')
 
     await verify_crud.sing_up_user(session=session, data=data)
     user_data = await verify_crud.get_user_by_phone(session=session, phone=data.phone)
@@ -46,10 +46,10 @@ async def login(
 ):
     data_by_db = await verify_crud.get_user_by_phone(session=session, phone=data.phone)
     if data_by_db is None:
-        raise HTTPException(status_code=404, detail="Пользователь не найден")
+        raise HTTPException(status_code=404, detail="The user was not found")
 
     if not validate_password(data.password, data_by_db.password.encode('utf-8')):
-        raise HTTPException(status_code=404, detail="Неверный пароль")
+        raise HTTPException(status_code=404, detail="Invalid password")
     payload = {
         'id': data_by_db.id,
         'phone': data_by_db.phone,

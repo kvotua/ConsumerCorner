@@ -9,27 +9,27 @@ from app.services.verify_services import validate_phone
 
 class VerifePhone(BaseModel):
     phone: Annotated[str, Field(
-        title='Номер телефона без +',
+        title="The user's phone number",
         examples=['79216547832'],
         min_length=11,
         max_length=14)]
     phone_verif: Annotated[bool, Field(
-        title='Верифицирован ли телефон',
+        title='Is the phone verified',
         examples=[True],)]
-    access_token: Annotated[str, Field(title="Access-токен", examples=[example_jwt_token])]
+    access_token: Annotated[str, Field(title="Access token", examples=[example_jwt_token])]
 
 
 class Register(BaseModel):
     phone: Annotated[str, Field(
-        title='Номер телефона без +',
+        title="The user's phone number",
         examples=['79216547832'],
         min_length=11,
         max_length=14, )]
     fio: Annotated[str, Field(
-        title='ФИО пользователя',
+        title="User's full name",
         examples=['Игнатьев Алексей Алиевич'],)]
     password: Annotated[str, Field(
-        title='Пароль',
+        title='Password',
         examples=['password'])]
 
     @model_validator(mode="before")
@@ -60,12 +60,12 @@ class Register(BaseModel):
 
 class Login(BaseModel):
     phone: Annotated[str, Field(
-        title='Номер телефона без +',
+        title="The user's phone number",
         examples=['79216547832'],
         min_length=11,
         max_length=14, )]
     password: Annotated[str, Field(
-        title='Пароль',
+        title='Password',
         examples=['password'],)]
 
     @model_validator(mode="before")
@@ -85,13 +85,13 @@ class Login(BaseModel):
 
 class ReqID(BaseModel):
     req_id: Annotated[str, Field(
-        title='ID сессии, полученный после отправки номера',
+        title='The session ID received after sending the number',
         examples=['79442f1f-17a8-42bb-9f6f-4affc8788e7e'],
         min_length=36,
         max_length=36,)]
 
 class EmailSchema(BaseModel):
-    email: Annotated[str, Field(title="Электронная почта", examples=['example@gmail.com'], default=None)]
+    email: Annotated[str, Field(title="Email", examples=['example@gmail.com'], default=None)]
 
     @field_validator('email', mode='before')
     def check_email(cls, value):

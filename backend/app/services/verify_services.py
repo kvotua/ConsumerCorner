@@ -23,7 +23,7 @@ class HttpClient:
                 result = await response.json()
                 return result.get("request_id")
         except:
-            return None
+            return result
 
     def __del__(self):
         self.session.close()

@@ -35,7 +35,7 @@ async def send_message(
     number = dict_by_token.get('phone')
     phone = validate_phone(number)
     if await verify_crud.get_verify_phone(session=session, phone=phone):
-        raise HTTPException(status_code=400, detail='Номер телефона уже зарегистрирован')
+        raise HTTPException(status_code=400, detail='The phone number has already been registered')
     code = generate_code()
     params = {
         'to': number,
@@ -49,11 +49,9 @@ async def send_message(
         data=params,
     )
     await httpclient.close_session()
-    if response is None:
-        raise HTTPException(status_code=400, detail="Закончились деньги на GREENSMSAPI")
-
-    if await add_verify_session(session=session, request_id=response, sms_code=code, phone=phone) is None:
-        raise HTTPException(status_code=500, detail="Ошибка добавления сессии в базу данных")
+    if not isinstance(response, str):
+        raise HTTPException(status_code=400, detail=response.get("error"))
+    await add_verify_session(session=session, request_id=response, sms_code=code, phone=phone)
     return ReqID(req_id=response)
 
 
@@ -69,13 +67,12 @@ async def check_code(
     dict_by_token = get_token_data(request)
     response = await verify_crud.get_verify_session(session=session, request_id=req_id, sms_code=sms_code)
     if response is None:
-        raise HTTPException(status_code=401, detail='Невалидная сессия или смс-код')
+        raise HTTPException(status_code=401, detail='Invalid session or sms code')
     await session.delete(response)
     if await verify_crud.change_verify_phone_status(session=session, user_id=dict_by_token.get("id")):
         dict_by_token['verify_phone'] = True
         access_token = sign_jwt(dict_by_token)
         return VerifePhone(phone=response.phone, phone_verif=True, access_token=access_token)
-    raise HTTPException(status_code=500, detail="Ошибка сервера")
 
 
 @router.post('/email/send', dependencies=dependencies)
@@ -87,7 +84,7 @@ async def send_email(
     token = sing_email_jwt(user_id=dict_by_token.get("id"), email=user_email.email)
     try:
         sendemail.send_message(to_send=user_email.email, token=token)
-        return ResponseSchema(status_code=200, detail="Письмо отправлено!")
+        return ResponseSchema(status_code=200, detail="The email has been sent!")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
@@ -104,4 +101,4 @@ async def check_email(
     if isinstance(token_data, str):
         raise HTTPException(status_code=403, detail=token_data)
     await verify_crud.verify_email_for_user(session=session, user_id=token_data.get("id"), new_email=token_data.get("email"))
-    return ResponseSchema(status_code=200, detail="Успешная верификация почты")
+    return ResponseSchema(status_code=200, detail="Your email has been successfully verified")

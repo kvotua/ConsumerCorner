@@ -39,7 +39,7 @@ async def get_users_me(
         user=user,
         update_user_data=user_data,
     )
-    return ResponseSchema(status_code=200, detail="Успешное изменение")
+    return ResponseSchema(status_code=200, detail="Successful user change")
 
 @router.get("/all")
 async def get_all_users(

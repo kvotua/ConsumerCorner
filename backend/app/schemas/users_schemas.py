@@ -10,19 +10,19 @@ from app.config import pattern_fio
 class UserSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: Annotated[int, Field(title="ID пользователя", examples=[1],)]
-    phone: Annotated[str, Field(title="Номер телефона пользователя", examples=['79211234567'])]
-    fio: Annotated[str, Field(title="ФИО пользователя", examples=['Игнатьев Алексей Алиевич'])]
-    email: Annotated[Optional[str], Field(title="Электронная почта пользователя", examples=['example@gmail.com'])]
-    verify_phone: Annotated[bool, Field(title='Статус подтверждения номера телефона', examples=[False])]
-    verify_email: Annotated[bool, Field(title='Статус подтверждения электронной почты',examples=[False])]
+    id: Annotated[int, Field(title="User ID", examples=[1],)]
+    phone: Annotated[str, Field(title="The user's phone number", examples=['79211234567'])]
+    fio: Annotated[str, Field(title="User's full name", examples=['Игнатьев Алексей Алиевич'])]
+    email: Annotated[Optional[str], Field(title="User's email address", examples=['example@gmail.com'])]
+    verify_phone: Annotated[bool, Field(title='Phone number confirmation status', examples=[False])]
+    verify_email: Annotated[bool, Field(title='Email Confirmation status',examples=[False])]
 
 
 class ChangeUserSchema(BaseModel):
 
-    new_phone: Annotated[Optional[str], Field(title="Номер телефона пользователя", examples=['79211234567'], max_length=14, default=None)]
-    new_fio: Annotated[Optional[str], Field(title="ФИО пользователя", examples=['Игнатьев Алексей Алиевич'], default=None)]
-    new_email: Annotated[Optional[str], Field(title="Электронная почта пользователя", examples=['example@gmail.com'], default=None)]
+    new_phone: Annotated[Optional[str], Field(title="The user's phone number", examples=['79211234567'], max_length=14, default=None)]
+    new_fio: Annotated[Optional[str], Field(title="User's full name", examples=['Игнатьев Алексей Алиевич'], default=None)]
+    new_email: Annotated[Optional[str], Field(title="User's email address", examples=['example@gmail.com'], default=None)]
 
     @model_validator(mode="before")
     def check_phone(cls, values):

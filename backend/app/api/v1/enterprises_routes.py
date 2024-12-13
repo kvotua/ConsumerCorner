@@ -24,8 +24,8 @@ async def register_company(
     if dict_by_token is None:
         raise HTTPException(status_code=403, detail="Invalid token or expired token")
     if await enterprises_crud.add_enterprise(session=session, data=data_company, user_id=dict_by_token.get("id")) is True:
-        return ResponseSchema(status_code=200, detail="Успешная регистрация")
-    raise HTTPException(status_code=500, detail="Неудачная регистрация компании")
+        return ResponseSchema(status_code=200, detail="Successful registration")
+    raise HTTPException(status_code=500, detail="Error when registering a company")
 
 
 @router.get("/enterprises-info", response_model=List[EnterpriseInfo], dependencies=dependencies)
@@ -36,5 +36,5 @@ async def get_companies_info(
     dict_by_token = get_token_data(request)
     result = await enterprises_crud.get_all_enterprises_by_id(session=session, user_id=dict_by_token.get("id"))
     if result is None:
-        raise HTTPException(status_code=404, detail="Компании не найдены")
+        raise HTTPException(status_code=404, detail="No companies found")
     return result

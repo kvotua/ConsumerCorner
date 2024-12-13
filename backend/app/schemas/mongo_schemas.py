@@ -4,13 +4,13 @@ from pydantic import BaseModel,Field
 
 class PhotoSchema(BaseModel):
     id: Annotated[str, Field(
-        title='ID Фотографии',
+        title='Photo ID',
         examples=['5']
     )]
     
 class DocSchema(BaseModel):
     id: Annotated[str, Field(
-        title='ID Фотографии',
+        title='Photo ID',
         examples=['5']
     )]
     
