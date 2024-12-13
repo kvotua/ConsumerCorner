@@ -43,13 +43,13 @@ class SendEmail:
             self.server.starttls()
             self.server.login(email, password=password)
         except smtplib.SMTPAuthenticationError:
-            raise Exception("Ошибка аутентификации. Проверьте ваш email и пароль.")
+            raise Exception("Authentication error. Check your email and password.")
         except Exception as e:
-            raise Exception(f"Не удалось подключиться к SMTP-серверу: {e}")
+            raise Exception(f"Failed to connect to the SMTP server: {e}")
 
     def send_message(self, to_send: str, token: str):
-        msg = MIMEText(f"Ваша ссылка для верификации: {token}", 'plain', 'utf-8')
-        msg['Subject'] = Header("Верификация почты")
+        msg = MIMEText(f"Your verification link: {token}", 'plain', 'utf-8')
+        msg['Subject'] = Header("Mail verification")
         msg['From'] = self.email
         msg['To'] = to_send
         try:
@@ -59,13 +59,13 @@ class SendEmail:
                 msg=msg.as_string(),
             )
         except Exception as e:
-            raise Exception(f"Ошибка при отправке сообщения: {e}")
+            raise Exception(f"Error sending the message: {e}")
 
     def close(self):
         try:
             self.server.quit()
         except Exception as e:
-            raise Exception(f"Ошибка закрытия сессии: {e}")
+            raise Exception(f"Session closing error: {e}")
 
 sendemail = SendEmail()
 

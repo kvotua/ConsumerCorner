@@ -52,12 +52,12 @@ def decode_email_token(token: str):
         decoded_token = jwt.decode(token, secret_key, algorithms=[algo])
         data_now = datetime.now(timezone.utc)
         if decoded_token.get("exp") <= int(data_now.timestamp()):
-            return "Срок жизни ссылки истёк"
+            return "The link has expired"
         if decoded_token.get("type") != "email_token":
-            return "Невалидная ссылка"
+            return "Invalid link"
         return decoded_token
     except:
-        return "Невалидная ссылка"
+        return "Invalid link"
 
 def get_token_data_verify(request: Request):
     headers = request.headers
