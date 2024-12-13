@@ -8,6 +8,7 @@ import {
   StyleSheet
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Icons from "react-native-vector-icons/Feather";
 import styles from "../../Styles/Style";
 
 export default function Documents({ navigation }) {
@@ -56,11 +57,12 @@ export default function Documents({ navigation }) {
           indicatorStyle="white"
         />
       </View>
-        <View style={styles.containerButtonsMenuPages}>
+        <View style={styles.containerButtonsBottomFlatList}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddDocument")}>
             <Text style={styles.textInButtonsMenuPage}>Добавить документ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
             <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
         </TouchableOpacity>
         </View>
@@ -71,7 +73,8 @@ export default function Documents({ navigation }) {
 
 const localStyles = StyleSheet.create({
   flatListContainer: {
-    height: "60%",
+    flex: 1,
+    marginBottom: 12,
   },
   button: {
     width: "100%",
