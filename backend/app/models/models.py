@@ -1,6 +1,6 @@
-from sqlalchemy import BigInteger, Text, ForeignKey, func, Float, Time
+from sqlalchemy import BigInteger, Text, ForeignKey, func, Float, Time, PrimaryKeyConstraint
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime, time
 from typing import Optional
 
@@ -93,7 +93,7 @@ class Social(Base):
 
 class SocialPoint(Base):
     __tablename__ = 'social_point'
+    __table_args__ = (PrimaryKeyConstraint('social_id', 'point_id'),)
 
-    social_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('social.id'))
-    point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
-
+    social_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('social.id'), nullable=False)
+    point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'), nullable=False)
