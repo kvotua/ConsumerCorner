@@ -7,9 +7,7 @@ import bcrypt
 import asyncio
 from email.mime.text import  MIMEText
 from email.header import Header
-
 from app.config import from_email, email_password, email_host
-
 
 class HttpClient:
     def __init__(self):
@@ -30,8 +28,8 @@ class HttpClient:
     def __del__(self):
         self.session.close()
 
-
 httpclient = HttpClient()
+
 
 class SendEmail:
     def __init__(self,
@@ -64,7 +62,10 @@ class SendEmail:
             raise Exception(f"Ошибка при отправке сообщения: {e}")
 
     def close(self):
-        self.server.quit()
+        try:
+            self.server.quit()
+        except Exception as e:
+            raise Exception(f"Ошибка закрытия сессии: {e}")
 
 sendemail = SendEmail()
 
