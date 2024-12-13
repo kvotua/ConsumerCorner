@@ -9,18 +9,17 @@ import {
   StyleSheet,
   Image,
   Dimensions, 
-  Platform
+  Platform,
+  FlatList
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from "../../Styles/Style";
 
 export default function Profile({ navigation }) {
   const [isEnabled, setIsEnabled] = useState(false);
-
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const { width } = Dimensions.get('window');
-
   const isTablet = width >= 768;
 
   const getPaddingVertical = () => {
@@ -35,46 +34,57 @@ export default function Profile({ navigation }) {
     return 0; 
   };
 
+  // Данные для FlatList
+  const inputData = [
+    { id: '1', label: 'Ф.И.О', placeholder: 'Акулич Виктор Сергеевич', isSwitch: false },
+    { id: '2', label: 'Номер телефона', placeholder: '+79113453221', isSwitch: false },
+    { id: '3', label: 'Email', placeholder: 'yyyy@mail.ru', isSwitch: false },
+    { id: '4', label: 'Изменить пароль', placeholder: '************', isSwitch: false },
+    { id: '5', label: 'Получать отзывы в Telegram', isSwitch: true }, // Новый элемент для переключателя
+  ];
 
-
+  // Функция рендеринга каждого элемента FlatList
+  const renderInputItem = ({ item }) => (
+    <View style={{ marginBottom: 18, flexDirection: item.isSwitch ? 'row' : 'column', alignItems: item.isSwitch ? 'center' : 'flex-start' }}>
+      <Text style={styles.textDescriptionProfile}>{item.label}</Text>
+      {item.isSwitch ? (
+        <Switch 
+          style={[{ transform: isTablet ? [{ scale: 1 }] : [{ scale: 1 }] }, { marginStart: "auto" }]} // Добавляем отступ слева
+          onValueChange={toggleSwitch}
+          value={isEnabled}
+          trackColor={{ false: "#7B9DF2", true: "#7B9DF2" }}
+          thumbColor={isEnabled ? "#E6E6E6" : "#E6E6E6"}
+        />
+      ) : (
+        <TextInput style={styles.textInputProfile} placeholder={item.placeholder} />
+      )}
+    </View>
+  );
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
-      <SafeAreaView style={[styles.containerMainPage, { paddingVertical: getPaddingVertical(), paddingHorizontal: getPaddingHorizontal()  }]}>
+      <SafeAreaView style={[styles.containerMainPage, { paddingVertical: getPaddingVertical(), paddingHorizontal: getPaddingHorizontal() }]}>
         <View style={styles.profileHeader}>
-        <Image
+          <Image
             source={require("../../../assets/images/profileImage.png")}
             style={localStyles.profileImage} 
           />
           <Text style={styles.profileTitle}>Акулич В.C</Text>
         </View>
+        
         <View style={styles.containerProfile}>
-          <Text style={styles.textDescriptionProfile}>Ф.И.О</Text>
-          <TextInput style={styles.textInputProfile} placeholder="Акулич Виктор Сергеевич" />
-          
-          <Text style={[styles.textDescriptionProfile, { marginTop: 18 }]}>Номер телефона</Text>
-          <TextInput style={styles.textInputProfile} placeholder="+79113453221" />
-          
-          <Text style={[styles.textDescriptionProfile, { marginTop: 18 }]}>Email</Text>
-          <TextInput style={styles.textInputProfile} placeholder="yyyy@mail.ru" />
-          
-          <Text style={[styles.textDescriptionProfile, { marginTop: 18 }]}>Изменить пароль</Text>
-          <TextInput style={styles.textInputProfile} placeholder="************" />
+          <FlatList
+            data={inputData}
+            renderItem={renderInputItem}
+            keyExtractor={item => item.id}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
-        <View style={styles.switchContainer}>
-            <Text style={styles.switchText}>Получать отзывы в Telegram</Text>
-            <Switch style={[{ transform: isTablet ? [{ scale: 1 }] : [{ scale: 1.5 }] }]}
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-              trackColor={{ false: "#7B9DF2", true: "#7B9DF2" }}
-              thumbColor={isEnabled ? "#E6E6E6" : "#E6E6E6"}
-              
-              />  
-        </View>
-        <View style={[styles.containerButtonsMenuPages, { paddingVertical: 0 }]}>
-        <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
+
+        <View style={localStyles.containerButtonsBottomFlatList}>
+          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
             <Text style={styles.textInButtonsMenuPage}>Вернуться на главную</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -90,6 +100,9 @@ const localStyles = StyleSheet.create({
     borderWidth: 1, 
     borderColor: "#FFFFFF", 
   },
+  containerButtonsBottomFlatList: {
+  width: "100%",
+  height: 45,  
+ justifyContent: 'flex-end', 
+},
 });
-
-
