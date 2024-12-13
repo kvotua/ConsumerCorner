@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ImageBackground,
   Text,
@@ -9,42 +9,37 @@ import {
   Image
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import styles from "../../Styles/Style";
+import Style from "@/app/Styles/Style";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
-export default function Reviews({ navigation }) {
+export default function Reviews({ navigation, pointId }) {
+  const [data, setData] = useState([]);
   
-  const data = [
-    {
-      id: '1',
-      company: 'Компания 1',
-      point: 'Точка 1',
-      rating: 4,
-      reviews: [
-        "Отзыв 1",
-        "Отличное заведение! Пришлось немного подождать, но это мелочи.",
-        "Отзыв 3"
-      ]
-    },
-    {
-      id: '2',
-      company: 'Компания 2',
-      point: 'Точка 2',
-      rating: 5,
-      reviews: [
-        "Отзыв 1",
-        "Отличное заведение! Пришлось немного подождать, но это мелочи."
-      ]
-    },
-    {
-      id: '3',
-      company: 'Компания 3',
-      point: 'Точка 3',
-      rating: 3,
-      reviews: [
-        "Отличное заведение! Пришлось немного подождать, но это мелочи."
-      ]
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    try {
+      const token = await AccessGetToken()
+      const response = await fetch(`http://localhost:8000/?point_id=${pointId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `${token}`, // Подставь токен сюда
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch reviews');
+      }
+
+      const reviewsData = await response.json();
+      setData(reviewsData); // Сохраняем данные отзывов
+    } catch (error) {
+      console.error('Ошибка при загрузке отзывов:', error);
     }
-  ];
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -58,7 +53,7 @@ export default function Reviews({ navigation }) {
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.reviewsItemFlatList}>
+    <View style={Style.reviewsItemFlatList}>
       <Text style={localStyles.companyPointText}>{item.company} {item.point}</Text>
       {item.reviews.map((review, index) => (
         <TouchableOpacity key={index} style={localStyles.button}>
@@ -71,8 +66,8 @@ export default function Reviews({ navigation }) {
               {renderStars(item.rating)}
             </View>
           </View>
-          <View style={[styles.containerLine, { marginTop: 10, paddingEnd: 186 }]}>
-            <View style={[styles.menuPagesLine, { backgroundColor: "#3A6CE9" }]} />
+          <View style={[Style.containerLine, { marginTop: 10, paddingEnd: 186 }]}>
+            <View style={[Style.menuPagesLine, { backgroundColor: "#3A6CE9" }]} />
           </View>
           <Text style={[localStyles.textInReview, { color: "#313231", marginTop: 10 }]}>{review}</Text>
         </TouchableOpacity>
@@ -81,16 +76,17 @@ export default function Reviews({ navigation }) {
   );
 
   return (
-    <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
-      <SafeAreaView style={styles.containerMainPage}>
-        <View style={styles.firmsAndPointsHeader}>
-          <Text style={styles.menuTitle}>Все отзывы</Text>
+    <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
+      <SafeAreaView style={Style.containerMainPage}>
+        <View style={Style.firmsAndPointsHeader}>
+          <Text style={Style.menuTitle}>Все отзывы</Text>
         </View>
-        <View style={styles.containerLine}>
-          <View style={styles.menuPagesLine} />
+        <View style={Style.containerLine}>
+          <View style={Style.menuPagesLine} />
         </View>
         <View style={localStyles.flatListContainer}>
-          <FlatList style={[{ paddingRight: 10 }]}
+          <FlatList
+            style={[{ paddingRight: 10 }]}
             data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
@@ -98,9 +94,9 @@ export default function Reviews({ navigation }) {
             indicatorStyle="white"
           />
         </View>
-        <View style={styles.containerButtonsMenuPages}>
-          <TouchableOpacity style={styles.buttonBackMenuPage} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
+        <View style={Style.containerButtonsMenuPages}>
+          <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("MenuPage")}>
+            <Text style={Style.textInButtonsBackMenuPage}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -110,7 +106,7 @@ export default function Reviews({ navigation }) {
 
 const localStyles = StyleSheet.create({
   flatListContainer: {
-    height: "75%"
+    height: "75%",
   },
   companyPointText: {
     fontSize: 30,
@@ -126,7 +122,7 @@ const localStyles = StyleSheet.create({
     marginTop: 12,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-    padding: 15
+    padding: 15,
   },
   reviewContainer: {
     flexDirection: 'row',
@@ -145,5 +141,5 @@ const localStyles = StyleSheet.create({
     fontFamily: 'Montserrat',
     fontWeight: "700",
     color: "#3A6CE9",
-},
+  },
 });

@@ -1,55 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { apiRequest } from '../Api/RefreshToken';
+
 export const SendNumber = async (token) => {
-  console.log(token)
-    const url = 'http://localhost:8765/auth/send';
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Authorization" : `Bearer ${token}` 
-        },
-        body: JSON.stringify({ 
-        }),
-      });
+  const url = 'http://localhost:8765/auth/send';
+  try {
+    const data = await apiRequest(url, "POST", {}, { Authorization: `Bearer ${token}` });
+    await AsyncStorage.setItem("Ses_id", data.req_id);
+  } catch (error) {
+    console.error(error.message);
+  }
+};
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Ошибка сервера");
-      }
-
-      const data = await response.json();
-      await AsyncStorage.setItem("Ses_id", data.req_id)
-    } catch (error) {
-      console.log(error.message)
-    }
-  };
-
-  
- export const handleNext = async (phone : string, password : string) => {
-
-    const url = 'http://localhost:8765/login';
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          phone: phone,          
-          password: password   
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        return errorData;
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.log(error.message)
-    }
-  };
+export const handleNext = async (phone, password) => {
+  const url = 'http://localhost:8765/login';
+  try {
+    return await apiRequest(url, "POST", { phone, password });
+  } catch (error) {
+    console.error(error.message);
+  }
+};

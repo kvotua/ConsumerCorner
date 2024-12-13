@@ -14,6 +14,7 @@ import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
 import Toast from "../Notif/toasts/Toast";
+import { apiRequest } from '../../../Api/RefreshToken';
 
 export default function RegPage({ navigation }) {
   const [fio, setfio] = useState("");
@@ -62,33 +63,33 @@ export default function RegPage({ navigation }) {
   };
 
   const handleNext = async () => {
+    // Проверяем входные данные
     if (!validateInputs()) {
       showToast("error", "Ошибка!", errorMessage);
       return;
     }
+  
     const url = 'http://localhost:8765/registration';
+  
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
+      // Выполняем POST-запрос через универсальную функцию
+      const data = await apiRequest(
+        url,
+        "POST",
+        {
+          phone: rawPhoneValue,
+          fio: fio,
+          password: password,
         },
-        body: JSON.stringify({ 
-          phone: `${rawPhoneValue}`,
-          fio: fio,             
-          password: password   
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Ошибка сервера");
-      }
-
-      const data = await response.json();
-      navigation.replace("CodeConfirm")
+        {
+          "Content-Type": "application/json",
+        }
+      );
+  
+      // Навигация на следующий экран
+      navigation.replace("CodeConfirm");
     } catch (error) {
+      // Обработка ошибки
       showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
     }
   };

@@ -1,80 +1,151 @@
-import React, { useState } from "react";
-import {
-  ImageBackground,
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  Switch,
-  StyleSheet,
-  Image,
-  Dimensions, 
-  Platform
+import React, { useEffect, useState } from "react";
+import { 
+  ImageBackground, 
+  Text, 
+  View, 
+  TouchableOpacity, 
+  TextInput, 
+  Switch, 
+  StyleSheet, 
+  Image 
 } from "react-native";
+import Style from "@/app/Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import styles from "../../Styles/Style";
+import Toast from "../Notif/toasts/Toast";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function Profile({ navigation }) {
+  const [userData, setUserData] = useState({});
   const [isEnabled, setIsEnabled] = useState(false);
+  const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const fetchUserData = async () => {
+    try {
+      const token = await AccessGetToken()
+      const response = await fetch('http://localhost:8000/me', {
+        method: 'GET',
+        headers: {
+          'Authorization': `${token}`, // Подставь токен здесь
+          'Content-Type': 'application/json',
+        },
+      });
 
-  const { width } = Dimensions.get('window');
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
 
-  const isTablet = width >= 768;
-
-  const getPaddingVertical = () => {
-    if (Platform.OS === 'ios') return isTablet ? 192 : -25; 
-    else if (Platform.OS === 'android') return isTablet ? 192 : 25; 
-    return 0; 
+      const data = await response.json();
+      setUserData(data); // Записываем полученные данные пользователя
+      setIsEnabled(data.receive_telegram); // Устанавливаем состояние switch
+    } catch (error) {
+      console.error('Ошибка при получении данных пользователя:', error);
+    }
   };
 
-  const getPaddingHorizontal = () => {
-    if (Platform.OS === 'ios') return isTablet ? 192 : 25; 
-    else if (Platform.OS === 'android') return isTablet ? 192 : 25; 
-    return 0; 
+  useEffect(() => {
+    fetchUserData(); // Загружаем данные пользователя при монтировании
+  }, []);
+
+  const toggleSwitch = () => setIsEnabled(prev => !prev);
+
+  const handleUpdateProfile = async () => {
+    const updatedData = {
+      name: userData.name,
+      phone: userData.phone,
+      email: userData.email,
+      receive_telegram: isEnabled, // Обновляем состояние switch
+    };
+
+    try {
+      const token = await AccessGetToken()
+      const response = await fetch('http://localhost:8000/change', {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `${token}`, // Подставь токен здесь
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+
+      showToast("success", "Успех!", error.message || "Вы успешно обновили данные!");
+    } catch (error) {
+      console.error('Ошибка при обновлении профиля:', error);
+    }
   };
 
-
-
+  const showToast = (type :string, message:string, subMessage:string) => {
+    setToast({ type, message, subMessage, visible: true });
+    setTimeout(() => setToast({ ...toast, visible: false }), 3000); // Авто-скрытие через 3 сек
+  };
 
   return (
-    <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
-      <SafeAreaView style={[styles.containerMainPage, { paddingVertical: getPaddingVertical(), paddingHorizontal: getPaddingHorizontal()  }]}>
-        <View style={styles.profileHeader}>
-        <Image
-            source={require("../../../assets/images/profileImage.png")}
-            style={localStyles.profileImage} 
+    <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
+      <SafeAreaView style={Style.containerMainPage}>
+                  {/* Компонент Toast */}
+            {toast.visible && (
+          <Toast
+              type={toast.type}
+              message={toast.message}
+              subMessage={toast.subMessage}
+              visible={toast.visible}
+              onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
           />
-          <Text style={styles.profileTitle}>Акулич В.C</Text>
+          )}
+        <View style={Style.profileHeader}>
+          <Image source={require("../../../assets/images/profileImage.png")} style={localStyles.profileImage} />
+          <Text style={Style.profileTitle}>{userData.name || 'Акулич В.C'}</Text>
         </View>
-        <View style={styles.containerProfile}>
-          <Text style={styles.textDescriptionProfile}>Ф.И.О</Text>
-          <TextInput style={styles.textInputProfile} placeholder="Акулич Виктор Сергеевич" />
+        <View style={Style.containerProfile}>
+          <Text style={Style.textDescriptionProfile}>Ф.И.О</Text>
+          <TextInput 
+            style={Style.textInputProfile} 
+            placeholder="Акулич Виктор Сергеевич" 
+            value={userData.name} 
+            onChangeText={(text) => setUserData({ ...userData, name: text })} 
+          />
           
-          <Text style={[styles.textDescriptionProfile, { marginTop: 18 }]}>Номер телефона</Text>
-          <TextInput style={styles.textInputProfile} placeholder="+79113453221" />
-          
-          <Text style={[styles.textDescriptionProfile, { marginTop: 18 }]}>Email</Text>
-          <TextInput style={styles.textInputProfile} placeholder="yyyy@mail.ru" />
-          
-          <Text style={[styles.textDescriptionProfile, { marginTop: 18 }]}>Изменить пароль</Text>
-          <TextInput style={styles.textInputProfile} placeholder="************" />
+          <Text style={[Style.textDescriptionProfile, { marginTop: 18 }]}>Номер телефона</Text>
+          <TextInput 
+            style={Style.textInputProfile} 
+            placeholder="+79113453221" 
+            value={userData.phone} 
+            onChangeText={(text) => setUserData({ ...userData, phone: text })} 
+          />
+
+          <Text style={[Style.textDescriptionProfile, { marginTop: 18 }]}>Email</Text>
+          <TextInput 
+            style={Style.textInputProfile} 
+            placeholder="yyyy@mail.ru" 
+            value={userData.email} 
+            onChangeText={(text) => setUserData({ ...userData, email: text })} 
+          />
+
+          <Text style={[Style.textDescriptionProfile, { marginTop: 18 }]}>Изменить пароль</Text>
+          <TextInput style={Style.textInputProfile} placeholder="************" secureTextEntry />
         </View>
-        <View style={styles.switchContainer}>
-            <Text style={styles.switchText}>Получать отзывы в Telegram</Text>
-            <Switch style={[{ transform: isTablet ? [{ scale: 1 }] : [{ scale: 1.5 }] }]}
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-              trackColor={{ false: "#7B9DF2", true: "#7B9DF2" }}
-              thumbColor={isEnabled ? "#E6E6E6" : "#E6E6E6"}
-              
-              />  
+
+        <View style={Style.switchContainer}>
+          <Text style={Style.switchText}>Получать отзывы в Telegram</Text>
+          <Switch 
+            style={{ transform: [{ scale: 1 }] }}
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+            trackColor={{ false: "#7B9DF2", true: "#7B9DF2" }}
+            thumbColor={isEnabled ? "#E6E6E6" : "#E6E6E6"}
+          />
         </View>
-        <View style={[styles.containerButtonsMenuPages, { paddingVertical: 0 }]}>
-        <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={styles.textInButtonsMenuPage}>Вернуться на главную</Text>
-        </TouchableOpacity>
+
+        <View style={[Style.containerButtonsMenuPages, { paddingVertical: 0 }]}>
+          <TouchableOpacity style={Style.buttonMenuPage} onPress={handleUpdateProfile}>
+            <Text style={Style.textInButtonsMenuPage}>Обновить профиль</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
+            <Text style={Style.textInButtonsMenuPage}>Вернуться на главную</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -91,5 +162,3 @@ const localStyles = StyleSheet.create({
     borderColor: "#FFFFFF", 
   },
 });
-
-

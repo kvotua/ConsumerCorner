@@ -8,3 +8,5 @@ data
 mongodbdata
 .pytest_cache
 __pycache__
+.env.example
+FrontendExpo/package-lock.json
