@@ -26,12 +26,11 @@ async def get_user_without_pass(session: AsyncSession, user_id: int):
                       verify_phone=user.verify_phone, verify_email=user.verify_email
                       )
 
-
 async def update_user(session: AsyncSession, user: Users, update_user_data: ChangeUserSchema):
     try:
         new_phone = validate_phone(update_user_data.new_phone)
     except Exception as e:
-        new_phone = None  # Если произошла ошибка, не устанавливаем новый телефон
+        new_phone = None
 
     if user:
         if new_phone is not None and new_phone != user.phone:

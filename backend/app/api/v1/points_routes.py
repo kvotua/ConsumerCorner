@@ -28,9 +28,9 @@ async def register_point(
     user_id = dict_by_token.get("id")
     enterprises_ids = await points_crud.get_enterprises_id_by_user_id(session=session, user_id=user_id)
     if data_point.enterprise_id not in enterprises_ids:
-        raise HTTPException(status_code=403, detail="Пользователь не владеет данной компанией")
+        raise HTTPException(status_code=403, detail="The user does not own this company")
     await points_crud.add_points(session=session, point_data=data_point, user_id=user_id)
-    return ResponseSchema(status_code=201, detail="Точка успешно зарегистрирована")
+    return ResponseSchema(status_code=201, detail="The point has been successfully registered")
 
 @router.post("/document/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def add_document(
@@ -84,15 +84,15 @@ async def change_point(
     points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
 
     if point_id not in points_id:
-        raise HTTPException(status_code=403, detail='Пользователь не владеет данной точкой')
+        raise HTTPException(status_code=403, detail='The user does not own this company')
 
     point = await points_crud.get_point_by_id(session=session, point_id=point_id)
     if point is None:
-        raise HTTPException(status_code=404, detail='Точка не найдена')
+        raise HTTPException(status_code=404, detail='The point was not found')
 
     await points_crud.update_point(session=session, point=point, point_change=new_point_info)
 
-    return ResponseSchema(status_code=200, detail=f"Точка {point_id} успешно изменена")
+    return ResponseSchema(status_code=200, detail=f"Point {point_id} could be changed")
 
 
 
@@ -104,14 +104,14 @@ async def delete_point(
 ):
     headers = request.headers
     token_list = headers.get("authorization").split()
-    dict_by_token = decode_jwt_with_verify(token_list[1])
+    dict_by_token = get_token_data_verify(token_list[1])
     if dict_by_token is None:
         raise HTTPException(status_code=403, detail="Invalid token or expired token")
     user_id = dict_by_token.get("id")
 
     points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
     if point_id not in points_id:
-        raise HTTPException(status_code=403, detail='Пользователь не владеет данной точкой')
+        raise HTTPException(status_code=403, detail='The user does not own this point')
 
     await points_crud.delete_point(session=session, point=await points_crud.get_point_by_id(session=session, point_id=point_id))
-    return ResponseSchema(status_code=200, detail="Точка успешно удалена")
+    return ResponseSchema(status_code=200, detail=f"Point {point_id} could be deleted")

@@ -78,6 +78,22 @@ class Comments(Base):
 
 class Imgs(Base):
     __tablename__ = 'imgs'
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    comment_id: Mapped[str] = mapped_column()
 
-    id: Mapped[str] = mapped_column(primary_key=True)
-    comment_id: Mapped[int] = mapped_column()
+
+class Social(Base):
+    __tablename__ = 'social'
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    enterprises_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('enterprises.id'))
+    name: Mapped[str] = mapped_column()
+    link: Mapped[str] = mapped_column(Text)
+
+
+class SocialPoint(Base):
+    __tablename__ = 'social_point'
+
+    social_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('social.id'))
+    point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
+

@@ -11,6 +11,8 @@ router = APIRouter(prefix="/inn", tags=["inn"])
 
 def get_inn_service() -> INNService:
     return INNService
+
+
 @router.get("/inn_info")
 async def result_page(
         request: Request,

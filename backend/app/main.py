@@ -14,7 +14,6 @@ from app.api.v1.mongo_routes import router as mongodb_router
 from app.api.v1.points_routes import router as point_router
 from app.api.v1.auth_routes import router as auth_router
 
-
 from .logger.config import setup_logging
 
 setup_logging()
@@ -34,7 +33,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 
 app.include_router(auth_router)

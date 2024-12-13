@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, Result
+from sqlalchemy import select, Result, update
 
-from app.schemas.schemas_verify import Register
+from app.schemas.verify_schemas import Register
 from app.models.verify_models import Verification
 from app.services.verify_services import hash_password
 from app.models.models import Users
@@ -43,3 +43,11 @@ async def get_user_by_phone(session: AsyncSession, phone: str) -> Users:
     stmt = select(Users).where(Users.phone == phone)
     result: Result = await session.execute(stmt)
     return result.scalars().first()
+
+async def verify_email_for_user(session: AsyncSession, user_id: int, new_email: str):
+    stmt = update(Users).where(Users.id == user_id).values(
+        email=new_email,
+        verify_email=True,
+    )
+    await session.execute(stmt)
+    await session.commit()
