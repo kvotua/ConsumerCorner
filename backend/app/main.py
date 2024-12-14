@@ -14,9 +14,9 @@ from app.api.v1.mongo_routes import router as mongodb_router
 from app.api.v1.points_routes import router as point_router
 from app.api.v1.auth_routes import router as auth_router
 
-from .logger.config import setup_logging
+#from .logger.config import setup_logging
 
-setup_logging()
+#setup_logging()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -42,4 +42,4 @@ app.include_router(users_router)
 app.include_router(enterprises_router)
 app.include_router(point_router)
 app.include_router(comments_router)
-app.include_router(mongodb_router)
+#app.include_router(mongodb_router)

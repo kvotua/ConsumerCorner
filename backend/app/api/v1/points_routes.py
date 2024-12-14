@@ -4,7 +4,7 @@ from typing import Annotated, List, Optional
 
 from app.core.databases.postgresdb import get_session
 from app.schemas.enterprises_schemas import ResponseSchema
-from app.schemas.points_schemas import RegisterPoint, PointInfo, ChangePointSchema, DocumentData
+from app.schemas.points_schemas import RegisterPoint, PointInfo, ChangePointSchema, DocumentData, SocialSchema, SocialID
 from app.services.auth_handler import get_token_data_verify, decode_jwt_with_verify
 from app.core.cruds import points_crud
 from app.services.auth_bearer import dependencies
@@ -95,16 +95,13 @@ async def change_point(
     return ResponseSchema(status_code=200, detail=f"Point {point_id} could be changed")
 
 
-
 @router.delete("/delete/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def delete_point(
         request: Request,
         point_id: Annotated[int, Path(title='ID точки', examples=[1])],
         session: AsyncSession = Depends(get_session),
 ):
-    headers = request.headers
-    token_list = headers.get("authorization").split()
-    dict_by_token = get_token_data_verify(token_list[1])
+    dict_by_token = get_token_data_verify(request)
     if dict_by_token is None:
         raise HTTPException(status_code=403, detail="Invalid token or expired token")
     user_id = dict_by_token.get("id")
@@ -115,3 +112,66 @@ async def delete_point(
 
     await points_crud.delete_point(session=session, point=await points_crud.get_point_by_id(session=session, point_id=point_id))
     return ResponseSchema(status_code=200, detail=f"Point {point_id} could be deleted")
+
+
+@router.post("/social/{point_id}", dependencies=dependencies)
+async def add_social(
+        request: Request,
+        point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],
+        social_data: SocialSchema,
+        session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    user_id = dict_by_token.get("id")
+
+    points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
+    if point_id not in points_id:
+        raise HTTPException(status_code=403, detail='The user does not own this point')
+
+    point = await points_crud.get_point_by_id(session=session, point_id=point_id)
+    if point:
+        social_id = await points_crud.add_social(session=session, data=social_data, enterprise_id=point.enterprise_id)
+        await points_crud.add_social_point(session=session, social_id=social_id, point_id=point_id)
+        return ResponseSchema(status_code=200, detail=f"Social for {point_id} point successfully added")
+    else:
+        raise HTTPException(status_code=404, detail="The point was not found")
+
+
+@router.get("/social/{point_id}", dependencies=dependencies)
+async def get_socials(
+        request: Request,
+        point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],
+        session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+
+    points_id = await points_crud.get_point_by_user_id(session=session, user_id=dict_by_token.get("id"))
+    if point_id not in points_id:
+        raise HTTPException(status_code=403, detail='The user does not own this point')
+
+    return await points_crud.get_all_social(session=session, point_id=point_id)
+
+
+@router.delete("/social/{point_id}", dependencies=dependencies)
+async def delete_social(
+    request: Request,
+    point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],
+    social_id: Annotated[SocialID, Body()],
+    session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+
+    points_id = await points_crud.get_point_by_user_id(session=session, user_id=dict_by_token.get("id"))
+    if point_id not in points_id:
+        raise HTTPException(status_code=403, detail='The user does not own this point')
+
+    if await points_crud.delete_social_by_id(session=session, social_id=social_id):
+        return ResponseSchema(status_code=200, detail="Social deleted")
+    else:
+        raise HTTPException(status_code=404, detail="Invalid social ID")
