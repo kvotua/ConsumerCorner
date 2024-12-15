@@ -121,14 +121,3 @@ async def get_all_social(session: AsyncSession, point_id: int) -> list[Social]:
 
 async def delete_social_by_id(session: AsyncSession, social_id: int) -> bool:
     await session.execute(delete(SocialPoint).where(SocialPoint.social_id == social_id))
-
-    stmt = select(Social).where(Social.id == social_id)
-    result: Result = await session.execute(stmt)
-    social = result.scalar_one_or_none()
-    if social:
-        await session.delete(social)
-        await session.commit()
-        return True
-    else:
-        return False
-

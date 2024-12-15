@@ -20,7 +20,6 @@ setup_logging()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await create_tables()
     yield
 
 

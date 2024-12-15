@@ -34,3 +34,4 @@ async def delete_verify_session(session: AsyncSession):
         Verification.__table__.delete().where(Verification.created_at < threshold_date)
     )
     await session.commit()
+
