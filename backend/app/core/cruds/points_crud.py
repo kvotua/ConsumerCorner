@@ -118,6 +118,5 @@ async def get_all_social(session: AsyncSession, point_id: int) -> list[Social]:
     list_socials = result_2.scalars().all()
     return list(list_socials)
 
-
-async def delete_social_by_id(session: AsyncSession, social_id: int) -> bool:
+async def delete_social_by_id(session: AsyncSession, social_id: int):
     await session.execute(delete(SocialPoint).where(SocialPoint.social_id == social_id))
