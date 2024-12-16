@@ -57,6 +57,8 @@ class PointInfo(BaseModel):
     address: Annotated[str, Field(title='The address of the point', examples=["ул. Павлика Морозова 74, Б"])]
     opening_time: Annotated[time, Field(title="The opening time of the point", examples=["10:00"])]
     closing_time: Annotated[time, Field(title="The closing time of the point", examples=["20:00"])]
+    image_id: Annotated[Optional[str], Field(title="Image ID", examples=['5f2fcae09b58c38603442a4f'])]
+    documents_data: Annotated[Optional[List[str]], Field(title="Document ID", examples=[['6d75ddd59b58c3607315a11']])]
     phone: Annotated[Optional[str], Field(title="Phone number", examples=['79219876543'], max_length=14)]
     type_activity: Annotated[str, Field(title="Type of activity", examples=["Продажи"])]
     middle_stars: Annotated[Optional[float], Field(title="Middle stars", examples=[3.9], ge=0, lt=5)]
@@ -109,9 +111,12 @@ class ResponseSchema(BaseModel):
 
 
 class DocumentData(BaseModel):
-    id: Annotated[str, Field(title="ID документа", examples=['5f2fcae09b58c38603442a4f'])]
-    point_id: Annotated[int, Field(title="ID точки", examples=[1])]
+    id: Annotated[str, Field(title="Document ID", examples=['5f2fcae09b58c38603442a4f'])]
+    point_id: Annotated[int, Field(title="Point ID", examples=[1])]
 
+class ImageData(BaseModel):
+    id: Annotated[str, Field(title="Photo ID", examples=['5f2fcae09b58c38603442a4f'])]
+    point_id: Annotated[int, Field(title="Point ID", examples=[1])]
 
 class SocialSchema(BaseModel):
     name: Annotated[str, Field(title="Name of the social", examples=["Вконтакте"])]

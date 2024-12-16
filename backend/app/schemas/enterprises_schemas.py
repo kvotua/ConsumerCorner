@@ -20,8 +20,8 @@ class RegisterCompany(BaseModel):
         inn = values.get('inn')
         if inn and not inn.isdigit():
             raise ValueError('The INN must contain only numbers.')
-        # if len(inn) != 10 or 12:
-            # raise ValueError('The must contain 10 or 12 digits')
+        if len(inn) not in [10, 12]:
+            raise ValueError('The must contain 10 or 12 digits')
 
         ogrn = values.get('ogrn')
         if ogrn and not ogrn.isdigit():
@@ -40,6 +40,7 @@ class EnterpriseInfo(BaseModel):
     inn: Annotated[Optional[str], Field(title="INN", examples=["390000001190"], min_length=10, max_length=12)]
     ogrn: Annotated[Optional[str], Field(title="OGRN of a legal entity", examples=['1027700132195'],min_length=13, max_length=13)]
     address: Annotated[Optional[str], Field(title="Actual address", examples=['ул. Павлика Морозова 74, Б'])]
+    image_id: Annotated[Optional[str], Field(title="Image ID", examples=['5f2fcae09b58c38603442a4f'])]
     general_type_activity: Annotated[Optional[str], Field(title='The main type of activity', examples=["Private enterprise"])]
     created_at: Annotated[Optional[datetime], Field(title="The date of registration of the company in the application", examples=["2024-12-07 03:21:37.273427"])]
 
@@ -47,3 +48,7 @@ class EnterpriseInfo(BaseModel):
 class ResponseSchema(BaseModel):
     status_code: Annotated[int, Field(title="Status code", examples=[200])]
     detail: Annotated[Any, Field(title="detail", examples=["OK"])]
+
+class ImageData(BaseModel):
+    id: Annotated[str, Field(title="Photo ID", examples=['5f2fcae09b58c38603442a4f'])]
+    enterprise_id: Annotated[int, Field(title="Enterprise ID", examples=[1])]
