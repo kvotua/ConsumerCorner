@@ -1,11 +1,15 @@
 from pydantic import BaseModel, Field, ConfigDict, model_validator
-from typing import Annotated, Optional, Any, List
+from typing import Annotated, Optional, Any
 from datetime import datetime, time
 import re
 
+
 from app.services.verify_services import validate_phone
 from app.config import pattern_time
+from app.services.points_services import validating_link
 
+
+social_list = ["Вконтакте", "Whatsapp", "Telegram", "Viber", "Instagram"]
 
 class RegisterPoint(BaseModel):
     title: Annotated[str, Field(title="The working name of the point", examples=["Виктория"])]
@@ -44,7 +48,6 @@ class RegisterPoint(BaseModel):
         return values
 
 
-
 class PointInfo(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -61,7 +64,6 @@ class PointInfo(BaseModel):
     middle_stars: Annotated[Optional[float], Field(title="Middle stars", examples=[3.9], ge=0, lt=5)]
     verify_phone: Annotated[Optional[bool], Field(title="Has the phone number been verified", examples=[False])]
     created_at: Annotated[datetime, Field(title="The date of registration of the point in the application", examples=["2024-12-07 03:21:37.273427"])]
-
 
 
 class ChangePointSchema(BaseModel):
@@ -98,10 +100,15 @@ class ChangePointSchema(BaseModel):
         return values
 
 
+class SocialAdd(BaseModel):
+    point_id: Annotated[int, Field(title="Point ID", examples=[1])]
+    name: Annotated[str, Field(title="")]
+
 
 class ResponseSchema(BaseModel):
     status_code: Annotated[int, Field(title="Status code", examples=[200])]
     detail: Annotated[Any, Field(title="detail", examples=["OK"])]
+
 
 class DocumentData(BaseModel):
     id: Annotated[str, Field(title="Document ID", examples=['5f2fcae09b58c38603442a4f'])]
@@ -110,3 +117,19 @@ class DocumentData(BaseModel):
 class ImageData(BaseModel):
     id: Annotated[str, Field(title="Photo ID", examples=['5f2fcae09b58c38603442a4f'])]
     point_id: Annotated[int, Field(title="Point ID", examples=[1])]
+
+class SocialSchema(BaseModel):
+    name: Annotated[str, Field(title="Name of the social", examples=["Вконтакте"])]
+    link: Annotated[str, Field(title="Link", examples=['https://vk.com/'])]
+
+    @model_validator(mode="before")
+    def check_data(cls, values):
+        if values.get("name").title() not in social_list:
+            raise ValueError('Invalid name of the social')
+        if validating_link(values.get("link")) is False:
+            raise ValueError("Invalid link")
+        return values
+
+
+class SocialID(BaseModel):
+    social_id: Annotated[int, Field(title="Social ID", examples=[1], ge=1)]

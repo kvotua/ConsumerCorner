@@ -32,6 +32,8 @@ async def send_message(
         session: AsyncSession = Depends(get_session)
 ):
     dict_by_token = get_token_data(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     number = dict_by_token.get('phone')
     phone = validate_phone(number)
     if await verify_crud.get_verify_phone(session=session, phone=phone):
@@ -51,7 +53,7 @@ async def send_message(
     await httpclient.close_session()
     if not isinstance(response, str):
         raise HTTPException(status_code=400, detail=response.get("error"))
-    await add_verify_session(session=session, request_id=response, sms_code=code, phone=phone)
+    await verify_crud.add_verify_session(session=session, request_id=response, sms_code=code, phone=phone)
     return ReqID(req_id=response)
 
 
@@ -65,6 +67,8 @@ async def check_code(
         session: AsyncSession = Depends(get_session),
 ):
     dict_by_token = get_token_data(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     response = await verify_crud.get_verify_session(session=session, request_id=req_id, sms_code=sms_code)
     if response is None:
         raise HTTPException(status_code=401, detail='Invalid session or sms code')
@@ -81,6 +85,8 @@ async def send_email(
         user_email: Annotated[EmailSchema, Body()]
 ):
     dict_by_token = get_token_data(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     token = sing_email_jwt(user_id=dict_by_token.get("id"), email=user_email.email)
     try:
         sendemail.send_message(to_send=user_email.email, token=token)

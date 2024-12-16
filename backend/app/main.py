@@ -18,14 +18,8 @@ from .logger.config import setup_logging
 
 setup_logging()
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     await create_tables()
-#     yield
-
-
 debug = os.getenv("DEBUG") is not None
-app = FastAPI(debug=debug)#, lifespan=lifespan)
+app = FastAPI(debug=debug)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,7 +27,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 app.include_router(auth_router)
 app.include_router(verify_router)

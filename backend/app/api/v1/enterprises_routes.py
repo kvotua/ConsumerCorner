@@ -17,7 +17,7 @@ router = APIRouter(
 mongo = MongoDBClient("image", "doc")
 
 
-@router.post("/register-enterprise", response_model=ResponseSchema, dependencies=dependencies)
+@router.post("/register", response_model=ResponseSchema, dependencies=dependencies)
 async def register_company(
         request: Request,
         data_company: Annotated[RegisterCompany, Body()],
