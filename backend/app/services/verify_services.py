@@ -1,12 +1,12 @@
 import random
 import smtplib
+from email.utils import make_msgid
 import aiohttp
 import phonenumbers
 from datetime import datetime, timedelta, timezone
 import bcrypt
 import asyncio
 from email.mime.text import  MIMEText
-from email.header import Header
 from app.config import from_email, email_password, email_host
 
 class HttpClient:
@@ -49,7 +49,8 @@ class SendEmail:
 
     def send_message(self, to_send: str, token: str):
         msg = MIMEText(f"Your verification link: {token}", 'plain', 'utf-8')
-        msg['Subject'] = Header("Mail verification")
+        msg['Message-ID'] = make_msgid()
+        msg['Subject'] = "Mail verification"
         msg['From'] = self.email
         msg['To'] = to_send
         try:

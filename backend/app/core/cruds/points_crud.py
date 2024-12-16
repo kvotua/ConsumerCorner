@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
-from app.models.models import Points, Enterprises, Docs
-from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo
+from app.models.models import Points, Enterprises, Docs, Imgs
+from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo, ImageData
 from app.services.points_services import parse_time
 
 
@@ -40,6 +40,7 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
             id=point.id,
             enterprise_id=point.enterprise_id,
             title=point.title,
+            image_id=point.image_id,
             address=point.address,
             opening_time=point.opening_time,
             closing_time=point.closing_time,
@@ -62,6 +63,12 @@ async def add_document(session: AsyncSession, document_data: DocumentData):
     )
     session.add(data_for_db)
     await session.commit()
+
+async def add_image(session: AsyncSession, image_data: ImageData):
+    point = await get_point_by_id(session=session, point_id=image_data.point_id)
+    point.image_id = image_data.id
+    await session.commit()
+    await session.refresh(point)
 
 async def get_point_by_user_id(session: AsyncSession, user_id: int):
     stmt = select(Points.id).where(Points.create_id == user_id)
