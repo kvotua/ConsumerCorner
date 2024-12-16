@@ -52,3 +52,9 @@ services:
     volumes:
       - ./mongodbdata:/data/db
 
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8090:8080" 
+    restart: always
