@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Text, ForeignKey, func, Float, Time, PrimaryKeyConstraint
+from sqlalchemy import BigInteger, Text, ForeignKey, func, Float, Time, PrimaryKeyConstraint, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime, time
@@ -11,10 +11,10 @@ class Users(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    phone: Mapped[str] = mapped_column()
-    fio: Mapped[str] = mapped_column()
+    phone: Mapped[str] = mapped_column(Text)
+    fio: Mapped[str] = mapped_column(Text)
     password: Mapped[str] = mapped_column(Text)
-    email: Mapped[Optional[str]] = mapped_column()
+    email: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     verify_phone: Mapped[bool] = mapped_column(default=False)
     verify_email: Mapped[bool] = mapped_column(default=False)
 
@@ -24,20 +24,20 @@ class UserEnterprisesRole(Base):
 
     user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     enterprise_id: Mapped[str] = mapped_column(BigInteger, ForeignKey('enterprises.id'))
-    role: Mapped[str] = mapped_column()
+    role: Mapped[str] = mapped_column(String)
 
 
 class Enterprises(Base):
     __tablename__ = 'enterprises'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column()
-    type: Mapped[str] = mapped_column()
+    name: Mapped[str] = mapped_column(String)
+    type: Mapped[str] = mapped_column(String)
     create_id: Mapped[int] = mapped_column(BigInteger)
-    inn: Mapped[str] = mapped_column()
-    ogrn: Mapped[str] = mapped_column()
-    address: Mapped[str] = mapped_column()
-    general_type_activity: Mapped[str] = mapped_column()
+    inn: Mapped[str] = mapped_column(String(12))
+    ogrn: Mapped[str] = mapped_column(String(13))
+    address: Mapped[str] = mapped_column(Text)
+    general_type_activity: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
@@ -47,13 +47,13 @@ class Points(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     enterprise_id : Mapped[int] = mapped_column(ForeignKey('enterprises.id'))
     create_id: Mapped[int] = mapped_column(BigInteger)
-    title: Mapped[str] = mapped_column()
-    address: Mapped[str] = mapped_column()
+    title: Mapped[str] = mapped_column(String)
+    address: Mapped[str] = mapped_column(Text)
     opening_time: Mapped[time] = mapped_column(Time)
     closing_time: Mapped[time] = mapped_column(Time)
     phone: Mapped[Optional[str]] = mapped_column(nullable=True)
-    type_activity: Mapped[str] = mapped_column()
-    middle_stars: Mapped[Optional[float]] = mapped_column(Float)
+    type_activity: Mapped[str] = mapped_column(String)
+    middle_stars: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     verify_phone: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
@@ -71,14 +71,14 @@ class Comments(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
     text: Mapped[str] = mapped_column(Text)
-    stars: Mapped[int] = mapped_column()
+    stars: Mapped[int] = mapped_column(Integer)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
 class Imgs(Base):
     __tablename__ = 'imgs'
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
-    comment_id: Mapped[str] = mapped_column()
+    id: Mapped[str] = mapped_column(primary_key=True)
+    comment_id: Mapped[str] = mapped_column(Text)
 
 
 class Social(Base):
@@ -86,7 +86,7 @@ class Social(Base):
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     enterprises_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('enterprises.id'))
-    name: Mapped[str] = mapped_column()
+    name: Mapped[str] = mapped_column(Text)
     link: Mapped[str] = mapped_column(Text)
 
     social_points: Mapped[List["SocialPoint"]] = relationship("SocialPoint", cascade="all, delete-orphan")

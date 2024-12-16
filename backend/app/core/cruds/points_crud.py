@@ -74,6 +74,15 @@ async def get_point_by_id(session: AsyncSession, point_id: int) -> Points:
     result = await session.execute(stmt)
     return result.scalars().first()
 
+async def add_image(session: AsyncSession, image_data: ImageData):
+    point = await get_point_by_id(session=session, point_id=image_data.point_id)
+    if not point:
+        return False
+    point.image_id = True
+    await session.commit()
+    await session.refresh(point)
+    return True
+
 async def update_point(session: AsyncSession, point: Points, point_change: ChangePointSchema):
     if point_change.opening_time:
         point_change.opening_time = parse_time(point_change.opening_time)
