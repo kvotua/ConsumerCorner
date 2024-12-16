@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, Result
-from app.models.models import Points, Enterprises, Docs
-from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo
+from sqlalchemy import select, Result, delete
+from app.models.models import Points, Enterprises, Docs, Social, SocialPoint
+from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo, SocialSchema
 from app.services.points_services import parse_time
 
 
@@ -93,3 +93,30 @@ async def get_enterprises_id_by_user_id(session: AsyncSession, user_id: int):
     result: Result = await session.execute(stmt)
     enterprises_id = result.scalars().all()
     return enterprises_id
+
+async def add_social(session: AsyncSession, data: SocialSchema, enterprise_id: int):
+    data_for_db = Social(
+        enterprises_id=enterprise_id,
+        name=data.name,
+        link=data.link,
+    )
+    session.add(data_for_db)
+    await session.commit()
+    return data_for_db.id
+
+async def add_social_point(session: AsyncSession, social_id: int, point_id: int):
+    data_for_db = SocialPoint(social_id=social_id, point_id=point_id)
+    session.add(data_for_db)
+    await session.commit()
+
+async def get_all_social(session: AsyncSession, point_id: int) -> list[Social]:
+    stmt = select(SocialPoint.social_id).where(SocialPoint.point_id == point_id)
+    result: Result = await session.execute(stmt)
+    socials_id = result.scalars().all()
+    stmt_2 = select(Social).filter(Social.id.in_(socials_id))
+    result_2: Result = await session.execute(stmt_2)
+    list_socials = result_2.scalars().all()
+    return list(list_socials)
+
+async def delete_social_by_id(session: AsyncSession, social_id: int):
+    await session.execute(delete(SocialPoint).where(SocialPoint.social_id == social_id))

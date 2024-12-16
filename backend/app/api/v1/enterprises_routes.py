@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.post("/register-enterprise", response_model=ResponseSchema, dependencies=dependencies)
+@router.post("/register", response_model=ResponseSchema, dependencies=dependencies)
 async def register_company(
         request: Request,
         data_company: Annotated[RegisterCompany, Body()],
@@ -28,7 +28,7 @@ async def register_company(
     raise HTTPException(status_code=500, detail="Error when registering a company")
 
 
-@router.get("/enterprises-info", response_model=List[EnterpriseInfo], dependencies=dependencies)
+@router.get("/", response_model=List[EnterpriseInfo], dependencies=dependencies)
 async def get_companies_info(
         request: Request,
         session: AsyncSession = Depends(get_session),

@@ -2,8 +2,7 @@ from sqlalchemy import BigInteger, Text, ForeignKey, func, Float, Time, PrimaryK
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime, time
-from typing import Optional
-
+from typing import Optional, List
 
 Base = declarative_base()
 
@@ -89,6 +88,8 @@ class Social(Base):
     enterprises_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('enterprises.id'))
     name: Mapped[str] = mapped_column()
     link: Mapped[str] = mapped_column(Text)
+
+    social_points: Mapped[List["SocialPoint"]] = relationship("SocialPoint", cascade="all, delete-orphan")
 
 
 class SocialPoint(Base):
