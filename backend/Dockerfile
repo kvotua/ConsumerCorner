@@ -26,7 +26,9 @@ RUN pip install pytest
 
 RUN pytest
 
-COPY ./wait-for-postgres.sh ./wait-for-postgres.sh
-RUN chmod +x ./wait-for-postgres.sh
+# Явное копирование скрипта
+COPY ./wait-for-postgres.sh /backend/wait-for-postgres.sh
+RUN sed -i 's/\r//' /backend/wait-for-postgres.sh
+RUN chmod +x /backend/wait-for-postgres.sh
 
-CMD ["/backend/wait-for-postgres.sh", "postgres"]
+CMD ["bash", "/backend/wait-for-postgres.sh"]
