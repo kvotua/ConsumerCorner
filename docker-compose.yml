@@ -53,8 +53,16 @@ services:
       - ./mongodbdata:/data/db
 
   adminer:
-    image: adminer
+    build: ./adminer-mongo  # Указываем на кастомный Dockerfile
     container_name: adminer
     ports:
-      - "8090:8080" 
+      - "8090:8080"  # Связываем порты, чтобы доступ был через localhost:8090
     restart: always
+    depends_on:
+      - mongodb  # Зависимость от MongoDB
+      - postgres  # Зависимость от PostgreSQL
+    environment:
+      ADMINER_DEFAULT_SERVER: mongodb  # Указываем, что Adminer должен подключаться к MongoDB
+    links:
+      - mongodb  # Связываем контейнер Adminer с контейнером MongoDB
+      - postgres  # Связываем контейнер Adminer с контейнером PostgreSQL

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict, model_validator
-from typing import Annotated, Optional, Any
+from typing import Annotated, Optional, Any, List
 from datetime import datetime, time
 import re
 
@@ -12,9 +12,9 @@ from app.services.points_services import validating_link
 social_list = ["Вконтакте", "Whatsapp", "Telegram", "Viber", "Instagram"]
 
 class RegisterPoint(BaseModel):
-    title: Annotated[str, Field(title="The working name of the point", examples=["Виктория"])]
+    title: Annotated[str, Field(title="The working name of the point", examples=["Ponarth"])]
     enterprise_id: Annotated[int, Field(title="Enterprise ID", examples=[1], ge=1)]
-    address: Annotated[str, Field(title="The address of the point", examples=["ул. Павлика Морозова 74, Б"])]
+    address: Annotated[str, Field(title="The address of the point", examples=["г. Калининград, Киевский переулок 1"])]
     opening_time: Annotated[str, Field(title="The opening time of the point", examples=['11:00'])]
     closing_time: Annotated[str, Field(title="The closing time of the point", examples=['19:00'])]
     phone: Annotated[Optional[str], Field(title="Phone number", examples=['79219876543'], min_length=11, max_length=14, default=None)]
@@ -53,8 +53,8 @@ class PointInfo(BaseModel):
 
     id: Annotated[int, Field(title="Point ID", examples=[1])]
     enterprise_id: Annotated[int, Field(title="Enterprise ID", examples=[1])]
-    title: Annotated[str, Field(title="The working name of the point", examples=["Виктория"])]
-    address: Annotated[str, Field(title='The address of the point', examples=["ул. Павлика Морозова 74, Б"])]
+    title: Annotated[str, Field(title="The working name of the point", examples=["Ponarth"])]
+    address: Annotated[str, Field(title='The address of the point', examples=["г. Калининград, Киевский переулок 1"])]
     opening_time: Annotated[time, Field(title="The opening time of the point", examples=["10:00"])]
     closing_time: Annotated[time, Field(title="The closing time of the point", examples=["20:00"])]
     image_id: Annotated[Optional[str], Field(title="Image ID", examples=['5f2fcae09b58c38603442a4f'])]
@@ -67,8 +67,8 @@ class PointInfo(BaseModel):
 
 
 class ChangePointSchema(BaseModel):
-    title: Annotated[Optional[str], Field(title="The working name of the point", examples=["Виктория"], default=None)]
-    address: Annotated[Optional[str], Field(title='The address of the point', examples=["ул. Павлика Морозова 74, Б"], default=None)]
+    title: Annotated[Optional[str], Field(title="The working name of the point", examples=["Ponarth"], default=None)]
+    address: Annotated[Optional[str], Field(title='The address of the point', examples=["г. Калининград, Киевский переулок 1"], default=None)]
     opening_time: Annotated[Optional[str], Field(title="The opening time of the point", examples=["10:00"], default=None)]
     closing_time: Annotated[Optional[str], Field(title="The closing time of the point", examples=["20:00"], default=None)]
     phone: Annotated[Optional[str], Field(title="Phone number", examples=['79219876543'], max_length=14, default=None)]
