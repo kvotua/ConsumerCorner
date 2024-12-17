@@ -26,7 +26,6 @@ class UserEnterprisesRole(Base):
     enterprise_id: Mapped[str] = mapped_column(BigInteger, ForeignKey('enterprises.id'))
     role: Mapped[str] = mapped_column(String)
 
-
 class Enterprises(Base):
     __tablename__ = 'enterprises'
 
@@ -37,6 +36,7 @@ class Enterprises(Base):
     inn: Mapped[str] = mapped_column(String(12))
     ogrn: Mapped[str] = mapped_column(String(13))
     address: Mapped[str] = mapped_column(Text)
+    image_id: Mapped[str] = mapped_column(nullable=True)
     general_type_activity: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
@@ -51,11 +51,13 @@ class Points(Base):
     address: Mapped[str] = mapped_column(Text)
     opening_time: Mapped[time] = mapped_column(Time)
     closing_time: Mapped[time] = mapped_column(Time)
+    image_id: Mapped[str] = mapped_column(nullable=True)
     phone: Mapped[Optional[str]] = mapped_column(nullable=True)
     type_activity: Mapped[str] = mapped_column(String)
     middle_stars: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     verify_phone: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+
 
 
 class Docs(Base):
@@ -81,6 +83,7 @@ class Imgs(Base):
     comment_id: Mapped[str] = mapped_column(Text)
 
 
+    
 class Social(Base):
     __tablename__ = 'social'
 

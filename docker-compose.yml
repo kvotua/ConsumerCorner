@@ -1,18 +1,6 @@
 
 services:
 
-  backend:
-    build:
-      context: ./backend
-    ports:
-      - "8765:80"
-    volumes:
-      - ./storage:/storage
-    depends_on:
-      - postgres
-      - mongodb
-    restart: on-failure:2
-
   postgres:
     image: postgres:16-alpine
     container_name: postgres
@@ -31,6 +19,18 @@ services:
       - 5432:5432
     volumes:
       - ./data:/var/lib/postgresql/data2
+  
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8765:80"
+    volumes:
+      - ./storage:/storage
+    depends_on:
+      - postgres
+      - mongodb
+    restart: on-failure:2
 
   mongodb:
     image: mongo:latest
@@ -51,3 +51,17 @@ services:
     volumes:
       - ./mongodbdata:/data/db
 
+  adminer:
+    build: ./adminer-mongo  # Указываем на кастомный Dockerfile
+    container_name: adminer
+    ports:
+      - "8090:8080"  # Связываем порты, чтобы доступ был через localhost:8090
+    restart: always
+    depends_on:
+      - mongodb  # Зависимость от MongoDB
+      - postgres  # Зависимость от PostgreSQL
+    environment:
+      ADMINER_DEFAULT_SERVER: mongodb  # Указываем, что Adminer должен подключаться к MongoDB
+    links:
+      - mongodb  # Связываем контейнер Adminer с контейнером MongoDB
+      - postgres  # Связываем контейнер Adminer с контейнером PostgreSQL

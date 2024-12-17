@@ -4,7 +4,7 @@ from typing import Annotated, List, Optional
 
 from app.core.databases.postgresdb import get_session
 from app.schemas.enterprises_schemas import ResponseSchema
-from app.schemas.points_schemas import RegisterPoint, PointInfo, ChangePointSchema, DocumentData, SocialSchema, SocialID
+from app.schemas.points_schemas import RegisterPoint, PointInfo, ChangePointSchema, DocumentData, SocialSchema, SocialID, ImageData
 from app.services.auth_handler import get_token_data_verify, decode_jwt_with_verify
 from app.core.cruds import points_crud
 from app.services.auth_bearer import dependencies
@@ -35,7 +35,7 @@ async def register_point(
 @router.post("/document/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def add_document(
     request: Request,
-    point_id: Annotated[int, Path(title="ID точки")],
+    point_id: Annotated[int, Path(title="Point ID")],
     documents: Optional[List[UploadFile]] = File([]),
     session: AsyncSession = Depends(get_session),
 ):
@@ -46,10 +46,10 @@ async def add_document(
     points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
 
     if point_id not in points_id:
-        raise HTTPException(status_code=403, detail='Пользователь не владеет данной точкой')
+        raise HTTPException(status_code=403, detail='The user does not own this company')
     point = await points_crud.get_point_by_id(session=session, point_id=point_id)
     if point is None:
-        raise HTTPException(status_code=404, detail='Точка не найдена')
+        raise HTTPException(status_code=404, detail='The point was not found')
     if documents:
         for document in documents:
             contents = await document.read()
@@ -57,6 +57,33 @@ async def add_document(
             document_data = DocumentData(id=info['_id'], point_id=point_id)
             await points_crud.add_document(session=session, document_data=document_data)
     return ResponseSchema(status_code=200, detail="Document's successfully uploaded")
+
+
+@router.post("/upload_images/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
+async def upload_images(
+    request: Request,
+    point_id: Annotated[int, Path(title="Point ID")],
+    image: Optional[UploadFile] = File([]),
+    session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    user_id = dict_by_token.get("id")
+    points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
+
+    if point_id not in points_id:
+        raise HTTPException(status_code=403, detail='The user does not own this company')
+    point = await points_crud.get_point_by_id(session=session, point_id=point_id)
+    if point is None:
+        raise HTTPException(status_code=404, detail='The point was not found')
+    
+    content = await image.read()
+    info = await mongo.upload_image(image, content)
+    image_data = ImageData(id=info['_id'], point_id=point_id)
+    await points_crud.add_image(session=session, image_data=image_data)
+    return ResponseSchema(status_code=200, detail="Image successfully uploaded to Point")
+    
 
 @router.get("/", response_model=List[PointInfo], dependencies=dependencies)
 async def get_points_info(
@@ -68,6 +95,18 @@ async def get_points_info(
     if dict_by_token is None:
         raise HTTPException(status_code=403, detail="Invalid token or expired token")
     return await points_crud.get_all_points(session=session, user_id=dict_by_token.get("id"))
+
+
+@router.get("/{point_id}", response_model=PointInfo, dependencies=dependencies)
+async def get_points_info(
+        request: Request,
+        point_id: Annotated[int, Path(title="ID точки")],
+        session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    return await points_crud.get_point_by_id(session=session, point_id=point_id)
 
 
 @router.patch("/change/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
