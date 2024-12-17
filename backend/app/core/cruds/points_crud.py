@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result, delete
 from app.models.models import Points, Enterprises, Docs, Social, SocialPoint
-from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo, SocialSchema
+from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo, SocialSchema, ImageData
 from app.services.points_services import parse_time
 
 
