@@ -28,11 +28,11 @@ export default function RegPage({ navigation }) {
   const validateInputs = () => {
     if (!regexPass.test(password)) {
       setErrorMessage("Пароль должен содержать минимум 8 символов, заглавные буквы, цифры и спец символы.");
-      return false;
+      return true;
     }
     if (!regexFio.test(fio)) { // Здесь вы можете заменить phoneValue на поле ФИО, если оно у вас есть
       setErrorMessage("ФИО должно быть в формате 'Фамилия Имя' или 'Фамилия Имя Отчество'.");
-      return false;
+      return true;
     }
     setErrorMessage(""); // Сбросить сообщение об ошибке, если все в порядке
     return true;
@@ -104,7 +104,7 @@ export default function RegPage({ navigation }) {
       <SafeAreaView style={Style.containerMainPage}>
                         {/* Компонент Toast */}
                   {toast.visible && (
-                <Toast
+                <Toast 
                     type={toast.type}
                     message={toast.message}
                     subMessage={toast.subMessage}
@@ -160,9 +160,7 @@ export default function RegPage({ navigation }) {
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() => {
-                  // Пример передачи нормализованного значения
-                  console.log("Отправляем номер телефона:", rawPhoneValue);
-                  handleNext();
+                  navigation.replace("RegFirma");
                 }}
               >
                 <Text style={Style.blackText}>Далее</Text>
