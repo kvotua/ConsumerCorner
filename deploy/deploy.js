@@ -35,7 +35,7 @@ app.post('/deploy', (req, res) => {
     console.log('webhook works');
     const branch = req.body.ref.split('/').pop();
     if (branch === 'prod_v1') {
-        exec('git pull', (err, stdout, stderr) => {
+        exec('git -C "../" pull', (err, stdout, stderr) => {
             if (err) {
                 console.error(`exec error: ${err}`);
                 return res.status(500).send('Error updating repository');
