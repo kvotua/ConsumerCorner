@@ -23,3 +23,14 @@ class UploadImageModel(BaseModel):
     
 class UploadDocumentModel(BaseModel):
     id: str = Field(..., example="67530002b29bbd4026426875", description="ID of the document")
+
+class DeleteImageModel(BaseModel):
+    id: str = Field(..., example="67530002b29bbd4026426875", description="ID of the image")
+    message: str = Field(..., example="Image not found", description="Message information about deleting")
+    status_code: int = Field(..., example=404, description="HTTP Status Code")
+
+class DeleteDocumentModel(BaseModel):
+    id: str = Field(..., example="67530002b29bbd4026426875", description="ID of the document")
+    message: str = Field(..., example="Document not found", description="Message information about deleting")
+    status_code: int = Field(..., example=404, description="HTTP Status Code")
+    

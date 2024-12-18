@@ -19,6 +19,7 @@ FROM base AS dev
 WORKDIR /backend
 
 COPY ./ ./ 
+RUN mkdir -p /backend/alembic/versions
 
 RUN pip install --no-cache-dir -r /backend/requirements.txt
 RUN pip install alembic
