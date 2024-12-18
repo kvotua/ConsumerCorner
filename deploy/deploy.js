@@ -76,13 +76,17 @@ app.post('/telegram', (req, res) => {
         const user = pullRequest.user.login;
         const sourceBranch = pullRequest.head.ref;
         const targetBranch = pullRequest.base.ref;
-        const timestamp = new Date();
         const url = pullRequest.html_url;
+        const title = pullRequest.title;
 
-        const message = `${timestamp.toISOString()}, User - ${user}, Action - ${action}, Branch: ${sourceBranch} -> ${targetBranch}\n${url}`;
+        const escapedTitle = title.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
+
+        const message = `[${escapedTitle}](${url})\nPull request: ${action}\nWho: ${user}\n${sourceBranch} -> ${targetBranch}\nUrl: ${url}`;
+
         axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             chat_id: CHAT_ID,
             text: message,
+            parse_mode: 'MarkdownV2',
         })
         .then(response => {
             console.log('Message sent to Telegram');
@@ -102,4 +106,3 @@ const PORT = 3333;
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
 });
-
