@@ -24,6 +24,7 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
     result_points = await session.execute(stmt_points)
     points = result_points.scalars().all()
 
+
     point_ids = [point.id for point in points]
     stmt_docs = select(Docs).where(Docs.point_id.in_(point_ids))
     result_docs = await session.execute(stmt_docs)
@@ -34,6 +35,13 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
         if doc.point_id not in docs_dict:
             docs_dict[doc.point_id] = []
         docs_dict[doc.point_id].append(doc.id)
+
+    stmt_socials = select(SocialPoint).where(SocialPoint.point_id.in_(point_ids))
+    result_socials = await session.execute(stmt_socials)
+    social_data = result_socials.scalars().all()
+    social_data_dicts = [
+        {"point_id": sp.point_id, "social_id": sp.social_id} for sp in social_data
+    ]
 
     points_data = [
         PointInfo(
@@ -49,7 +57,8 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
             middle_stars=point.middle_stars,
             verify_phone=point.verify_phone,
             created_at=point.created_at,
-            documents_data=docs_dict.get(point.id, [])
+            documents_data=docs_dict.get(point.id, []),
+            social_data= social_data_dicts
         )
         for point in points
     ]
@@ -76,10 +85,42 @@ async def get_point_by_user_id(session: AsyncSession, user_id: int):
     points_id = result.scalars().all()
     return points_id
 
-async def get_point_by_id(session: AsyncSession, point_id: int) -> Points:
+async def get_point_by_id(session: AsyncSession, point_id: int) -> PointInfo:
     stmt = select(Points).where(Points.id == point_id)
     result = await session.execute(stmt)
-    return result.scalars().first()
+    point = result.scalars().first()
+
+    stmt_2 = select(SocialPoint).where(SocialPoint.point_id == point_id)
+    result_2 = await session.execute(stmt_2)
+    social_data = result_2.scalars().all()
+    social_data_dicts = [
+        {"point_id": sp.point_id, "social_id": sp.social_id} for sp in social_data
+    ]
+    stmt_3 = select(Docs).where(Docs.point_id == point_id)
+    result_3 = await session.execute(stmt_3)
+    docs = result_3.scalars().all()
+
+    docs_dict = {}
+    for doc in docs:
+        if doc.point_id not in docs_dict:
+            docs_dict[doc.point_id] = []
+        docs_dict[doc.point_id].append(doc.id)
+    return PointInfo(
+            id=point.id,
+            enterprise_id=point.enterprise_id,
+            title=point.title,
+            image_id=point.image_id,
+            address=point.address,
+            opening_time=point.opening_time,
+            closing_time=point.closing_time,
+            phone=point.phone,
+            type_activity=point.type_activity,
+            middle_stars=point.middle_stars,
+            verify_phone=point.verify_phone,
+            created_at=point.created_at,
+            documents_data=docs_dict.get(point.id, []),
+            social_data = social_data_dicts ,
+        )
 
 async def update_point(session: AsyncSession, point: Points, point_change: ChangePointSchema):
     if point_change.opening_time:

@@ -5,11 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.services.auth_handler import get_token_data, sign_jwt, sing_email_jwt, decode_email_token
-from app.core.cruds.verify_crud import add_verify_session
 from app.schemas.verify_schemas import ReqID, VerifePhone, EmailSchema
 from app.schemas.points_schemas import ResponseSchema
 from app.services.verify_services import httpclient, sendemail, generate_code, generate_text, validate_phone
-from app.models.verify_models import Verification
+from app.models.models import Verification
 from app.config import user_name, user_pass, send_from
 from app.core.databases.postgresdb import get_session
 from app.core.cruds import verify_crud, users_crud
@@ -90,11 +89,11 @@ async def send_email(
     token = sing_email_jwt(user_id=dict_by_token.get("id"), email=user_email.email)
     try:
         sendemail.send_message(to_send=user_email.email, token=token)
+        sendemail.close()
         return ResponseSchema(status_code=200, detail="The email has been sent!")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    finally:
         sendemail.close()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 

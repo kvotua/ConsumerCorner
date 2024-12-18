@@ -59,6 +59,7 @@ class PointInfo(BaseModel):
     closing_time: Annotated[time, Field(title="The closing time of the point", examples=["20:00"])]
     image_id: Annotated[Optional[str], Field(title="Image ID", examples=['5f2fcae09b58c38603442a4f'])]
     documents_data: Annotated[Optional[List[str]], Field(title="Document ID", examples=[['6d75ddd59b58c3607315a11']])]
+    social_data: Annotated[Optional[List[dict]], Field(title="Socials", examples=[{"point_id": 1, "social_id": 2}])]
     phone: Annotated[Optional[str], Field(title="Phone number", examples=['79219876543'], max_length=14)]
     type_activity: Annotated[str, Field(title="Type of activity", examples=["Продажи"])]
     middle_stars: Annotated[Optional[float], Field(title="Middle stars", examples=[3.9], ge=0, lt=5)]

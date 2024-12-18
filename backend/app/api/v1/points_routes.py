@@ -153,7 +153,7 @@ async def delete_point(
     return ResponseSchema(status_code=200, detail=f"Point {point_id} could be deleted")
 
 
-@router.post("/social/{point_id}", dependencies=dependencies)
+@router.post("/social/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def add_social(
         request: Request,
         point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],
@@ -195,7 +195,7 @@ async def get_socials(
     return await points_crud.get_all_social(session=session, point_id=point_id)
 
 
-@router.delete("/social/{point_id}", dependencies=dependencies)
+@router.delete("/social/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def delete_social(
     request: Request,
     point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],

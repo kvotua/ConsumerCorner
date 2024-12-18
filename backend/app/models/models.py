@@ -59,12 +59,13 @@ class Points(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
-
 class Docs(Base):
     __tablename__ = 'docs'
 
     id: Mapped[str] = mapped_column(primary_key=True)
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
+
+    social_points: Mapped[List["DocsPoint"]] = relationship("DocsPoint", cascade="all, delete-orphan")
 
 
 class Comments(Base):
@@ -101,3 +102,20 @@ class SocialPoint(Base):
 
     social_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('social.id'), nullable=False)
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'), nullable=False)
+
+
+class DocsPoint(Base):
+    __tablename__ = 'docs_point'
+    __table_args__ = (PrimaryKeyConstraint('docs_id', 'point_id'),)
+
+    docs_id: Mapped[str] = mapped_column(ForeignKey('docs.id'))
+    point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
+
+
+class Verification(Base):
+    __tablename__ = 'verification'
+
+    request_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    sms_code: Mapped[str] = mapped_column(String)
+    phone: Mapped[str] = mapped_column(String)
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())

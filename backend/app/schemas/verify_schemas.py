@@ -106,5 +106,5 @@ class EmailSchema(BaseModel):
         return value
 
 class TokenPair(BaseModel):
-    access_token: str
-    refresh_token: str
+    access_token: Annotated[str, Field(title="Access token", examples=[example_jwt_token])]
+    refresh_token: Annotated[str, Field(title="Refresh token", examples=[example_jwt_token])]

@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from app.config import db_url
 from app.models.models import Base
-from app.models.verify_models import Verification
 from datetime import datetime, timedelta
 
 
