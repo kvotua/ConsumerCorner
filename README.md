@@ -31,7 +31,7 @@ bash deploy.sh
 ```
 <div id="footer" align="center" style="border-radius: 6px;">
     <a href="https://t.me/kvotua">
-        <img src="https://ggilipetsk.ru/wp-content/uploads/2022/04/telegram-1024x670-1.png" style="height: 100px;" alt="kvotua on telegram"/>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1200px-Telegram_logo.svg.png" style="height: 100px;" alt="kvotua on telegram"/>
     </a>
     <a href="https://github.com/kvotua">
         <img src="https://avatars.githubusercontent.com/u/60317000?s=400&u=cc0869e176238dc748c2b0be0bffa4314bd0e86f&v=4" style="height: 100px;" alt="kvotua on github"/>
