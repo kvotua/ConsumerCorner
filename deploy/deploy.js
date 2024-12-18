@@ -16,7 +16,7 @@ const swaggerOptions = {
             description: 'API Documentation',
         },
     },
-    apis: ['./deploy.js'], // Укажите путь к вашим API
+    apis: ['./deploy.js'],
 };
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
@@ -32,8 +32,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 *         description: Success
 */
 app.post('/deploy', (req, res) => {
-    const branch = req.body.ref.split('/').pop();
     console.log('webhook works');
+    const branch = req.body.ref.split('/').pop();
     if (branch === 'prod_v1') {
         exec('git -C ./webhooktest clone https://github.com/kvotua/ConsumerCorner.git', (err, stdout, stderr) => {
             if (err) {

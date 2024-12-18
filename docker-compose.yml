@@ -16,7 +16,7 @@ services:
        timeout: 5s
        retries: 5
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - ./data:/var/lib/postgresql/data2
   
@@ -52,16 +52,22 @@ services:
       - ./mongodbdata:/data/db
 
   adminer:
-    build: ./adminer-mongo  # Указываем на кастомный Dockerfile
+    build: ./adminer-mongo
     container_name: adminer
     ports:
-      - "8090:8080"  # Связываем порты, чтобы доступ был через localhost:8090
+      - "8090:8080"
     restart: always
     depends_on:
-      - mongodb  # Зависимость от MongoDB
-      - postgres  # Зависимость от PostgreSQL
+      - mongodb
+      - postgres
     environment:
-      ADMINER_DEFAULT_SERVER: mongodb  # Указываем, что Adminer должен подключаться к MongoDB
+      ADMINER_DEFAULT_SERVER: mongodb
     links:
-      - mongodb  # Связываем контейнер Adminer с контейнером MongoDB
-      - postgres  # Связываем контейнер Adminer с контейнером PostgreSQL
+      - mongodb
+      - postgres
+
+  deploy:
+    build:
+      context: ./deploy
+    ports:
+      - "3333:3000"
