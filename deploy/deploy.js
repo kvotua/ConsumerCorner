@@ -37,7 +37,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 *         description: Success
 */
 app.post('/deploy', (req, res) => {
-    console.log('webhook works');
     var action = req.body.action;
     var is_pull_request = req.body.hasOwnProperty('pull_request') && req.body.pull_request !== null;
     if (action == 'closed') {
@@ -69,7 +68,6 @@ app.post('/deploy', (req, res) => {
 });
 
 app.post('/webhook', (req, res) => {
-    console.log('Webhook received');
 
     if (req.body && req.body.pull_request) {
         const action = req.body.action;
