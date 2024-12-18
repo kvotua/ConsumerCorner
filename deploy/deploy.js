@@ -79,7 +79,17 @@ app.post('/telegram', (req, res) => {
         const url = pullRequest.html_url;
         const title = pullRequest.title;
 
-        const message = `[${title}](${url})\nPull request: ${action}\nWho: ${user}\n${sourceBranch} -> ${targetBranch}\nUrl: ${url}`;
+        const escapeMarkdown = (text) => {
+            return text.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
+        };
+
+        const escapedTitle = escapeMarkdown(title);
+        const escapedSourceBranch = escapeMarkdown(sourceBranch);
+        const escapedTargetBranch = escapeMarkdown(targetBranch);
+        const escapedAction = escapeMarkdown(action);
+        const escapedUser = escapeMarkdown(user);
+
+        const message = `[${escapedTitle}](${url})\nPull request: ${escapedAction}\nWho: ${escapedUser}\n${escapedSourceBranch} -> ${escapedTargetBranch}\nUrl: ${url}`;
 
         axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             chat_id: CHAT_ID,
