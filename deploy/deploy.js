@@ -76,10 +76,9 @@ app.post('/telegram', (req, res) => {
         const user = pullRequest.user.login;
         const sourceBranch = pullRequest.head.ref;
         const targetBranch = pullRequest.base.ref;
-        const timestamp = new Date();
         const url = pullRequest.html_url;
 
-        const message = `${timestamp.toISOString()}, User - ${user}, Action - ${action}, Branch: ${sourceBranch} -> ${targetBranch}\n${url}`;
+        const message = `Pull request: ${action}\nWho: ${user}\n${sourceBranch} -> ${targetBranch}Url: \n${url}`;
         axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             chat_id: CHAT_ID,
             text: message,
