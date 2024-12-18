@@ -14,12 +14,14 @@ ln -s ./env ./backend/.env
 ```
 
 Сделайте билд и запустите проект:
+
 ```bash
 docker-compose build
 docker-compose up -d
 ```
 
 Запустите deploy:
+
 ```bash
 bash deploy.sh
 ```
