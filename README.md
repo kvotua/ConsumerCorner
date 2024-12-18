@@ -10,10 +10,11 @@ cd ваш_репозиторий
 
 ```bash
 cp .env.example .env
-cp .env ./backend/.env
+ln -s ./env ./backend/.env
 ```
 
 Запустите проект:
 ```bash
+docker-compose build
 docker-compose up -d
 ```
