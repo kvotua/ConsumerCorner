@@ -31,6 +31,6 @@ bash deploy.sh
 ```
 <div id="footer" align="center" style="border-radius: 6px;">
     <a href="https://t.me/kvotua">
-        <img src="https://avatars.mds.yandex.net/i?id=93addd2a366123de04f8fed162261524_l-3872711-images-thumbs&n=13" style="width: 150px;" alt="kvotua on telegram"/>
+        <img src="https://ggilipetsk.ru/wp-content/uploads/2022/04/telegram-1024x670-1.png" style="width: 150px;" alt="kvotua on telegram"/>
     </a>
 </div>
