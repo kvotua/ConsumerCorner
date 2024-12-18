@@ -67,8 +67,9 @@ app.post('/deploy', (req, res) => {
     }
 });
 
-app.post('/webhook', (req, res) => {
-
+app.post('/telegram', (req, res) => {
+    console.log('webhook /telegram');
+    console.log(req.body);
     if (req.body && req.body.pull_request) {
         const action = req.body.action;
         const pullRequest = req.body.pull_request;
