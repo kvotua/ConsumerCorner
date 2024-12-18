@@ -58,7 +58,9 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
             verify_phone=point.verify_phone,
             created_at=point.created_at,
             documents_data=docs_dict.get(point.id, []),
-            social_data= social_data_dicts
+            social_data= [
+            social for social in social_data_dicts if social.get("point_id") == point.id
+        ]
         )
         for point in points
     ]
