@@ -70,10 +70,10 @@ app.post('/deploy', (req, res) => {
 app.post('/telegram', (req, res) => {
     console.log('webhook /telegram');
     console.log(req.body);
-    if (req.body && req.body.pull_request) {
+    if (req.body && req.body.pull_request && req.body.sender) {
         const action = req.body.action;
         const pullRequest = req.body.pull_request;
-        const user = pullRequest.user.login;
+        const user = req.body.sender.login;
         const sourceBranch = pullRequest.head.ref;
         const targetBranch = pullRequest.base.ref;
         const url = pullRequest.html_url;
