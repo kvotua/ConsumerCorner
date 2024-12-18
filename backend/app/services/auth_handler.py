@@ -26,26 +26,26 @@ def decode_jwt(token: str) -> dict:
         decoded_token = jwt.decode(token, secret_key, algorithms=[algo])
         data_now = datetime.now(timezone.utc)
         if decoded_token.get("exp") <= int(data_now.timestamp()):
-            return {}
+            return None
         if decoded_token.get("type") != "access":
-            return {}
+            return None
         return decoded_token
     except:
-        return {}
+        return None
 
 def decode_jwt_with_verify(token: str) -> dict:
     try:
         decoded_token = jwt.decode(token, secret_key, algorithms=[algo])
         data_now = datetime.now(timezone.utc)
         if decoded_token.get("exp") <= int(data_now.timestamp()):
-            return {}
+            return None
         if decoded_token.get("type") != "access":
-            return {}
+            return None
         if decoded_token.get("verify_phone") == False:
-            raise {}
+            raise None
         return decoded_token
     except:
-        return {}
+        return None
 
 def decode_email_token(token: str):
     try:
@@ -82,12 +82,12 @@ def decode_refresh_jwt(token: str) -> dict:
         decoded_token = jwt.decode(token, secret_key, algorithms=[algo])
         data_now = datetime.now(timezone.utc)
         if decoded_token.get("exp") <= int(data_now.timestamp()):
-            return {}
+            return None
         if decoded_token.get("type") != "refresh":
-            return {}
+            return None
         return decoded_token
     except:
-        return {}
+        return None
 
 def set_token_pair(data: dict) -> Dict[str, str]:
     return {
