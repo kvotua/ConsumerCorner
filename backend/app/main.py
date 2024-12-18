@@ -7,7 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.verify_routes import router as verify_router
 from app.api.v1.users_routes import router as users_router
 from app.api.v1.inn_routes import router as inn_service_router
-from app.core.databases.postgresdb import create_tables
 from app.api.v1.enterprises_routes import router as enterprises_router
 from app.api.v1.comments_routes import router as comments_router
 from app.api.v1.mongo_routes import router as mongodb_router

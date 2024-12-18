@@ -5,11 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.services.auth_handler import get_token_data, sign_jwt, sing_email_jwt, decode_email_token
-from app.core.cruds.verify_crud import add_verify_session
 from app.schemas.verify_schemas import ReqID, VerifePhone, EmailSchema
 from app.schemas.points_schemas import ResponseSchema
 from app.services.verify_services import httpclient, sendemail, generate_code, generate_text, validate_phone
-from app.models.verify_models import Verification
+from app.models.models import Verification
 from app.config import user_name, user_pass, send_from
 from app.core.databases.postgresdb import get_session
 from app.core.cruds import verify_crud, users_crud
@@ -51,8 +50,8 @@ async def send_message(
         data=params,
     )
     await httpclient.close_session()
-    if not isinstance(response, str):
-        raise HTTPException(status_code=400, detail=response.get("error"))
+    if len(response) != 36:
+        raise HTTPException(status_code=400, detail=response)
     await verify_crud.add_verify_session(session=session, request_id=response, sms_code=code, phone=phone)
     return ReqID(req_id=response)
 
