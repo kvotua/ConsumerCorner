@@ -33,4 +33,7 @@ bash deploy.sh
     <a href="https://t.me/kvotua">
         <img src="https://ggilipetsk.ru/wp-content/uploads/2022/04/telegram-1024x670-1.png" style="width: 100px;" alt="kvotua on telegram"/>
     </a>
+    <a href="https://github.com/kvotua">
+        <img src="https://avatars.githubusercontent.com/u/60317000?s=400&u=cc0869e176238dc748c2b0be0bffa4314bd0e86f&v=4" style="width: 100px;" alt="kvotua on github"/>
+    </a>
 </div>
