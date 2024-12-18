@@ -29,8 +29,8 @@ docker-compose up -d
 ```bash
 bash deploy.sh
 ```
-<div id="footer" align="center">
+<div id="footer" align="center" style="border-radius: 6px;">
     <a href="https://t.me/kvotua">
-        <img src="https://img.championat.com/s/1350x900/news/big/d/t/sud-moskvy-oshtrafoval-telegram-na-1-mln-rublej_1702039846337739642.jpg" style="border-radius: 12px; width: 100px;" alt="kvotua on telegram"/>
+        <img src="https://img.championat.com/s/1350x900/news/big/d/t/sud-moskvy-oshtrafoval-telegram-na-1-mln-rublej_1702039846337739642.jpg" style="width: 100px;" alt="kvotua on telegram"/>
     </a>
 </div>
