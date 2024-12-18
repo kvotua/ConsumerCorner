@@ -2,10 +2,15 @@ const express = require('express');
 const { exec } = require('child_process');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+const axios = require('axios');
 
 
 const app = express();
 app.use(express.json());
+
+
+const BOT_TOKEN = '7817948111:AAEgf7losaVDpYGPVNfaF7YmRsgHGynjlqQ';
+const CHAT_ID = '-4595073549';
 
 const swaggerOptions = {
     definition: {
@@ -61,11 +66,36 @@ app.post('/deploy', (req, res) => {
     } else {
         res.status(422).send('Incorrect action')
     }
-    // const branch = req.body.ref.split('/').pop();
-    // if (branch === 'prod_v1') {
-    // } else {
-    //     res.status(200).send('Event ignored for branch: ' + branch);
-    // }
+});
+
+app.post('/webhook', (req, res) => {
+    console.log('Webhook received');
+
+    if (req.body && req.body.pull_request) {
+        const action = req.body.action;
+        const pullRequest = req.body.pull_request;
+        const user = pullRequest.user.login;
+        const sourceBranch = pullRequest.head.ref;
+        const targetBranch = pullRequest.base.ref;
+        const timestamp = new Date();
+        const url = pullRequest.html_url;
+
+        const message = `${timestamp.toISOString()}, User - ${user}, Action - ${action}, Branch: ${sourceBranch} -> ${targetBranch}\n${url}`;
+        axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            chat_id: CHAT_ID,
+            text: message,
+        })
+        .then(response => {
+            console.log('Message sent to Telegram');
+        })
+        .catch(error => {
+            console.error('Error sending message to Telegram:', error);
+        });
+
+        res.status(200).send('Pull request data sended to Telegram');
+    } else {
+        res.status(422).send('This hook not is Pull Request');
+    }
 });
 
 const PORT = 3333;
