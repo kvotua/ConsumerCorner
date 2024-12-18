@@ -65,9 +65,3 @@ services:
     links:
       - mongodb
       - postgres
-
-  deploy:
-    build:
-      context: ./deploy
-    ports:
-      - "3333:3000"
