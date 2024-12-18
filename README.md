@@ -18,3 +18,8 @@ ln -s ./env ./backend/.env
 docker-compose build
 docker-compose up -d
 ```
+
+Запустите deploy:
+```bash
+bash deploy.sh
+```
