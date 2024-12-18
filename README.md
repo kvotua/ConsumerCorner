@@ -13,7 +13,7 @@ cp .env.example .env
 ln -s ./env ./backend/.env
 ```
 
-Запустите проект:
+Сделайте билд и запустите проект:
 ```bash
 docker-compose build
 docker-compose up -d
