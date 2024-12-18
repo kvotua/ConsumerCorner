@@ -29,7 +29,8 @@ docker-compose up -d
 ```bash
 bash deploy.sh
 ```
-
-<a href="https://t.me/kvotua" align="center">
-    <img src="https://img.championat.com/s/1350x900/news/big/d/t/sud-moskvy-oshtrafoval-telegram-na-1-mln-rublej_1702039846337739642.jpg" style="border-radius: 12px; width: 100px;" alt="kvotua on telegram"/>
-</a>
+<div id="footer" align="center">
+    <a href="https://t.me/kvotua">
+        <img src="https://img.championat.com/s/1350x900/news/big/d/t/sud-moskvy-oshtrafoval-telegram-na-1-mln-rublej_1702039846337739642.jpg" style="border-radius: 12px; width: 100px;" alt="kvotua on telegram"/>
+    </a>
+</div>
