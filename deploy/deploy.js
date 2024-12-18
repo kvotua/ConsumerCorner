@@ -33,23 +33,25 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 */
 app.post('/deploy', (req, res) => {
     console.log('webhook works');
-    const branch = req.body.ref.split('/').pop();
-    if (branch === 'prod_v1') {
-        exec('git -C "../" pull', (err, stdout, stderr) => {
-            if (err) {
-                console.error(`exec error: ${err}`);
-                return res.status(500).send('Error updating repository');
-            }
-            console.log(stdout);
-            res.status(200).send('Repository updated');
-        });
-    } else {
-        res.status(200).send('Event ignored for branch: ' + branch);
-    }
+    console.log(req.body);
+    // const branch = req.body.ref.split('/').pop();
+    // if (branch === 'prod_v1') {
+    //     exec('git -C "../" pull origin prod_v1', (err, stdout, stderr) => {
+    //         if (err) {
+    //             console.error(`exec error: ${err}`);
+    //             return res.status(500).send('Error updating repository');
+    //         }
+    //         console.log(stdout);
+    //         res.status(200).send('Repository updated');
+    //     });
+    // } else {
+    //     res.status(200).send('Event ignored for branch: ' + branch);
+    // }
 });
 
+const PORT = 3333;
 
-app.listen(3000, () => {
-    console.log('Server is listening on port 3000');
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
 });
 
