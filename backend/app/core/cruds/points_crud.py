@@ -133,7 +133,7 @@ async def get_point_by_id(session: AsyncSession, point_id: int) -> PointInfo:
     result = await session.execute(stmt)
     point = result.scalars().first()
 
-    stmt_2 = select(SocialPoint).where(SocialPoint.point_id == point_id)
+    stmt_2 = select(SocialPoint, Social).join(Social, SocialPoint.social_id == Social.id).where(SocialPoint.point_id == point_id)
     result_2 = await session.execute(stmt_2)
     social_data = result_2.scalars().all()
     social_data_dicts = [
