@@ -9,7 +9,6 @@ from app.config import pattern_time
 from app.services.points_services import validating_link
 
 
-social_list = ["Вконтакте", "Whatsapp", "Telegram", "Viber", "Instagram"]
 
 class RegisterPoint(BaseModel):
     title: Annotated[str, Field(title="The working name of the point", examples=["Ponarth"])]
@@ -125,8 +124,6 @@ class SocialSchema(BaseModel):
 
     @model_validator(mode="before")
     def check_data(cls, values):
-        if values.get("name").title() not in social_list:
-            raise ValueError('Invalid name of the social')
         if validating_link(values.get("link")) is False:
             raise ValueError("Invalid link")
         return values
