@@ -7,8 +7,12 @@ import { ButtonBig } from "@/shared/Buttons/ButtonBig/ButtonBig";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
 import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
 import dynamic from "next/dynamic";
+import { createConfiguration } from "@/client";
+import { BaseServerConfiguration } from "@/client";
 
 function Point() {
+  createConfiguration(BaseServerConfiguration("https://consumer-corner.kvotua.ru"));
+
   const user = useAppSelector((state) => state.userReduser.user);
   const { pointId } = useParams();
 
