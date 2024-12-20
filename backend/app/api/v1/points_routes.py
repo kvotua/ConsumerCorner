@@ -164,13 +164,9 @@ async def get_points_info(
 
 @router.get("/{point_id}", response_model=PointInfo, dependencies=dependencies)
 async def get_points_info(
-        request: Request,
         point_id: Annotated[int, Path(title="ID точки")],
         session: AsyncSession = Depends(get_session),
 ):
-    dict_by_token = get_token_data_verify(request)
-    if dict_by_token is None:
-        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     return await points_crud.get_point_by_id(session=session, point_id=point_id)
 
 

@@ -60,11 +60,9 @@ const config: Config = {
         },
         ".title": {
           "font-size": "28px",
+          "margin-top": "0px",
           "font-weight": "700",
           "text-align": "left",
-        },
-        ".bottom-desc": {
-
         },
         ".buttons": {
           display: "flex",

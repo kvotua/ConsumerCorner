@@ -7,14 +7,14 @@ import { ButtonBig } from "@/shared/Buttons/ButtonBig/ButtonBig";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
 import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
 import dynamic from "next/dynamic";
-import { createConfiguration, ServerConfiguration , InnApi , Configuration} from '@/client';
+import { createConfiguration, ServerConfiguration, InnApi, Configuration } from '@/client';
 import type { InnApiResultPageInnInnInfoGetRequest } from "@/client/types/ObjectParamAPI";
 
 
 async function fetchData(config: Configuration) {
   const apiInstance = new InnApi(config);
   const request: InnApiResultPageInnInnInfoGetRequest = {
-  
+
     inn: "390000001190",
   };
   try {
@@ -35,13 +35,15 @@ function Point() {
 
 
 
-  const user = useAppSelector((state) => state.userReduser.user);
+  // const user = useAppSelector((state) => state.userReduser.user);
   const { pointId } = useParams();
 
   const pointInfo = {
     title: "Бирхаус",
     who: "ИП АКУЛИЧ В.С",
-    address: "г. Калининград\n(Калининградская область),\nулица Ленина, ул. 34 Б"
+    address: "г. Калининград\n(Калининградская область),\nулица Ленина, ул. 34 Б",
+    inn: 1234567890,
+    ogrn: 1234567890,
   }
 
   // const {
@@ -63,15 +65,14 @@ function Point() {
             уголок потребителя
           </p>
           <h2 className="title pt-3">
-            { pointInfo.who }
+            {pointInfo.who}
           </h2>
-          
+
           <hr className="my-4 border-t-2 border-gray-300 w-5/6" />
-          <br></br>
           <h2 className="title">
-            { pointInfo.title }
+            {pointInfo.title}
           </h2>
-          <p className="opacity-50 break-words whitespace-pre-line leading-tight mb-10">
+          <p className="opacity-50 break-words whitespace-pre-line leading-tight mb-5">
             {pointInfo.address}
           </p>
           <div className="flex-grow">
@@ -86,16 +87,22 @@ function Point() {
               <ButtonBig link={`/points/${pointId}/socials`}>Соц.сети</ButtonBig>
             </div>
           </div>
-          <p className="text-xl opacity-50 pt-5 break-words">
-            <strong>ИНН</strong>: 1234567890
-          </p>
-          <p className="text-xl opacity-50 pt-5 break-words">
-            <strong>ОГРН</strong>: 1234567890
-          </p>
-          
-          <p className="text-xl opacity-50 pt-5 break-words whitespace-pre-line fs-5">
-            Удобные инструменты позволяющие вашему бизнесу быть в курсе и оперативно реагировать на пожелания клиента
-          </p>
+          <div className="flex flex-col items-center text-center">
+            <p className="text-lg opacity-60 mt-1 break-words">
+              <strong>ИНН</strong>: {pointInfo.inn}
+            </p>
+
+            <p className="text-lg opacity-60 mt-0 break-words">
+              <strong>ОГРН</strong>: {pointInfo.ogrn}
+            </p>
+
+            <p className="text-sm opacity-70 mt-4 break-words whitespace-pre-line leading-snug">
+              Удобные инструменты, позволяющие вашему бизнесу быть в курсе и оперативно реагировать на пожелания клиента.
+            </p>
+          </div>
+
+
+
         </>
       )}
     </section>
