@@ -1,0 +1,67 @@
+
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+       interval: 5s
+       timeout: 5s
+       retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+  
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8765:80"
+    volumes:
+      - ./storage:/storage
+    depends_on:
+      - postgres
+      - mongodb
+    restart: on-failure:2
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+    healthcheck:
+       test: echo 'db.runCommand("ping").ok' | mongo ${MONGODB_URL} --quiet
+       interval: 5s
+       timeout: 5s
+       retries: 5
+    ports:
+      - "27019:27017"
+    volumes:
+      - ./mongodbdata:/data/db
+
+  adminer:
+    build: ./adminer-mongo
+    container_name: adminer
+    ports:
+      - "8090:8080"
+    restart: always
+    depends_on:
+      - mongodb
+      - postgres
+    environment:
+      ADMINER_DEFAULT_SERVER: mongodb
+    links:
+      - mongodb
+      - postgres
