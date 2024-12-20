@@ -24,7 +24,7 @@ export default function Menupage({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
-        <View style={[styles.menuHeader, { marginTop: Platform.OS === 'ios' ? 10 : 128, }]}>
+        <View style={[styles.menuHeader, { marginTop: Platform.OS === 'ios' ? 38 : 128, }]}>
           <Text style={styles.menuTitle}>ИП Акулич В.C</Text>
         </View>
 
@@ -81,7 +81,6 @@ export default function Menupage({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Новый контейнер для кнопок "Администрирование" и "Профиль" */}
         <View style={localStyles.menuAdminButtons}>
           <TouchableOpacity
             style={styles.whiteButtonMenuBottomActive}
@@ -138,6 +137,6 @@ const localStyles = StyleSheet.create({
       width: "100%",
       gap: 10,
       marginTop: 10,
-      justifyContent: 'space-between', // Разделяем кнопки с равными промежутками
+      justifyContent: 'space-between', 
   },
 });

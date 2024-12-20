@@ -9,8 +9,9 @@ import {
   Image
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Style from "@/app/Styles/Style";
-import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
+
+import Icons from "react-native-vector-icons/Feather";
+import styles from "../../Styles/Style";
 
 export default function Reviews({ navigation, pointId }) {
   const [data, setData] = useState([]);
@@ -94,9 +95,11 @@ export default function Reviews({ navigation, pointId }) {
             indicatorStyle="white"
           />
         </View>
-        <View style={Style.containerButtonsMenuPages}>
-          <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={Style.textInButtonsBackMenuPage}>Назад</Text>
+
+        <View style={localStyles.containerButtonsBottomFlatList}>
+          <TouchableOpacity style={styles.buttonBackMenuPage} onPress={() => navigation.replace("MenuPage")}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -106,7 +109,9 @@ export default function Reviews({ navigation, pointId }) {
 
 const localStyles = StyleSheet.create({
   flatListContainer: {
-    height: "75%",
+
+    flex: 1,
+    marginBottom: 22
   },
   companyPointText: {
     fontSize: 30,
@@ -141,5 +146,11 @@ const localStyles = StyleSheet.create({
     fontFamily: 'Montserrat',
     fontWeight: "700",
     color: "#3A6CE9",
-  },
+
+},
+containerButtonsBottomFlatList: {
+  width: "100%",
+  height: 45,  
+ justifyContent: 'flex-end', 
+},
 });

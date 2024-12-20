@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/Feather";
-import Icons1 from "react-native-vector-icons/SimpleLineIcons";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons2 from "react-native-vector-icons/Entypo"
 import styles from "../../Styles/Style"; // Путь к стилям
@@ -25,16 +24,14 @@ export default function Social({ navigation}) {
     { id: '5', title: 'Facebook' },
     { id: '6', title: 'Twitter' },
   ]);
-    // Состояние для управления модальным окном
+
   const [modalVisible, setModalVisible] = useState(false);
   const [socialName, setSocialName] = useState('');
 
-  // Функция для открытия и закрытия модального окна
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
 
-  // Функция для добавления соц. сети (можно расширить логику)
   const handleAddSocialNetwork = () => {
     console.log(`Добавлена соц. сеть: ${socialName}`);
     setModalVisible(false); // Закрываем модальное окно
@@ -77,16 +74,16 @@ export default function Social({ navigation}) {
           />
         </View>
 
-        {/* Кнопка для открытия модального окна */}
-        <View style={styles.containerButtonsMenuPages}>
+        <View style={[styles.containerButtonsBottomFlatList, { height: 100 }]}>
           <TouchableOpacity style={styles.buttonMenuPage} onPress={toggleModal}>
             <Text style={styles.textInButtonsMenuPage}>Добавить соц.сеть</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.buttonBackMenuPage, { marginTop: 10 }]}
-            onPress={() => navigation.replace("MenuPage")}
+            onPress={() => navigation.replace("FirmsSoc")}
           >
-            <Text style={styles.textInButtonsBackMenuPage}>← Назад</Text>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
           </TouchableOpacity>
         </View>
 
@@ -202,7 +199,8 @@ const localStyles = StyleSheet.create({
     fontWeight: "bold",
   },
   flatListContainer: {
-    height: "60%",
+    flex: 1,
+    marginBottom: 32,
   },
   button: {
     width: "100%",
@@ -231,5 +229,10 @@ const localStyles = StyleSheet.create({
   closeButtonText: {
     fontSize: 18,
     color: "#3563D4",
+  },
+  containerButtonsMenuPages: {
+    width: "100%",
+    height: 120,
+    justifyContent: 'flex-end',
   },
 });

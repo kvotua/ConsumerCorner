@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/Feather";
-import Icons1 from "react-nat`ive-vector-icons/SimpleLineIcons";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons2 from "react-native-vector-icons/Entypo"
 import styles from "../../Styles/Style"; // Путь к стилям
@@ -38,6 +37,9 @@ export default function AllPointsSoc({ navigation, route}) {
     { id: '1', title: "Точка 1" },
     { id: '2', title: "Точка 1" },
     { id: '3', title: 'Точка 1' },
+    { id: '4', title: 'Точка 1' },
+    { id: '5', title: 'Точка 1' },
+    { id: '6', title: 'Точка 1' },
   ];
 
   const renderItem = ({ item }) => (
@@ -74,15 +76,16 @@ export default function AllPointsSoc({ navigation, route}) {
         </View>
 
         {/* Кнопка для открытия модального окна */}
-        <View style={styles.containerButtonsMenuPages}>
-          <TouchableOpacity style={[styles.buttonMenuPage, {backgroundColor:"red"}]} onPress={() => navigation.goBack()}>
-            <Text style={[styles.textInButtonsMenuPage]}>Удалить</Text>
+        <View style={localStyles.containerButtonsMenuPages}>
+          <TouchableOpacity style={[styles.buttonMenuPage, {backgroundColor:"#E75759"}]} onPress={() => navigation.goBack()}>
+            <Text style={[styles.textInButtonsMenuPage, { color: "#FFFFFF" }]}>Удалить</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.buttonBackMenuPage, { marginTop: 10 }]}
-            onPress={() => navigation.replace("MenuPage")}
+            onPress={() => navigation.replace("Social")}
           >
-            <Text style={styles.textInButtonsBackMenuPage}>← Назад</Text>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
           </TouchableOpacity>
         </View>
 
@@ -198,7 +201,7 @@ const localStyles = StyleSheet.create({
     fontWeight: "bold",
   },
   flatListContainer: {
-    height: "60%",
+    flex: 1,
   },
   button: {
     width: "100%",
@@ -227,5 +230,10 @@ const localStyles = StyleSheet.create({
   closeButtonText: {
     fontSize: 18,
     color: "#3563D4",
+  },
+  containerButtonsMenuPages: {
+    width: "100%",
+    height: 120,
+    justifyContent: 'flex-end',
   },
 });

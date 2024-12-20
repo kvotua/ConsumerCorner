@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { 
-  ImageBackground, 
-  Text, 
-  View, 
-  TouchableOpacity, 
-  TextInput, 
-  Switch, 
-  StyleSheet, 
-  Image 
+
+import React, { useState } from "react";
+import {
+  ImageBackground,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+  Switch,
+  StyleSheet,
+  Image,
+  Dimensions, 
+  Platform,
+  FlatList
 } from "react-native";
 import Style from "@/app/Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,134 +21,101 @@ import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 export default function Profile({ navigation }) {
   const [userData, setUserData] = useState({});
   const [isEnabled, setIsEnabled] = useState(false);
-  const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-  const fetchUserData = async () => {
-    try {
-      const token = await AccessGetToken()
-      const response = await fetch('http://localhost:8000/me', {
-        method: 'GET',
-        headers: {
-          'Authorization': `${token}`, // Подставь токен здесь
-          'Content-Type': 'application/json',
-        },
-      });
+  const { width } = Dimensions.get('window');
+  const isTablet = width >= 768;
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-
-      const data = await response.json();
-      setUserData(data); // Записываем полученные данные пользователя
-      setIsEnabled(data.receive_telegram); // Устанавливаем состояние switch
-    } catch (error) {
-      console.error('Ошибка при получении данных пользователя:', error);
-    }
+  const getPaddingVertical = () => {
+    if (Platform.OS === 'ios') return isTablet ? 192 : -25; 
+    else if (Platform.OS === 'android') return isTablet ? 192 : 25; 
+    return 0; 
   };
 
-  useEffect(() => {
-    fetchUserData(); // Загружаем данные пользователя при монтировании
-  }, []);
+  // const handleUpdateProfile = async () => {
+  //   const updatedData = {
+  //     name: userData.name,
+  //     phone: userData.phone,
+  //     email: userData.email,
+  //     receive_telegram: isEnabled, // Обновляем состояние switch
+  //   };
 
-  const toggleSwitch = () => setIsEnabled(prev => !prev);
+  //   try {
+  //     const token = await AccessGetToken()
+  //     const response = await fetch('http://localhost:8000/change', {
+  //       method: 'PATCH',
+  //       headers: {
+  //         'Authorization': `${token}`, // Подставь токен здесь
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(updatedData),
+  //     });
 
-  const handleUpdateProfile = async () => {
-    const updatedData = {
-      name: userData.name,
-      phone: userData.phone,
-      email: userData.email,
-      receive_telegram: isEnabled, // Обновляем состояние switch
-    };
+  //     if (!response.ok) {
+  //       throw new Error('Failed to update profile');
+  //     }
 
-    try {
-      const token = await AccessGetToken()
-      const response = await fetch('http://localhost:8000/change', {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `${token}`, // Подставь токен здесь
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
-      });
+  //     showToast("success", "Успех!", error.message || "Вы успешно обновили данные!");
+  //   } catch (error) {
+  //     console.error('Ошибка при обновлении профиля:', error);
+  //   }
+  // };
 
-      if (!response.ok) {
-        throw new Error('Failed to update profile');
-      }
 
-      showToast("success", "Успех!", error.message || "Вы успешно обновили данные!");
-    } catch (error) {
-      console.error('Ошибка при обновлении профиля:', error);
-    }
-  };
+  // Данные для FlatList
+  const inputData = [
+    { id: '1', label: 'Ф.И.О', placeholder: 'Акулич Виктор Сергеевич', isSwitch: false },
+    { id: '2', label: 'Номер телефона', placeholder: '+79113453221', isSwitch: false },
+    { id: '3', label: 'Email', placeholder: 'yyyy@mail.ru', isSwitch: false },
+    { id: '4', label: 'Изменить пароль', placeholder: '************', isSwitch: false },
+    { id: '5', label: 'Получать отзывы в Telegram', isSwitch: true }, // Новый элемент для переключателя
+  ];
 
-  const showToast = (type :string, message:string, subMessage:string) => {
-    setToast({ type, message, subMessage, visible: true });
-    setTimeout(() => setToast({ ...toast, visible: false }), 3000); // Авто-скрытие через 3 сек
-  };
+  // Функция рендеринга каждого элемента FlatList
+  const renderInputItem = ({ item }) => (
+    <View style={{ marginBottom: 18, flexDirection: item.isSwitch ? 'row' : 'column', alignItems: item.isSwitch ? 'center' : 'flex-start' }}>
+      <Text style={styles.textDescriptionProfile}>{item.label}</Text>
+      {item.isSwitch ? (
+        <Switch 
+          style={[{ transform: isTablet ? [{ scale: 1 }] : [{ scale: 1 }] }, { marginStart: "auto" }]} // Добавляем отступ слева
+          onValueChange={toggleSwitch}
+          value={isEnabled}
+          trackColor={{ false: "#7B9DF2", true: "#7B9DF2" }}
+          thumbColor={isEnabled ? "#E6E6E6" : "#E6E6E6"}
+        />
+      ) : (
+        <TextInput style={styles.textInputProfile} placeholder={item.placeholder} />
+      )}
+    </View>
+  );
 
   return (
-    <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-      <SafeAreaView style={Style.containerMainPage}>
-                  {/* Компонент Toast */}
-            {toast.visible && (
-          <Toast
-              type={toast.type}
-              message={toast.message}
-              subMessage={toast.subMessage}
-              visible={toast.visible}
-              onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
+    <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
+      <SafeAreaView style={[styles.containerMainPage, { paddingVertical: getPaddingVertical(), paddingHorizontal: getPaddingHorizontal() }]}>
+        <View style={styles.profileHeader}>
+          <Image
+            source={require("../../../assets/images/profileImage.png")}
+            style={localStyles.profileImage} 
           />
-          )}
+        </View>
         <View style={Style.profileHeader}>
           <Image source={require("../../../assets/images/profileImage.png")} style={localStyles.profileImage} />
           <Text style={Style.profileTitle}>{userData.name || 'Акулич В.C'}</Text>
         </View>
-        <View style={Style.containerProfile}>
-          <Text style={Style.textDescriptionProfile}>Ф.И.О</Text>
-          <TextInput 
-            style={Style.textInputProfile} 
-            placeholder="Акулич Виктор Сергеевич" 
-            value={userData.name} 
-            onChangeText={(text) => setUserData({ ...userData, name: text })} 
-          />
-          
-          <Text style={[Style.textDescriptionProfile, { marginTop: 18 }]}>Номер телефона</Text>
-          <TextInput 
-            style={Style.textInputProfile} 
-            placeholder="+79113453221" 
-            value={userData.phone} 
-            onChangeText={(text) => setUserData({ ...userData, phone: text })} 
-          />
 
-          <Text style={[Style.textDescriptionProfile, { marginTop: 18 }]}>Email</Text>
-          <TextInput 
-            style={Style.textInputProfile} 
-            placeholder="yyyy@mail.ru" 
-            value={userData.email} 
-            onChangeText={(text) => setUserData({ ...userData, email: text })} 
-          />
-
-          <Text style={[Style.textDescriptionProfile, { marginTop: 18 }]}>Изменить пароль</Text>
-          <TextInput style={Style.textInputProfile} placeholder="************" secureTextEntry />
-        </View>
-
-        <View style={Style.switchContainer}>
-          <Text style={Style.switchText}>Получать отзывы в Telegram</Text>
-          <Switch 
-            style={{ transform: [{ scale: 1 }] }}
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-            trackColor={{ false: "#7B9DF2", true: "#7B9DF2" }}
-            thumbColor={isEnabled ? "#E6E6E6" : "#E6E6E6"}
+        
+        <View style={styles.containerProfile}>
+          <FlatList
+            data={inputData}
+            renderItem={renderInputItem}
+            keyExtractor={item => item.id}
+            showsVerticalScrollIndicator={false}
           />
         </View>
 
-        <View style={[Style.containerButtonsMenuPages, { paddingVertical: 0 }]}>
-          <TouchableOpacity style={Style.buttonMenuPage} onPress={handleUpdateProfile}>
-            <Text style={Style.textInButtonsMenuPage}>Обновить профиль</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={Style.textInButtonsMenuPage}>Вернуться на главную</Text>
+        <View style={localStyles.containerButtonsBottomFlatList}>
+          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
+            <Text style={styles.textInButtonsMenuPage}>Вернуться на главную</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -161,4 +132,9 @@ const localStyles = StyleSheet.create({
     borderWidth: 1, 
     borderColor: "#FFFFFF", 
   },
+  containerButtonsBottomFlatList: {
+  width: "100%",
+  height: 45,  
+ justifyContent: 'flex-end', 
+},
 });

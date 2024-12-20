@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Icons from "react-native-vector-icons/Feather";
 import styles from "../../Styles/Style";
 
 export default function FirmsSoc({ navigation }) {
@@ -60,10 +61,8 @@ export default function FirmsSoc({ navigation }) {
     
   ];
 
-  // Функция рендеринга каждого элемента
   const renderItem = ({ item }) => {
     if (item.type === 'firm') {
-      // Если элемент - фирма, то отображаем название фирмы и при клике переходим на экран с точками
       return (
         <View style={styles.itemFlatList}>
           <Text style={styles.textInFlatList}>{item.title}</Text>
@@ -75,7 +74,6 @@ export default function FirmsSoc({ navigation }) {
         </View>
       );
     } else {
-      // Если элемент - точка, то просто отображаем точку
       return (
         <View style={localStyles.flatListContainer}>
           <View style={styles.itemFlatList}>
@@ -98,7 +96,7 @@ export default function FirmsSoc({ navigation }) {
         <View style={styles.containerLine}>
           <View style={styles.menuPagesLine}/>
         </View>
-        <View style={styles.firmsAndPointsFlatListContainer}>
+        <View style={[styles.firmsAndPointsFlatListContainer, { marginBottom: 22, }]}>
           <FlatList style={[{ paddingRight: 10 }]}
             data={data}
             renderItem={renderItem}
@@ -107,9 +105,10 @@ export default function FirmsSoc({ navigation }) {
             indicatorStyle="white"
           />
         </View>
-        <View style={styles.containerButtonsBottomFlatList}>
-          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={styles.textInButtonsBackMenuPage}>← Назад</Text>
+        <View style={localStyles.containerButtonsBottomFlatList}>
+          <TouchableOpacity style={styles.buttonBackMenuPage} onPress={() => navigation.replace("MenuPage")}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -121,6 +120,12 @@ const localStyles = StyleSheet.create({
   flatListContainer: {
     flexDirection: "row",
     alignItems: 'center',
-  }
+    flex:1,
+  },
+  containerButtonsBottomFlatList: {
+    width: "100%",
+    height: 45,  
+   justifyContent: 'flex-end', 
+  },
 });
 
