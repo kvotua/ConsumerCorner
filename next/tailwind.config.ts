@@ -59,9 +59,12 @@ const config: Config = {
           "min-height": "100dvh",
         },
         ".title": {
-          "font-size": "24px",
+          "font-size": "28px",
           "font-weight": "700",
-          "text-align": "center",
+          "text-align": "left",
+        },
+        ".bottom-desc": {
+
         },
         ".buttons": {
           display: "flex",

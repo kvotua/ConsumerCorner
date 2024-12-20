@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Annotated, Any, List
+from typing import Annotated, Any, List, Optional
 from datetime import datetime
 
 
@@ -25,3 +25,4 @@ class CommentsSchema(BaseModel):
     text: Annotated[str, Field(title="The text of the comment", examples=['The text of the comment'])]
     stars: Annotated[int, Field(title='Number of stars', examples=[4], ge=1, le=5)]
     created_at: Annotated[datetime, Field(title="Date the comment was created", examples=["2024-12-07 03:21:37.273427"])]
+    images_data: Annotated[Optional[List[str]], Field(title="Image's ID", examples=[['6d75ddd59b58c3607315a11']])]

@@ -38,12 +38,20 @@ function Point() {
   const user = useAppSelector((state) => state.userReduser.user);
   const { pointId } = useParams();
 
-  const {
-    data: point,
-    isLoading,
-    isRefetching,
-  } = useGetPointById(pointId as string);
-  const { push } = useRouter();
+  const pointInfo = {
+    title: "Бирхаус",
+    who: "ИП АКУЛИЧ В.С",
+    address: "г. Калининград\n(Калининградская область),\nулица Ленина, ул. 34 Б"
+  }
+
+  // const {
+  //   data: point,
+  //   isLoading,
+  //   isRefetching,
+  // } = useGetPointById(pointId as string);
+  // const { push } = useRouter();
+  const isLoading = false;
+  const isRefetching = false;
 
   return (
     <section className="wrapper container">
@@ -51,13 +59,20 @@ function Point() {
         <PointScelteton />
       ) : (
         <>
-          <h2 className="title">
-            {user && !user.points_id.includes(pointId as string)
-              ? point?.title
-              : "Название точки"}
-          </h2>
           <p className="text-xl opacity-50 pt-5 break-words">
-            {point?.address}
+            уголок потребителя
+          </p>
+          <h2 className="title pt-3">
+            { pointInfo.who }
+          </h2>
+          
+          <hr className="my-4 border-t-2 border-gray-300 w-5/6" />
+          <br></br>
+          <h2 className="title">
+            { pointInfo.title }
+          </h2>
+          <p className="opacity-50 break-words whitespace-pre-line leading-tight mb-10">
+            {pointInfo.address}
           </p>
           <div className="flex-grow">
             <div className="py-2 grid grid-cols-2 gap-2">
@@ -69,19 +84,20 @@ function Point() {
               </ButtonBig>
               <ButtonBig link={`/points/${pointId}/docs`}>Документы</ButtonBig>
               <ButtonBig link={`/points/${pointId}/socials`}>Соц.сети</ButtonBig>
-              {user && <ButtonBig link={`/points/${pointId}/reviews`}>Отзывы</ButtonBig>}
             </div>
           </div>
+          <p className="text-xl opacity-50 pt-5 break-words">
+            <strong>ИНН</strong>: 1234567890
+          </p>
+          <p className="text-xl opacity-50 pt-5 break-words">
+            <strong>ОГРН</strong>: 1234567890
+          </p>
+          
+          <p className="text-xl opacity-50 pt-5 break-words whitespace-pre-line fs-5">
+            Удобные инструменты позволяющие вашему бизнесу быть в курсе и оперативно реагировать на пожелания клиента
+          </p>
         </>
       )}
-      <div className="buttons">
-        {user && user.points_id.includes(pointId as string) && (
-          <div className="flex gap-2">
-            <ButtonBase link={`/points/${pointId}/edit`}>Изменить точку</ButtonBase>
-            <ButtonBase link={`/points/${pointId}/qr`}>qr-код</ButtonBase>
-          </div>
-        )}
-      </div>
     </section>
   );
 }
