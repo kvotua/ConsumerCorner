@@ -30,11 +30,11 @@ async def add_coment(
 
 
 
-@router.get("/{point_id}", response_model=list[CommentsSchema])
+@router.get("/", response_model=list[CommentsSchema])
 async def get_comments(
-    point_id_path: Annotated[int, Query(title="ID точки", examples=[1])],
+    point_id: Annotated[int, Query(title="ID точки", examples=[1])],
     session: AsyncSession = Depends(get_session),
 ) -> list[CommentsSchema]:
-    if point_id_path not in await comments_crud.get_points_id(session=session):
+    if point_id not in await comments_crud.get_points_id(session=session):
         raise HTTPException(status_code=404, detail="The point was not found")
-    return await comments_crud.get_all_comments(session=session, point_id=point_id_path)
+    return await comments_crud.get_all_comments(session=session, point_id=point_id)
