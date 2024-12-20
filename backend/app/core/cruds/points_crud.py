@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result, delete
-from app.models.models import Points, Enterprises, Docs, Social, SocialPoint, Imgs
+from app.models.models import Points, Enterprises, Docs, Social, SocialPoint, Imgs, Comments
 from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo, SocialSchema, ImageData
 from app.services.points_services import parse_time
 
@@ -35,12 +35,16 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
             docs_dict[doc.point_id] = []
         docs_dict[doc.point_id].append(doc.id)
 
-    stmt_socials = select(SocialPoint).where(SocialPoint.point_id.in_(point_ids))
-    result_socials = await session.execute(stmt_socials)
-    social_data = result_socials.scalars().all()
-    social_data_dicts = [
-        {"point_id": sp.point_id, "social_id": sp.social_id} for sp in social_data
-    ]
+    stmt_social = select(SocialPoint, Social).join(Social, SocialPoint.social_id == Social.id).where(
+        SocialPoint.point_id.in_(point_ids))
+    result_social = await session.execute(stmt_social)
+    social_data_all = result_social.all()
+
+    social_dict = {}
+    for social_point, social in social_data_all:
+        if social_point.point_id not in social_dict:
+            social_dict[social_point.point_id] = []
+        social_dict[social_point.point_id].append({"social_id": social.id, "name": social.name, "link": social.link})
 
     points_data = [
         PointInfo(
@@ -57,9 +61,7 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
             verify_phone=point.verify_phone,
             created_at=point.created_at,
             documents_data=docs_dict.get(point.id, []),
-            social_data= [
-            social for social in social_data_dicts if social.get("point_id") == point.id
-        ]
+            social_data=social_dict.get(point.id, []),
         )
         for point in points
     ]

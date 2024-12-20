@@ -54,7 +54,7 @@ async def login(
         'id': data_by_db.id,
         'phone': data_by_db.phone,
         'fio': data_by_db.fio,
-        'verify_phone': data_by_db.verify_phone,
+        'verify_phone': True#data_by_db.verify_phone,
     }
     jwt_tokens = set_token_pair(payload)
     return TokenPair(
