@@ -41,6 +41,7 @@ class EnterpriseInfo(BaseModel):
     ogrn: Annotated[Optional[str], Field(title="OGRN of a legal entity", examples=['1027700132195'],min_length=13, max_length=13)]
     address: Annotated[Optional[str], Field(title="Actual address", examples=['ул. Павлика Морозова 74, Б'])]
     image_id: Annotated[Optional[str], Field(title="Image ID", examples=['5f2fcae09b58c38603442a4f'])]
+    middle_stars: Annotated[Optional[float], Field(title="Middle stars", examples=[3.9])]
     general_type_activity: Annotated[Optional[str], Field(title='The main type of activity', examples=["Private enterprise"])]
     created_at: Annotated[Optional[datetime], Field(title="The date of registration of the company in the application", examples=["2024-12-07 03:21:37.273427"])]
 

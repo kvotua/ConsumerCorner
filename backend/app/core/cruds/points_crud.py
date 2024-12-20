@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result, delete
-from app.models.models import Points, Enterprises, Docs, Social, SocialPoint, Imgs
+from app.models.models import Points, Enterprises, Docs, Social, SocialPoint, Imgs, Comments
 from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo, SocialSchema, ImageData
 from app.services.points_services import parse_time
 
@@ -41,6 +41,13 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
     social_data = result_socials.scalars().all()
     social_data_dicts = [
         {"point_id": sp.point_id, "social_id": sp.social_id} for sp in social_data
+    ]
+
+    stmt_middlestars = select(Comments).where(Comments.point_id.in_(point_ids))
+    result_middlestars = await session.execute(stmt_middlestars)
+    middlestars_data = result_middlestars.scalars().all()
+    middlestars_data_dicts = [
+        {"point_id": data.point_id, "star": data.stars} for data in middlestars_data
     ]
 
     points_data = [

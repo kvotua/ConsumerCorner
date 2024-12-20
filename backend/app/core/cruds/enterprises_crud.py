@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, Result
+from sqlalchemy import select, Result, func
 
-from app.schemas.enterprises_schemas import RegisterCompany, ImageData
-from app.models.models import Enterprises
+from app.schemas.enterprises_schemas import RegisterCompany, ImageData, EnterpriseInfo
+from app.models.models import Enterprises, Points
 
 
 async def add_enterprise(session: AsyncSession, data: RegisterCompany, user_id: int):
@@ -28,11 +28,36 @@ async def get_enterprise_by_id(session: AsyncSession, enterprise_id: int) -> Ent
     result = await session.execute(stmt)
     return result.scalars().first()
 
-async def get_all_enterprises_by_id(session: AsyncSession, user_id: int) -> list[Enterprises]:
-    stmt = select(Enterprises).where(Enterprises.create_id == user_id)
-    result: Result = await session.execute(stmt)
-    enterprises = result.scalars().all()
-    return list(enterprises)
+
+async def get_all_enterprises_by_id(session: AsyncSession, user_id: int) -> list[EnterpriseInfo]:
+    stmt = (
+        select(Enterprises, func.avg(Points.middle_stars).label("average_rating"))
+        .outerjoin(Points, Enterprises.id == Points.enterprise_id)
+        .where(Enterprises.create_id == user_id)
+        .group_by(Enterprises.id)
+    )
+
+    result = await session.execute(stmt)
+    enterprises_data = []
+
+    for enterprise, average_rating in result.all():
+        enterprises_data.append(
+            EnterpriseInfo(
+                id=enterprise.id,
+                name=enterprise.name,
+                type=enterprise.type,
+                create_id=enterprise.create_id,
+                inn=enterprise.inn,
+                ogrn=enterprise.ogrn,
+                address=enterprise.address,
+                image_id=enterprise.image_id,
+                middle_stars=round(average_rating, 2) if average_rating is not None else 0.00,
+                general_type_activity=enterprise.general_type_activity,
+                created_at=enterprise.created_at,
+            )
+        )
+
+    return enterprises_data
 
 async def get_enterprises_id_by_user_id(session: AsyncSession, user_id: int):
     stmt = select(Enterprises.id).where(Enterprises.create_id == user_id)
