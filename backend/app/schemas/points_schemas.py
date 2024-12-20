@@ -62,7 +62,7 @@ class PointInfo(BaseModel):
     social_data: Annotated[Optional[List[dict]], Field(title="Socials", examples=[{"social_id": 2, "link": "https://example.com", "name": "example"}])]
     phone: Annotated[Optional[str], Field(title="Phone number", examples=['79219876543'], max_length=14)]
     type_activity: Annotated[str, Field(title="Type of activity", examples=["Продажи"])]
-    middle_stars: Annotated[Optional[float], Field(title="Middle stars", examples=[3.9], ge=0, lt=5, default=None)]
+    middle_stars: Annotated[Optional[float], Field(title="Middle stars", examples=[3.9], ge=0, lt=6, default=None)]
     verify_phone: Annotated[Optional[bool], Field(title="Has the phone number been verified", examples=[False])]
     created_at: Annotated[datetime, Field(title="The date of registration of the point in the application", examples=["2024-12-07 03:21:37.273427"])]
 
