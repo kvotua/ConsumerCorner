@@ -10,11 +10,8 @@ from app.core.cruds import points_crud
 from app.services.auth_bearer import dependencies
 from app.core.databases.mongodb import MongoDBClient
 
-
-
 router = APIRouter(prefix="/points", tags=["Points"])
 mongo = MongoDBClient("image", "doc")
-
 
 @router.post("/register", response_model=ResponseSchema, dependencies=dependencies)
 async def register_point(
@@ -92,6 +89,7 @@ async def delete_document(
     return ResponseSchema(status_code=200, detail={"message": "Document successfully deleted", "id": document_id})
 
 
+
 @router.post("/upload_image/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def upload_image(
     request: Request,
@@ -149,6 +147,7 @@ async def delete_image(
     else:
         return ResponseSchema(status_code=404, detail="Image of Point not found")
     return ResponseSchema(status_code=200, detail={"message": "Image of Point successfully deleted"})#, "id": image_id})
+
     
 
 @router.get("/", response_model=List[PointInfo], dependencies=dependencies)
@@ -219,7 +218,7 @@ async def delete_point(
     return ResponseSchema(status_code=200, detail=f"Point {point_id} could be deleted")
 
 
-@router.post("/social/{point_id}", dependencies=dependencies)
+@router.post("/social/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def add_social(
         request: Request,
         point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],
@@ -261,7 +260,7 @@ async def get_socials(
     return await points_crud.get_all_social(session=session, point_id=point_id)
 
 
-@router.delete("/social/{point_id}", dependencies=dependencies)
+@router.delete("/social/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def delete_social(
     request: Request,
     point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],

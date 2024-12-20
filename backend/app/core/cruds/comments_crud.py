@@ -1,6 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
-from sqlalchemy.orm import joinedload
 
 from app.models.models import Comments, Points, Imgs
 from app.schemas.comments_schemas import CommentData, CommentsSchema, ImageData

@@ -59,12 +59,13 @@ class Points(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
-
 class Docs(Base):
     __tablename__ = 'docs'
 
     id: Mapped[str] = mapped_column(primary_key=True)
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
+
+    social_points: Mapped[List["DocsPoint"]] = relationship("DocsPoint", cascade="all, delete-orphan")
 
 
 class Comments(Base):
@@ -80,7 +81,7 @@ class Comments(Base):
 class Imgs(Base):
     __tablename__ = 'imgs'
     id: Mapped[str] = mapped_column(primary_key=True)
-    comment_id: Mapped[str] = mapped_column(Text)
+    comment_id: Mapped[int] = mapped_column(BigInteger)
 
 
     

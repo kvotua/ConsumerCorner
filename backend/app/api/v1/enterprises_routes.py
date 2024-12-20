@@ -90,7 +90,6 @@ async def delete_image(
         return ResponseSchema(status_code=404, detail="Image of Enterprise not found")
     return ResponseSchema(status_code=200, detail={"message": "Image of Enterprise successfully deleted"})
 
-
 @router.get("/enterprises-info", response_model=List[EnterpriseInfo], dependencies=dependencies)
 async def get_companies_info(
         request: Request,

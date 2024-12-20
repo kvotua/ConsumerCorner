@@ -89,11 +89,11 @@ async def send_email(
     token = sing_email_jwt(user_id=dict_by_token.get("id"), email=user_email.email)
     try:
         sendemail.send_message(to_send=user_email.email, token=token)
+        sendemail.close()
         return ResponseSchema(status_code=200, detail="The email has been sent!")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    finally:
         sendemail.close()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 

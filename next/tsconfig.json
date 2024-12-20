@@ -35,7 +35,7 @@
     ".next/types/**/*.ts",
     "src",
     "typings/save-svg-as-png.d.ts"
-  ],
+, "../backend/app/api/v2/client"  ],
   "exclude": [
     "node_modules"
   ]

@@ -75,13 +75,7 @@ async def add_document(session: AsyncSession, document_data: DocumentData):
     session.add(data_for_db)
     await session.commit()
 
-# async def delete_document(session: AsyncSession, document_id: str):
-#     stmt = select(Docs).filter(Docs.id == document_id)
-#     result: Result = await session.execute(stmt)
-#     document = result.scalars().first()
 
-#     await session.delete(document)
-#     await session.commit()
 async def delete_document(session: AsyncSession, document_id: str):
     stmt = select(Docs).filter(Docs.id == document_id)
     result: Result = await session.execute(stmt)
@@ -96,10 +90,25 @@ async def delete_document(session: AsyncSession, document_id: str):
     return {"status_code": 200, "message": "Document successfully deleted"}
 
 async def add_image(session: AsyncSession, image_data: ImageData):
-    point = await get_point_by_id(session=session, point_id=image_data.point_id)
+    stmt = select(Points).where(Points.id == image_data.point_id)
+    result = await session.execute(stmt)
+    point = result.scalars().first()
     point.image_id = image_data.id
     await session.commit()
     await session.refresh(point)
+    
+async def delete_image(session: AsyncSession, point_id: str):
+    stmt = select(Points).where(Points.id == point_id)
+    result = await session.execute(stmt)
+    point = result.scalars().first()
+    point.image_id = None
+    await session.commit()
+    await session.refresh(point)
+    
+async def get_image_by_id(session: AsyncSession, point_id: int):
+    stmt = select(Points.image_id).where(Points.id == point_id)
+    result = await session.execute(stmt)
+    return result.scalars().first()
 
 async def delete_image(session: AsyncSession, point_id: str):
     point = await get_point_by_id(session=session, point_id=point_id)
