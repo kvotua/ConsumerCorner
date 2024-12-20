@@ -25,11 +25,14 @@ async function fetchData(config: Configuration) {
   }
 }
 
+
 function Point() {
   const baseServer = new ServerConfiguration<{}>("https://consumer-corner.kvotua.ru", {});
   const config = createConfiguration({ baseServer });
 
+
   fetchData(config);
+
 
 
   const user = useAppSelector((state) => state.userReduser.user);
