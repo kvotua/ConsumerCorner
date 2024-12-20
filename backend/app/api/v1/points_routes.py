@@ -243,23 +243,6 @@ async def add_social(
         raise HTTPException(status_code=404, detail="The point was not found")
 
 
-@router.get("/social/{point_id}", dependencies=dependencies)
-async def get_socials(
-        request: Request,
-        point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],
-        session: AsyncSession = Depends(get_session),
-):
-    dict_by_token = get_token_data_verify(request)
-    if dict_by_token is None:
-        raise HTTPException(status_code=403, detail="Invalid token or expired token")
-
-    points_id = await points_crud.get_point_by_user_id(session=session, user_id=dict_by_token.get("id"))
-    if point_id not in points_id:
-        raise HTTPException(status_code=403, detail='The user does not own this point')
-
-    return await points_crud.get_all_social(session=session, point_id=point_id)
-
-
 @router.delete("/social/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def delete_social(
     request: Request,

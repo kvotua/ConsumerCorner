@@ -18,15 +18,15 @@ async def add_coment(
     text: str = Form(...),
     stars: int = Form(...),
     session: AsyncSession = Depends(get_session),
-    #images: Optional[List[UploadFile]] = File([]),
+    images: Optional[List[UploadFile]] = File([]),
 ):
     comment_data = CommentData(text=text, stars=stars)
     comment_id = await comments_crud.add_comment(session=session, point_id=point_id, comment_data=comment_data)
-    # for image in images:
-    #     contents = await image.read()
-    #     info = await mongo.upload_image(image, contents)
-    #     image_data = ImageData(id=info['_id'], comment_id=comment_id)
-    #     await comments_crud.add_image(session=session, image_data=image_data)
+    for image in images:
+        contents = await image.read()
+        info = await mongo.upload_image(image, contents)
+        image_data = ImageData(id=info['_id'], comment_id=comment_id)
+        await comments_crud.add_image(session=session, image_data=image_data)
     return ResponseSchema(status_code=200, detail="The comment has been added successfully")
 
 
