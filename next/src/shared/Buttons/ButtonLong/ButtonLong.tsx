@@ -20,7 +20,7 @@ const ButtonLong: React.FC<Partial<IButtonLong>> = ({
       onClick={() => {
         handleClick && handleClick();
       }}
-      className={`w-full text-textColor-black px-5 py-6 text-bold disabled:opacity-70 font-bold duration-100 ${
+      className={`w-full text-textColor-black px-5 py-5 disabled:opacity-70 font-medium duration-100 ${
         isActive
           ? "rounded-right bg-backgroundColor-white "
           : "rounded-left border border-backgroundColor-white text-textColor-white"

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Body, Path, Request, File, UploadFile
+from fastapi import APIRouter, HTTPException, Depends, Body, Path, Request, File, UploadFile, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, List, Optional
 
@@ -9,6 +9,7 @@ from app.services.auth_handler import get_token_data_verify, decode_jwt_with_ver
 from app.core.cruds import points_crud
 from app.services.auth_bearer import dependencies
 from app.core.databases.mongodb import MongoDBClient
+import datetime
 
 router = APIRouter(prefix="/points", tags=["Points"])
 mongo = MongoDBClient("image", "doc")
@@ -33,7 +34,10 @@ async def register_point(
 async def add_document(
     request: Request,
     point_id: Annotated[int, Path(title="Point ID")],
-    documents: Optional[List[UploadFile]] = File([]),
+    document: UploadFile = File([]),
+    name: str = Form(...),
+    is_temp: bool = Form(...),
+    date_closed: Optional[datetime.datetime] = Form(...),
     session: AsyncSession = Depends(get_session),
 ):
     dict_by_token = get_token_data_verify(request)
@@ -47,15 +51,28 @@ async def add_document(
     point = await points_crud.get_point_by_id(session=session, point_id=point_id)
     if point is None:
         raise HTTPException(status_code=404, detail='The point was not found')
-    document_ids = []
-    if documents:
-        for document in documents:
-            contents = await document.read()
-            info = await mongo.upload_document(document, contents)
-            document_data = DocumentData(id=info['_id'], point_id=point_id)
-            document_ids.append(info['_id'])
-            await points_crud.add_document(session=session, document_data=document_data)
-    return ResponseSchema(status_code=200, detail={"message": "Document's successfully uploaded", "ids": document_ids})
+    
+    contents = await document.read()
+    info = await mongo.upload_document(document, contents)
+    document_id = info['_id']
+    
+    document_data = DocumentData(
+        id=info['_id'],
+        point_id=point_id,
+        isTemp=is_temp,
+        date_added=datetime.datetime.now(),
+        date_closed=date_closed,
+        name=name
+    )
+    await points_crud.add_document(session=session, document_data=document_data)
+    
+    return ResponseSchema(
+        status_code=200,
+        detail={
+            "message": "Document successfully uploaded",
+            "id": document_id
+        }
+    )
 
 
 @router.delete("/document/{point_id}/{document_id}", response_model=ResponseSchema, dependencies=dependencies)
@@ -164,7 +181,7 @@ async def get_points_info(
 
 @router.get("/{point_id}", response_model=PointInfo, dependencies=dependencies)
 async def get_points_info(
-        point_id: Annotated[int, Path(title="ID точки")],
+        point_id: Annotated[int, Path(title="Point ID")],
         session: AsyncSession = Depends(get_session),
 ):
     return await points_crud.get_point_by_id(session=session, point_id=point_id)
@@ -173,7 +190,7 @@ async def get_points_info(
 @router.patch("/change/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def change_point(
         request: Request,
-        point_id: Annotated[int, Path(title="ID точки")],
+        point_id: Annotated[int, Path(title="Point ID")],
         new_point_info: ChangePointSchema,
         session: AsyncSession = Depends(get_session),
 ):
@@ -198,7 +215,7 @@ async def change_point(
 @router.delete("/delete/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def delete_point(
         request: Request,
-        point_id: Annotated[int, Path(title='ID точки', examples=[1])],
+        point_id: Annotated[int, Path(title='Point ID', examples=[1])],
         session: AsyncSession = Depends(get_session),
 ):
     dict_by_token = get_token_data_verify(request)

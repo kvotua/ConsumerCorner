@@ -58,7 +58,9 @@ class PointInfo(BaseModel):
     opening_time: Annotated[time, Field(title="The opening time of the point", examples=["10:00"])]
     closing_time: Annotated[time, Field(title="The closing time of the point", examples=["20:00"])]
     image_id: Annotated[Optional[str], Field(title="Image ID", examples=['5f2fcae09b58c38603442a4f'])]
-    documents_data: Annotated[Optional[List[str]], Field(title="Document ID", examples=[['6d75ddd59b58c3607315a11']])]
+    documents_data: Annotated[Optional[List[dict]], Field(title="Document ID", examples=[[{"id": "6d75ddd59b58c3607315a11", "date_added": "2024-12-07 03:21:37.273427", 
+                                                                                           "date_closed": "2024-12-07 03:21:37.273427", "name": "Закон о защите прав потребителей",
+                                                                                           "isTemp": False}]])]
     social_data: Annotated[Optional[List[dict]], Field(title="Socials", examples=[{"social_id": 2, "link": "https://example.com", "name": "example"}])]
     phone: Annotated[Optional[str], Field(title="Phone number", examples=['79219876543'], max_length=14)]
     type_activity: Annotated[str, Field(title="Type of activity", examples=["Продажи"])]
@@ -114,6 +116,10 @@ class ResponseSchema(BaseModel):
 class DocumentData(BaseModel):
     id: Annotated[str, Field(title="Document ID", examples=['5f2fcae09b58c38603442a4f'])]
     point_id: Annotated[int, Field(title="Point ID", examples=[1])]
+    isTemp: Annotated[bool, Field(title="Is Temporary Document", examples=[True])]
+    date_added: Annotated[datetime, Field(title="Date Added", examples=["2024-12-15T12:00:00Z"])]
+    date_closed: Annotated[datetime, Field(title="Date Closed", examples=["2025-01-15T12:00:00Z"])]
+    name: Annotated[str, Field(title="Document Name", examples=["Contract Agreement"])]
 
 class ImageData(BaseModel):
     id: Annotated[str, Field(title="Photo ID", examples=['5f2fcae09b58c38603442a4f'])]
