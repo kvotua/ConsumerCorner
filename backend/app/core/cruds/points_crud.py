@@ -137,7 +137,7 @@ async def get_point_by_id(session: AsyncSession, point_id: int) -> PointInfo:
     result_2 = await session.execute(stmt_2)
     social_data = result_2.scalars().all()
     social_data_dicts = [
-        {"point_id": sp.point_id, "social_id": sp.social_id} for sp in social_data
+        {"social_id": social.id, "name": social.name, "link": social.link} for social in social_data
     ]
 
     stmt_3 = select(Docs).where(Docs.point_id == point_id)
