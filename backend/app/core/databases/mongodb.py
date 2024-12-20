@@ -111,3 +111,33 @@ class MongoDBClient:
         metadata['_id'] = str(result.inserted_id)
         logger.info(f"Document with id {str(result.inserted_id)} successfully uploaded")
         return metadata
+    
+    async def delete_image_by_id(self, image_id: str):
+        if not ObjectId.is_valid(image_id):
+            return {'status_code': 400, 'message': 'Invalid image ID', 'id': image_id}
+
+        image = await self.image_collection.find_one({"_id": ObjectId(image_id)})
+        if not image:
+            return {'status_code': 404, 'message': 'Image not found', 'id': image_id}
+
+        await self.fs.delete(image['file_id'])
+
+        await self.image_collection.delete_one({"_id": ObjectId(image_id)})
+
+        logger.info(f"Image with id {image_id} successfully deleted")
+        return {"status_code": 200, "message": "Image successfully deleted", "id": image_id}
+
+    async def delete_document_by_id(self, document_id: str):
+        if not ObjectId.is_valid(document_id):
+            return {'status_code': 400, 'message': 'Invalid document ID', 'id': document_id}
+
+        document = await self.document_collection.find_one({"_id": ObjectId(document_id)})
+        if not document:
+            return {'status_code': 404, 'message': 'Document not found', 'id': document_id}
+
+        await self.fs.delete(document['file_id'])
+
+        await self.document_collection.delete_one({"_id": ObjectId(document_id)})
+
+        logger.info(f"Document with id {document_id} successfully deleted")
+        return {"status_code": 200, "message": "Document successfully deleted", 'id': document_id}

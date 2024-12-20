@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Path, Query, UploadFile, File, Body
+from fastapi import APIRouter, HTTPException, Depends, Path, Query, UploadFile, File, Body, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, Optional, List
 
@@ -15,11 +15,12 @@ mongo = MongoDBClient("image", "doc")
 @router.post("/{point_id}", response_model=ResponseSchema)
 async def add_coment(
     point_id: Annotated[int, Path()],
-    comments_data: Annotated[CommentData, Body()],
+    text: str = Form(...),
+    stars: int = Form(...),
     session: AsyncSession = Depends(get_session),
     images: Optional[List[UploadFile]] = File([]),
 ):
-    comment_data = CommentData(text=comments_data.text, stars=comments_data.stars)
+    comment_data = CommentData(text=text, stars=stars)
     comment_id = await comments_crud.add_comment(session=session, point_id=point_id, comment_data=comment_data)
     for image in images:
         contents = await image.read()

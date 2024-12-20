@@ -10,11 +10,8 @@ from app.core.cruds import points_crud
 from app.services.auth_bearer import dependencies
 from app.core.databases.mongodb import MongoDBClient
 
-
-
 router = APIRouter(prefix="/points", tags=["Points"])
 mongo = MongoDBClient("image", "doc")
-
 
 @router.post("/register", response_model=ResponseSchema, dependencies=dependencies)
 async def register_point(
@@ -59,6 +56,37 @@ async def add_document(
     return ResponseSchema(status_code=200, detail="Document's successfully uploaded")
 
 
+@router.delete("/document/{point_id}/{document_id}", response_model=ResponseSchema, dependencies=dependencies)
+async def delete_document(
+    request: Request,
+    point_id: Annotated[int, Path(title="Point ID")],
+    document_id: Annotated[str, Path(title="Document ID")],
+    session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    user_id = dict_by_token.get("id")
+    points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
+
+    if point_id not in points_id:
+        raise HTTPException(status_code=403, detail='The user does not own this company')
+    point = await points_crud.get_point_by_id(session=session, point_id=point_id)
+    if point is None:
+        raise HTTPException(status_code=404, detail='The point was not found')
+    if document_id:
+        document_info = await mongo.get_document_by_id(document_id)
+        if document_info:
+            result = await mongo.delete_document_by_id(document_id)
+            if result['status_code'] == 200:
+                await points_crud.delete_document(session=session, document_id=document_id)
+            else:
+                return ResponseSchema(status_code=result['status_code'], detail=result)
+        else:
+            return ResponseSchema(status_code=404, detail={"message": "Document not found", "id": document_id})
+    return ResponseSchema(status_code=200, detail={"message": "Document successfully deleted", "id": document_id})
+
+
 @router.post("/upload_images/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def upload_images(
     request: Request,
@@ -83,6 +111,39 @@ async def upload_images(
     image_data = ImageData(id=info['_id'], point_id=point_id)
     await points_crud.add_image(session=session, image_data=image_data)
     return ResponseSchema(status_code=200, detail="Image successfully uploaded to Point")
+
+@router.delete("/delete_image/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
+async def delete_image(
+    request: Request,
+    point_id: Annotated[int, Path(title="Point ID")],
+    session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    user_id = dict_by_token.get("id")
+    points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
+
+    if point_id not in points_id:
+        raise HTTPException(status_code=403, detail='The user does not own this company')
+    point = await points_crud.get_point_by_id(session=session, point_id=point_id)
+    if point is None:
+        raise HTTPException(status_code=404, detail='The point was not found')
+    
+    image_id = await points_crud.get_image_by_id(session=session, point_id=point_id)
+    if image_id:
+        image_info = await mongo.get_image_by_id(image_id)
+        if image_info:
+            result = await mongo.delete_image_by_id(image_id)
+            if result['status_code'] == 200:
+                await points_crud.delete_image(session=session, point_id=point_id)
+            else:
+                return ResponseSchema(status_code=result['status_code'], detail=result)
+        else:
+            return ResponseSchema(status_code=404, detail={"message": "Image not found", "id": image_id})
+    else:
+        return ResponseSchema(status_code=404, detail="Image of Point not found")
+    return ResponseSchema(status_code=200, detail={"message": "Image of Point successfully deleted"})
     
 
 @router.get("/", response_model=List[PointInfo], dependencies=dependencies)

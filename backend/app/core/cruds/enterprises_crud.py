@@ -23,6 +23,17 @@ async def add_image(session: AsyncSession, image_data: ImageData):
     await session.commit()
     await session.refresh(enterprise)
 
+async def delete_image(session: AsyncSession, enterprise_id: str):
+    enterprise = await get_enterprise_by_id(session=session, enterprise_id=enterprise_id)
+    enterprise.image_id = None
+    await session.commit()
+    await session.refresh(enterprise)
+
+async def get_image_by_id(session: AsyncSession, enterprise_id: int):
+    stmt = select(Enterprises.image_id).where(Enterprises.id == enterprise_id)
+    result = await session.execute(stmt)
+    return result.scalars().first()
+
 async def get_enterprise_by_id(session: AsyncSession, enterprise_id: int) -> Enterprises:
     stmt = select(Enterprises).where(Enterprises.id == enterprise_id)
     result = await session.execute(stmt)
