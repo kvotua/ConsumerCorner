@@ -1,8 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
+import statistics
 
 from app.models.models import Comments, Points, Imgs
 from app.schemas.comments_schemas import CommentData, CommentsSchema, ImageData
+
 
 async def add_comment(session: AsyncSession, point_id: int, comment_data: CommentData):
     data_for_db = Comments(
@@ -10,6 +12,13 @@ async def add_comment(session: AsyncSession, point_id: int, comment_data: Commen
         stars=comment_data.stars,
     )
     session.add(data_for_db)
+    await session.commit()
+    result_point = await session.execute(select(Points).where(Points.id == point_id))
+    point = result_point.scalar_one()
+    result_comments = await session.execute(select(Comments.stars).where(Comments.point_id == point_id))
+    stars = result_comments.scalars().all()
+    middle_stars = round(statistics.mean(stars), 2)
+    point.middle_stars = middle_stars
     await session.commit()
     return data_for_db.id
 
@@ -22,18 +31,12 @@ async def add_image(session: AsyncSession, image_data: ImageData):
     await session.commit()
 
 async def get_all_comments(session: AsyncSession, point_id: int) -> list[CommentsSchema]:
-    stmt_comments = (
-        select(Comments)
-        .where(Comments.point_id == point_id)
-    )
+    stmt_comments = (select(Comments).where(Comments.point_id == point_id))
     result_comments: Result = await session.execute(stmt_comments)
     comments = result_comments.scalars().all()
 
     comment_ids = [comment.id for comment in comments]
-    stmt_imgs = (
-        select(Imgs)
-        .where(Imgs.comment_id.in_(comment_ids))
-    )
+    stmt_imgs = (select(Imgs).where(Imgs.comment_id.in_(comment_ids)))
     result_imgs: Result = await session.execute(stmt_imgs)
     imgs = result_imgs.scalars().all()
 
