@@ -179,7 +179,7 @@ async def get_points_info(
     return await points_crud.get_all_points(session=session, user_id=dict_by_token.get("id"))
 
 
-@router.get("/{point_id}", response_model=PointInfo, dependencies=dependencies)
+@router.get("/{point_id}", response_model=PointInfo)
 async def get_points_info(
         point_id: Annotated[int, Path(title="Point ID")],
         session: AsyncSession = Depends(get_session),
