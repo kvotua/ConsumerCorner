@@ -35,7 +35,13 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
     for doc in docs:
         if doc.point_id not in docs_dict:
             docs_dict[doc.point_id] = []
-        docs_dict[doc.point_id].append(doc.id)
+        docs_dict[doc.point_id].append({
+            "id": doc.id,
+            "isTemp": doc.isTemp,
+            "date_added": doc.date_added,
+            "date_closed": doc.date_closed,
+            "name": doc.name
+        })
 
     stmt_social = select(SocialPoint, Social).join(Social, SocialPoint.social_id == Social.id).where(
         SocialPoint.point_id.in_(point_ids))
