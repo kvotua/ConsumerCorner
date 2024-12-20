@@ -3,6 +3,8 @@ from sqlalchemy import select, Result, delete
 from app.models.models import Points, Enterprises, Docs, Social, SocialPoint, Imgs, Comments
 from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo, SocialSchema, ImageData
 from app.services.points_services import parse_time
+import pytz
+import datetime
 
 
 async def add_points(session: AsyncSession, point_data: RegisterPoint, user_id: int):
@@ -71,11 +73,14 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
 async def add_document(session: AsyncSession, document_data: DocumentData):
     data_for_db = Docs(
         id=document_data.id,
-        point_id=document_data.point_id
+        point_id=document_data.point_id,
+        isTemp=document_data.isTemp,
+        date_closed=document_data.date_closed,
+        name=document_data.name
     )
+
     session.add(data_for_db)
     await session.commit()
-
 
 async def delete_document(session: AsyncSession, document_id: str):
     stmt = select(Docs).filter(Docs.id == document_id)
@@ -128,31 +133,39 @@ async def get_point_by_id(session: AsyncSession, point_id: int) -> PointInfo:
     social_data_dicts = [
         {"point_id": sp.point_id, "social_id": sp.social_id} for sp in social_data
     ]
+
     stmt_3 = select(Docs).where(Docs.point_id == point_id)
     result_3 = await session.execute(stmt_3)
     docs = result_3.scalars().all()
 
-    docs_dict = {}
-    for doc in docs:
-        if doc.point_id not in docs_dict:
-            docs_dict[doc.point_id] = []
-        docs_dict[doc.point_id].append(doc.id)
+    documents_data = [
+        {
+            "id": doc.id,
+            "isTemp": doc.isTemp,
+            "date_added": doc.date_added,
+            "date_closed": doc.date_closed,
+            "name": doc.name
+        }
+        for doc in docs
+    ]
+
     return PointInfo(
-            id=point.id,
-            enterprise_id=point.enterprise_id,
-            title=point.title,
-            image_id=point.image_id,
-            address=point.address,
-            opening_time=point.opening_time,
-            closing_time=point.closing_time,
-            phone=point.phone,
-            type_activity=point.type_activity,
-            middle_stars=point.middle_stars,
-            verify_phone=point.verify_phone,
-            created_at=point.created_at,
-            documents_data=docs_dict.get(point.id, []),
-            social_data = social_data_dicts ,
-        )
+        id=point.id,
+        enterprise_id=point.enterprise_id,
+        title=point.title,
+        image_id=point.image_id,
+        address=point.address,
+        opening_time=point.opening_time,
+        closing_time=point.closing_time,
+        phone=point.phone,
+        type_activity=point.type_activity,
+        middle_stars=point.middle_stars,
+        verify_phone=point.verify_phone,
+        created_at=point.created_at,
+        documents_data=documents_data,
+        social_data=social_data_dicts,
+    )
+
 
 async def update_point(session: AsyncSession, point: Points, point_change: ChangePointSchema):
     if point_change.opening_time:

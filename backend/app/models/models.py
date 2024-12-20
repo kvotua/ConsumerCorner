@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Text, ForeignKey, func, Float, Time, PrimaryKeyConstraint, String, Integer
+from sqlalchemy import BigInteger, Text, ForeignKey, func, Float, Time, PrimaryKeyConstraint, String, Integer, Boolean, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime, time
@@ -64,6 +64,10 @@ class Docs(Base):
 
     id: Mapped[str] = mapped_column(primary_key=True)
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
+    isTemp: Mapped[bool] = mapped_column(Boolean)
+    date_added: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(timezone=True), server_default=func.now())
+    date_closed: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(timezone=True), server_default=func.now())
+    name: Mapped[str] = mapped_column(Text)
 
     social_points: Mapped[List["DocsPoint"]] = relationship("DocsPoint", cascade="all, delete-orphan")
 
@@ -75,6 +79,9 @@ class Comments(Base):
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
     text: Mapped[str] = mapped_column(Text)
     stars: Mapped[int] = mapped_column(Integer)
+    name: Mapped[str] = mapped_column(Text, nullable=True)
+    number: Mapped[str] = mapped_column(Text, nullable=True)
+    isAnonimus: Mapped[bool] = mapped_column(Boolean)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
@@ -82,7 +89,6 @@ class Imgs(Base):
     __tablename__ = 'imgs'
     id: Mapped[str] = mapped_column(primary_key=True)
     comment_id: Mapped[int] = mapped_column(BigInteger)
-
 
     
 class Social(Base):

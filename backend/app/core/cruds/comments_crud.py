@@ -10,6 +10,9 @@ async def add_comment(session: AsyncSession, point_id: int, comment_data: Commen
     data_for_db = Comments(
         point_id=point_id, text=comment_data.text,
         stars=comment_data.stars,
+        name=comment_data.name,
+        number=comment_data.number,
+        isAnonimus=comment_data.isAnonimus
     )
     session.add(data_for_db)
     await session.commit()
@@ -52,6 +55,9 @@ async def get_all_comments(session: AsyncSession, point_id: int) -> list[Comment
             point_id=comment.point_id,
             text=comment.text,
             stars=comment.stars,
+            name=comment.name,
+            number=comment.number,
+            isAnonimus=comment.isAnonimus,
             created_at=comment.created_at,
             images_data=images_dict.get(comment.id, [])
         )

@@ -17,10 +17,13 @@ async def add_coment(
     point_id: Annotated[int, Path()],
     text: str = Form(...),
     stars: int = Form(...),
+    name: Optional[str] = Form(None),
+    number: Optional[str] = Form(None),
+    isAnonimus: bool = Form(...),
     session: AsyncSession = Depends(get_session),
     images: Optional[List[UploadFile]] = File([]),
 ):
-    comment_data = CommentData(text=text, stars=stars)
+    comment_data = CommentData(text=text, stars=stars, name=name, number=number, isAnonimus=isAnonimus)
     comment_id = await comments_crud.add_comment(session=session, point_id=point_id, comment_data=comment_data)
     for image in images:
         contents = await image.read()
@@ -33,7 +36,7 @@ async def add_coment(
 
 @router.get("/", response_model=list[CommentsSchema])
 async def get_comments(
-    point_id: Annotated[int, Query(title="ID точки", examples=[1])],
+    point_id: Annotated[int, Query(title="Point ID", examples=[1])],
     session: AsyncSession = Depends(get_session),
 ) -> list[CommentsSchema]:
     if point_id not in await comments_crud.get_points_id(session=session):

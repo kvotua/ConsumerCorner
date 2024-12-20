@@ -75,31 +75,35 @@ function Point() {
           <p className="opacity-50 break-words whitespace-pre-line leading-tight mb-5">
             {pointInfo.address}
           </p>
-          <div className="flex-grow">
-            <div className="py-2 grid grid-cols-2 gap-2">
-              <ButtonBig link={`/points/${pointId}/book`}>
-                Книга отзывов
-              </ButtonBig>
-              <ButtonBig link={`/points/${pointId}/rights`}>
-                Права потребителя
-              </ButtonBig>
-              <ButtonBig link={`/points/${pointId}/docs`}>Документы</ButtonBig>
-              <ButtonBig link={`/points/${pointId}/socials`}>Соц.сети</ButtonBig>
+          <div className="flex flex-col items-center space-y-6">
+            {/* Секция с кнопками */}
+            <div className="flex-grow">
+              <div className="py-2 grid grid-cols-2 gap-2">
+                <ButtonBig link={`/points/${pointId}/book`}>Книга отзывов</ButtonBig>
+                <ButtonBig link={`/points/${pointId}/rights`}>Права потребителя</ButtonBig>
+                <ButtonBig link={`/points/${pointId}/docs`}>Документы</ButtonBig>
+                <ButtonBig link={`/points/${pointId}/socials`}>Соц.сети</ButtonBig>
+              </div>
+            </div>
+
+            {/* Секция с ИНН и ОГРН */}
+            <div className="flex flex-col items-center text-center">
+              <p className="text-lg opacity-60">
+                <strong>ИНН</strong>: {pointInfo.inn}
+              </p>
+              <p className="text-lg opacity-60">
+                <strong>ОГРН</strong>: {pointInfo.ogrn}
+              </p>
+            </div>
+
+            {/* Секция с описанием */}
+            <div className="w-full text-center">
+              <p className="text-sm opacity-70 break-words whitespace-pre-line leading-snug">
+                Удобные инструменты, позволяющие вашему бизнесу быть в курсе и оперативно реагировать на пожелания клиента.
+              </p>
             </div>
           </div>
-          <div className="flex flex-col items-center text-center">
-            <p className="text-lg opacity-60 mt-1 break-words">
-              <strong>ИНН</strong>: {pointInfo.inn}
-            </p>
 
-            <p className="text-lg opacity-60 mt-0 break-words">
-              <strong>ОГРН</strong>: {pointInfo.ogrn}
-            </p>
-
-            <p className="text-sm opacity-70 mt-4 break-words whitespace-pre-line leading-snug">
-              Удобные инструменты, позволяющие вашему бизнесу быть в курсе и оперативно реагировать на пожелания клиента.
-            </p>
-          </div>
 
 
 

@@ -12,7 +12,7 @@ interface FormData {
   phoneNumber?: string;
 }
 
-const ReportForm: React.FC = () => {
+const OfferForm: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -38,14 +38,22 @@ const ReportForm: React.FC = () => {
   });
 
   return (
-    <form onSubmit={onSubmit} id="report" className="py-5 flex-grow">
+    <form
+      onSubmit={handleSubmit((data) =>
+        mutate({
+          message: data.message,
+          pointID: pointId as string,
+        })
+      )}
+      id="offer"
+      className="py-5 flex-grow"
+    >
       <TextFieldBig
         {...register("message", { required: true })}
         isError={!!errors.message}
-        label="Пожалуйста, напишите в форму ниже ваш отзыв"
-        placeholder="Напишите ваш отзыв"
+        label="Пожалуйста, напишите в форму ниже ваше предложение."
+        placeholder="Напишите ваше предложение"
       />
-
       {/* Поля имени и номера отображаются только если isAnonymous === false */}
       {!isAnonymous && (
         <>
@@ -99,4 +107,4 @@ const ReportForm: React.FC = () => {
   );
 };
 
-export { ReportForm };
+export { OfferForm };
