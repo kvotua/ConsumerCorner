@@ -24,7 +24,6 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
     result_points = await session.execute(stmt_points)
     points = result_points.scalars().all()
 
-
     point_ids = [point.id for point in points]
     stmt_docs = select(Docs).where(Docs.point_id.in_(point_ids))
     result_docs = await session.execute(stmt_docs)
@@ -112,18 +111,6 @@ async def delete_image(session: AsyncSession, point_id: str):
     await session.commit()
     await session.refresh(point)
     
-async def get_image_by_id(session: AsyncSession, point_id: int):
-    stmt = select(Points.image_id).where(Points.id == point_id)
-    result = await session.execute(stmt)
-    return result.scalars().first()
-
-async def delete_image(session: AsyncSession, point_id: str):
-    point = await get_point_by_id(session=session, point_id=point_id)
-    point.image_id = None
-    await session.commit()
-    await session.refresh(point)
-    
-
 async def get_image_by_id(session: AsyncSession, point_id: int):
     stmt = select(Points.image_id).where(Points.id == point_id)
     result = await session.execute(stmt)
