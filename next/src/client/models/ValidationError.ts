@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { ValidationErrorLocInner } from './ValidationErrorLocInner';
+import { ValidationErrorLocInner } from '../models/ValidationErrorLocInner';
 import { HttpFile } from '../http/http';
 
 export class ValidationError {

@@ -50,8 +50,8 @@ async def send_message(
         data=params,
     )
     await httpclient.close_session()
-    if not isinstance(response, str):
-        raise HTTPException(status_code=400, detail=response.get("error"))
+    if len(response) != 36:
+        raise HTTPException(status_code=400, detail=response)
     await verify_crud.add_verify_session(session=session, request_id=response, sms_code=code, phone=phone)
     return ReqID(req_id=response)
 

@@ -7,11 +7,33 @@ import { ButtonBig } from "@/shared/Buttons/ButtonBig/ButtonBig";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
 import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
 import dynamic from "next/dynamic";
-import { createConfiguration } from "@/client";
-import { BaseServerConfiguration } from "@/client";
+import { createConfiguration, ServerConfiguration , InnApi , Configuration} from '@/client';
+import type { InnApiResultPageInnInnInfoGetRequest } from "@/client/types/ObjectParamAPI";
+
+
+async function fetchData(config: Configuration) {
+  const apiInstance = new InnApi(config);
+  const request: InnApiResultPageInnInnInfoGetRequest = {
+  
+    inn: "390000001190",
+  };
+  try {
+    const data = await apiInstance.resultPageInnInnInfoGet(request.inn);
+    console.log('API called successfully. Returned data:', data);
+  } catch (error) {
+    console.error("Ошибка при вызове API:", error);
+  }
+}
+
 
 function Point() {
-  createConfiguration(BaseServerConfiguration("https://consumer-corner.kvotua.ru"));
+  const baseServer = new ServerConfiguration<{}>("https://consumer-corner.kvotua.ru", {});
+  const config = createConfiguration({ baseServer });
+
+
+  fetchData(config);
+
+
 
   const user = useAppSelector((state) => state.userReduser.user);
   const { pointId } = useParams();
@@ -59,9 +81,6 @@ function Point() {
             <ButtonBase link={`/points/${pointId}/qr`}>qr-код</ButtonBase>
           </div>
         )}
-        <ButtonBack handleClick={() => push("/")}>
-          {user && !user.points_id.includes(pointId as string) && "На главную"}
-        </ButtonBack>
       </div>
     </section>
   );

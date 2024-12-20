@@ -65,7 +65,9 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
             verify_phone=point.verify_phone,
             created_at=point.created_at,
             documents_data=docs_dict.get(point.id, []),
-            social_data= social_data_dicts
+            social_data= [
+            social for social in social_data_dicts if social.get("point_id") == point.id
+        ]
         )
         for point in points
     ]
@@ -80,11 +82,52 @@ async def add_document(session: AsyncSession, document_data: DocumentData):
     session.add(data_for_db)
     await session.commit()
 
+
+async def delete_document(session: AsyncSession, document_id: str):
+    stmt = select(Docs).filter(Docs.id == document_id)
+    result: Result = await session.execute(stmt)
+    document = result.scalars().first()
+
+    if not document:
+        return {"status_code": 404, "message": "Document not found"}
+    
+    await session.delete(document)
+    await session.commit()
+
+    return {"status_code": 200, "message": "Document successfully deleted"}
+
 async def add_image(session: AsyncSession, image_data: ImageData):
-    point = await get_point_by_id(session=session, point_id=image_data.point_id)
+    stmt = select(Points).where(Points.id == image_data.point_id)
+    result = await session.execute(stmt)
+    point = result.scalars().first()
     point.image_id = image_data.id
     await session.commit()
     await session.refresh(point)
+    
+async def delete_image(session: AsyncSession, point_id: str):
+    stmt = select(Points).where(Points.id == point_id)
+    result = await session.execute(stmt)
+    point = result.scalars().first()
+    point.image_id = None
+    await session.commit()
+    await session.refresh(point)
+    
+async def get_image_by_id(session: AsyncSession, point_id: int):
+    stmt = select(Points.image_id).where(Points.id == point_id)
+    result = await session.execute(stmt)
+    return result.scalars().first()
+
+async def delete_image(session: AsyncSession, point_id: str):
+    point = await get_point_by_id(session=session, point_id=point_id)
+    point.image_id = None
+    await session.commit()
+    await session.refresh(point)
+    
+
+async def get_image_by_id(session: AsyncSession, point_id: int):
+    stmt = select(Points.image_id).where(Points.id == point_id)
+    result = await session.execute(stmt)
+    return result.scalars().first()
 
 async def get_point_by_user_id(session: AsyncSession, user_id: int):
     stmt = select(Points.id).where(Points.create_id == user_id)
