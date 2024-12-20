@@ -4,6 +4,7 @@ from sqlalchemy import select, Result, update
 from app.schemas.verify_schemas import Register
 from app.services.verify_services import hash_password
 from app.models.models import Users, Verification
+
 from app.core.cruds.users_crud import get_user_by_id
 
 

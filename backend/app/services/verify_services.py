@@ -22,8 +22,8 @@ class HttpClient:
             async with self.session.post(url, data=data) as response:
                 result = await response.json()
                 return result.get("request_id")
-        except:
-            return result
+        except AttributeError:
+            return result.get("error")
 
     def __del__(self):
         self.session.close()

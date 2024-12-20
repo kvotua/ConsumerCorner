@@ -58,7 +58,9 @@ async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]
             verify_phone=point.verify_phone,
             created_at=point.created_at,
             documents_data=docs_dict.get(point.id, []),
-            social_data= social_data_dicts
+            social_data= [
+            social for social in social_data_dicts if social.get("point_id") == point.id
+        ]
         )
         for point in points
     ]
@@ -72,6 +74,7 @@ async def add_document(session: AsyncSession, document_data: DocumentData):
     )
     session.add(data_for_db)
     await session.commit()
+
 
 async def delete_document(session: AsyncSession, document_id: str):
     stmt = select(Docs).filter(Docs.id == document_id)
@@ -102,6 +105,18 @@ async def delete_image(session: AsyncSession, point_id: str):
     await session.commit()
     await session.refresh(point)
     
+async def get_image_by_id(session: AsyncSession, point_id: int):
+    stmt = select(Points.image_id).where(Points.id == point_id)
+    result = await session.execute(stmt)
+    return result.scalars().first()
+
+async def delete_image(session: AsyncSession, point_id: str):
+    point = await get_point_by_id(session=session, point_id=point_id)
+    point.image_id = None
+    await session.commit()
+    await session.refresh(point)
+    
+
 async def get_image_by_id(session: AsyncSession, point_id: int):
     stmt = select(Points.image_id).where(Points.id == point_id)
     result = await session.execute(stmt)

@@ -47,13 +47,15 @@ async def add_document(
     point = await points_crud.get_point_by_id(session=session, point_id=point_id)
     if point is None:
         raise HTTPException(status_code=404, detail='The point was not found')
+    document_ids = []
     if documents:
         for document in documents:
             contents = await document.read()
             info = await mongo.upload_document(document, contents)
             document_data = DocumentData(id=info['_id'], point_id=point_id)
+            document_ids.append(info['_id'])
             await points_crud.add_document(session=session, document_data=document_data)
-    return ResponseSchema(status_code=200, detail="Document's successfully uploaded")
+    return ResponseSchema(status_code=200, detail={"message": "Document's successfully uploaded", "ids": document_ids})
 
 
 @router.delete("/document/{point_id}/{document_id}", response_model=ResponseSchema, dependencies=dependencies)
@@ -87,8 +89,9 @@ async def delete_document(
     return ResponseSchema(status_code=200, detail={"message": "Document successfully deleted", "id": document_id})
 
 
-@router.post("/upload_images/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
-async def upload_images(
+
+@router.post("/upload_image/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
+async def upload_image(
     request: Request,
     point_id: Annotated[int, Path(title="Point ID")],
     image: Optional[UploadFile] = File([]),
@@ -143,7 +146,8 @@ async def delete_image(
             return ResponseSchema(status_code=404, detail={"message": "Image not found", "id": image_id})
     else:
         return ResponseSchema(status_code=404, detail="Image of Point not found")
-    return ResponseSchema(status_code=200, detail={"message": "Image of Point successfully deleted"})
+    return ResponseSchema(status_code=200, detail={"message": "Image of Point successfully deleted"})#, "id": image_id})
+
     
 
 @router.get("/", response_model=List[PointInfo], dependencies=dependencies)
