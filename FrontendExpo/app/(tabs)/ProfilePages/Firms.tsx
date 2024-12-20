@@ -1,129 +1,238 @@
 import React from "react";
 import {
-  ImageBackground,
-  Text,
   View,
-  TouchableOpacity,
-  FlatList,
+  Text,
   StyleSheet,
+  Dimensions,
+  ImageBackground,
+  SafeAreaView,
+  FlatList,
+  TouchableOpacity,
 } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Swipeable from "react-native-gesture-handler/Swipeable";
+import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "../../Styles/Style";
 
-export default function Firms({ navigation }) {
+const screenWidth = Dimensions.get("window").width;
 
-  // Массив с данными, добавлены типы для фирмы и точки
+export default function Firms({ navigation }) {
   const data = [
-    { id: '1', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12', 'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    { id: '2', title: "Название ИП, ИНН", type: 'firm', points: [
-      'Точка: Москва, ул. Тверская д. 4'
-    ] },
-    { id: '3', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    { id: '4', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    { id: '5', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    { id: '6', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    { id: '7', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    { id: '8', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    { id: '9', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    { id: '10', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    { id: '11', title: "Название ООО, ИНН", type: 'firm', points: [
-      'Точка: Калининград, Калининградская обл, ул. Ленина д. 16 В',
-      'Точка: Санкт-Петербург, Невский пр., д. 12'
-    ] },
-    
+    { id: "1", title: "Пивоваренная компания\nПК ПОНАРТ", rating: 3.87 },
+    { id: "2", title: "Пивоваренная компания\nПК ПОНАРТ", rating: 3.87 },
   ];
 
-  // Функция рендеринга каждого элемента
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    return (
+      <View style={localStyles.starsContainer}>
+        {[...Array(fullStars)].map((_, index) => (
+          <Text key={`full-${index}`} style={localStyles.starFull}>
+            ★
+          </Text>
+        ))}
+        {hasHalfStar && <Text style={localStyles.starHalf}>★</Text>}
+        {[...Array(emptyStars)].map((_, index) => (
+          <Text key={`empty-${index}`} style={localStyles.starEmpty}>
+            ★
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
+  const renderRightActions = () => (
+    <View style={[localStyles.rightAction]}>
+      <Icons
+        name="pencil"
+        size={24}
+        color="#FFFFFF"
+        style={[{ marginEnd: "5%" }]}
+      />
+    </View>
+  );
+
   const renderItem = ({ item }) => {
-    if (item.type === 'firm') {
-      // Если элемент - фирма, то отображаем название фирмы и при клике переходим на экран с точками
-      return (
-        <View style={styles.itemFlatList}>
-          <Text style={styles.textInFlatList}>{item.title}</Text>
-          <TouchableOpacity
-            style={styles.circleContainer}
-            onPress={() => navigation.navigate("Points", { firmId: item.id, points: item.points })}
-          >
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      // Если элемент - точка, то просто отображаем точку
-      return (
-        <View style={localStyles.flatListContainer}>
-          <View style={styles.itemFlatList}>
-            <Text style={styles.textInFlatList}>{item.title}</Text>
-            <View style={styles.circleContainer}>
-              <View style={styles.innerCircle} />
+    return (
+      <>
+      <Swipeable
+        renderRightActions={renderRightActions}
+        containerStyle={{overflow: "visible"}}
+      >
+        <View>
+          {/* Карточка */}
+          <View style={localStyles.card}>
+            <View style={localStyles.logoContainer}>
+              <Text style={localStyles.logoText}>A</Text>
             </View>
-        </View>
-        </View>
-      );
-    }
+            <View style={localStyles.cardContent}>
+              <Text style={localStyles.subtitle}>Пивоваренная компания</Text>
+              <Text style={localStyles.cardTitle}>{item.title}</Text>
+              <View style={localStyles.ratingContainer}>
+                <Text style={localStyles.cardRating}>
+                  {item.rating.toFixed(2)}
+                </Text>
+                {renderStars(item.rating)}
+              </View>
+            </View>
+          </View>
+
+          {/* Серые плашки */}
+          
+          </View>
+      </Swipeable>
+
+<View style={{width: "100%", backgroundColor: "grey", position: "absolute", marginVertical: 10  }}>
+<View style={[localStyles.card, { zIndex: -5, marginVertical: 0,
+padding: 10,}]}>
+  <View style={localStyles.logoContainer}>
+    <Text style={localStyles.logoText}>A</Text>
+  </View>
+  <View style={localStyles.cardContent}>
+    <Text style={localStyles.subtitle}>Пивоваренная компания</Text>
+    <Text style={localStyles.cardTitle}>{item.title}</Text>
+    <View style={localStyles.ratingContainer}>
+      <Text style={localStyles.cardRating}>
+        {item.rating.toFixed(2)}
+      </Text>
+      {renderStars(item.rating)}
+    </View>
+  </View>
+</View>
+</View>
+</>
+    );
   };
 
   return (
-    <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
+    <ImageBackground
+      source={require("../../../assets/images/background.png")}
+      style={styles.background}
+    >
       <SafeAreaView style={styles.containerMainPage}>
         <View style={styles.firmsAndPointsHeader}>
           <Text style={styles.menuTitle}>Мои фирмы</Text>
         </View>
-        <View style={styles.containerLine}>
-          <View style={styles.menuPagesLine}/>
-        </View>
-        <View style={styles.firmsAndPointsFlatListContainer}>
-          <FlatList style={[{ paddingRight: 10 }]}
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            ListEmptyComponent={<Text>Нет фирм/точек</Text>}
-            indicatorStyle="white"
-          />
-        </View>
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={localStyles.listContainer}
+          style={{ overflow: "visible"}}
+        />
         <View style={styles.containerButtonsBottomFlatList}>
-          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("Social")}>
+          <TouchableOpacity
+            style={styles.buttonMenuPage}
+            onPress={() => navigation.replace("Social")}
+          >
             <Text style={styles.textInButtonsMenuPage}>Добавить фирму</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
+          <TouchableOpacity
+            style={[styles.buttonBackMenuPage, { marginTop: 10 }]}
+            onPress={() => navigation.replace("MenuPage")}
+          >
             <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
     </ImageBackground>
-  )
+  );
 }
 
 const localStyles = StyleSheet.create({
-  flatListContainer: {
+  listContainer: {
+    padding: 0,
+  },
+  card: {
     flexDirection: "row",
-    alignItems: 'center',
-  }
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    marginVertical: 10,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  logoContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#f4f4f4",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  logoText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#000",
+  },
+  cardContent: {
+    flex: 1,
+  },
+  subtitle: {
+    fontSize: 12,
+    color: "#777",
+    marginBottom: 2,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
+  },
+  ratingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  cardRating: {
+    fontSize: 14,
+    color: "#777",
+    marginRight: 5,
+  },
+  starsContainer: {
+    flexDirection: "row",
+    marginLeft: 5,
+  },
+  starFull: {
+    color: "#FFD700",
+    fontSize: 14,
+  },
+  starHalf: {
+    color: "#FFD700",
+    fontSize: 14,
+    opacity: 0.5,
+  },
+  starEmpty: {
+    color: "#C0C0C0",
+    fontSize: 14,
+  },
+  rightAction: {
+    backgroundColor: "#d3d3d3",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "20%",
+    borderRadius: 10,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    marginVertical: 10,
+  },
+  grayBarsContainer: {
+    alignItems: "center",
+  },
+  grayBarFull: {
+    width: "100%",
+    backgroundColor: "#D3D3D3",
+    marginBottom: 0,
+    borderRadius: 3,
+  },
+  grayBarSmall: {
+    width: "20%",
+    backgroundColor: "#D3D3D3",
+    borderRadius: 3,
+  },
 });
-
