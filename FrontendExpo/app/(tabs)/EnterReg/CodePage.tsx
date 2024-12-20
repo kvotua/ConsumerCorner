@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "../../Styles/Style"
 import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken, SesIdToken } from "@/app/AsyncStore/StoreTokens";
+import { apiRequest } from '../../../Api/RefreshToken';
 
 export default function CodePage({ navigation}) {
   const [code, setcode] = useState("");
@@ -26,33 +27,30 @@ export default function CodePage({ navigation}) {
   };
   
   const handleNext = async () => {
-    const token = await AccessGetToken();
-    const ses = await SesIdToken();
-
     const url = 'http://127.0.0.1:8080/auth/check';
+  
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "access-token" : `${token}`,
-          "Content-Type" : "application/json"
+      // Получаем токены из локального хранилища
+      const token = await AccessGetToken();
+      const ses = await SesIdToken();
+  
+      // Выполняем запрос с помощью универсальной функции
+      const data = await apiRequest(
+        url,
+        "POST",
+        {
+          req_id: ses,
+          sms_code: code,
         },
-        body: JSON.stringify({ 
-          "req_id": `${ses}`,
-          "sms_code": `${code}`
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Неверный код");
-      }
-
-      const data = await response.json();
-      navigation.replace("Inn")
+        {
+          "access-token": token,
+        }
+      );
+  
+      // Если успешный запрос, переходим на следующий экран
+      navigation.replace("Inn");
     } catch (error) {
-      navigation.replace("Inn")
+      // Обрабатываем ошибку и показываем тост
       showToast("error", "Ошибка!", error.message || "Неверный код");
     }
   };

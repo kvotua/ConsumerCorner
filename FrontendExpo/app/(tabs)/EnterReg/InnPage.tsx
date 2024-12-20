@@ -5,6 +5,7 @@ import Style from "../../Styles/Style";
 import { TextInputMask } from "react-native-masked-text";
 import Toast from "../Notif/toasts/Toast";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { apiRequest } from '../../../Api/RefreshToken';
 
 export default function InnReg({navigation}){
     const [value, setValue] = useState("");
@@ -22,39 +23,32 @@ export default function InnReg({navigation}){
     
 
     
-    const handleNext = async () => {
-        let inn = value.replace(/\s/g, "")
-        if(!inn ||( inn.length != 10 && inn.length != 12)){
-            showToast("error", "Ошибка!", "Неверная длина ИНН");
-            return
+      const handleNext = async () => {
+        // Убираем пробелы и проверяем ИНН
+        let inn = value.replace(/\s/g, "");
+        if (!inn || (inn.length !== 10 && inn.length !== 12)) {
+          showToast("error", "Ошибка!", "Неверная длина ИНН");
+          return;
         }
-        if (/[a-zA-Zа-яА-Я]/.test(inn)) {
-            showToast("error", "Ошибка!", "ИНН должен содержать только цифры");
-            return
+        if (/[a-zA-Zа-яА-Я]/.test(inn) || isNaN(inn)) {
+          showToast("error", "Ошибка!", "ИНН должен содержать только цифры");
+          return;
         }
-        if (isNaN(inn)) {
-            showToast("error", "Ошибка!", "ИНН должен содержать только цифры");
-            return
-        }
-        await AsyncStorage.setItem("Inn", inn)
+      
+        // Сохраняем ИНН в локальное хранилище
+        await AsyncStorage.setItem("Inn", inn);
+        
         const url = `http://localhost:8765/inn/inn_info?inn=${inn}`;
+      
         try {
-          const response = await fetch(url, {
-            method: "GET",
-            headers: {
-              "Accept": "application/json",
-            },
-          });
-    
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Ошибка сервера");
-          }
-    
-          const data = await response.json();
-          await AsyncStorage.setItem("TypeFirm", data.type)
+          // Выполняем GET-запрос через универсальную функцию
+          const data = await apiRequest(url, "GET");
+      
+          // Сохраняем тип компании и переходим на следующий экран
+          await AsyncStorage.setItem("TypeFirm", data.type);
           navigation.replace("RegFirma", { companyData: data });
         } catch (error) {
+          // Обработка ошибки
           showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
         }
       };

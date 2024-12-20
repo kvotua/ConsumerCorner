@@ -1,9 +1,0 @@
-.env
-node_modules
-backend/app/.env
-.idea
-.venv
-data
-mongodbdata
-.pytest_cache
-__pycache__

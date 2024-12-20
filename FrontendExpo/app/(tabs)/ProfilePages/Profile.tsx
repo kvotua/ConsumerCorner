@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   ImageBackground,
@@ -12,10 +13,13 @@ import {
   Platform,
   FlatList
 } from "react-native";
+import Style from "@/app/Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import styles from "../../Styles/Style";
+import Toast from "../Notif/toasts/Toast";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function Profile({ navigation }) {
+  const [userData, setUserData] = useState({});
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -28,11 +32,35 @@ export default function Profile({ navigation }) {
     return 0; 
   };
 
-  const getPaddingHorizontal = () => {
-    if (Platform.OS === 'ios') return isTablet ? 192 : 25; 
-    else if (Platform.OS === 'android') return isTablet ? 192 : 25; 
-    return 0; 
-  };
+  // const handleUpdateProfile = async () => {
+  //   const updatedData = {
+  //     name: userData.name,
+  //     phone: userData.phone,
+  //     email: userData.email,
+  //     receive_telegram: isEnabled, // Обновляем состояние switch
+  //   };
+
+  //   try {
+  //     const token = await AccessGetToken()
+  //     const response = await fetch('http://localhost:8000/change', {
+  //       method: 'PATCH',
+  //       headers: {
+  //         'Authorization': `${token}`, // Подставь токен здесь
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(updatedData),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to update profile');
+  //     }
+
+  //     showToast("success", "Успех!", error.message || "Вы успешно обновили данные!");
+  //   } catch (error) {
+  //     console.error('Ошибка при обновлении профиля:', error);
+  //   }
+  // };
+
 
   // Данные для FlatList
   const inputData = [
@@ -69,8 +97,12 @@ export default function Profile({ navigation }) {
             source={require("../../../assets/images/profileImage.png")}
             style={localStyles.profileImage} 
           />
-          <Text style={styles.profileTitle}>Акулич В.C</Text>
         </View>
+        <View style={Style.profileHeader}>
+          <Image source={require("../../../assets/images/profileImage.png")} style={localStyles.profileImage} />
+          <Text style={Style.profileTitle}>{userData.name || 'Акулич В.C'}</Text>
+        </View>
+
         
         <View style={styles.containerProfile}>
           <FlatList

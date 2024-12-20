@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,10 @@ import {
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "../../Styles/Style";
+import { apiRequest } from "@/Api/RefreshToken";
+import Toast from "../Notif/toasts/Toast";
+import { getEnterprisesInfo, registerEnterprise } from '../../../Api/registerEnterprise';
+
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -20,6 +24,7 @@ export default function Firms({ navigation }) {
     { id: "1", title: "Пивоваренная компания\nПК ПОНАРТ", rating: 3.87 },
     { id: "2", title: "Пивоваренная компания\nПК ПОНАРТ", rating: 3.87 },
   ];
+
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -111,6 +116,16 @@ padding: 10,}]}>
       style={styles.background}
     >
       <SafeAreaView style={styles.containerMainPage}>
+                                {/* Компонент Toast */}
+                          {toast.visible && (
+                        <Toast
+                            type={toast.type}
+                            message={toast.message}
+                            subMessage={toast.subMessage}
+                            visible={toast.visible}
+                            onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
+                        />
+                        )}
         <View style={styles.firmsAndPointsHeader}>
           <Text style={styles.menuTitle}>Мои фирмы</Text>
         </View>
@@ -122,6 +137,7 @@ padding: 10,}]}>
           style={{ overflow: "visible"}}
         />
         <View style={styles.containerButtonsBottomFlatList}>
+
           <TouchableOpacity
             style={styles.buttonMenuPage}
             onPress={() => navigation.replace("Social")}
