@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
+  Image
 } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -15,18 +16,39 @@ import styles from "../../Styles/Style";
 import { apiRequest } from "@/Api/RefreshToken";
 import Toast from "../Notif/toasts/Toast";
 import { getEnterprisesInfo, registerEnterprise } from '../../../Api/registerEnterprise';
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function Firms({ navigation }) {
   const [firms, setfirms] = useState();
-  const data = [
-    { id: "1", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
-    { id: "2", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
-  ];
 
-
+    useEffect(() => {
+      fetchfirms();
+    }, []);
+  
+  const fetchfirms = async()=>{
+    const jwt = await AccessGetToken();
+    const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/enterprises-info`, {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${jwt}`
+        },
+      });
+    const data = await response.json();
+    console.log(data);
+    const filteredData = data.map(item => ({
+        id: item.id,
+        name: item.name,
+        middle_stars: item.middle_stars,
+        image_id: item.image_id,
+        general_type_activity: item.general_type_activity,
+        
+    }));
+    setfirms(filteredData);
+  }
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -63,52 +85,54 @@ export default function Firms({ navigation }) {
 const backgroungColor = "#d3d3d3";
   const renderItem = ({ item }) => {
     return (
-      <>
-      <Swipeable
-        renderRightActions={renderRightActions}
-        containerStyle={{overflow: "visible"}}
-      >
-        <View>
-          {/* Карточка */}
-          <View style={localStyles.card}>
-            <View style={localStyles.logoContainer}>
-              <Text style={localStyles.logoText}>A</Text>
-            </View>
-            <View style={localStyles.cardContent}>
-              <Text style={localStyles.subtitle}>Пивоваренная компания</Text>
-              <Text style={localStyles.cardTitle}>{item.name}</Text>
-              <View style={localStyles.ratingContainer}>
-                <Text style={localStyles.cardRating}>
-                  {/* {item.rating.toFixed(2)} */}
-                </Text>
-                {renderStars(item.middle_stars)}
+      <TouchableOpacity key={item.id} onPress={() => navigation.replace("Points", {id: item.id})}>
+              <>
+        <Swipeable
+          renderRightActions={renderRightActions}
+          containerStyle={{overflow: "visible"}}
+        >
+          <View>
+            {/* Карточка */}
+            <View style={localStyles.card}>
+              <View style={[localStyles.logoContainer]}>
+                <Image source={require('../../../assets/images/test.jpg')} style={{height: 50, width: 50}}/>
+              </View>
+              <View style={localStyles.cardContent}>
+                <Text style={localStyles.subtitle}>{item.general_type_activity}</Text>
+                <Text style={localStyles.cardTitle}>{item.name}</Text>
+                <View style={localStyles.ratingContainer}>
+                  <Text style={localStyles.cardRating}>
+                    {/* {item.rating.toFixed(2)} */}
+                  </Text>
+                  {renderStars(item.middle_stars)}
+                </View>
               </View>
             </View>
-          </View>
 
-          {/* Серые плашки */}
-          
-          </View>
-      </Swipeable>
+            {/* Серые плашки */}
+            
+            </View>
+        </Swipeable>
 
-<View style={{width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10}}>
-<View style={[localStyles.card, { zIndex: -5, marginVertical: 0,
-padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
-  <View style={[localStyles.logoContainer, {backgroundColor: backgroungColor}]}>
-    <Text style={[localStyles.logoText, {color: backgroungColor}]}>A</Text>
-  </View>
-  <View style={localStyles.cardContent}>
-    <Text style={[localStyles.subtitle, {color: backgroungColor}]}>Пивоваренная компания</Text>
-    <Text style={[localStyles.cardTitle, {color: backgroungColor}]}>{item.name}</Text>
-    <View style={[localStyles.ratingContainer, {backgroundColor: backgroungColor}]}>
-      <Text style={[localStyles.cardRating, {color: backgroungColor}]}>
-        {/* {item.rating.toFixed(2)} */}
-      </Text>
+  <View style={{width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10}}>
+  <View style={[localStyles.card, { zIndex: -5, marginVertical: 0,
+  padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
+    <View style={[localStyles.logoContainer, {backgroundColor: backgroungColor}]}>
+      <Text style={[localStyles.logoText, {color: backgroungColor}]}>A</Text>
+    </View>
+    <View style={localStyles.cardContent}>
+      <Text style={[localStyles.subtitle, {color: backgroungColor}]}>Пивоваренная компания</Text>
+      <Text style={[localStyles.cardTitle, {color: backgroungColor}]}>{item.name}</Text>
+      <View style={[localStyles.ratingContainer, {backgroundColor: backgroungColor}]}>
+        <Text style={[localStyles.cardRating, {color: backgroungColor}]}>
+          {/* {item.rating.toFixed(2)} */}
+        </Text>
+      </View>
     </View>
   </View>
-</View>
-</View>
-</>
+  </View>
+  </>
+      </TouchableOpacity>
     );
   };
 
@@ -123,7 +147,7 @@ padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
           <Text style={styles.menuTitle}>Мои фирмы</Text>
         </View>
         <FlatList
-          data={data}
+          data={firms}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           contentContainerStyle={localStyles.listContainer}
@@ -173,6 +197,7 @@ const localStyles = StyleSheet.create({
     backgroundColor: "#f4f4f4",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
     marginRight: 10,
   },
   logoText: {
