@@ -5,11 +5,11 @@ import {
   StyleSheet,
   Dimensions,
   ImageBackground,
-  SafeAreaView,
   FlatList,
   TouchableOpacity,
   Image
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "../../Styles/Style";
@@ -28,27 +28,49 @@ export default function Firms({ navigation }) {
       fetchfirms();
     }, []);
   
-  const fetchfirms = async()=>{
-    const jwt = await AccessGetToken();
-    const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/enterprises-info`, {
-        method: 'GET',
-        headers: {
-          'accept': 'application/json',
-          'Authorization': `Bearer ${jwt}`
-        },
-      });
-    const data = await response.json();
-    console.log(data);
-    const filteredData = data.map(item => ({
-        id: item.id,
-        name: item.name,
-        middle_stars: item.middle_stars,
-        image_id: item.image_id,
-        general_type_activity: item.general_type_activity,
-        
-    }));
-    setfirms(filteredData);
-  }
+    const fetchfirms = async () => {
+      try {
+        const jwt = await AccessGetToken();
+        const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/enterprises-info`, {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+    
+        const data = await response.json();
+    
+        const filteredData = await Promise.all(
+          data.map(async (item) => {
+            let imageData = null;
+            if (item.image_id) {
+              const imageResponse = await fetch(`https://consumer-corner.kvotua.ru/mongo/image/${item.image_id}`, {
+                method: "GET",
+                headers: {
+                  accept: "application/json",
+                  Authorization: `Bearer ${jwt}`,
+                },
+              });
+              const imageJson = await imageResponse.json();
+              imageData = imageJson.image_data; 
+            }
+            return {
+              id: item.id,
+              name: item.name,
+              middle_stars: item.middle_stars,
+              general_type_activity: item.general_type_activity,
+              image_data: imageData, 
+            };
+          })
+        );
+    
+        setfirms(filteredData);
+      } catch (error) {
+        console.error("Error fetching firms:", error);
+      }
+    };
+    
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -84,6 +106,9 @@ export default function Firms({ navigation }) {
 
 const backgroungColor = "#d3d3d3";
   const renderItem = ({ item }) => {
+    const imageSource = item.image_data
+    ? { uri: `data:image/png;base64,${item.image_data}` }
+    : require("../../../assets/images/test.jpg");
     return (
       <TouchableOpacity key={item.id} onPress={() => navigation.replace("Points", {id: item.id})}>
               <>
@@ -95,7 +120,7 @@ const backgroungColor = "#d3d3d3";
             {/* Карточка */}
             <View style={localStyles.card}>
               <View style={[localStyles.logoContainer]}>
-                <Image source={require('../../../assets/images/test.jpg')} style={{height: 50, width: 50}}/>
+                <Image source={imageSource} style={{ height: 50, width: 50 }} />
               </View>
               <View style={localStyles.cardContent}>
                 <Text style={localStyles.subtitle}>{item.general_type_activity}</Text>
@@ -138,38 +163,33 @@ const backgroungColor = "#d3d3d3";
 
 
   return (
-    <ImageBackground
-      source={require("../../../assets/images/background.png")}
-      style={styles.background}
-    >
-      <SafeAreaView style={styles.containerMainPage}>
-        <View style={styles.firmsAndPointsHeader}>
-          <Text style={styles.menuTitle}>Мои фирмы</Text>
-        </View>
-        <FlatList
-          data={firms}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={localStyles.listContainer}
-          style={{ overflow: "visible"}}
-        />
-        <View style={styles.containerButtonsBottomFlatList}>
-
-          <TouchableOpacity
-            style={styles.buttonMenuPage}
-            onPress={() => navigation.replace("Social")}
-          >
-            <Text style={styles.textInButtonsMenuPage}>Добавить фирму</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.buttonBackMenuPage, { marginTop: 10 }]}
-            onPress={() => navigation.replace("MenuPage")}
-          >
-            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+        <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
+          <SafeAreaView style={styles.containerMainPage}>
+            <View style={styles.firmsAndPointsHeader}>
+              <Text style={styles.menuTitle}>Мои фирмы</Text>
+            </View>
+            <View style={styles.containerLine}>
+              <View style={styles.menuPagesLine} />
+            </View>
+            <View style={styles.firmsAndPointsFlatListContainer}>
+            <FlatList
+              style={[{ paddingRight: 10 }]}
+              data={firms}
+              keyExtractor={(item) => item.name.toString()}
+              renderItem={renderItem}
+              indicatorStyle="white"
+            />
+            </View>
+            <View style={styles.containerButtonsBottomFlatList}>
+              <TouchableOpacity style={styles.buttonMenuPage}>
+                <Text style={styles.textInButtonsMenuPage}>Добавить фирму</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
+                <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        </ImageBackground>
   );
 }
 

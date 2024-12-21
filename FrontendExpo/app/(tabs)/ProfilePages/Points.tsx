@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, FlatList, ImageBackground, TouchableOpacity, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, Image, FlatList, ImageBackground, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from "../../Styles/Style";
-import { apiRequest } from "../../../Api/RefreshToken"; // Убедитесь, что функция apiRequest корректно импортирована
-import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import Share from '../../../assets/images/svg/share.svg';
-import { hide } from "expo-splash-screen";
 export default function Points({ navigation, route}) {
   const { id } = route.params;
   const [points, setPoints] = useState([]);
@@ -17,24 +13,49 @@ export default function Points({ navigation, route}) {
     fetchPoints();
   }, []);
 
-  const fetchPoints = async()=>{
+  const fetchPoints = async () => {
     const jwt = await AccessGetToken();
     const response = await fetch(`https://consumer-corner.kvotua.ru/points/`, {
-        method: 'GET',
-        headers: {
-          'accept': 'application/json',
-          'Authorization': `Bearer ${jwt}`
-        },
-      });
+      method: 'GET',
+      headers: {
+        'accept': 'application/json',
+        'Authorization': `Bearer ${jwt}`
+      },
+    });
     const data = await response.json();
-    const filteredData = data.map(item => ({
-        name: item.title,
-        middle_stars: item.middle_stars,
-        address: item.address
-    }));
-    console.log(filteredData)
+  
+    const fetchImage = async (imageId) => {
+      try {
+        const imageResponse = await fetch(`https://consumer-corner.kvotua.ru/mongo/image/${imageId}`, {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${jwt}`
+          },
+        });
+        const imageData = await imageResponse.json();
+        return `data:${imageData.content_type};base64,${imageData.image_data}`;
+      } catch (error) {
+        console.error(`Failed to fetch image with ID ${imageId}:`, error);
+        return null;
+      }
+    };
+  
+    const filteredData = await Promise.all(
+      data.map(async (item) => {
+        const imageUrl = item.image_id ? await fetchImage(item.image_id) : null;
+        return {
+          name: item.title,
+          middle_stars: item.middle_stars,
+          address: item.address,
+          imageUrl,
+        };
+      })
+    );
+  
     setPoints(filteredData);
-  }
+  };
+  
 
     const renderStars = (rating) => {
       const fullStars = Math.floor(rating);
@@ -81,7 +102,10 @@ export default function Points({ navigation, route}) {
                   {/* Карточка */}
                   <View style={localStyles.card}>
                     <View style={[localStyles.logoContainer, {overflow: "hidden"}]}>
-                      <Image source={require('../../../assets/images/test.jpg')} style={{height: 50, width: 50}} />
+                    <Image 
+                      source={item.imageUrl ? { uri: item.imageUrl } : require('../../../assets/images/test.jpg')} 
+                      style={{ height: 50, width: 50 }} 
+                    />
                     </View>
                     <View style={localStyles.cardContent}>
                       <Text style={localStyles.subtitle}>{item.address}</Text>
