@@ -20,10 +20,12 @@ import { getEnterprisesInfo, registerEnterprise } from '../../../Api/registerEnt
 const screenWidth = Dimensions.get("window").width;
 
 export default function Firms({ navigation }) {
+  const [firms, setfirms] = useState();
   const data = [
-    { id: "1", title: "Пивоваренная компания\nПК ПОНАРТ", rating: 3.87 },
-    { id: "2", title: "Пивоваренная компания\nПК ПОНАРТ", rating: 3.87 },
+    { id: "1", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+    { id: "2", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
   ];
+
 
 
   const renderStars = (rating) => {
@@ -58,6 +60,7 @@ export default function Firms({ navigation }) {
     </View>
   );
 
+const backgroungColor = "#d3d3d3";
   const renderItem = ({ item }) => {
     return (
       <>
@@ -73,12 +76,12 @@ export default function Firms({ navigation }) {
             </View>
             <View style={localStyles.cardContent}>
               <Text style={localStyles.subtitle}>Пивоваренная компания</Text>
-              <Text style={localStyles.cardTitle}>{item.title}</Text>
+              <Text style={localStyles.cardTitle}>{item.name}</Text>
               <View style={localStyles.ratingContainer}>
                 <Text style={localStyles.cardRating}>
-                  {item.rating.toFixed(2)}
+                  {/* {item.rating.toFixed(2)} */}
                 </Text>
-                {renderStars(item.rating)}
+                {renderStars(item.middle_stars)}
               </View>
             </View>
           </View>
@@ -88,20 +91,19 @@ export default function Firms({ navigation }) {
           </View>
       </Swipeable>
 
-<View style={{width: "100%", backgroundColor: "grey", position: "absolute", marginVertical: 10  }}>
+<View style={{width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10}}>
 <View style={[localStyles.card, { zIndex: -5, marginVertical: 0,
-padding: 10,}]}>
-  <View style={localStyles.logoContainer}>
-    <Text style={localStyles.logoText}>A</Text>
+padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
+  <View style={[localStyles.logoContainer, {backgroundColor: backgroungColor}]}>
+    <Text style={[localStyles.logoText, {color: backgroungColor}]}>A</Text>
   </View>
   <View style={localStyles.cardContent}>
-    <Text style={localStyles.subtitle}>Пивоваренная компания</Text>
-    <Text style={localStyles.cardTitle}>{item.title}</Text>
-    <View style={localStyles.ratingContainer}>
-      <Text style={localStyles.cardRating}>
-        {item.rating.toFixed(2)}
+    <Text style={[localStyles.subtitle, {color: backgroungColor}]}>Пивоваренная компания</Text>
+    <Text style={[localStyles.cardTitle, {color: backgroungColor}]}>{item.name}</Text>
+    <View style={[localStyles.ratingContainer, {backgroundColor: backgroungColor}]}>
+      <Text style={[localStyles.cardRating, {color: backgroungColor}]}>
+        {/* {item.rating.toFixed(2)} */}
       </Text>
-      {renderStars(item.rating)}
     </View>
   </View>
 </View>
@@ -110,22 +112,13 @@ padding: 10,}]}>
     );
   };
 
+
   return (
     <ImageBackground
       source={require("../../../assets/images/background.png")}
       style={styles.background}
     >
       <SafeAreaView style={styles.containerMainPage}>
-                                {/* Компонент Toast */}
-                          {toast.visible && (
-                        <Toast
-                            type={toast.type}
-                            message={toast.message}
-                            subMessage={toast.subMessage}
-                            visible={toast.visible}
-                            onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
-                        />
-                        )}
         <View style={styles.firmsAndPointsHeader}>
           <Text style={styles.menuTitle}>Мои фирмы</Text>
         </View>

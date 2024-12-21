@@ -25,7 +25,7 @@ export default function Menupage({ navigation }) {
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
         <View style={[styles.menuHeader, { marginTop: Platform.OS === 'ios' ? 38 : 128, }]}>
-          <Text style={styles.menuTitle}>ИП Акулич В.C</Text>
+          <Text style={styles.menuTitle}>Здравствуйте,</Text>
         </View>
 
         <View style={styles.menuTopButtons}>

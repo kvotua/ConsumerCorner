@@ -9,9 +9,10 @@ import {
   Image
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import GetCountPoints from '../../../Api/ReviewsPointsGet'
 import Icons from "react-native-vector-icons/Feather";
 import styles from "../../Styles/Style";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function Reviews({ navigation, pointId }) {
   const [data, setData] = useState([]);
@@ -22,26 +23,33 @@ export default function Reviews({ navigation, pointId }) {
 
   const fetchReviews = async () => {
     try {
-      const token = await AccessGetToken()
-      const response = await fetch(`http://localhost:8000/?point_id=${pointId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `${token}`, // Подставь токен сюда
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch reviews');
-      }
-
-      const reviewsData = await response.json();
-      setData(reviewsData); // Сохраняем данные отзывов
+      const Points = await GetCountPoints(); // Убедитесь, что это возвращает массив точек
+      const reviewPromises = Points.map(point =>
+        fetch(`https://consumer-corner.kvotua.ru/comments/?point_id=${point.id}`, {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+          },
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`Failed to fetch reviews for point_id=${point.id}`);
+          }
+          return response.json();
+        })
+      );
+  
+      const reviewsData = await Promise.all(reviewPromises);
+      const mergedData = Points.map((point, index) => ({
+        ...point,
+        reviews: reviewsData[index],
+      }));
+      console.log(mergedData)
+      setData(mergedData); // Сохраняем объединенные данные
     } catch (error) {
       console.error('Ошибка при загрузке отзывов:', error);
     }
   };
-
+  
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -54,36 +62,51 @@ export default function Reviews({ navigation, pointId }) {
   };
 
   const renderItem = ({ item }) => (
-    <View style={Style.reviewsItemFlatList}>
-      <Text style={localStyles.companyPointText}>{item.company} {item.point}</Text>
-      {item.reviews.map((review, index) => (
-        <TouchableOpacity key={index} style={localStyles.button}>
-          <View style={localStyles.reviewContainer}>
-            <Image
-              source={require("../../../assets/images/reviewImage.png")}
-            />
-            <View style={localStyles.guestContainer}>
-              <Text style={[localStyles.textInReview, { marginTop: 4 }]}>Гость</Text>
-              {renderStars(item.rating)}
+    <View style={styles.reviewsItemFlatList}>
+      <Text style={localStyles.companyPointText}>{item.title}</Text> {/* Название точки */}
+      {item.reviews.length > 0 ? (
+        <FlatList
+          data={item.reviews}
+          keyExtractor={(review) => review.id.toString()}
+          renderItem={({ item: review }) => (
+            <View style={localStyles.reviewContainer}>
+              <TouchableOpacity style={localStyles.button}>
+                <View style={localStyles.reviewContainer}>
+                  <Image
+                    source={require("../../../assets/images/reviewImage.png")}
+                    style={{ width: 50, height: 50, borderRadius: 25 }}
+                  />
+                  <View style={localStyles.guestContainer}>
+                    <Text style={[localStyles.textInReview, { marginTop: 4 }]}>Гость</Text>
+                    {renderStars(review.stars || 3)} {/* Рейтинг отзыва (если есть поле stars) */}
+                  </View>
+                </View>
+                <View style={[styles.containerLine, { marginTop: 10, paddingEnd: 186 }]}>
+                  <View style={[styles.menuPagesLine, { backgroundColor: "#3A6CE9" }]} />
+                </View>
+                <Text style={[localStyles.textInReview, { color: "#313231", marginTop: 10 }]}>
+                  {review.text} {/* Текст отзыва */}
+                </Text>
+              </TouchableOpacity>
             </View>
-          </View>
-          <View style={[Style.containerLine, { marginTop: 10, paddingEnd: 186 }]}>
-            <View style={[Style.menuPagesLine, { backgroundColor: "#3A6CE9" }]} />
-          </View>
-          <Text style={[localStyles.textInReview, { color: "#313231", marginTop: 10 }]}>{review}</Text>
-        </TouchableOpacity>
-      ))}
+          )}
+        />
+      ) : (
+        <Text style={{ color: '#fff', padding: 10 }}>Нет отзывов</Text>
+      )}
     </View>
   );
+  
+  
 
   return (
-    <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-      <SafeAreaView style={Style.containerMainPage}>
-        <View style={Style.firmsAndPointsHeader}>
-          <Text style={Style.menuTitle}>Все отзывы</Text>
+    <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
+      <SafeAreaView style={styles.containerMainPage}>
+        <View style={styles.firmsAndPointsHeader}>
+          <Text style={styles.menuTitle}>Все отзывы</Text>
         </View>
-        <View style={Style.containerLine}>
-          <View style={Style.menuPagesLine} />
+        <View style={styles.containerLine}>
+          <View style={styles.menuPagesLine} />
         </View>
         <View style={localStyles.flatListContainer}>
           <FlatList
@@ -109,7 +132,6 @@ export default function Reviews({ navigation, pointId }) {
 
 const localStyles = StyleSheet.create({
   flatListContainer: {
-
     flex: 1,
     marginBottom: 22
   },
