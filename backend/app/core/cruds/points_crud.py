@@ -173,6 +173,18 @@ async def get_point_by_id(session: AsyncSession, point_id: int) -> PointInfo:
     )
 
 
+async def get_all_points_by_enterprise_id(session: AsyncSession, enterprise_id: int) -> list[PointInfo]:
+    stmt = select(Points.id).where(Points.enterprise_id == enterprise_id)
+    result = await session.execute(stmt)
+    points_id = result.scalars().all()
+    points_list = []
+    for point_id in points_id:
+        points_list.append(
+            await get_point_by_id(session=session, point_id=point_id)
+        )
+    return points_list
+
+
 async def update_point(session: AsyncSession, point: Points, point_change: ChangePointSchema):
     if point_change.opening_time:
         point_change.opening_time = parse_time(point_change.opening_time)
