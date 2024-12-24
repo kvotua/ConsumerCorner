@@ -7,7 +7,8 @@ import {
   Modal,
   TextInput,
   StyleSheet,
-  FlatList
+  FlatList,
+  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/Feather";
@@ -16,6 +17,13 @@ import Icons2 from "react-native-vector-icons/Entypo"
 import styles from "../../Styles/Style"; // Путь к стилям
 
 export default function Social({ navigation}) {
+  const horizontalData = [
+    { id: '1', title: "ПК ПОНАРТ", image: require("../../../assets/images/test.jpg")  },
+    { id: '2', title: "ПК ПОНАРТ", image: require("../../../assets/images/test.jpg")  },
+    { id: '3', title: "ПК ПОНАРТ", image: require("../../../assets/images/test.jpg") },
+    { id: '4', title: "ПК ПОНАРТ", image: require("../../../assets/images/test.jpg")  },
+  ];
+
   const [data, setData] = useState([
     { id: '1', title: "Яндекс" },
     { id: '2', title: "Telegram" },
@@ -38,13 +46,20 @@ export default function Social({ navigation}) {
     setSocialName(''); // Очищаем поле ввода
   };
 
+  const renderHorizontalItem = ({ item }) => (
+    <View style={localStyles.horizontalCard}>
+      <Image source={item.image} style={localStyles.listButtonImage} />
+      <Text style={localStyles.horizontalCardText}>{item.title}</Text>
+    </View>
+  );
+
   const renderItem = ({ item }) => (
-    <View style={styles.socialItemFlatList}>
+    <View style={[styles.socialItemFlatList, {marginBottom:0}]}>
       <TouchableOpacity 
-        style={localStyles.button} 
+        style={localStyles.listButton} 
         onPress={() => navigation.navigate("AllPointsSoc", { social: item.title })}
       >
-        <Text style={localStyles.buttonText}>{item.title}</Text>
+        <Text style={localStyles.listButtonText}>{item.title}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -61,26 +76,38 @@ export default function Social({ navigation}) {
         <View style={styles.menuPagesSecondHeader}>
           <Text style={styles.menuTitle}>Социальные сети</Text>
         </View>
-        <View style={styles.containerLine}>
+        <View style={[styles.containerLine]}>
           <View style={styles.menuPagesLine} />
         </View>
         <View style={localStyles.flatListContainer}>
-          <FlatList style={[{ paddingRight: 10, }]}
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            ListEmptyComponent={<Text>Нет соц.сетей</Text>}
-            indicatorStyle="white"
-          />
+            <FlatList
+              horizontal
+              data={horizontalData}
+              renderItem={renderHorizontalItem}
+              keyExtractor={(item) => item.id}
+              showsHorizontalScrollIndicator={false}
+              style={localStyles.horizontalList}
+            />
+            <View style={[styles.containerLine, {marginTop: 0}]}>
+              <View style={styles.menuPagesLine} />
+            </View>
+          </View>
+          <View style={localStyles.verticalListContainer}>
+              <FlatList
+                data={data}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                ListEmptyComponent={<Text>Нет cоциальных сетей</Text>}
+                style={localStyles.verticalList}
+              />
         </View>
-
-        <View style={[styles.containerButtonsBottomFlatList, { height: 100 }]}>
+        <View style={[styles.containerButtonsBottomFlatList, { height: 100, marginTop: 40 }]}>
           <TouchableOpacity style={styles.buttonMenuPage} onPress={toggleModal}>
             <Text style={styles.textInButtonsMenuPage}>Добавить соц.сеть</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.buttonBackMenuPage, { marginTop: 10 }]}
-            onPress={() => navigation.replace("FirmsSoc")}
+            onPress={() => navigation.replace("MenuPage")}
           >
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
             <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
@@ -199,8 +226,7 @@ const localStyles = StyleSheet.create({
     fontWeight: "bold",
   },
   flatListContainer: {
-    flex: 1,
-    marginBottom: 32,
+    marginBottom: 10
   },
   button: {
     width: "100%",
@@ -234,5 +260,50 @@ const localStyles = StyleSheet.create({
     width: "100%",
     height: 120,
     justifyContent: 'flex-end',
+  },
+  horizontalList: {
+    marginVertical: 10,
+  },
+  horizontalCard: {
+    width: 90,
+    height: 90,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  horizontalCardText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  verticalListContainer: {
+    flex: 1,
+    marginTop: 10,
+  },
+  verticalList: {
+    flex: 1,
+  },
+  listButton: {
+    backgroundColor: '#FFFFFF',
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    padding: 15,
+    marginVertical: 4,
+    alignItems: 'center',
+  },
+  listButtonImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginBottom: 10,
+  },
+  listButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
   },
 });
