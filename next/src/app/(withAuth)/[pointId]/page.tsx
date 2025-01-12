@@ -79,10 +79,10 @@ function Point() {
             {/* Секция с кнопками */}
             <div className="flex-grow">
               <div className="py-2 grid grid-cols-2 gap-2">
-                <ButtonBig link={`/points/${pointId}/book`}>Книга отзывов</ButtonBig>
-                <ButtonBig link={`/points/${pointId}/rights`}>Права потребителя</ButtonBig>
-                <ButtonBig link={`/points/${pointId}/docs`}>Документы</ButtonBig>
-                <ButtonBig link={`/points/${pointId}/socials`}>Соц.сети</ButtonBig>
+                <ButtonBig link={`/${pointId}/book`}>Книга отзывов</ButtonBig>
+                <ButtonBig link={`/${pointId}/rights`}>Права потребителя</ButtonBig>
+                <ButtonBig link={`/${pointId}/docs`}>Документы</ButtonBig>
+                <ButtonBig link={`/${pointId}/socials`}>Соц.сети</ButtonBig>
               </div>
             </div>
 
