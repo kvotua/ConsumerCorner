@@ -1,7 +1,12 @@
+import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
+
 export default function Docs () {
   return (
-    <div>
+    <section className="wrapper container">
       <div className="">docs</div>
-    </div>
+      <div className="buttons">
+        <ButtonBack />
+      </div>
+    </section>
   );
 };
