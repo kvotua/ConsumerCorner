@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from "../../Styles/Style";
 import { apiRequest } from "../../../Api/RefreshToken"; // Убедитесь, что функция apiRequest корректно импортирована
 import Toast from "../Notif/toasts/Toast";
+
 export default function Points({ navigation }) {
   const [points, setPoints] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -24,6 +24,14 @@ export default function Firms({ navigation }) {
   const data = [
     { id: "1", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
     { id: "2", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+    { id: "3", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+    { id: "4", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+    { id: "5", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+    { id: "6", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+    { id: "7", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+    { id: "8", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+    { id: "9", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+    { id: "10", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
   ];
 
 
@@ -91,24 +99,24 @@ const backgroungColor = "#d3d3d3";
           </View>
       </Swipeable>
 
-<View style={{width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10}}>
-<View style={[localStyles.card, { zIndex: -5, marginVertical: 0,
-padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
-  <View style={[localStyles.logoContainer, {backgroundColor: backgroungColor}]}>
-    <Text style={[localStyles.logoText, {color: backgroungColor}]}>A</Text>
-  </View>
-  <View style={localStyles.cardContent}>
-    <Text style={[localStyles.subtitle, {color: backgroungColor}]}>Пивоваренная компания</Text>
-    <Text style={[localStyles.cardTitle, {color: backgroungColor}]}>{item.name}</Text>
-    <View style={[localStyles.ratingContainer, {backgroundColor: backgroungColor}]}>
-      <Text style={[localStyles.cardRating, {color: backgroungColor}]}>
-        {/* {item.rating.toFixed(2)} */}
-      </Text>
+  <View style={{width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10}}>
+  <View style={[localStyles.card, { zIndex: -5, marginVertical: 0,
+  padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
+    <View style={[localStyles.logoContainer, {backgroundColor: backgroungColor}]}>
+      <Text style={[localStyles.logoText, {color: backgroungColor}]}>A</Text>
+    </View>
+    <View style={localStyles.cardContent}>
+      <Text style={[localStyles.subtitle, {color: backgroungColor}]}>Пивоваренная компания</Text>
+      <Text style={[localStyles.cardTitle, {color: backgroungColor}]}>{item.name}</Text>
+      <View style={[localStyles.ratingContainer, {backgroundColor: backgroungColor}]}>
+        <Text style={[localStyles.cardRating, {color: backgroungColor}]}>
+          {/* {item.rating.toFixed(2)} */}
+        </Text>
+      </View>
     </View>
   </View>
-</View>
-</View>
-</>
+  </View>
+  </>
     );
   };
 
@@ -122,13 +130,16 @@ padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
         <View style={styles.firmsAndPointsHeader}>
           <Text style={styles.menuTitle}>Мои фирмы</Text>
         </View>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={localStyles.listContainer}
-          style={{ overflow: "visible"}}
-        />
+        <View style={{flex:1, marginTop: 10, marginBottom: 5}}>
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={localStyles.listContainer}
+            style={{ overflow: "hidden" }}
+          />
+        </View>
+
         <View style={styles.containerButtonsBottomFlatList}>
 
           <TouchableOpacity

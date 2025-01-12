@@ -89,7 +89,7 @@ export default function MarketPoint({ navigation }) {
               </View>
             </View>
             <ScrollView contentContainerStyle={[{flexGrow: 1, paddingRight: 10}]} indicatorStyle="white">
-            <View style={StyleSheet.flatten([Style.fields])}>
+            <View style={StyleSheet.flatten([Style.fields, {marginBottom: 0}])}>
               <Text style={Style.titleSimple}>Адрес торговой точки</Text>
 
               <TextInput
@@ -162,7 +162,7 @@ export default function MarketPoint({ navigation }) {
             </View>
             </ScrollView>
 
-            <View style={[Style.containerButtonsMenuPages]}>
+            <View style={[Style.containerButtonsMenuPages, {marginTop: 120}]}>
               <TouchableOpacity style={Style.buttonMenuPage} onPress={() => RegNewPointServer(Name, Adress, Start, End, rawPhoneValue)}>
                   <Text style={Style.textInButtonsMenuPage}>Завершение регистрации</Text>
               </TouchableOpacity>
@@ -180,6 +180,7 @@ export default function MarketPoint({ navigation }) {
 const localStyles = StyleSheet.create({
   scrollViewContent: { flexGrow: 1 },
   centeredContainer: {
+    marginTop: 15,
     flex: 0.9,                  
     justifyContent: 'center',  
     alignItems: 'center',     

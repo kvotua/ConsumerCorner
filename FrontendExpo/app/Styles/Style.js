@@ -6,6 +6,10 @@ const isTablet = width >= 768;
 
 export default StyleSheet.create({
     //все до следующего комма в основоном действует глобально на страницу
+    flatListContainer: {
+      flex: 1,
+      marginBottom: 12,
+    },
     background: {
         flex: 1,
       },

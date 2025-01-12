@@ -12,17 +12,19 @@ export default function AssignmentPointFirm({ navigation }) {
     const [firms, setfirms] = useState();
     const [visibleIndex, setVisibleIndex] = useState(0);
     const data = [
-      { id: '1', title: "vk" },
-      { id: '2', title: "telegram" },
-      { id: '3', title: 'Лицензия 1' },
-      { id: '4', title: 'Item 4' },
-      { id: '5', title: 'Item 5' },
-      { id: '6', title: 'Item 6' },
-      { id: '7', title: 'Item 7' },
+        { id: "1", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+        { id: "2", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+        { id: "3", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+        { id: "4", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+        { id: "5", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+        { id: "6", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+        { id: "7", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+        { id: "8", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+        { id: "9", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
+        { id: "10", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
     ];
-
     const cards = [
-        { id: 1, logo: "", text: "Прикол" },
+        { id: 1, logo: "", text: "ПК ПОНАРТ" },
         { id: 2, logo: "", text: "ПК ПОНАРТ" },
         { id: 3, logo: "", text: "ПК ПОНАРТ" },
         { id: 4, logo: "", text: "ПК ПОНАРТ" },
@@ -57,14 +59,92 @@ export default function AssignmentPointFirm({ navigation }) {
           </View>
         );
       };
+
+      const renderStars = (rating) => {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 !== 0;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+        return (
+          <View style={localStyles.starsContainer}>
+            {[...Array(fullStars)].map((_, index) => (
+              <Text key={`full-${index}`} style={localStyles.starFull}>
+                ★
+              </Text>
+            ))}
+            {hasHalfStar && <Text style={localStyles.starHalf}>★</Text>}
+            {[...Array(emptyStars)].map((_, index) => (
+              <Text key={`empty-${index}`} style={localStyles.starEmpty}>
+                ★
+              </Text>
+            ))}
+          </View>
+        );
+      };
     
-    const renderItem = ({ item }) => (
-        <View style={styles.documentsItemFlatList}>
-          <TouchableOpacity style={localStyles.button}>
-              <Text style={localStyles.buttonText}>{item.title}</Text>
-          </TouchableOpacity>
+      const renderRightActions = () => (
+        <View style={[localStyles.rightAction]}>
+          <Icons
+            name="pencil"
+            size={24}
+            color="#FFFFFF"
+            style={[{ marginEnd: "5%" }]}
+          />
         </View>
-    );
+      );
+    
+    const backgroungColor = "#d3d3d3";
+      const renderItem = ({ item }) => {
+        return (
+          <>
+          <Swipeable
+            renderRightActions={renderRightActions}
+            containerStyle={{overflow: "visible"}}
+          >
+            <View>
+              {/* Карточка */}
+              <View style={localStyles.card}>
+                <View style={localStyles.logoContainer}>
+                  <Text style={localStyles.logoText}>A</Text>
+                </View>
+                <View style={localStyles.cardContent}>
+                    <TouchableOpacity activeOpacity={1}>
+                        <Text style={localStyles.subtitle}>Пивоваренная компания</Text>
+                        <Text style={localStyles.cardTitle}>{item.name}</Text>
+                        <View style={localStyles.ratingContainer}>
+                            <Text style={localStyles.cardRating}>
+                            {/* {item.rating.toFixed(2)} */}
+                            </Text>
+                            {renderStars(item.middle_stars)}
+                        </View>
+                    </TouchableOpacity>
+                </View>
+              </View>
+    
+              {/* Серые плашки */}
+              
+              </View>
+          </Swipeable>
+    
+      <View style={{width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10}}>
+      <View style={[localStyles.card, { zIndex: -5, marginVertical: 0,
+      padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
+        <View style={[localStyles.logoContainer, {backgroundColor: backgroungColor}]}>
+          <Text style={[localStyles.logoText, {color: backgroungColor}]}>A</Text>
+        </View>
+        <View style={localStyles.cardContent}>
+          <Text style={[localStyles.subtitle, {color: backgroungColor}]}>Пивоваренная компания</Text>
+          <Text style={[localStyles.cardTitle, {color: backgroungColor}]}>{item.name}</Text>
+          <View style={[localStyles.ratingContainer, {backgroundColor: backgroungColor}]}>
+            <Text style={[localStyles.cardRating, {color: backgroungColor}]}>
+              {/* {item.rating.toFixed(2)} */}
+            </Text>
+          </View>
+        </View>
+      </View>
+      </View>
+      </>
+        );
+      };
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
@@ -91,13 +171,13 @@ export default function AssignmentPointFirm({ navigation }) {
         <View style={[styles.containerLine, {marginTop: -60}]}>
           <View style={styles.menuPagesLine} />
         </View>
-          <FlatList style={[{ paddingRight: 10}]}
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
-                    ListEmptyComponent={<Text>Нет фирм/точек</Text>}
-                    indicatorStyle="white"
-                    style={{ overflow: "hidden", flex: 1 }}
+          <FlatList
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={localStyles.listContainer}
+              nestedScrollEnabled={true}
+              style={{ overflow: "hidden", flex: 1 }}
           />
         <View style={styles.containerButtonsBottomFlatList}>
           <TouchableOpacity style={styles.buttonMenuPage}>
@@ -115,23 +195,6 @@ export default function AssignmentPointFirm({ navigation }) {
 const localStyles = StyleSheet.create({
   listContainer: {
     paddingBottom: 40,
-  },
-  button: {
-    width: "100%",
-    height: 60,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
-    borderTopRightRadius: 10,
-    marginTop: 20,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-
-  },
-  buttonText: {
-    fontSize: 18,
-    fontFamily: 'Montserrat',
-    fontWeight: "bold"
   },
   card: {
     flexDirection: "row",

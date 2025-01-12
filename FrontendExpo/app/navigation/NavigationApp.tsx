@@ -22,6 +22,8 @@ import Points from '../(tabs)/ProfilePages/Points';
 import CodePageEnter from '../(tabs)/SubPages/CodePageEnter';
 import AllPointsSoc from '../(tabs)/SubPages/AllPointsSoc';
 import FirmsSoc from '../(tabs)/SubPages/FirmsSoc';
+import AddNewAdmin from '../(tabs)/ProfilePages/AddNewAdmin';
+import AssignmentPointFirm from '../(tabs)/ProfilePages/AssignmentPointFirm';
 
 const Stack = createStackNavigator();
 
@@ -32,7 +34,7 @@ interface NavigateAppProps {
 export default function App({ onLayout }: NavigateAppProps) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack.Navigator initialRouteName="Start">
+        <Stack.Navigator initialRouteName="MenuPage">
           <Stack.Screen name="Start" component={StartPage} options={{ headerShown: false }} />
           <Stack.Screen name="Auth" component={Enter} options={{ headerShown: false }}/>
           <Stack.Screen name="Register" component={RegPage} options={{ headerShown: false }} />
@@ -52,6 +54,8 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="Points" component={Points} options={{ headerShown: false }} />
           <Stack.Screen name="AllPointsSoc" component={AllPointsSoc} options={{ headerShown: false }} />
           <Stack.Screen name="FirmsSoc" component={FirmsSoc} options={{ headerShown: false }} />
+          <Stack.Screen name="AddNewAdmin" component={AddNewAdmin} options={{ headerShown: false }} />
+          <Stack.Screen name="AssignmentPointFirm" component={AssignmentPointFirm} options={{ headerShown: false }} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );

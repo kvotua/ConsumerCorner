@@ -142,6 +142,7 @@ export default function RegFirma({ navigation }) {
 const localStyles = StyleSheet.create({
   scrollViewContent: { flexGrow: 1 },
   centeredContainer: {
+    marginTop: 15,
     flex: 0.9,                  
     justifyContent: 'center',  
     alignItems: 'center',     

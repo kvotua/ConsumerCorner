@@ -42,7 +42,7 @@ export default function Menupage({ navigation }) {
           />
         </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.whiteButtonMenuTopActive} onPress={() => navigation.replace("FirmsSoc")}>
+          <TouchableOpacity style={styles.whiteButtonMenuTopActive} onPress={() => navigation.replace("Social")}>
           <View style={[{flex: 1, justifyContent: "space-between",}]}>
             <Text style={styles.blackText}>Соц. сети</Text>
             <Image
@@ -87,7 +87,7 @@ export default function Menupage({ navigation }) {
             onPress={() => navigation.replace("AdminPanel")}
           >
           <View style={[{flex: 1, justifyContent: "space-between",}]}>
-            <Text style={[styles.blackText, { paddingEnd: 24 }]}>Админ-панель</Text>
+            <Text style={[styles.blackText, { paddingEnd: 24 }]}>Команда</Text>
             <Image
             source={require("../../../assets/images/corner.png")}
             style={[{ width: 25, height: 25, alignSelf: "flex-end", bottom: 10, right: 10}]}/>
