@@ -125,3 +125,9 @@ class Verification(Base):
     sms_code: Mapped[str] = mapped_column(String)
     phone: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+
+
+class SysAdminSessions(Base):
+    __tablename__ = "sys_admin_sessions"
+    
+    active_session: Mapped[str] = mapped_column(primary_key=True)

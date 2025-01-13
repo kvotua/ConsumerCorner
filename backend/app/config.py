@@ -24,6 +24,8 @@ from_email = os.getenv('FROM_EMAIL')
 email_password = os.getenv('EMAIL_PASSWORD')
 email_host = os.getenv("EMAIL_HOST")
 example_jwt_token = os.getenv("EXAMPLE_JWT")
+sysadmin_login = os.getenv("SYS_ADMIN_LOGIN")
+sysadmin_password = os.getenv("SYS_ADMIN_PASSWORD")
 pattern_password = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};\'":\\|,.<>?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};\'":\\|,.<>?]{8,}$'
 pattern_fio = r'^[А-ЯЁ][а-яё]{2,} [А-ЯЁ][а-яё]{2,}( [А-ЯЁ][а-яё]+)?$'
 pattern_time = r'^(?:[01]\d|2[0-3]):[0-5]\d$'

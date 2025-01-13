@@ -45,13 +45,13 @@ async def send_message(
         'user': str(user_name),
         'pass': str(user_pass),
     }
-    response = await httpclient.send_message(
-        'https://api3.greensms.ru/sms/send',
-        data=params,
-    )
-    await httpclient.close_session()
-    if len(response) != 36:
-        raise HTTPException(status_code=400, detail=response)
+    try:
+        response = await httpclient.send_message(
+            'https://api3.greensms.ru/sms/send',
+            data=params,
+            )
+    except:
+        raise HTTPException(status_code=500, detail="Error when sending sms")
     await verify_crud.add_verify_session(session=session, request_id=response, sms_code=code, phone=phone)
     return ReqID(req_id=response)
 
