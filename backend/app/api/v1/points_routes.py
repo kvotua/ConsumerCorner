@@ -6,7 +6,7 @@ from app.core.databases.postgresdb import get_session
 from app.schemas.enterprises_schemas import ResponseSchema
 from app.schemas.points_schemas import RegisterPoint, PointInfo, ChangePointSchema, DocumentData, SocialSchema, SocialID, ImageData
 from app.services.auth_handler import get_token_data_verify, decode_jwt_with_verify
-from app.core.cruds import points_crud
+from app.core.cruds import points_crud, enterprises_crud
 from app.services.auth_bearer import dependencies
 from app.core.databases.mongodb import MongoDBClient
 import datetime
@@ -185,6 +185,26 @@ async def get_points_info(
         session: AsyncSession = Depends(get_session),
 ):
     return await points_crud.get_point_by_id(session=session, point_id=point_id)
+
+
+@router.get("/points-by-enterprise/{enterprise_id}", response_model=List[PointInfo], dependencies=dependencies)
+async def get_points_by_enterprise_id(
+        request: Request,
+        enterprise_id: Annotated[int, Path(title="Enterprise ID")],
+        session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    user_id = dict_by_token.get("id")
+    enterprises_id = await enterprises_crud.get_enterprises_id_by_user_id(session=session, user_id=user_id)
+    if enterprise_id not in enterprises_id:
+        raise HTTPException(status_code=403, detail='The user does not own this company')
+    enterprise = await enterprises_crud.get_enterprise_by_id(session=session, enterprise_id=enterprise_id)
+    if enterprise is None:
+        raise HTTPException(status_code=404, detail='The enterprise was not found')
+    result = await points_crud.get_all_points_by_enterprise_id(session=session, enterprise_id=enterprise_id)
+    return result
 
 
 @router.patch("/change/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
