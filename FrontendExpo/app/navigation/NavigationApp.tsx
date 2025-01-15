@@ -24,6 +24,10 @@ import AllPointsSoc from '../(tabs)/SubPages/AllPointsSoc';
 import FirmsSoc from '../(tabs)/SubPages/FirmsSoc';
 import AddNewAdmin from '../(tabs)/ProfilePages/AddNewAdmin';
 import AssignmentPointFirm from '../(tabs)/ProfilePages/AssignmentPointFirm';
+import RegFirmaAuth from '../(tabs)/SubPages/RegFirmaPageAuth';
+import MarketPointAuth from '../(tabs)/SubPages/RegMarketPointAuth';
+import InnRegAuth from '../(tabs)/SubPages/InnPageAuth';
+import newSocial from '../(tabs)/ProfilePages/AddSocial';
 
 const Stack = createStackNavigator();
 
@@ -34,7 +38,7 @@ interface NavigateAppProps {
 export default function App({ onLayout }: NavigateAppProps) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack.Navigator initialRouteName="MenuPage">
+        <Stack.Navigator initialRouteName="Start">
           <Stack.Screen name="Start" component={StartPage} options={{ headerShown: false }} />
           <Stack.Screen name="Auth" component={Enter} options={{ headerShown: false }}/>
           <Stack.Screen name="Register" component={RegPage} options={{ headerShown: false }} />
@@ -54,8 +58,12 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="Points" component={Points} options={{ headerShown: false }} />
           <Stack.Screen name="AllPointsSoc" component={AllPointsSoc} options={{ headerShown: false }} />
           <Stack.Screen name="FirmsSoc" component={FirmsSoc} options={{ headerShown: false }} />
-          <Stack.Screen name="AddNewAdmin" component={AddNewAdmin} options={{ headerShown: false }} />
           <Stack.Screen name="AssignmentPointFirm" component={AssignmentPointFirm} options={{ headerShown: false }} />
+          <Stack.Screen name="AddNewAdmin" component={AddNewAdmin} options={{ headerShown: false }} />
+          <Stack.Screen name="RegFirmaAuth" component={RegFirmaAuth} options={{ headerShown: false }} />
+          <Stack.Screen name="MarketPointAuth" component={MarketPointAuth} options={{ headerShown: false }} />
+          <Stack.Screen name="InnRegAuth" component={InnRegAuth} options={{ headerShown: false }} />
+          <Stack.Screen name="newSocial" component={newSocial} options={{ headerShown: false }} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );

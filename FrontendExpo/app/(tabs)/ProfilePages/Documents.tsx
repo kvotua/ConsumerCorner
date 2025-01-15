@@ -12,30 +12,48 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from "react-native-vector-icons/Feather";
 import styles from "../../Styles/Style";
 
+const viewabilityConfig = { itemVisiblePercentThreshold: 80 };
+
 export default function Documents({ navigation }) {
   const [visibleIndex, setVisibleIndex] = useState(0);
-  const data = [
-    { id: '1', title: "Лицензия 1" },
+  const [data, setData] = useState([    { id: '1', title: "Лицензия 1" },
     { id: '2', title: "Лицензия 1" },
     { id: '3', title: 'Лицензия 1' },
     { id: '4', title: 'Item 4' },
     { id: '5', title: 'Item 5' },
     { id: '6', title: 'Item 6' },
-    { id: '7', title: 'Item 7' },
-  ];
+    { id: '7', title: 'Item 7' },])
 
-  const cards = [
+  const baseCards = [
     { id: 1, logo: "", text: "ПК ПОНАРТ" },
-    { id: 2, logo: "", text: "ПК ПОНАРТ" },
-    { id: 3, logo: "", text: "ПК ПОНАРТ" },
-    { id: 4, logo: "", text: "ПК ПОНАРТ" },
+    { id: 2, logo: "", text: "ПК2 ПОНАРТ" },
+    { id: 3, logo: "", text: "ПК3 ПОНАРТ" },
+    { id: 4, logo: "", text: "ПК4 ПОНАРТ" },
   ];
 
-  const onViewableItemsChanged = ({ viewableItems }) => {
-          if (viewableItems && viewableItems.length > 0) {
-            setVisibleIndex(viewableItems[0].index); 
-          }
-        };
+  const [cards, setCards] = useState([...baseCards, ...baseCards]);
+  
+
+  const onEndReached = () => {
+    setCards((prevCards) => [...prevCards, ...baseCards]);
+  };
+
+  const onViewableItemsChanged = ({ viewableItems, changed }) => {
+    if (viewableItems && viewableItems.length > 0) {
+      const firstVisibleItem = viewableItems[0];
+      const { index, item } = firstVisibleItem;
+  
+      const isItemFullyVisible = firstVisibleItem.isViewable && firstVisibleItem.index === index;
+  
+      if (isItemFullyVisible) {
+      
+        setVisibleIndex(index);
+      } else {
+        setVisibleIndex(-1); 
+      }
+    }
+  };
+  
   
   const Card = ({ logo, text, isHighlighted }) => {
     return (
@@ -82,17 +100,24 @@ export default function Documents({ navigation }) {
             <View style={styles.menuPagesLine}/>
             </View>
       <View style={localStyles.flatListContainer}>
-        <FlatList
-            data={cards}
-            horizontal
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item, index }) => (
-                <Card logo={item.logo} text={item.text} isHighlighted={index === visibleIndex} />
-            )}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles2.flatListContent}
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+      <FlatList
+          data={cards}
+          horizontal
+          keyExtractor={(item, index) => `${item.id}-${index}`}
+          renderItem={({ item, index }) => (
+            <Card logo={item.logo} text={item.text} isHighlighted={index === visibleIndex} />
+          )}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={[
+            styles2.flatListContent,
+            { justifyContent: visibleIndex === 0 ? 'center' : 'flex-start' },
+          ]}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig} // Передаем заранее созданный объект
+          onEndReached={onEndReached}
+          onEndReachedThreshold={0.5}
+          snapToInterval={10}
+          decelerationRate="fast"
         />
         <View style={styles.containerLine}>
           <View style={styles.menuPagesLine}/>
@@ -159,8 +184,12 @@ const styles2 = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f0f4ff",
   },
+  flatList: {
+    width: '100%',
+    paddingLeft: 20
+  },
   flatListContent: {
-      alignItems: "center", // Центровка карточек вертикально
+      alignItems: "center",
     },
   card: {
     backgroundColor: "#d6e4ff",

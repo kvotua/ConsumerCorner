@@ -12,18 +12,17 @@ export default function Points({ navigation }) {
 
   const showToast = (type :string, message:string, subMessage:string) => {
     setToast({ type, message, subMessage, visible: true });
-    setTimeout(() => setToast({ ...toast, visible: false }), 3000); // Авто-скрытие через 3 сек
+    setTimeout(() => setToast({ ...toast, visible: false }), 3000);
   };
 
   useEffect(() => {
     const fetchPoints = async () => {
       try {
-        const url = "http://localhost:8765/"; // Эндпоинт для получения точек
+        const url = "https://consumer-corner.kvotua.ru/enterprises/";
         const response = await apiRequest(url, "GET", {}, {});
         setPoints(response);
       } catch (error) {
         console.error("Ошибка при загрузке точек:", error.message);
-        // Здесь можно вызвать showToast для уведомления пользователя
       } finally {
         setLoading(false);
       }
@@ -100,7 +99,7 @@ export default function Points({ navigation }) {
           <TouchableOpacity style={styles.buttonMenuPage} onPress={registerPoint}>
             <Text style={styles.textInButtonsMenuPage}>Добавить точку</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
+          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Firms")}>
             <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
           </TouchableOpacity>
         </View>

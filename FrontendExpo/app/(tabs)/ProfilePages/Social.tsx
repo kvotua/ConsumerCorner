@@ -70,7 +70,7 @@ export default function AssignmentPointFirm({ navigation }) {
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
         <View style={styles.firmsAndPointsHeader}>
-          <Text style={[styles.menuTitle, {fontSize: 18, textAlign:"left"}]}>Присвойте Трошкину Александру Сергеевичу  фирму или торговые точки находящиеся в его управлении</Text>
+          <Text style={[styles.menuTitle, {fontSize: 30, textAlign:"left"}]}>Все соц.сети</Text>
         </View>
         <View style={[styles.containerLine, {marginBottom: -60}]}>
           <View style={styles.menuPagesLine} />
@@ -99,11 +99,11 @@ export default function AssignmentPointFirm({ navigation }) {
                     indicatorStyle="white"
                     style={{ overflow: "hidden", flex: 1 }}
           />
-        <View style={styles.containerButtonsBottomFlatList}>
-          <TouchableOpacity style={styles.buttonMenuPage}>
-            <Text style={styles.textInButtonsMenuPage}>Сохранить</Text>
+        <View style={[styles.containerButtonsBottomFlatList, {marginTop:10}]}>
+          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("newSocial")}>
+            <Text style={styles.textInButtonsMenuPage}>Добавить соц.сеть</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("AddNewAdmin")}>
+          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
             <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
           </TouchableOpacity>
         </View>
