@@ -18,15 +18,15 @@ class HttpClient:
         await self.session.close()
 
     async def send_message(self, url, data):
-        try:
-            async with self.session.post(url, data=data) as response:
-                result = await response.json()
-                return result.get("request_id")
-        except AttributeError:
-            return result.get("error")
+        async with self.session.post(url, json=data) as response:
+            result = await response.json()
+            return result.get("request_id")
 
-    def __del__(self):
-        self.session.close()
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close_session()
 
 httpclient = HttpClient()
 
@@ -34,7 +34,7 @@ httpclient = HttpClient()
 class SendEmail:
     def __init__(self,
                  email: str = from_email,
-                 password: str =email_password,
+                 password: str = email_password,
                  email_host: str = email_host,
         ):
         self.email = email

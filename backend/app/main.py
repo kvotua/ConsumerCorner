@@ -12,6 +12,7 @@ from app.api.v1.comments_routes import router as comments_router
 from app.api.v1.mongo_routes import router as mongodb_router
 from app.api.v1.points_routes import router as point_router
 from app.api.v1.auth_routes import router as auth_router
+from app.api.v1.sysadmin_routes import router as sysadmin_router
 
 from .logger.config import setup_logging
 
@@ -36,3 +37,4 @@ app.include_router(enterprises_router)
 app.include_router(point_router)
 app.include_router(comments_router)
 app.include_router(mongodb_router)
+app.include_router(sysadmin_router)
