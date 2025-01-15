@@ -2,16 +2,36 @@
 import { useRouter } from "next/navigation";
 import { IButton } from "./ButtonBase.model";
 
-const ButtonBase: React.FC<Partial<IButton>> = ({
+type RoundedCorners = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
+interface ButtonBaseProps extends Partial<IButton> {
+  roundedCorners?: RoundedCorners[];
+}
+
+const ButtonBase: React.FC<ButtonBaseProps> = ({
   children,
   disabled = false,
   isActive = true,
   handleClick,
   className,
   link,
+  roundedCorners = ['bottom-right'],
   ...props
 }) => {
   const { push } = useRouter();
+
+  const roundedClass = {
+    'top-left': 'rounded-tl',
+    'top-right': 'rounded-tr',
+    'bottom-left': 'rounded-bl',
+    'bottom-right': 'rounded-br',
+  };
+
+  const roundedStyles = Object.keys(roundedClass)
+    .filter(corner => !roundedCorners.includes(corner as RoundedCorners))
+    .map(corner => roundedClass[corner as keyof typeof roundedClass])
+    .join(' ');
+
   return (
     <button
       {...props}
@@ -22,10 +42,10 @@ const ButtonBase: React.FC<Partial<IButton>> = ({
         }
         handleClick && handleClick();
       }}
-      className={`w-full text-textColor-black p-3 text-bold disabled:opacity-70 font-bold duration-100 ${
+      className={`w-full text-textColor-black p-3 text-bold disabled:opacity-70 font-bold duration-100 ${roundedStyles} ${
         isActive
-          ? "rounded-right bg-backgroundColor-white "
-          : "rounded-left border border-backgroundColor-white text-textColor-white"
+          ? "bg-backgroundColor-white"
+          : "border border-backgroundColor-white text-textColor-white"
       } ${className}`}
     >
       {children}

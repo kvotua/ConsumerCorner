@@ -22,9 +22,9 @@ export const useGetComments = (id: string) => {
 export const useAddComments = () => {
   const { push } = useRouter();
   return useMutation({
-    mutationKey: "addCommnet",
+    mutationKey: "addComment",
     mutationFn: ({ pointID, message }: Omit<IComments, "id">) =>
-      api.post(`/comments`, { pointID, message }),
+      api.post(`/comments/${pointID}`, { message }),
     onError: () => {
       toast.error("Ой! произошла ошибка");
     },
