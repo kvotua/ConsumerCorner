@@ -46,7 +46,18 @@ class RegisterPoint(BaseModel):
                 raise ValueError('Invalid time')
 
         return values
-
+    
+class FirmInfo(BaseModel):
+    id: Annotated[int, Field(title="Point ID", examples=[1])]
+    title: Annotated[str, Field(title="The workin name of the point", examples=["Ponarth"])]
+    address: Annotated[str, Field(title='The address of the point', examples=["г. Калининград, Киевский переулок 1"])]
+    documents_data: Annotated[Optional[List[dict]], Field(title="Document ID", examples=[[{"id": "6d75ddd59b58c3607315a11", "date_added": "2024-12-07 03:21:37.273427", 
+                                                                                           "date_closed": "2024-12-07 03:21:37.273427", "name": "Закон о защите прав потребителей",
+                                                                                           "isTemp": False}]])]
+    social_data: Annotated[Optional[List[dict]], Field(title="Socials", examples=[{"social_id": 2, "link": "https://example.com", "name": "example"}])]
+    inn: Annotated[str, Field(title="INN", examples=['400889349705'], min_length=10, max_length=12)]
+    ogrn: Annotated[str, Field(title="OGRN of a legal entity", examples=['1177704000005'],min_length=13, max_length=13)]
+    name: Annotated[str, Field(title="NAME", examples=[""])]
 
 class PointInfo(BaseModel):
     model_config = ConfigDict(from_attributes=True)

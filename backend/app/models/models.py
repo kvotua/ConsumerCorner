@@ -78,10 +78,11 @@ class Comments(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
     text: Mapped[str] = mapped_column(Text)
-    stars: Mapped[int] = mapped_column(Integer)
+    stars: Mapped[int] = mapped_column(Integer, nullable=True)
     name: Mapped[str] = mapped_column(Text, nullable=True)
     number: Mapped[str] = mapped_column(Text, nullable=True)
     isAnonimus: Mapped[bool] = mapped_column(Boolean)
+    isReport: Mapped[bool] = mapped_column(Boolean)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 

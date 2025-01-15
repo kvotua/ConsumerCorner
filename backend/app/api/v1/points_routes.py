@@ -4,7 +4,7 @@ from typing import Annotated, List, Optional
 
 from app.core.databases.postgresdb import get_session
 from app.schemas.enterprises_schemas import ResponseSchema
-from app.schemas.points_schemas import RegisterPoint, PointInfo, ChangePointSchema, DocumentData, SocialSchema, SocialID, ImageData
+from app.schemas.points_schemas import RegisterPoint, PointInfo, FirmInfo, ChangePointSchema, DocumentData, SocialSchema, SocialID, ImageData
 from app.services.auth_handler import get_token_data_verify, decode_jwt_with_verify
 from app.core.cruds import points_crud, enterprises_crud
 from app.services.auth_bearer import dependencies
@@ -206,6 +206,15 @@ async def get_points_by_enterprise_id(
     result = await points_crud.get_all_points_by_enterprise_id(session=session, enterprise_id=enterprise_id)
     return result
 
+@router.get("/firm-info/{point_id}", response_model=FirmInfo)
+async def get_firm_info_by_point_id(
+        point_id: Annotated[int, Path(title="Point ID")],
+        session: AsyncSession = Depends(get_session),
+):
+    point = await points_crud.get_point_by_id(session=session, point_id=point_id)
+    if point is None:
+        raise HTTPException(status_code=404, detail='The point was not found')
+    return await points_crud.get_firm_info_by_point_id(session=session, point_id=point_id)
 
 @router.patch("/change/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def change_point(

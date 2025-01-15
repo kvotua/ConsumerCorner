@@ -12,13 +12,14 @@ async def add_comment(session: AsyncSession, point_id: int, comment_data: Commen
         stars=comment_data.stars,
         name=comment_data.name,
         number=comment_data.number,
-        isAnonimus=comment_data.isAnonimus
+        isAnonimus=comment_data.isAnonimus,
+        isReport=comment_data.isReport
     )
     session.add(data_for_db)
     await session.commit()
     result_point = await session.execute(select(Points).where(Points.id == point_id))
     point = result_point.scalar_one()
-    result_comments = await session.execute(select(Comments.stars).where(Comments.point_id == point_id))
+    result_comments = await session.execute(select(Comments.stars).where(Comments.point_id == point_id, Comments.stars.isnot(None)))
     stars = result_comments.scalars().all()
     middle_stars = round(statistics.mean(stars), 2)
     point.middle_stars = middle_stars
@@ -58,6 +59,7 @@ async def get_all_comments(session: AsyncSession, point_id: int) -> list[Comment
             name=comment.name,
             number=comment.number,
             isAnonimus=comment.isAnonimus,
+            isReport=comment.isReport,
             created_at=comment.created_at,
             images_data=images_dict.get(comment.id, [])
         )
