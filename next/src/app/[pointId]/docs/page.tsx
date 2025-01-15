@@ -52,27 +52,35 @@ export default function Docs() {
       </h2>
       <Separate />
 
-      <div className="flex-grow flex flex-col gap-6 py-5" style={{ overflowY: 'auto', maxHeight: '500px', padding: '0', scrollbarWidth: 'none' }}>
-        {names.map((name, index) => (
-          <ButtonBase
-            key={index}
-            roundedCorners={['top-left']}
-            style={{
-              fontWeight: 'normal',
-              height: '70px',
-              borderEndEndRadius: '10px',
-              borderStartEndRadius: '10px',
-              borderEndStartRadius: '10px',
-              flexShrink: 0 // Это свойство предотвращает сжатие кнопок
-            }}
-          >
-            {name}
-          </ButtonBase>
-        ))}
-      </div>
+
+      {names.length > 0 ? (
+        <div className="flex-grow flex flex-col gap-6 py-5" style={{ overflowY: 'auto', maxHeight: '500px', padding: '0', scrollbarWidth: 'none' }}>
+          {names.map((name, index) => (
+            <ButtonBase
+              key={index}
+              roundedCorners={['top-left']}
+              style={{
+                fontWeight: 'normal',
+                height: '70px',
+                borderEndEndRadius: '10px',
+                borderStartEndRadius: '10px',
+                borderEndStartRadius: '10px',
+                flexShrink: 0
+              }}
+            >
+              {name}
+            </ButtonBase>
+          ))}
+        </div>
+      ) : (
+        <div className="flex-grow flex flex-col gap-6 py-5 items-center justify-center" style={{ fontSize: '24px', height: '100%', textAlign: 'center', fontWeight: 'bold' }}>
+          <p>Нет документов</p>
+        </div>
+      )}
 
 
-      <div className="buttons" style={{ marginTop: '15px'}}>
+
+      <div className="buttons" style={{ marginTop: '15px' }}>
         <ButtonBack />
       </div>
     </section>

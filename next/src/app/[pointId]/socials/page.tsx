@@ -51,7 +51,7 @@ export default function Socials() {
         {pointInfo.who}
       </h2>
       <Separate/>
-
+      {names.length > 0 ? (
       <div className="flex-grow flex flex-col gap-6 py-5" style={{ overflowY: 'auto', maxHeight: '500px', padding: '0', scrollbarWidth: 'none' }}>
         {names.map((name, index) => (
           <ButtonBase
@@ -70,6 +70,11 @@ export default function Socials() {
           </ButtonBase>
         ))}
       </div>
+      ) : (
+        <div className="flex-grow flex flex-col gap-6 py-5 items-center justify-center" style={{ fontSize: '24px', height: '100%', textAlign: 'center', fontWeight: 'bold' }}>
+          <p>Нет соц. сетей</p>
+        </div>
+      )}
       <div className="buttons" style={{ marginTop: '15px'}}>
         <ButtonBack />
       </div>
