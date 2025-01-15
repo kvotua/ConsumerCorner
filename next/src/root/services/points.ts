@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api, apiFile } from "../http";
 import { Cookies } from "react-cookie";
 import { toast } from "react-toastify";
-import { IPoint } from "../types/point";
+import { IPoint, IFirma } from "../types/point";
 import { IError } from "../types/error";
 import { ProgressContext } from "../providers/ProgressProvider";
 import { useContext, useState } from "react";
@@ -11,11 +11,18 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "../hooks/useAppSelector";
 
 /** Получение точки по id */
+export const useGetFirmaByPointId = (id: string) => {
+  return useQuery({
+    queryKey: ["getPoint", id],
+    queryFn: () =>
+      api.get<IFirma>(`/points/firm-info/${id}`).then(({ data }) => data),
+  });
+};
 export const useGetPointById = (id: string) => {
   return useQuery({
     queryKey: ["getPoint", id],
     queryFn: () =>
-      api.get<IPoint>(`/points?pointID=${id}`).then(({ data }) => data),
+      api.get<IPoint>(`/points/${id}`).then(({ data }) => data),
   });
 };
 

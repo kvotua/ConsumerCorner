@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, Result, update
+from sqlalchemy import select, Result, update, delete
 
 from app.schemas.verify_schemas import Register
 from app.services.verify_services import hash_password
-from app.models.models import Users, Verification
+from app.models.models import Users, Verification, SysAdminSessions
 
 from app.core.cruds.users_crud import get_user_by_id
 
@@ -51,3 +51,15 @@ async def verify_email_for_user(session: AsyncSession, user_id: int, new_email: 
     )
     await session.execute(stmt)
     await session.commit()
+
+async def add_sysadmin_session(session: AsyncSession, token: str):
+    stmt = SysAdminSessions(active_session=token)
+    session.add(stmt)
+    await session.commit()
+
+async def delete_sysadmin_session(session: AsyncSession, token: str):
+    try:
+        await session.execute(delete(SysAdminSessions).where(SysAdminSessions.active_session == token))
+        return True
+    except:
+        return False

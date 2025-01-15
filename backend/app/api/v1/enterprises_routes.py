@@ -100,3 +100,22 @@ async def get_companies_info(
     if result is None:
         raise HTTPException(status_code=404, detail="No companies found")
     return result
+
+@router.get("/{enterprise_id}", response_model=EnterpriseInfo, dependencies=dependencies)
+async def get_enterprise_info(
+        request: Request,
+        enterprise_id: Annotated[int, Path(title="Enterprise ID")],
+        session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    user_id = dict_by_token.get("id")
+    enterprises_id = await enterprises_crud.get_enterprises_id_by_user_id(session=session, user_id=user_id)
+
+    if enterprise_id not in enterprises_id:
+        raise HTTPException(status_code=403, detail='The user does not own this company')
+    enterprise = await enterprises_crud.get_enterprise_by_id(session=session, enterprise_id=enterprise_id)
+    if enterprise is None:
+        raise HTTPException(status_code=404, detail='The enterprise was not found')
+    return enterprise

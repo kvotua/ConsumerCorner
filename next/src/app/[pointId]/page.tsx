@@ -2,13 +2,15 @@
 import { useAppSelector } from "@/root/hooks/useAppSelector";
 import { PointScelteton } from "./PointScelteton";
 import { useParams, useRouter } from "next/navigation";
-import { useGetPointById } from "@/root/services/points";
+import { useGetFirmaByPointId, useGetPointById } from "@/root/services/points";
 import { ButtonBig } from "@/shared/Buttons/ButtonBig/ButtonBig";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
 import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
 import dynamic from "next/dynamic";
 import { createConfiguration, ServerConfiguration, InnApi, Configuration } from '@/client';
 import type { InnApiResultPageInnInnInfoGetRequest } from "@/client/types/ObjectParamAPI";
+import { toast } from "react-toastify";
+import React, { useEffect, useState } from 'react';
 
 
 async function fetchData(config: Configuration) {
@@ -25,25 +27,61 @@ async function fetchData(config: Configuration) {
   }
 }
 
+function formatName(fullName: string | undefined) {
+  if (!fullName) {
+      return;
+  }
+
+  const parts = fullName.split(' ');
+
+  if (parts.length < 3) {
+      throw new Error("Полное имя должно содержать фамилию, имя и отчество.");
+  }
+
+  const lastName = parts[0];
+  const firstNameInitial = parts[1].charAt(0) + '.';
+  const patronymicInitial = parts[2].charAt(0) + '.';
+
+  return `ИП ${lastName} ${firstNameInitial}${patronymicInitial}`;
+}
+
 
 function Point() {
-  const baseServer = new ServerConfiguration<{}>("https://consumer-corner.kvotua.ru", {});
-  const config = createConfiguration({ baseServer });
+  const [hasShownToast, setHasShownToast] = useState(false);
+  // const baseServer = new ServerConfiguration<{}>("https://consumer-corner.kvotua.ru", {});
+  // const config = createConfiguration({ baseServer });
 
 
-  fetchData(config);
-
-
+  // fetchData(config);
 
   // const user = useAppSelector((state) => state.userReduser.user);
   const { pointId } = useParams();
 
+  useEffect(() => {
+    if (pointId === undefined && !hasShownToast) {
+      setHasShownToast(true);
+      toast.error('Точка не найдена!');
+    }
+  }, [pointId, hasShownToast]);
+
+  if (pointId === undefined) {
+    return <div></div>;
+  }
+  const { data } = useGetFirmaByPointId(pointId as string);
+
+  console.log('debug:', data)
+  if (data == undefined) {
+    return <div>Loading..</div>
+  }
+
+  const name = formatName(data?.name || "")
+
   const pointInfo = {
-    title: "Бирхаус",
-    who: "ИП АКУЛИЧ В.С",
-    address: "г. Калининград\n(Калининградская область),\nулица Ленина, ул. 34 Б",
-    inn: 1234567890,
-    ogrn: 1234567890,
+    title: data?.title,
+    who: name,
+    address: data?.address,
+    inn: data?.inn,
+    ogrn: data?.ogrn,
   }
 
   // const {
@@ -79,10 +117,10 @@ function Point() {
             {/* Секция с кнопками */}
             <div className="flex-grow">
               <div className="py-2 grid grid-cols-2 gap-2">
-                <ButtonBig link={`/points/${pointId}/book`}>Книга отзывов</ButtonBig>
-                <ButtonBig link={`/points/${pointId}/rights`}>Права потребителя</ButtonBig>
-                <ButtonBig link={`/points/${pointId}/docs`}>Документы</ButtonBig>
-                <ButtonBig link={`/points/${pointId}/socials`}>Соц.сети</ButtonBig>
+                <ButtonBig link={`/${pointId}/book`}>Книга отзывов</ButtonBig>
+                <ButtonBig link={`/${pointId}/rights`}>Права потребителя</ButtonBig>
+                <ButtonBig link={`/${pointId}/docs`}>Документы</ButtonBig>
+                <ButtonBig link={`/${pointId}/socials`}>Соц.сети</ButtonBig>
               </div>
             </div>
 

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Path, Query, UploadFile, File, Body, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, Optional, List
+from pydantic import ValidationError
 
 from app.core.databases.postgresdb import get_session
 from app.schemas.comments_schemas import CommentData, ResponseSchema, CommentsSchema, ImageData
@@ -16,14 +17,32 @@ mongo = MongoDBClient("image", "doc")
 async def add_coment(
     point_id: Annotated[int, Path()],
     text: str = Form(...),
-    stars: int = Form(...),
+    stars: Optional[int] = Form(None),
     name: Optional[str] = Form(None),
     number: Optional[str] = Form(None),
     isAnonimus: bool = Form(...),
+    isReport: bool = Form(...),
     session: AsyncSession = Depends(get_session),
     images: Optional[List[UploadFile]] = File([]),
 ):
-    comment_data = CommentData(text=text, stars=stars, name=name, number=number, isAnonimus=isAnonimus)
+    if isReport and stars is None:
+        return HTTPException(status_code=400, detail='The comment-report requires stars')
+    if not isAnonimus and (name is None or number is None):
+        return HTTPException(status_code=400, detail='The comment requires name and number')
+    if isAnonimus:
+        name = ""
+        number = ""
+    try:
+        comment_data = CommentData(
+            text=text,
+            stars=stars,
+            name=name,
+            number=number,
+            isAnonimus=isAnonimus,
+            isReport=isReport
+        )
+    except ValidationError as e:
+        return HTTPException(status_code=400, detail=e.errors())
     comment_id = await comments_crud.add_comment(session=session, point_id=point_id, comment_data=comment_data)
     for image in images:
         contents = await image.read()

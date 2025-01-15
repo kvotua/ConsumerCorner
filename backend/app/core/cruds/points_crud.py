@@ -1,8 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result, delete
 from app.models.models import Points, Enterprises, Docs, Social, SocialPoint, Imgs, Comments
-from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo, SocialSchema, ImageData
+from app.schemas.points_schemas import RegisterPoint, ChangePointSchema, DocumentData, PointInfo, SocialSchema, ImageData, FirmInfo
+from app.core.cruds.enterprises_crud import get_enterprise_by_id
+from app.services.inn_services import INNService
 from app.services.points_services import parse_time
+from fastapi import HTTPException
 import pytz
 import datetime
 
@@ -132,7 +135,6 @@ async def get_point_by_id(session: AsyncSession, point_id: int) -> PointInfo:
     stmt = select(Points).where(Points.id == point_id)
     result = await session.execute(stmt)
     point = result.scalars().first()
-
     stmt_2 = select(SocialPoint, Social).join(Social, SocialPoint.social_id == Social.id).where(SocialPoint.point_id == point_id)
     result_2 = await session.execute(stmt_2)
     social_data = result_2.all()
@@ -171,6 +173,39 @@ async def get_point_by_id(session: AsyncSession, point_id: int) -> PointInfo:
         documents_data=documents_data,
         social_data=social_data_dicts,
     )
+
+async def get_firm_info_by_point_id(session: AsyncSession, point_id: int) -> FirmInfo:
+    point_info = await get_point_by_id(session=session, point_id=point_id)
+    enterprise_info = await get_enterprise_by_id(session=session, enterprise_id=point_info.enterprise_id)
+    inn_service = INNService()
+    if len(enterprise_info.inn) == 10:
+        inn_info = inn_service.fetch_company_data(inn=enterprise_info.inn)
+        inn_name = inn_info.name
+    else:
+        inn_info = inn_service.fetch_ip_data(inn=enterprise_info.inn)
+        inn_name = inn_info.fio
+    return FirmInfo(
+        id=point_id,
+        title=point_info.title,
+        address=point_info.address,
+        documents_data=point_info.documents_data,
+        social_data=point_info.social_data,
+        inn=enterprise_info.inn,
+        ogrn=enterprise_info.ogrn,
+        name=inn_name
+    )
+
+
+async def get_all_points_by_enterprise_id(session: AsyncSession, enterprise_id: int) -> list[PointInfo]:
+    stmt = select(Points.id).where(Points.enterprise_id == enterprise_id)
+    result = await session.execute(stmt)
+    points_id = result.scalars().all()
+    points_list = []
+    for point_id in points_id:
+        points_list.append(
+            await get_point_by_id(session=session, point_id=point_id)
+        )
+    return points_list
 
 
 async def update_point(session: AsyncSession, point: Points, point_change: ChangePointSchema):
