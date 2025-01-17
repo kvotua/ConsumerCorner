@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   ImageBackground,
   Text,
@@ -15,6 +15,7 @@ import styles from "../../Styles/Style";
 const viewabilityConfig = { itemVisiblePercentThreshold: 80 };
 
 export default function Documents({ navigation }) {
+  const flatListRef = useRef(null);
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [data, setData] = useState([    { id: '1', title: "Лицензия 1" },
     { id: '2', title: "Лицензия 1" },
@@ -38,19 +39,20 @@ export default function Documents({ navigation }) {
     setCards((prevCards) => [...prevCards, ...baseCards]);
   };
 
-  const onViewableItemsChanged = ({ viewableItems, changed }) => {
+  const onViewableItemsChanged = ({ viewableItems }) => {
     if (viewableItems && viewableItems.length > 0) {
       const firstVisibleItem = viewableItems[0];
-      const { index, item } = firstVisibleItem;
-  
-      const isItemFullyVisible = firstVisibleItem.isViewable && firstVisibleItem.index === index;
-  
-      if (isItemFullyVisible) {
-      
-        setVisibleIndex(index);
-      } else {
-        setVisibleIndex(-1); 
-      }
+      const { index } = firstVisibleItem;
+
+      // Установка видимого индекса
+      setVisibleIndex(index);
+      scrollToIndex(index);
+    }
+  };
+
+  const scrollToIndex = (index) => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({ index, animated: true });
     }
   };
   
@@ -101,24 +103,23 @@ export default function Documents({ navigation }) {
             </View>
       <View style={localStyles.flatListContainer}>
       <FlatList
-          data={cards}
-          horizontal
-          keyExtractor={(item, index) => `${item.id}-${index}`}
-          renderItem={({ item, index }) => (
-            <Card logo={item.logo} text={item.text} isHighlighted={index === visibleIndex} />
-          )}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={[
-            styles2.flatListContent,
-            { justifyContent: visibleIndex === 0 ? 'center' : 'flex-start' },
-          ]}
-          onViewableItemsChanged={onViewableItemsChanged}
-          viewabilityConfig={viewabilityConfig} // Передаем заранее созданный объект
-          onEndReached={onEndReached}
-          onEndReachedThreshold={0.5}
-          snapToInterval={10}
-          decelerationRate="fast"
-        />
+            ref={flatListRef}
+            data={cards}
+            horizontal
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            renderItem={({ item, index }) => (
+              <Card logo={item.logo} text={item.text} isHighlighted={index === visibleIndex} />
+            )}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles2.flatListContent}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewabilityConfig} // Передаем конфигурацию только один раз
+            initialScrollIndex={0} // Начать с первого элемента
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.5}
+            snapToInterval={120} // Прокручивать по 120 пикселей
+            decelerationRate="fast" // Быстрое замедление
+          />
         <View style={styles.containerLine}>
           <View style={styles.menuPagesLine}/>
         </View>
