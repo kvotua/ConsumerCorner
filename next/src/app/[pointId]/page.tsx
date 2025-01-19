@@ -2,7 +2,7 @@
 import { useAppSelector } from "@/root/hooks/useAppSelector";
 import { PointScelteton } from "./PointScelteton";
 import { useParams, useRouter } from "next/navigation";
-import { useGetFirmaByPointId, useGetPointById } from "@/root/services/points";
+import { formatName, useGetFirmaByPointId, useGetPointById } from "@/root/services/points";
 import { ButtonBig } from "@/shared/Buttons/ButtonBig/ButtonBig";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
 import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
@@ -26,25 +26,6 @@ async function fetchData(config: Configuration) {
     console.error("Ошибка при вызове API:", error);
   }
 }
-
-function formatName(fullName: string | undefined) {
-  if (!fullName) {
-      return;
-  }
-
-  const parts = fullName.split(' ');
-
-  if (parts.length < 3) {
-      throw new Error("Полное имя должно содержать фамилию, имя и отчество.");
-  }
-
-  const lastName = parts[0];
-  const firstNameInitial = parts[1].charAt(0) + '.';
-  const patronymicInitial = parts[2].charAt(0) + '.';
-
-  return `ИП ${lastName} ${firstNameInitial}${patronymicInitial}`;
-}
-
 
 function Point() {
   var isLoading = false;

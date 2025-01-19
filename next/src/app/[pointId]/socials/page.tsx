@@ -1,28 +1,10 @@
 "use client"
-import { useGetFirmaByPointId } from "@/root/services/points";
+import { formatName, useGetFirmaByPointId } from "@/root/services/points";
 import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
 import { Separate } from "@/shared/Separate/Separate";
 import { useParams } from "next/navigation";
-import { PointScelteton } from "../PointScelteton";
-
-function formatName(fullName: string | undefined) {
-  if (!fullName) {
-    return;
-  }
-
-  const parts = fullName.split(' ');
-
-  if (parts.length < 3) {
-    throw new Error("Полное имя должно содержать фамилию, имя и отчество.");
-  }
-
-  const lastName = parts[0];
-  const firstNameInitial = parts[1].charAt(0) + '.';
-  const patronymicInitial = parts[2].charAt(0) + '.';
-
-  return `ИП ${lastName} ${firstNameInitial}${patronymicInitial}`;
-}
+import { PointOtherScelteton } from "../PointOtherScelteton";
 
 export default function Socials() {
   const { pointId } = useParams()
@@ -31,7 +13,7 @@ export default function Socials() {
   if (data == undefined) {
     return (
       <section className="wrapper container">
-        <PointScelteton/>
+        <PointOtherScelteton/>
       </section>
     )
   }

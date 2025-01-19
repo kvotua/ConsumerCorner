@@ -23,7 +23,7 @@ const ReportForm: React.FC = () => {
   } = useForm<FormData>();
   const { mutate } = useAddComments();
   const { pointId } = useParams();
-  const [isAnonymous, setIsAnonymous] = useState(true); // false = отключён, true = включён
+  const [isAnonymous, setIsAnonymous] = useState(false); // false = отключён, true = включён
 
   const onSubmit = (data: FormData) => {
     const payload = {
