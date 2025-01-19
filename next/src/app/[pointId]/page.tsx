@@ -47,6 +47,8 @@ function formatName(fullName: string | undefined) {
 
 
 function Point() {
+  var isLoading = false;
+  var isRefetching = false;
   const [hasShownToast, setHasShownToast] = useState(false);
   // const baseServer = new ServerConfiguration<{}>("https://consumer-corner.kvotua.ru", {});
   // const config = createConfiguration({ baseServer });
@@ -71,7 +73,7 @@ function Point() {
 
   console.log('debug:', data)
   if (data == undefined) {
-    return <div>Loading..</div>
+    isLoading = true
   }
 
   const name = formatName(data?.name || "")
@@ -83,15 +85,6 @@ function Point() {
     inn: data?.inn,
     ogrn: data?.ogrn,
   }
-
-  // const {
-  //   data: point,
-  //   isLoading,
-  //   isRefetching,
-  // } = useGetPointById(pointId as string);
-  // const { push } = useRouter();
-  const isLoading = false;
-  const isRefetching = false;
 
   return (
     <section className="wrapper container">
@@ -125,17 +118,13 @@ function Point() {
             </div>
 
             {/* Секция с ИНН и ОГРН */}
-            <div className="flex flex-col items-center text-center">
+            <div className="fixed bottom-0 left-0 right-0 flex flex-col items-center text-center" style={{ marginBottom: '15px'}}>
               <p className="text-lg opacity-60">
                 <strong>ИНН</strong>: {pointInfo.inn}
               </p>
               <p className="text-lg opacity-60">
                 <strong>ОГРН</strong>: {pointInfo.ogrn}
               </p>
-            </div>
-
-            {/* Секция с описанием */}
-            <div className="w-full text-center">
               <p className="text-sm opacity-70 break-words whitespace-pre-line leading-snug">
                 Удобные инструменты, позволяющие вашему бизнесу быть в курсе и оперативно реагировать на пожелания клиента.
               </p>

@@ -4,6 +4,7 @@ import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
 import { Separate } from "@/shared/Separate/Separate";
 import { useParams } from "next/navigation";
+import { PointScelteton } from "../PointScelteton";
 
 function formatName(fullName: string | undefined) {
   if (!fullName) {
@@ -28,7 +29,11 @@ export default function Socials() {
   const { data } = useGetFirmaByPointId(pointId as string);
 
   if (data == undefined) {
-    return <div>Loading..</div>
+    return (
+      <section className="wrapper container">
+        <PointScelteton/>
+      </section>
+    )
   }
   
   const name = formatName(data?.name || "")
@@ -41,6 +46,7 @@ export default function Socials() {
     ogrn: data?.ogrn,
   }
   const names = data.social_data.map(social => social.name);
+  const links = data.social_data.map(social => social.link);
 
   return (
     <section className="wrapper container">
@@ -52,10 +58,11 @@ export default function Socials() {
       </h2>
       <Separate/>
       {names.length > 0 ? (
-      <div className="flex-grow flex flex-col gap-6 py-5" style={{ overflowY: 'auto', maxHeight: '500px', padding: '0', scrollbarWidth: 'none' }}>
+        <div className="flex-grow flex flex-col gap-6 py-5" style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 95px)', padding: '0', scrollbarWidth: 'none' }}>
         {names.map((name, index) => (
           <ButtonBase
             key={index}
+            link={links[index]}
             roundedCorners={['top-left']}
             style={{
               fontWeight: 'normal',
