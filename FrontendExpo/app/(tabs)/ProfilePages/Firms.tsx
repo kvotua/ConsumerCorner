@@ -181,7 +181,7 @@ const backgroungColor = "#d3d3d3";
             />
             </View>
             <View style={styles.containerButtonsBottomFlatList}>
-              <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace('InnRegAuth')}>
+              <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace('EditFirma')}>
                 <Text style={styles.textInButtonsMenuPage}>Добавить фирму</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>

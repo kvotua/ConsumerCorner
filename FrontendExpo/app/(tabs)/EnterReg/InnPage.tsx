@@ -38,11 +38,11 @@ export default function InnReg({navigation}){
         // Сохраняем ИНН в локальное хранилище
         await AsyncStorage.setItem("Inn", inn);
         
-        const url = `http://localhost:8765/inn/inn_info?inn=${inn}`;
+        const url = `https://consumer-corner.kvotua.ru/inn/inn_info?inn=${inn}`;
       
         try {
           // Выполняем GET-запрос через универсальную функцию
-          const data = await apiRequest(url, "GET");
+          const data = await apiRequest(url, "GET", {});
       
           // Сохраняем тип компании и переходим на следующий экран
           await AsyncStorage.setItem("TypeFirm", data.type);

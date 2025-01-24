@@ -18,7 +18,8 @@ import { RegNewPointServer } from "@/Api/RegNewPointRoot";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 
-export default function MarketPoint({ navigation }) {
+export default function EditMarketPoint({ navigation, route }) {
+  const {id} = route.params;
   const [Start, setValue] = useState();
   const [End, setValue2] = useState();
   const [Name, setName] = useState();
@@ -83,8 +84,8 @@ export default function MarketPoint({ navigation }) {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
             <View style={Style.headerLeft}>
-              <Text style={Style.titleHead}>Зарегистрируйте </Text>
-              <Text style={Style.titleHead}>торговую точку</Text>
+              <Text style={Style.titleHead}>Редактор точки </Text>
+              <Text style={[Style.titleHead, {color:"#FFFFFF", opacity: 50, fontSize: 14}]}>Название точки</Text>
               <View style={StyleSheet.flatten([Style.containerLine])}>
               <View style={Style.menuPagesLine}/>
               </View>
@@ -164,10 +165,10 @@ export default function MarketPoint({ navigation }) {
             </ScrollView>
 
             <View style={[Style.containerButtonsMenuPages, {marginTop: 120}]}>
-              <TouchableOpacity style={Style.buttonMenuPage} onPress={() => RegNewPointServer(Name, Adress, Start, End, rawPhoneValue)}>
+              <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Points", {id: id})}>
                   <Text style={Style.textInButtonsMenuPage}>Завершение регистрации</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("RegFirma")}>
+              <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Points", {id: id})}>
                   <Text style={Style.textInButtonsBackMenuPage}>Назад</Text>
               </TouchableOpacity>
             </View>

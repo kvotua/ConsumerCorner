@@ -19,7 +19,7 @@ import { SendInfFirm } from "@/Api/RegFirmaRoot";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 
-export default function RegFirma({ navigation }) {
+export default function EditFirma({ navigation }) {
   const [NameFima, setValue] = useState();
   const [OGRN, setValue2] = useState();
   const [Adress, setValue3] = useState();
@@ -65,8 +65,8 @@ export default function RegFirma({ navigation }) {
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
         <View style={Style.headerLeft}>
-          <Text style={Style.titleHead}>Зарегистрируйте </Text>
-          <Text style={Style.titleHead}>фирму</Text>
+          <Text style={Style.titleHead}>Редактор фирм </Text>
+          <Text style={[Style.titleHead, {color:"#FFFFFF", opacity: 50, fontSize: 14}]}>наввание фирмы</Text>
           <View style={Style.containerLine}>
             <View style={Style.menuPagesLine} />
           </View>
@@ -127,10 +127,10 @@ export default function RegFirma({ navigation }) {
             </View>
         </ScrollView>
         <View style={localStyles.containerButtonsMenuPages}>
-          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => SendToServerReg}>
+          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Firms")}>
             <Text style={Style.textInButtonsMenuPage}>Далее</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Inn")}>
+          <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Firms")}>
             <Text style={Style.textInButtonsBackMenuPage}>Назад</Text>
           </TouchableOpacity>
         </View>

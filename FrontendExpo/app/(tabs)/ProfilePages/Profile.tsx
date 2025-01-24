@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ImageBackground,
   Text,
@@ -9,13 +8,12 @@ import {
   Switch,
   StyleSheet,
   Image,
-  Dimensions, 
+  Dimensions,
   Platform,
   FlatList
 } from "react-native";
 import Style from "@/app/Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function Profile({ navigation }) {
@@ -32,49 +30,79 @@ export default function Profile({ navigation }) {
     return 0; 
   };
 
-  // const handleUpdateProfile = async () => {
-  //   const updatedData = {
-  //     name: userData.name,
-  //     phone: userData.phone,
-  //     email: userData.email,
-  //     receive_telegram: isEnabled, // Обновляем состояние switch
-  //   };
+  // Функция для получения данных профиля
+  const fetchUserProfile = async () => {
+    try {
+      const token = await AccessGetToken();
+      const response = await fetch('https://consumer-corner.kvotua.ru/profile/me', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'accept': 'application/json'
+        },
+      });
 
-  //   try {
-  //     const token = await AccessGetToken()
-  //     const response = await fetch('http://localhost:8000/change', {
-  //       method: 'PATCH',
-  //       headers: {
-  //         'Authorization': `${token}`, // Подставь токен здесь
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(updatedData),
-  //     });
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile data');
+      }
 
-  //     if (!response.ok) {
-  //       throw new Error('Failed to update profile');
-  //     }
+      const data = await response.json();
+      setUserData({
+        name: data.fio,
+        phone: data.phone,
+        email: data.email
+      });
+      setIsEnabled(data.verify_phone); // Устанавливаем состояние переключателя
+    } catch (error) {
+      console.error('Ошибка при получении данных профиля:', error);
+    }
+  };
 
-  //     showToast("success", "Успех!", error.message || "Вы успешно обновили данные!");
-  //   } catch (error) {
-  //     console.error('Ошибка при обновлении профиля:', error);
-  //   }
-  // };
+  useEffect(() => {
+    fetchUserProfile(); // Вызываем функцию при загрузке компонента
+  }, []);
 
+  const handleUpdateProfile = async () => {
+    const updatedData = {
+      name: userData.name,
+      phone: userData.phone,
+      email: userData.email,
+      receive_telegram: isEnabled, // Обновляем состояние switch
+    };
+
+    try {
+      const token = await AccessGetToken();
+      const response = await fetch('https://consumer-corner.kvotua.ru/profile/change', {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+
+      alert("Вы успешно обновили данные!");
+    } catch (error) {
+      console.error('Ошибка при обновлении профиля:', error);
+    }
+  };
 
   // Данные для FlatList
   const inputData = [
-    { id: '1', label: 'Ф.И.О', placeholder: 'Акулич Виктор Сергеевич', isSwitch: false },
-    { id: '2', label: 'Номер телефона', placeholder: '+79113453221', isSwitch: false },
-    { id: '3', label: 'Email', placeholder: 'yyyy@mail.ru', isSwitch: false },
-    { id: '4', label: 'Изменить пароль', placeholder: '************', isSwitch: false },
+    { id: '1', label: 'Ф.И.О', placeholder: 'Введите Ф.И.О', value: userData.name || '', isSwitch: false, key: 'name' },
+    { id: '2', label: 'Номер телефона', placeholder: 'Введите номер телефона', value: userData.phone || '', isSwitch: false, key: 'phone' },
+    { id: '3', label: 'Email', placeholder: 'Введите email', value: userData.email || '', isSwitch: false, key: 'email' },
     { id: '5', label: 'Получать отзывы в Telegram', isSwitch: true }, // Новый элемент для переключателя
   ];
 
   // Функция рендеринга каждого элемента FlatList
   const renderInputItem = ({ item }) => (
     <View style={{ marginBottom: 18, flexDirection: item.isSwitch ? 'row' : 'column', alignItems: item.isSwitch ? 'center' : 'flex-start' }}>
-      <Text style={styles.textDescriptionProfile}>{item.label}</Text>
+      <Text style={Style.textDescriptionProfile}>{item.label}</Text>
       {item.isSwitch ? (
         <Switch 
           style={[{ transform: isTablet ? [{ scale: 1 }] : [{ scale: 1 }] }, { marginStart: "auto" }]} // Добавляем отступ слева
@@ -84,27 +112,27 @@ export default function Profile({ navigation }) {
           thumbColor={isEnabled ? "#E6E6E6" : "#E6E6E6"}
         />
       ) : (
-        <TextInput style={styles.textInputProfile} placeholder={item.placeholder} />
+        <TextInput 
+          style={Style.textInputProfile} 
+          placeholder={item.placeholder} 
+          value={item.value} 
+          onChangeText={(text) => setUserData({ ...userData, [item.key]: text })}
+        />
       )}
     </View>
   );
 
   return (
-    <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
-      <SafeAreaView style={[styles.containerMainPage, { paddingVertical: getPaddingVertical(), paddingHorizontal: getPaddingHorizontal() }]}>
-        <View style={styles.profileHeader}>
+    <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
+      <SafeAreaView style={[Style.containerMainPage, { paddingVertical: getPaddingVertical(), paddingHorizontal: 16  }]}>
+        <View style={Style.profileHeader}>
           <Image
             source={require("../../../assets/images/profileImage.png")}
             style={localStyles.profileImage} 
           />
         </View>
-        <View style={Style.profileHeader}>
-          <Image source={require("../../../assets/images/profileImage.png")} style={localStyles.profileImage} />
-          <Text style={Style.profileTitle}>{userData.name || 'Акулич В.C'}</Text>
-        </View>
-
         
-        <View style={styles.containerProfile}>
+        <View style={Style.containerProfile}>
           <FlatList
             data={inputData}
             renderItem={renderInputItem}
@@ -114,8 +142,8 @@ export default function Profile({ navigation }) {
         </View>
 
         <View style={localStyles.containerButtonsBottomFlatList}>
-          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={styles.textInButtonsMenuPage}>Вернуться на главную</Text>
+          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
+            <Text style={Style.textInButtonsMenuPage}>Вернуться на главную</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -133,8 +161,8 @@ const localStyles = StyleSheet.create({
     borderColor: "#FFFFFF", 
   },
   containerButtonsBottomFlatList: {
-  width: "100%",
-  height: 45,  
- justifyContent: 'flex-end', 
-},
+    width: "100%",
+    height: 45,  
+    justifyContent: 'flex-end', 
+  },
 });

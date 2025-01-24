@@ -27,7 +27,7 @@ export default function CodePage({ navigation}) {
   };
   
   const handleNext = async () => {
-    const url = 'http://127.0.0.1:8080/auth/check';
+    const url = 'https://consumer-corner.kvotua.ru/verify/phone/check';
   
     try {
       // Получаем токены из локального хранилища

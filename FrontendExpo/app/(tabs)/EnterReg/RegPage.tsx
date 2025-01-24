@@ -15,6 +15,8 @@ import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
 import Toast from "../Notif/toasts/Toast";
 import { apiRequest } from '../../../Api/RefreshToken';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function RegPage({ navigation }) {
   const [fio, setfio] = useState("");
@@ -69,7 +71,7 @@ export default function RegPage({ navigation }) {
       return;
     }
   
-    const url = 'http://localhost:8765/registration';
+    const url = 'https://consumer-corner.kvotua.ru/registration';
   
     try {
       // Выполняем POST-запрос через универсальную функцию
@@ -85,7 +87,28 @@ export default function RegPage({ navigation }) {
           "Content-Type": "application/json",
         }
       );
-  
+      const res = await data.json();
+      await AsyncStorage.setItem("access_token", res.access_token);
+      await AsyncStorage.setItem("refresh_token", res.refresh_token);
+
+      try {
+        const url2 = 'https://consumer-corner.kvotua.ru/verify/phone/send';
+        const jwt = await AccessGetToken();
+        const data2 = await apiRequest(
+          url2,
+          "POST",
+          {
+            Authorization: `Bearer ${jwt}`,
+          },
+          {
+            "Content-Type": "application/json",
+          }
+        )
+        const res2 = await data2.json();
+        await AsyncStorage.setItem('Ses_id', res2.req_id);
+      } catch (error) {
+        console.log(error.message);
+      }
       // Навигация на следующий экран
       navigation.replace("CodeConfirm");
     } catch (error) {
@@ -160,7 +183,7 @@ export default function RegPage({ navigation }) {
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() => {
-                  navigation.replace("RegFirma");
+                  handleNext();
                 }}
               >
                 <Text style={Style.blackText}>Далее</Text>

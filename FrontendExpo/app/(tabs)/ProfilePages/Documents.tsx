@@ -39,16 +39,14 @@ export default function Documents({ navigation }) {
     setCards((prevCards) => [...prevCards, ...baseCards]);
   };
 
-  const onViewableItemsChanged = ({ viewableItems }) => {
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
     if (viewableItems && viewableItems.length > 0) {
       const firstVisibleItem = viewableItems[0];
       const { index } = firstVisibleItem;
-
-      // Установка видимого индекса
       setVisibleIndex(index);
       scrollToIndex(index);
     }
-  };
+  }).current;
 
   const scrollToIndex = (index) => {
     if (flatListRef.current) {

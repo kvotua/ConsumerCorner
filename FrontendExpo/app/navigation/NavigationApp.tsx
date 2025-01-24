@@ -28,6 +28,10 @@ import RegFirmaAuth from '../(tabs)/SubPages/RegFirmaPageAuth';
 import MarketPointAuth from '../(tabs)/SubPages/RegMarketPointAuth';
 import InnRegAuth from '../(tabs)/SubPages/InnPageAuth';
 import newSocial from '../(tabs)/ProfilePages/AddSocial';
+import EditFirma from '../(tabs)/ProfilePages/EditFirms';
+import EditMarketPoint from '../(tabs)/ProfilePages/EditPoint';
+import DesignYourCorner from '../(tabs)/ProfilePages/QrPage';
+import AssignmentDoc from '../(tabs)/ProfilePages/DuplicatePages/AssignmentDocument';
 
 const Stack = createStackNavigator();
 
@@ -64,6 +68,10 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="MarketPointAuth" component={MarketPointAuth} options={{ headerShown: false }} />
           <Stack.Screen name="InnRegAuth" component={InnRegAuth} options={{ headerShown: false }} />
           <Stack.Screen name="newSocial" component={newSocial} options={{ headerShown: false }} />
+          <Stack.Screen name="EditFirma" component={EditFirma} options={{ headerShown: false }} />
+          <Stack.Screen name="EditMarketPoint" component={EditMarketPoint} options={{ headerShown: false }} />
+          <Stack.Screen name="DesignYourCorner" component={DesignYourCorner} options={{ headerShown: false }} />
+          <Stack.Screen name="AssignmentDoc" component={AssignmentDoc} options={{ headerShown: false }} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );
