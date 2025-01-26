@@ -131,7 +131,7 @@ export default function RegFirma({ navigation }) {
             <Text style={Style.textInButtonsMenuPage}>Далее</Text>
           </TouchableOpacity>
           <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Inn")}>
-            <Text style={Style.textInButtonsBackMenuPage}>Назад</Text>
+            <Text style={Style.textInButtonsBackMenuPage}>←Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

@@ -92,7 +92,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
                     <Text style={Style.blackText} >Добавить соц.сеть</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Social")}>
-                    <Text style={Style.DefText}>Назад</Text>
+                    <Text style={Style.DefText}>←Назад</Text>
                 </TouchableOpacity>
                 </View>
       </SafeAreaView>

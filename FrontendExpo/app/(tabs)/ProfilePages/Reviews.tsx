@@ -122,7 +122,7 @@ export default function Reviews({ navigation, pointId }) {
         <View style={localStyles.containerButtonsBottomFlatList}>
           <TouchableOpacity style={styles.buttonBackMenuPage} onPress={() => navigation.replace("MenuPage")}>
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
-            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
+            <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

@@ -198,7 +198,7 @@ export default function Points({ navigation, route  }) {
             <Text style={styles.textInButtonsMenuPage}>Добавить точку</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Firms")}>
-            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
+            <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

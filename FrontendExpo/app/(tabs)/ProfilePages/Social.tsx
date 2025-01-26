@@ -104,7 +104,7 @@ export default function AssignmentPointFirm({ navigation }) {
             <Text style={styles.textInButtonsMenuPage}>Добавить соц.сеть</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
+            <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

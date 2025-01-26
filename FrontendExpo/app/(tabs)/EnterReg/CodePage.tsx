@@ -92,7 +92,7 @@ export default function CodePage({ navigation}) {
                 <Text
                   style={Style.DefText}
                 >
-                  Назад
+                  ←Назад
                 </Text>
               </TouchableOpacity>
             </View>

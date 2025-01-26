@@ -26,7 +26,7 @@ export default function DesignYourCorner({ navigation }){
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.backButton} onPress={() => alert('Назад')}>
-        <Text style={styles.buttonText}>Назад</Text>
+        <Text style={styles.buttonText}>←Назад</Text>
       </TouchableOpacity>
     </View>
   );

@@ -185,7 +185,7 @@ const backgroungColor = "#d3d3d3";
                 <Text style={styles.textInButtonsMenuPage}>Добавить фирму</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
-                <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
+                <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
               </TouchableOpacity>
             </View>
           </SafeAreaView>

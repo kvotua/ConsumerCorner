@@ -189,7 +189,7 @@ export default function RegPage({ navigation }) {
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Start")}>
-                <Text style={Style.DefText}>Назад</Text>
+                <Text style={Style.DefText}>←Назад</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>

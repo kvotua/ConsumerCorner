@@ -184,7 +184,7 @@ export default function AssignmentDoc({ navigation }) {
             <Text style={styles.textInButtonsMenuPage}>Сохранить</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("AddNewAdmin")}>
-            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
+            <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

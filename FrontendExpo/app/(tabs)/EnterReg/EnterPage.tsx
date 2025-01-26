@@ -119,7 +119,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
                     <Text style={Style.blackText} >Далее</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Start")}>
-                    <Text style={Style.DefText}>Назад</Text>
+                    <Text style={Style.DefText}>←Назад</Text>
                 </TouchableOpacity>
                 </View>
       </SafeAreaView>

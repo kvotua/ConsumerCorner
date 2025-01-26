@@ -168,7 +168,7 @@ export default function MarketPoint({ navigation }) {
                   <Text style={Style.textInButtonsMenuPage}>Завершение регистрации</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("RegFirma")}>
-                  <Text style={Style.textInButtonsBackMenuPage}>Назад</Text>
+                  <Text style={Style.textInButtonsBackMenuPage}>←Назад</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>

@@ -135,7 +135,7 @@ export default function Documents({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
-            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
+            <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
         </TouchableOpacity>
         </View>
       </SafeAreaView>
