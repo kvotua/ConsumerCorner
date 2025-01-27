@@ -6,6 +6,7 @@ import phonenumbers
 from datetime import datetime, timedelta, timezone
 import bcrypt
 import asyncio
+import uuid
 from email.mime.text import  MIMEText
 from app.config import from_email, email_password, email_host
 
@@ -18,9 +19,9 @@ class HttpClient:
         await self.session.close()
 
     async def send_message(self, url, data):
-        async with self.session.post(url, json=data) as response:
+        async with self.session.post(url, data=data) as response:
             result = await response.json()
-            return result.get("request_id")
+            return result
 
     async def __aenter__(self):
         return self
@@ -80,6 +81,9 @@ def time_in_3_days():
 def generate_code():
     code = ''.join(random.sample('0123456789', k=5))
     return code
+
+def generate_session():
+    return str(uuid.uuid4())
 
 def generate_text(code):
     return f'Кoд для верификации: {code}'
