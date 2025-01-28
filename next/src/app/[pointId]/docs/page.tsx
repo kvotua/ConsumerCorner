@@ -1,34 +1,21 @@
 "use client"
-import { useGetFirmaByPointId } from "@/root/services/points";
+import { formatName, useGetFirmaByPointId } from "@/root/services/points";
 import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
 import { Separate } from "@/shared/Separate/Separate";
 import { useParams } from "next/navigation";
-
-function formatName(fullName: string | undefined) {
-  if (!fullName) {
-    return;
-  }
-
-  const parts = fullName.split(' ');
-
-  if (parts.length < 3) {
-    throw new Error("Полное имя должно содержать фамилию, имя и отчество.");
-  }
-
-  const lastName = parts[0];
-  const firstNameInitial = parts[1].charAt(0) + '.';
-  const patronymicInitial = parts[2].charAt(0) + '.';
-
-  return `ИП ${lastName} ${firstNameInitial}${patronymicInitial}`;
-}
+import { PointOtherScelteton } from "../PointOtherScelteton";
 
 export default function Docs() {
   const { pointId } = useParams()
   const { data } = useGetFirmaByPointId(pointId as string);
 
   if (data == undefined) {
-    return <div>Loading..</div>
+    return (
+      <section className="wrapper container">
+        <PointOtherScelteton/>
+      </section>
+    )
   }
 
   const name = formatName(data?.name || "")
@@ -54,10 +41,11 @@ export default function Docs() {
 
 
       {names.length > 0 ? (
-        <div className="flex-grow flex flex-col gap-6 py-5" style={{ overflowY: 'auto', maxHeight: '500px', padding: '0', scrollbarWidth: 'none' }}>
+        <div className="flex-grow flex flex-col gap-6 py-5" style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 95px)', padding: '0', scrollbarWidth: 'none' }}>
           {names.map((name, index) => (
             <ButtonBase
               key={index}
+              link={`/${pointId}/docs/${index + 1}/`}
               roundedCorners={['top-left']}
               style={{
                 fontWeight: 'normal',

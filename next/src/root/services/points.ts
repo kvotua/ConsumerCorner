@@ -26,6 +26,24 @@ export const useGetPointById = (id: string) => {
   });
 };
 
+export function formatName(fullName: string | undefined) {
+  if (!fullName) {
+    return;
+  }
+
+  const parts = fullName.split(' ');
+
+  if (parts.length < 3) {
+    throw new Error("Полное имя должно содержать фамилию, имя и отчество.");
+  }
+
+  const lastName = parts[0];
+  const firstNameInitial = parts[1].charAt(0) + '.';
+  const patronymicInitial = parts[2].charAt(0) + '.';
+
+  return `ИП ${lastName} ${firstNameInitial}${patronymicInitial}`;
+};
+
 /** Добавление точки */
 export const useUploadFile = ({
   onSuccess,

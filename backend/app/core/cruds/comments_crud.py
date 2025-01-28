@@ -21,7 +21,10 @@ async def add_comment(session: AsyncSession, point_id: int, comment_data: Commen
     point = result_point.scalar_one()
     result_comments = await session.execute(select(Comments.stars).where(Comments.point_id == point_id, Comments.stars.isnot(None)))
     stars = result_comments.scalars().all()
-    middle_stars = round(statistics.mean(stars), 2)
+    if stars:
+        middle_stars = round(statistics.mean(stars), 2)
+    else:
+        middle_stars = None
     point.middle_stars = middle_stars
     await session.commit()
     return data_for_db.id

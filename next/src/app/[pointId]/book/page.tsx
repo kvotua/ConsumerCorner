@@ -1,11 +1,31 @@
+"use client"
 import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
 import { ButtonLong } from "@/shared/Buttons/ButtonLong/ButtonLong";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
+import { useParams } from "next/navigation";
+import { formatName, useGetFirmaByPointId } from "@/root/services/points";
+import { PointOtherScelteton } from "../PointOtherScelteton";
 
 export default function Book() {
+  const { pointId } = useParams()
+  const { data } = useGetFirmaByPointId(pointId as string);
+
+  if (data == undefined) {
+    return (
+      <section className="wrapper container">
+        <PointOtherScelteton/>
+      </section>
+    )
+  }
+
+  const name = formatName(data?.name || "")
 
   const pointInfo = {
-    who: "ИП АКУЛИЧ В.С",
+    title: data?.title,
+    who: name,
+    address: data?.address,
+    inn: data?.inn,
+    ogrn: data?.ogrn,
   }
   return (
     <section className="wrapper container">

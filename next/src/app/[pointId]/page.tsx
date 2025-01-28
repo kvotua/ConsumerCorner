@@ -2,7 +2,7 @@
 import { useAppSelector } from "@/root/hooks/useAppSelector";
 import { PointScelteton } from "./PointScelteton";
 import { useParams, useRouter } from "next/navigation";
-import { useGetFirmaByPointId, useGetPointById } from "@/root/services/points";
+import { formatName, useGetFirmaByPointId, useGetPointById } from "@/root/services/points";
 import { ButtonBig } from "@/shared/Buttons/ButtonBig/ButtonBig";
 import { ButtonBase } from "@/shared/Buttons/ButtonBase/ButtonBase";
 import { ButtonBack } from "@/shared/Buttons/ButtonBack/ButtonBack";
@@ -27,26 +27,9 @@ async function fetchData(config: Configuration) {
   }
 }
 
-function formatName(fullName: string | undefined) {
-  if (!fullName) {
-      return;
-  }
-
-  const parts = fullName.split(' ');
-
-  if (parts.length < 3) {
-      throw new Error("Полное имя должно содержать фамилию, имя и отчество.");
-  }
-
-  const lastName = parts[0];
-  const firstNameInitial = parts[1].charAt(0) + '.';
-  const patronymicInitial = parts[2].charAt(0) + '.';
-
-  return `ИП ${lastName} ${firstNameInitial}${patronymicInitial}`;
-}
-
-
 function Point() {
+  var isLoading = false;
+  var isRefetching = false;
   const [hasShownToast, setHasShownToast] = useState(false);
   // const baseServer = new ServerConfiguration<{}>("https://consumer-corner.kvotua.ru", {});
   // const config = createConfiguration({ baseServer });
@@ -71,7 +54,7 @@ function Point() {
 
   console.log('debug:', data)
   if (data == undefined) {
-    return <div>Loading..</div>
+    isLoading = true
   }
 
   const name = formatName(data?.name || "")
@@ -83,15 +66,6 @@ function Point() {
     inn: data?.inn,
     ogrn: data?.ogrn,
   }
-
-  // const {
-  //   data: point,
-  //   isLoading,
-  //   isRefetching,
-  // } = useGetPointById(pointId as string);
-  // const { push } = useRouter();
-  const isLoading = false;
-  const isRefetching = false;
 
   return (
     <section className="wrapper container">
@@ -125,17 +99,13 @@ function Point() {
             </div>
 
             {/* Секция с ИНН и ОГРН */}
-            <div className="flex flex-col items-center text-center">
+            <div className="fixed bottom-0 left-0 right-0 flex flex-col items-center text-center" style={{ marginBottom: '15px'}}>
               <p className="text-lg opacity-60">
                 <strong>ИНН</strong>: {pointInfo.inn}
               </p>
               <p className="text-lg opacity-60">
                 <strong>ОГРН</strong>: {pointInfo.ogrn}
               </p>
-            </div>
-
-            {/* Секция с описанием */}
-            <div className="w-full text-center">
               <p className="text-sm opacity-70 break-words whitespace-pre-line leading-snug">
                 Удобные инструменты, позволяющие вашему бизнесу быть в курсе и оперативно реагировать на пожелания клиента.
               </p>
