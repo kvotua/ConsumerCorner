@@ -10,29 +10,55 @@ import {
   ScrollView,
   Dimensions
 } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
-import Icon from 'react-native-vector-icons/Feather';
-import Share from "../../../assets/images/svg/share.svg";
-import { SendInfFirm } from "@/Api/RegFirmaRoot";
-import Icons from "react-native-vector-icons/Feather";
+import Icon from "react-native-vector-icons/Feather";
 import * as ImagePicker from "expo-image-picker";
-import IconImg from '../../../assets/images/svg/Icon.svg';
+import IconImg from "../../../assets/images/svg/Icon.svg";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
-export default function EditFirma({ navigation }) {
-  const [NameFima, setValue] = useState();
-  const [OGRN, setValue2] = useState();
-  const [Adress, setValue3] = useState();
-  const [VidDo, setValue4] = useState();
-  const [isAddressFilled, setIsAddressFilled] = useState(false);
-  const [isOgrnFilled, setIsOgrnFilled] = useState(false);
+export default function EditFirma({ navigation, route }) {
+  const {id} = route.params;
+  const [NameFima, setValue] = useState("");
+  const [OGRN, setValue2] = useState("");
+  const [Adress, setValue3] = useState("");
+  const [VidDo, setValue4] = useState("");
   const [logo, setLogo] = useState(null);
+
+  const fetchFirms = async () => {
+    try {
+      const jwt = await AccessGetToken();
+      const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/${id}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ошибка: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      setValue(data.name || "");
+      setValue2(data.ogrn || "");
+      setValue3(data.address || "");
+      setValue4(data.general_type_activity || "");
+    } catch (error) {
+      console.error("Ошибка при загрузке данных:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFirms();
+  }, []);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
-      alert("Разрешите доступ к галерее для прикрепления логотипа!");
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -48,18 +74,10 @@ export default function EditFirma({ navigation }) {
   };
 
   const SendToServerReg = async () => {
-    console.log(NameFima, OGRN, Adress, VidDo);
-    const res = await SendInfFirm(NameFima, OGRN, Adress, VidDo);
-    if (!res) return;
-    navigation.replace("MarketInfo");
+    navigation.replace("Firms");
   };
 
-  const handleInputChange = (text) => setValue(text);
-  const handleInputChange2 = (text) => setValue2(text);
-  const handleInputChange3 = (text) => setValue3(text);
-  const handleInputChange4 = (text) => setValue4(text);
-
-  const { width } = Dimensions.get('window');
+  const { width } = Dimensions.get("window");
   const isTablet = width >= 768;
 
   return (
@@ -67,7 +85,7 @@ export default function EditFirma({ navigation }) {
       <SafeAreaView style={Style.containerMainPage}>
         <View style={Style.headerLeft}>
           <Text style={Style.titleHead}>Редактор фирм </Text>
-          <Text style={[Style.titleHead, {color:"#FFFFFF", opacity: 50, fontSize: 14}]}>название фирмы</Text>
+          <Text style={[Style.titleHead, { color: "#FFFFFF", opacity: 50, fontSize: 14 }]}>{NameFima || 'название фирмы'}</Text>
           <View style={Style.containerLine}>
             <View style={Style.menuPagesLine} />
           </View>
@@ -78,7 +96,7 @@ export default function EditFirma({ navigation }) {
             <Text style={Style.titleSimple}>Название фирмы</Text>
             <TextInput
               value={NameFima}
-              onChangeText={handleInputChange}
+              onChangeText={setValue}
               style={Style.textInputProfile}
               placeholder="Строй Загарод"
             />
@@ -88,18 +106,18 @@ export default function EditFirma({ navigation }) {
               type={"custom"}
               options={{ mask: "9999999999999" }}
               value={OGRN}
-              onChangeText={handleInputChange2}
+              onChangeText={setValue2}
               keyboardType="phone-pad"
-              style={[Style.textInputProfile, isOgrnFilled && { backgroundColor: '#fddb67' }]}
+              style={Style.textInputProfile}
               placeholder="1147847423899"
             />
 
             <Text style={Style.titleSimple}>Фактический адрес</Text>
             <TextInput
-              style={[Style.textInputProfile, isAddressFilled && { backgroundColor: '#fddb67' }]}
+              style={Style.textInputProfile}
               placeholder="ул. Павлика Морозова 74Б"
               value={Adress}
-              onChangeText={handleInputChange3}
+              onChangeText={setValue3}
             />
 
             <Text style={Style.titleSimple}>Основной вид деятельности</Text>
@@ -107,32 +125,28 @@ export default function EditFirma({ navigation }) {
               style={Style.textInputProfile}
               placeholder="Частное предприятие"
               value={VidDo}
-              onChangeText={handleInputChange4}
+              onChangeText={setValue4}
             />
           </View>
-            <View style={localStyles.centeredContainer}>
-              <View style={localStyles.transparentContainer}>
-                <TouchableOpacity style={localStyles.uploadBox} onPress={pickImage}>
-                  {logo ? (
-                    <Image source={{ uri: logo }} style={localStyles.image} />
-                  ) : (
-                    <>
-                      <View style={localStyles.iconBox}>
-                        <IconImg width={100} height={100}/>
-                      </View>
-                      <Text style={localStyles.uploadText}>Прикрепите логотип фирмы</Text>
-                    </>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
+          <View style={localStyles.centeredContainer}>
+            <TouchableOpacity style={localStyles.uploadBox} onPress={pickImage}>
+              {logo ? (
+                <Image source={{ uri: logo }} style={localStyles.image} />
+              ) : (
+                <>
+                  <IconImg width={100} height={100} />
+                  <Text style={localStyles.uploadText}>Прикрепите логотип фирмы</Text>
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
         </ScrollView>
         <View style={localStyles.containerButtonsMenuPages}>
-          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Firms")}>
+          <TouchableOpacity style={Style.buttonMenuPage} onPress={SendToServerReg}>
             <Text style={Style.blackText}>Далее</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Firms")}>
-            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Icon name="arrow-left" size={18} color="#FFFFFF" style={{ marginEnd: 6 }} />
             <Text style={Style.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
@@ -145,37 +159,17 @@ const localStyles = StyleSheet.create({
   scrollViewContent: { flexGrow: 1 },
   centeredContainer: {
     marginTop: 15,
-    flex: 0.9,                  
-    justifyContent: 'center',  
-    alignItems: 'center',     
-  },
-  transparentContainer: {
-    backgroundColor: 'transparent', 
-    borderWidth: 2,              
-    borderColor: '#FFFFFF',           
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,            
-    padding: 10,                   
-    width: '90%',                   
-    height: 150,                    
-    alignItems: 'center',           
-    justifyContent: 'center',       
+    flex: 0.9,
+    justifyContent: "center",
+    alignItems: "center",
   },
   fields: { width: "100%" },
   uploadBox: {
-    width: "90%",        
+    width: "90%",
     height: 150,
     alignItems: "center",
     justifyContent: "center",
   },
-  iconBox: {
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  iconText: { fontSize: 20, color: "#3A7AFE" },
   uploadText: { color: "#FFFFFF", fontSize: 16, textAlign: "center" },
   image: { width: "100%", height: "100%", borderRadius: 10 },
   containerButtonsMenuPages: {

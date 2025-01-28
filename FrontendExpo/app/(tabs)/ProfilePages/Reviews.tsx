@@ -73,11 +73,15 @@ export default function Reviews({ navigation, pointId }) {
               <TouchableOpacity style={localStyles.button}>
                 <View style={localStyles.reviewContainer}>
                   <Image
-                    source={require("../../../assets/images/reviewImage.png")}
+                    source={item.image_data
+                      ? { uri: `data:image/png;base64,${item.image_data}` }
+                      : require("../../../assets/images/reviewImage.png")}
                     style={{ width: 50, height: 50, borderRadius: 25 }}
                   />
                   <View style={localStyles.guestContainer}>
-                    <Text style={[localStyles.textInReview, { marginTop: 4 }]}>Гость</Text>
+                    <Text style={[localStyles.textInReview, { marginTop: 4 }]}>
+                    {item.name && item.name.trim() !== '' ? item.name : 'Гость'}
+                    </Text>
                     {renderStars(review.stars || "")} {/* Рейтинг отзыва (если есть поле stars) */}
                   </View>
                 </View>
