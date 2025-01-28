@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^3.3.4",
+    "@mui/material": "^6.4.0",
     "@reduxjs/toolkit": "^2.2.3",
     "@types/react-input-mask": "^3.0.5",
     "autoprefixer": "^10.4.20",

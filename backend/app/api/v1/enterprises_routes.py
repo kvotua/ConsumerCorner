@@ -3,7 +3,7 @@ from typing import Annotated, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.databases.postgresdb import get_session
-from app.schemas.enterprises_schemas import RegisterCompany, ResponseSchema, EnterpriseInfo, ImageData
+from app.schemas.enterprises_schemas import RegisterCompany, ResponseSchema, EnterpriseInfo, ImageData, ChangeEnterpriseSchema
 from app.core.cruds import enterprises_crud
 from app.services.auth_bearer import dependencies
 from app.services.auth_handler import get_token_data, get_token_data_verify
@@ -89,6 +89,30 @@ async def delete_image(
     else:
         return ResponseSchema(status_code=404, detail="Image of Enterprise not found")
     return ResponseSchema(status_code=200, detail={"message": "Image of Enterprise successfully deleted"})
+
+
+@router.patch("/change/{enterprise_id}", response_model=ResponseSchema, dependencies=dependencies)
+async def change_enterprise(
+        request: Request,
+        enterprise_id: Annotated[int, Path(title="Enterprise ID")],
+        new_enterprise_info: ChangeEnterpriseSchema,
+        session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    user_id = dict_by_token.get("id")
+    enterprises_id = await enterprises_crud.get_enterprises_id_by_user_id(session=session, user_id=user_id)
+    if enterprise_id not in enterprises_id:
+        raise HTTPException(status_code=403, detail='The user does not own this company')
+    
+    enterprise = await enterprises_crud.get_enterprise_by_id_v2(session=session, enterprise_id=enterprise_id)
+    if enterprise is None:
+        raise HTTPException(status_code=404, detail='The enterprise was not found')
+
+    await enterprises_crud.update_enterprise(session=session, enterprise=enterprise, enterprise_change=new_enterprise_info)
+
+    return ResponseSchema(status_code=200, detail=f"Enterprise {enterprise_id} could be changed")
 
 @router.get("/enterprises-info", response_model=List[EnterpriseInfo], dependencies=dependencies)
 async def get_companies_info(

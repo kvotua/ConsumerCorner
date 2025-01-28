@@ -216,11 +216,17 @@ async def update_point(session: AsyncSession, point: Points, point_change: Chang
     for name, value in point_change.model_dump(exclude_none=True).items():
         setattr(point, name, value)
     await session.commit()
+    await session.refresh(point)
     return point
 
 async def delete_point(session: AsyncSession, point: Points):
     await session.delete(point)
     await session.commit()
+
+async def get_point_by_id_v2(session: AsyncSession, point_id: int):
+    stmt = select(Points).where(Points.id == point_id)
+    result = await session.execute(stmt)
+    return result.scalars().first()
 
 async def get_enterprises_id_by_user_id(session: AsyncSession, user_id: int):
     stmt = select(Enterprises.id).where(Enterprises.create_id == user_id)

@@ -17,6 +17,11 @@ async def get_user_by_id(session: AsyncSession, user_id: int) -> Users:
     result: Result = await session.execute(stmt)
     return result.scalars().first()
 
+async def get_user_by_phone(session: AsyncSession, phone: str) -> Users:
+    stmt = select(Users).where(Users.phone == phone)
+    result: Result = await session.execute(stmt)
+    return result.scalars().first()
+
 async def get_user_without_pass(session: AsyncSession, user_id: int):
     stmt = select(Users).where(Users.id == user_id)
     result: Result = await session.execute(stmt)

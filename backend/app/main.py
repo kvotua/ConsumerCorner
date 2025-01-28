@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.verify_routes import router as verify_router
+from app.api.v1.password_routes import router as password_router
 from app.api.v1.users_routes import router as users_router
 from app.api.v1.inn_routes import router as inn_service_router
 from app.api.v1.enterprises_routes import router as enterprises_router
@@ -30,6 +31,7 @@ app.add_middleware(
 
 # routes
 app.include_router(auth_router)
+app.include_router(password_router)
 app.include_router(verify_router)
 app.include_router(inn_service_router)
 app.include_router(users_router)

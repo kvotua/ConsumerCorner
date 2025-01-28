@@ -22,31 +22,24 @@ const OfferForm: React.FC = () => {
   const { pointId } = useParams();
   const [isAnonymous, setIsAnonymous] = useState(false); // false = отключён, true = включён
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = (data: FormData) => {
     const payload = {
-      message: data.message,
+      text: data.message,
       pointID: pointId as string,
-      ...(isAnonymous
-        ? {}
-        : {
-            fullName: data.fullName,
-            phoneNumber: data.phoneNumber,
-          }),
+      isAnonimus: isAnonymous as boolean,
+      name: isAnonymous ? "" : data.fullName as string,
+      number: isAnonymous ? "" : data.phoneNumber as string,
+      stars: 0,
+      isReport: false
     };
-
     mutate(payload);
-  });
+  };
 
   return (
     <form
-      onSubmit={handleSubmit((data) =>
-        mutate({
-          message: data.message,
-          pointID: pointId as string,
-        })
-      )}
       id="offer"
       className="py-5 flex-grow"
+      onSubmit={handleSubmit(onSubmit)}
     >
       <TextFieldBig
         {...register("message", { required: true })}
@@ -86,14 +79,12 @@ const OfferForm: React.FC = () => {
             onChange={() => setIsAnonymous(!isAnonymous)}
           />
           <div
-            className={`w-12 h-6 rounded-full shadow-lg transition-all ${
-              isAnonymous ? "bg-blue-500" : "bg-blue-700"
-            }`}
+            className={`w-12 h-6 rounded-full shadow-lg transition-all ${isAnonymous ? "bg-blue-500" : "bg-blue-700"
+              }`}
           >
             <span
-              className={`absolute w-5 h-5 bg-white rounded-full shadow-md top-0.5 transition-transform ${
-                isAnonymous ? "translate-x-6" : "translate-x-0.5"
-              }`}
+              className={`absolute w-5 h-5 bg-white rounded-full shadow-md top-0.5 transition-transform ${isAnonymous ? "translate-x-6" : "translate-x-0.5"
+                }`}
             ></span>
           </div>
         </label>

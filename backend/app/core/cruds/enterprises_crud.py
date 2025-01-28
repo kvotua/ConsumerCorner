@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result, func
 
-from app.schemas.enterprises_schemas import RegisterCompany, ImageData, EnterpriseInfo
+from app.schemas.enterprises_schemas import RegisterCompany, ImageData, EnterpriseInfo, ChangeEnterpriseSchema
 from app.models.models import Enterprises, Points
 
 
@@ -34,6 +34,11 @@ async def delete_image(session: AsyncSession, enterprise_id: str):
 
 async def get_image_by_id(session: AsyncSession, enterprise_id: int):
     stmt = select(Enterprises.image_id).where(Enterprises.id == enterprise_id)
+    result = await session.execute(stmt)
+    return result.scalars().first()
+
+async def get_enterprise_by_id_v2(session: AsyncSession, enterprise_id: int) -> Enterprises:
+    stmt = select(Enterprises).where(Enterprises.id == enterprise_id)
     result = await session.execute(stmt)
     return result.scalars().first()
 
@@ -95,3 +100,11 @@ async def get_enterprises_id_by_user_id(session: AsyncSession, user_id: int):
     result: Result = await session.execute(stmt)
     enterprises_id = result.scalars().all()
     return enterprises_id
+
+
+async def update_enterprise(session: AsyncSession, enterprise: Enterprises, enterprise_change: ChangeEnterpriseSchema):
+    for name, value in enterprise_change.model_dump(exclude_none=True).items():
+        setattr(enterprise, name, value)
+    await session.commit()
+    await session.refresh(enterprise)
+    return enterprise

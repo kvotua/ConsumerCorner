@@ -10,7 +10,7 @@ export default function Info() {
   const { data: point } = useGetPointById(pointId as string);
   return (
     <section className="wrapper container">
-      <h2 className="title">Информаия</h2>
+      <h2 className="title">Информация</h2>
       <span className="text-center text-sm ">{point?.title}</span>
 
       <div className="flex-grow flex flex-col gap-8 py-5">
