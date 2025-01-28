@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.services.auth_handler import get_token_data, sign_jwt, sing_email_jwt, decode_email_token
-from app.schemas.verify_schemas import ReqID, VerifePhone, EmailSchema
+from app.schemas.verify_schemas import ReqID, VerifePhone, EmailSchema, EmailReqID
 from app.schemas.points_schemas import ResponseSchema
 from app.services.verify_services import HttpClient, SendEmail, generate_code, generate_text, validate_phone, generate_session
 from app.models.models import Verification
@@ -15,6 +15,7 @@ from app.core.cruds import verify_crud, users_crud
 from app.services.auth_bearer import dependencies
 
 sendemail = SendEmail()
+sendemail.connect()
 
 
 router = APIRouter(prefix="/verify", tags=["verify"])
@@ -23,7 +24,7 @@ router = APIRouter(prefix="/verify", tags=["verify"])
 async def only_for_testing(session: AsyncSession = Depends(get_session)):
     data = await session.execute(select(Verification))
     array = data.scalars().all()
-    return [Verification(request_id=item.request_id, sms_code=item.sms_code, phone=item.phone, created_at=item.created_at) for item in array]
+    return [Verification(request_id=item.request_id, code=item.code, phone=item.phone, created_at=item.created_at) for item in array]
 
 
 @router.post("/phone/send", response_model=ReqID, dependencies=dependencies)
@@ -49,7 +50,9 @@ async def send_message(
             response_data = response['data']
     except Exception as s:
         raise HTTPException(status_code=500, detail="Error when sending sms")
-    await verify_crud.add_verify_session(session=session, request_id=response_data['call_id'], sms_code=response_data['pincode'], phone=phone)
+    if response['status'] == 'error':
+        raise HTTPException(status_code=500, detail=response_data)
+    await verify_crud.add_verify_session(session=session, request_id=response_data['call_id'], code=response_data['pincode'], phone=phone)
     return ReqID(req_id=response_data['call_id'])
 
 
@@ -58,49 +61,76 @@ async def check_code(
         request: Request,
         req_id: Annotated[int, Body(..., title='ID, полученный после отправки номера',
                                     examples=['1191273219673078'])],
-        sms_code: Annotated[
-            str, Body(..., title='СМС-код, отправленный на номер', examples=['1234'], min_length=4, max_length=4)],
+        code: Annotated[
+            str, Body(..., title='Код, отправленный на номер', examples=['1234'], min_length=4, max_length=4)],
         session: AsyncSession = Depends(get_session),
 ):
     dict_by_token = get_token_data(request)
     if dict_by_token is None:
         raise HTTPException(status_code=403, detail="Invalid token or expired token")
-    response = await verify_crud.get_verify_session(session=session, request_id=req_id, sms_code=sms_code)
+    
+    response = await verify_crud.get_verify_session(session=session, request_id=req_id, code=code)
     if response is None:
-        raise HTTPException(status_code=401, detail='Invalid ID or sms code')
+        raise HTTPException(status_code=401, detail='Invalid ID or code')
+    
     await session.delete(response)
+
     if await verify_crud.change_verify_phone_status(session=session, user_id=dict_by_token.get("id")):
         dict_by_token['verify_phone'] = True
         access_token = sign_jwt(dict_by_token)
         return VerifePhone(phone=response.phone, phone_verif=True, access_token=access_token)
 
 
-@router.post('/email/send', dependencies=dependencies)
+@router.post('/email/send', response_model=EmailReqID, dependencies=dependencies)
 async def send_email(
         request: Request,
-        user_email: Annotated[EmailSchema, Body()]
+        user_email: Annotated[EmailSchema, Body()],
+        session: AsyncSession = Depends(get_session),
 ):
     dict_by_token = get_token_data(request)
     if dict_by_token is None:
         raise HTTPException(status_code=403, detail="Invalid token or expired token")
-    token = sing_email_jwt(user_id=dict_by_token.get("id"), email=user_email.email)
+    # token = sing_email_jwt(user_id=dict_by_token.get("id"), email=user_email.email)
+
+    if await verify_crud.get_verify_email(session=session, email=user_email.email):
+        raise HTTPException(status_code=409, detail="This email already verified")
+    
+    if await verify_crud.get_verify_email(session=session, user_id=dict_by_token.get('id')):
+        raise HTTPException(status_code=409, detail="Your email already verified")
+    
+    req_id = generate_session()
+    email_code = generate_code()
     try:
-        sendemail.send_message(to_send=user_email.email, token=token)
+        sendemail.send_message(to_send=user_email.email, code=email_code)
         sendemail.close()
-        return ResponseSchema(status_code=200, detail="The email has been sent!")
     except Exception as e:
         sendemail.close()
         raise HTTPException(status_code=500, detail=str(e))
+    await verify_crud.add_email_verify(session=session, request_id=req_id, code=email_code, user_id=dict_by_token.get('id'), email=user_email.email)
+    return EmailReqID(req_id=req_id)
 
 
 
-@router.get('/', response_model=ResponseSchema)
+@router.post('/email/check', response_model=ResponseSchema, dependencies=dependencies)
 async def check_email(
-        email_code: str = Query(),
+        request: Request,
+        req_id: Annotated[str, Body(..., title='ID, полученный после отправки номера',
+                                    examples=['643340e3-96a1-4d04-aa24-9043d73bb695'])],
+        email_code: Annotated[str, Body(..., title='Код, полученный на почту',
+                                    examples=['102450'])],
         session: AsyncSession = Depends(get_session),
 ):
-    token_data = decode_email_token(email_code)
-    if isinstance(token_data, str):
-        raise HTTPException(status_code=403, detail=token_data)
-    await verify_crud.verify_email_for_user(session=session, user_id=token_data.get("id"), new_email=token_data.get("email"))
+    dict_by_token = get_token_data(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    
+    if await verify_crud.get_verify_email(session=session, user_id=dict_by_token.get('id')):
+        raise HTTPException(status_code=409, detail="Email already verified")
+    
+    response = await verify_crud.get_email_verify(session=session, request_id=req_id, code=email_code)
+    if response is None:
+        raise HTTPException(status_code=401, detail='Invalid ID or email-code')
+    
+    await verify_crud.verify_email_for_user(session=session, user_id=response.user_id, new_email=response.email)
+    await session.delete(response)
     return ResponseSchema(status_code=200, detail="Your email has been successfully verified")

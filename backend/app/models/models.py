@@ -82,7 +82,8 @@ class Comments(Base):
     name: Mapped[str] = mapped_column(Text, nullable=True)
     number: Mapped[str] = mapped_column(Text, nullable=True)
     isAnonimus: Mapped[bool] = mapped_column(Boolean)
-    isReport: Mapped[bool] = mapped_column(Boolean)
+    # isReport: Mapped[bool] = mapped_column(Boolean)
+    category: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
@@ -123,8 +124,17 @@ class Verification(Base):
     __tablename__ = 'verification'
 
     request_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
-    sms_code: Mapped[str] = mapped_column(String)
+    code: Mapped[str] = mapped_column(String)
     phone: Mapped[str] = mapped_column(String)
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+
+class EmailVerification(Base):
+    __tablename__ = 'email_verification'
+
+    request_id: Mapped[str] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.id'))
+    email: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 class PasswordRestore(Base):

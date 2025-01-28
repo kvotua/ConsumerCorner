@@ -23,6 +23,7 @@ async def add_points(session: AsyncSession, point_data: RegisterPoint, user_id: 
     )
     session.add(data_for_db)
     await session.commit()
+    return data_for_db.id
 
 async def get_all_points(session: AsyncSession, user_id: int) -> list[PointInfo]:
     stmt_points = select(Points).where(Points.create_id == user_id)
@@ -222,6 +223,11 @@ async def update_point(session: AsyncSession, point: Points, point_change: Chang
 async def delete_point(session: AsyncSession, point: Points):
     await session.delete(point)
     await session.commit()
+
+async def point_exists(session: AsyncSession, point_id: int) -> bool:
+    stmt = select(Points.id).where(Points.id == point_id)
+    result = await session.execute(stmt)
+    return result.scalar() is not None
 
 async def get_point_by_id_v2(session: AsyncSession, point_id: int):
     stmt = select(Points).where(Points.id == point_id)

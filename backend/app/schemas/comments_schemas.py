@@ -11,13 +11,12 @@ class CommentData(BaseModel):
     name: Optional[str] = Field(title='Name and Surname of user', examples=['Иванов Павел'])
     number: Optional[str] = Field(title='Phone number', examples=['89112547896'])
     isAnonimus: bool = Field(title='Is Anonimusly comment', examples=[True])
-    isReport: bool = Field(title='Is Report comment', examples=[True])
-    
+    category: str = Field(title='Comment category', examples=['report'])
+
     @field_validator("stars")
-    def check_stars_if_report(cls, v: Optional[int], info: ValidationInfo):
-        print(info.data)
-        is_report = info.data.get('isReport', False)
-        if is_report and v is None:
+    def check_stars_if_report(cls, v: Optional[int], info):
+        category = info.data.get('category', '')
+        if category == 'report' and v is None:
             raise ValueError('The comment-report requires stars')
         if v is not None and (v < 1 or v > 5):
             raise ValueError('Stars must be between 1 and 5')
@@ -56,6 +55,6 @@ class CommentsSchema(BaseModel):
     name: Annotated[Optional[str], Field(title='Name and Surname of user', examples=['Иванов Павел'])]
     number: Annotated[Optional[str], Field(title='Phone number', examples=['89112547896'])]
     isAnonimus: Annotated[Optional[bool], Field(title='Is Anonimusly comment', examples=[True])]
-    isReport: Annotated[Optional[bool], Field(title='Is Report comment', examples=[True])]
+    category: Annotated[Optional[str], Field(title='Comment category', examples=[True])]
     created_at: Annotated[datetime, Field(title="Date the comment was created", examples=["2024-12-07 03:21:37.273427"])]
     images_data: Annotated[Optional[List[str]], Field(title="Image's ID", examples=[['6d75ddd59b58c3607315a11']])]

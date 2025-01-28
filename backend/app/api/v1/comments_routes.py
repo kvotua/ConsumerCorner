@@ -5,7 +5,7 @@ from pydantic import ValidationError
 
 from app.core.databases.postgresdb import get_session
 from app.schemas.comments_schemas import CommentData, ResponseSchema, CommentsSchema, ImageData
-from app.core.cruds import comments_crud
+from app.core.cruds import comments_crud, points_crud
 from app.core.databases.mongodb import MongoDBClient
 
 
@@ -21,11 +21,15 @@ async def add_coment(
     name: Optional[str] = Form(None),
     number: Optional[str] = Form(None),
     isAnonimus: bool = Form(...),
-    isReport: bool = Form(...),
+    category: str = Form(...),
     session: AsyncSession = Depends(get_session),
     images: Optional[List[UploadFile]] = File([]),
 ):
-    if isReport and stars is None:
+    point = points_crud.point_exists(session=session, point_id=point_id)
+    print('\n\n\n\n', point, '\n\n\n\n')
+    if not point:
+        return HTTPException(status_code=404, detail='Point is not found')
+    if category == 'report' and stars is None:
         return HTTPException(status_code=400, detail='The comment-report requires stars')
     if not isAnonimus and (name is None or number is None):
         return HTTPException(status_code=400, detail='The comment requires name and number')
@@ -39,7 +43,7 @@ async def add_coment(
             name=name,
             number=number,
             isAnonimus=isAnonimus,
-            isReport=isReport
+            category=category
         )
     except ValidationError as e:
         return HTTPException(status_code=400, detail=e.errors())

@@ -26,8 +26,9 @@ async def register_company(
     dict_by_token = get_token_data_verify(request)
     if dict_by_token is None:
         raise HTTPException(status_code=403, detail="Invalid token or expired token")
-    if await enterprises_crud.add_enterprise(session=session, data=data_company, user_id=dict_by_token.get("id")) is True:
-        return ResponseSchema(status_code=200, detail="Successful registration")
+    enterprise_id = await enterprises_crud.add_enterprise(session=session, data=data_company, user_id=dict_by_token.get("id"))
+    if enterprise_id:
+        return ResponseSchema(status_code=200, detail={"message": "Successful registration", "enterprise_id": enterprise_id})
     raise HTTPException(status_code=500, detail="Error when registering a company")
 
 
@@ -54,7 +55,7 @@ async def upload_images(
     info = await mongo.upload_image(image, content)
     image_data = ImageData(id=info['_id'], enterprise_id=enterprise_id)
     await enterprises_crud.add_image(session=session, image_data=image_data)
-    return ResponseSchema(status_code=200, detail="Image successfully uploaded to Enterprise")
+    return ResponseSchema(status_code=200, detail={"message": "Image successfully uploaded to Enterprise", "enterprise_id": enterprise_id})
 
 
 @router.delete("/delete_image/{enterprise_id}", response_model=ResponseSchema, dependencies=dependencies)
@@ -88,7 +89,7 @@ async def delete_image(
             return ResponseSchema(status_code=404, detail={"message": "Image not found", "id": image_id})
     else:
         return ResponseSchema(status_code=404, detail="Image of Enterprise not found")
-    return ResponseSchema(status_code=200, detail={"message": "Image of Enterprise successfully deleted"})
+    return ResponseSchema(status_code=200, detail={"message": "Image of Enterprise successfully deleted", "enterprise_id": enterprise_id})
 
 
 @router.patch("/change/{enterprise_id}", response_model=ResponseSchema, dependencies=dependencies)
@@ -112,7 +113,7 @@ async def change_enterprise(
 
     await enterprises_crud.update_enterprise(session=session, enterprise=enterprise, enterprise_change=new_enterprise_info)
 
-    return ResponseSchema(status_code=200, detail=f"Enterprise {enterprise_id} could be changed")
+    return ResponseSchema(status_code=200, detail={"message": "Enterprise could be changed", "enterprise_id": enterprise_id})
 
 @router.get("/enterprises-info", response_model=List[EnterpriseInfo], dependencies=dependencies)
 async def get_companies_info(
