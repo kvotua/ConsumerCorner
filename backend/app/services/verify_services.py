@@ -32,44 +32,87 @@ class HttpClient:
 httpclient = HttpClient()
 
 
+# class SendEmail:
+#     def __init__(self,
+#                  email: str = from_email,
+#                  password: str = email_password,
+#                  email_host: str = email_host,
+#         ):
+#         self.email = email
+#         self.server = smtplib.SMTP(host=email_host, port=587)
+#         try:
+#             self.server.starttls()
+#             self.server.login(email, password=password)
+#         except smtplib.SMTPAuthenticationError:
+#             raise Exception("Authentication error. Check your email and password.")
+#         except Exception as e:
+#             raise Exception(f"Failed to connect to the SMTP server: {e}")
+
+#     def send_message(self, to_send: str, token: str):
+#         msg = MIMEText(f"Your verification link: {token}", 'plain', 'utf-8')
+#         msg['Message-ID'] = make_msgid()
+#         msg['Subject'] = "Mail verification"
+#         msg['From'] = self.email
+#         msg['To'] = to_send
+#         try:
+#             self.server.sendmail(
+#                 from_addr=self.email,
+#                 to_addrs=[to_send],
+#                 msg=msg.as_string(),
+#             )
+#         except Exception as e:
+#             raise Exception(f"Error sending the message: {e}")
+
+#     def close(self):
+#         try:
+#             self.server.quit()
+#         except Exception as e:
+#             raise Exception(f"Session closing error: {e}")
+
 class SendEmail:
-    def __init__(self,
-                 email: str = from_email,
-                 password: str = email_password,
-                 email_host: str = email_host,
-        ):
+    def __init__(self, email: str = from_email,
+                  password: str = email_password,
+                  email_host: str = email_host):
         self.email = email
-        self.server = smtplib.SMTP(host=email_host, port=587)
+        self.password = password
+        self.email_host = email_host
+        self.server = None
+        self.connect()
+
+    def connect(self):
+        """Establish a connection to the SMTP server."""
         try:
+            self.server = smtplib.SMTP(host=self.email_host, port=587)
             self.server.starttls()
-            self.server.login(email, password=password)
+            self.server.login(self.email, self.password)
         except smtplib.SMTPAuthenticationError:
             raise Exception("Authentication error. Check your email and password.")
         except Exception as e:
             raise Exception(f"Failed to connect to the SMTP server: {e}")
 
     def send_message(self, to_send: str, token: str):
+        """Send a verification email."""
         msg = MIMEText(f"Your verification link: {token}", 'plain', 'utf-8')
         msg['Message-ID'] = make_msgid()
         msg['Subject'] = "Mail verification"
         msg['From'] = self.email
         msg['To'] = to_send
+
         try:
-            self.server.sendmail(
-                from_addr=self.email,
-                to_addrs=[to_send],
-                msg=msg.as_string(),
-            )
+            self.server.sendmail(from_addr=self.email, to_addrs=[to_send], msg=msg.as_string())
+        except smtplib.SMTPServerDisconnected:
+            self.connect()  # Attempt to reconnect
+            self.send_message(to_send, token)  # Retry sending the message
         except Exception as e:
             raise Exception(f"Error sending the message: {e}")
 
     def close(self):
-        try:
-            self.server.quit()
-        except Exception as e:
-            raise Exception(f"Session closing error: {e}")
-
-sendemail = SendEmail()
+        """Close the connection to the SMTP server."""
+        if self.server:
+            try:
+                self.server.quit()
+            except Exception as e:
+                raise Exception(f"Session closing error: {e}")
 
 
 def time_in_30_days():

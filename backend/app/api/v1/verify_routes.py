@@ -7,12 +7,14 @@ from sqlalchemy.future import select
 from app.services.auth_handler import get_token_data, sign_jwt, sing_email_jwt, decode_email_token
 from app.schemas.verify_schemas import ReqID, VerifePhone, EmailSchema
 from app.schemas.points_schemas import ResponseSchema
-from app.services.verify_services import HttpClient, sendemail, generate_code, generate_text, validate_phone, generate_session
+from app.services.verify_services import HttpClient, SendEmail, generate_code, generate_text, validate_phone, generate_session
 from app.models.models import Verification
 from app.config import api_key, campaign_id
 from app.core.databases.postgresdb import get_session
 from app.core.cruds import verify_crud, users_crud
 from app.services.auth_bearer import dependencies
+
+sendemail = SendEmail()
 
 
 router = APIRouter(prefix="/verify", tags=["verify"])
@@ -36,7 +38,6 @@ async def send_message(
     phone = validate_phone(number)
     if await verify_crud.get_verify_phone(session=session, phone=phone):
         raise HTTPException(status_code=400, detail='The phone number has already been registered')
-    code = generate_code()
     data = {
         'public_key': api_key,
         'phone': phone,
@@ -46,9 +47,7 @@ async def send_message(
         async with HttpClient() as client:
             response = await client.send_message('https://zvonok.com/manager/cabapi_external/api/v1/phones/flashcall/', data)
             response_data = response['data']
-            print(f'[debug-response]: {response}') # DEBUG
     except Exception as s:
-        print(f'[debug-s]: {s}') # DEBUG
         raise HTTPException(status_code=500, detail="Error when sending sms")
     await verify_crud.add_verify_session(session=session, request_id=response_data['call_id'], sms_code=response_data['pincode'], phone=phone)
     return ReqID(req_id=response_data['call_id'])
