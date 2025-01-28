@@ -84,11 +84,10 @@ class Login(BaseModel):
 
 
 class ReqID(BaseModel):
-    req_id: Annotated[str, Field(
-        title='The session ID received after sending the number',
-        examples=['79442f1f-17a8-42bb-9f6f-4affc8788e7e'],
-        min_length=36,
-        max_length=36,)]
+    req_id: Annotated[int, Field(
+        title='The ID received after sending the number',
+        examples=['1191273219673078']
+    )]
 
 class EmailSchema(BaseModel):
     email: Annotated[str, Field(title="Email", examples=['example@gmail.com'], default=None)]

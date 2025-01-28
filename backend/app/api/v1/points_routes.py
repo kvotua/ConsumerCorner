@@ -232,7 +232,7 @@ async def change_point(
     if point_id not in points_id:
         raise HTTPException(status_code=403, detail='The user does not own this company')
 
-    point = await points_crud.get_point_by_id(session=session, point_id=point_id)
+    point = await points_crud.get_point_by_id_v2(session=session, point_id=point_id)
     if point is None:
         raise HTTPException(status_code=404, detail='The point was not found')
 
