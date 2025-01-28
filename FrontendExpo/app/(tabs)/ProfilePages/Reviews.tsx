@@ -63,7 +63,7 @@ export default function Reviews({ navigation, pointId }) {
 
   const renderItem = ({ item }) => (
     <View style={styles.reviewsItemFlatList}>
-      <Text style={localStyles.companyPointText}>{item.title}</Text> {/* Название точки */}
+      <Text style={localStyles.companyPointText}>{item.title || '' }</Text> {/* Название точки */}
       {item.reviews.length > 0 ? (
         <FlatList
           data={item.reviews}
@@ -78,14 +78,14 @@ export default function Reviews({ navigation, pointId }) {
                   />
                   <View style={localStyles.guestContainer}>
                     <Text style={[localStyles.textInReview, { marginTop: 4 }]}>Гость</Text>
-                    {renderStars(review.stars || 3)} {/* Рейтинг отзыва (если есть поле stars) */}
+                    {renderStars(review.stars || "")} {/* Рейтинг отзыва (если есть поле stars) */}
                   </View>
                 </View>
                 <View style={[styles.containerLine, { marginTop: 10, paddingEnd: 186 }]}>
                   <View style={[styles.menuPagesLine, { backgroundColor: "#3A6CE9" }]} />
                 </View>
                 <Text style={[localStyles.textInReview, { color: "#313231", marginTop: 10 }]}>
-                  {review.text} {/* Текст отзыва */}
+                  {review.text || ''} 
                 </Text>
               </TouchableOpacity>
             </View>
@@ -110,11 +110,15 @@ export default function Reviews({ navigation, pointId }) {
         </View>
         <View style={localStyles.flatListContainer}>
           <FlatList
-            style={[{ paddingRight: 10 }]}
+            style={[{ paddingRight: 10, flex: 1 }]}
             data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
-            ListEmptyComponent={<Text>Нет отзывов</Text>}
+            ListEmptyComponent={
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "40%" }}>
+                  <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет отзывов.</Text>
+                </View>
+            }
             indicatorStyle="white"
           />
         </View>
@@ -122,7 +126,7 @@ export default function Reviews({ navigation, pointId }) {
         <View style={localStyles.containerButtonsBottomFlatList}>
           <TouchableOpacity style={styles.buttonBackMenuPage} onPress={() => navigation.replace("MenuPage")}>
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
-            <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
+            <Text style={styles.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

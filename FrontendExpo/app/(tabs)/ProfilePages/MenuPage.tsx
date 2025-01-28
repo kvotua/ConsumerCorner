@@ -59,10 +59,10 @@ export default function Menupage({ navigation }) {
             onPress={() => navigation.replace("Reviews")}
           >
             <View style={[{flex: 1, justifyContent: "space-between",}]}>
-                <Text style={styles.blackText}>Отзывы и приложения</Text>
+                <Text style={styles.blackText}>Отзывы и предложения</Text>
                 <View style={styles.containerBell}>  
-                  <Text style={[{fontSize: 10, fontWeight: "bold", fontFamily: "Montserrat", textAlign: "right", top: 4}]}>4</Text>
-                  <Icons style={[{alignSelf: "flex-end"}]} name="bell" size={22} color="black" />
+                  {/* <Text style={[{fontSize: 10, fontWeight: "bold", fontFamily: "Montserrat", textAlign: "right", top: 4}]}>4</Text> */}
+                  {/* <Icons style={[{alignSelf: "flex-end"}]} name="bell" size={22} color="black" /> */}
             </View>
             <Image
                 source={require("../../../assets/images/corner.png")}

@@ -15,6 +15,7 @@ import { handleNext, SendNumber } from "@/Api/EnterRoot";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import { decodeJwt } from "@/app/AsyncStore/Decode";
+import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function Enter({ navigation }) {
   const [password, setPassword] = useState("");
@@ -108,7 +109,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
                   placeholder="Пароль"
                 />
                 <TouchableOpacity>
-                  <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver", marginTop: 4}])}>Напомнить пароль</Text>
+                  <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver", marginTop: 4}])}>Восстановить пароль</Text>
                 </TouchableOpacity>
             </View>
             <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
@@ -119,7 +120,8 @@ const showToast = (type :string, message:string, subMessage:string) => {
                     <Text style={Style.blackText} >Далее</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Start")}>
-                    <Text style={Style.DefText}>←Назад</Text>
+                    <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                    <Text style={Style.DefText}>Назад</Text>
                 </TouchableOpacity>
                 </View>
       </SafeAreaView>

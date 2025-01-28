@@ -110,7 +110,7 @@ const backgroungColor = "#d3d3d3";
     ? { uri: `data:image/png;base64,${item.image_data}` }
     : require("../../../assets/images/test.jpg");
     return (
-      <TouchableOpacity key={item.id} onPress={() => navigation.replace("Points", {id: item.id})}>
+      <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => navigation.replace("Points", {id: item.id})}>
               <>
         <Swipeable
           renderRightActions={renderRightActions}
@@ -182,10 +182,11 @@ const backgroungColor = "#d3d3d3";
             </View>
             <View style={styles.containerButtonsBottomFlatList}>
               <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace('EditFirma')}>
-                <Text style={styles.textInButtonsMenuPage}>Добавить фирму</Text>
+                <Text style={styles.blackText}>Добавить фирму</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
-                <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
+                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                <Text style={styles.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
           </SafeAreaView>

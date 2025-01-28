@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import { SendInfFirm } from "@/Api/RegFirmaRoot";
+import Icons from "react-native-vector-icons/Feather";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 
@@ -126,10 +127,11 @@ export default function RegFirmaAuth({ navigation }) {
         </ScrollView>
         <View style={localStyles.containerButtonsMenuPages}>
           <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Firms")}>
-            <Text style={Style.textInButtonsMenuPage}>Закончить регистрацию</Text>
+            <Text style={Style.blackText}>Закончить регистрацию</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[Style.buttonBackMenuPage, {marginTop:10}]} onPress={() => navigation.replace("Firms")}>
-            <Text style={Style.textInButtonsBackMenuPage}>Назад</Text>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={Style.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

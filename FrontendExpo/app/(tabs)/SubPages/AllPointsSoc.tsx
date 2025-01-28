@@ -70,7 +70,10 @@ export default function AllPointsSoc({ navigation, route}) {
             data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
-            ListEmptyComponent={<Text>Нет соц.сетей</Text>}
+            ListEmptyComponent={ <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "40%" }}>
+                              <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет соц.сетей</Text>
+                              <Text style={{ color: 'white', fontSize: 14, fontWeight: 'light', textAlign: 'center' }}>Нажмите кнопку “Добавить соц.сеть”</Text>
+                            </View>}
             indicatorStyle="white"
           />
         </View>
@@ -85,7 +88,7 @@ export default function AllPointsSoc({ navigation, route}) {
             onPress={() => navigation.replace("Social")}
           >
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
-            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
+            <Text style={styles.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
 

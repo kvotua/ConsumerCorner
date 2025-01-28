@@ -85,7 +85,7 @@ export default function AdminPanel({ navigation }) {
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
         <View style={styles.firmsAndPointsHeader}>
-          <Text style={styles.menuTitle}>Администрирование</Text>
+          <Text style={styles.menuTitle}>Администраторы</Text>
         </View>
         <View style={styles.containerLine}>
           <View style={styles.menuPagesLine}/>
@@ -110,10 +110,11 @@ export default function AdminPanel({ navigation }) {
       </View>
       <View style={styles.containerButtonsBottomFlatList}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddNewAdmin")}>
-            <Text style={styles.textInButtonsMenuPage}>Добавить администратора</Text>
+            <Text style={styles.blackText}>Добавить администратора</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={styles.DefText}>Назад</Text>
         </TouchableOpacity>
         </View>
       </SafeAreaView>

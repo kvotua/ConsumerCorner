@@ -16,6 +16,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { RegNewPointServer } from "@/Api/RegNewPointRoot";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
+import Icons from "react-native-vector-icons/Feather";
 
 export default function MarketPointAuth({ navigation }) {
   const [Start, setValue] = useState();
@@ -164,10 +165,11 @@ export default function MarketPointAuth({ navigation }) {
 
             <View style={[Style.containerButtonsMenuPages, {marginTop: 120}]}>
               <TouchableOpacity style={Style.buttonMenuPage} onPress={() => RegNewPointServer(Name, Adress, Start, End, rawPhoneValue)}>
-                  <Text style={Style.textInButtonsMenuPage}>Завершение регистрации</Text>
+                  <Text style={Style.blackText}>Завершение регистрации</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("RegFirma")}>
-                  <Text style={Style.textInButtonsBackMenuPage}>Назад</Text>
+                  <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                  <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>

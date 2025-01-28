@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
+import Icons from "react-native-vector-icons/Feather";
 import Toast from "../Notif/toasts/Toast";
 import { apiRequest } from '../../../Api/RefreshToken';
 
@@ -87,9 +88,9 @@ export default function AddNewAdmin({ navigation }) {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-            <View style={StyleSheet.flatten([Style.containerLine])}>
+            <View style={StyleSheet.flatten([Style.containerLine, {paddingEnd: "uset"}])}>
                 <View style={StyleSheet.flatten([Style.header, {alignSelf: "flex-start",}])}>
-                    <Text style={([Style.titleHead])}>Команда</Text>
+                    <Text style={([Style.titleHead, {textAlign: "unset", }])}>Добавить администратора</Text>
                 </View>
                 <View style={Style.menuPagesLine}/>
             </View>
@@ -130,7 +131,8 @@ export default function AddNewAdmin({ navigation }) {
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("MenuPage")}>
-                <Text style={Style.DefText}>←Назад</Text>
+                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>

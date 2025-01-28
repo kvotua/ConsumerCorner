@@ -12,6 +12,8 @@ import Style from "../../Styles/Style"
 import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken, SesIdToken } from "@/app/AsyncStore/StoreTokens";
 import { apiRequest } from '../../../Api/RefreshToken';
+import Icons from "react-native-vector-icons/Feather";
+
 
 export default function CodePage({ navigation}) {
   const [code, setcode] = useState("");
@@ -89,11 +91,8 @@ export default function CodePage({ navigation}) {
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Register")}>
-                <Text
-                  style={Style.DefText}
-                >
-                  ←Назад
-                </Text>
+                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                <Text style={Style.DefText} >Назад</Text>
               </TouchableOpacity>
             </View>
       </SafeAreaView>

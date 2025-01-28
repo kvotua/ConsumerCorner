@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
+import Icons from "react-native-vector-icons/Feather";
 import Style from "@/app/Styles/Style";
 import Toast from "../Notif/toasts/Toast";
 import { handleNext, SendNumber } from "@/Api/EnterRoot";
@@ -81,18 +82,16 @@ const showToast = (type :string, message:string, subMessage:string) => {
                   style={Style.textInputProfile}
                   value={password}
                   onChangeText={setPassword}
-                  placeholder="http//.."
+                  placeholder="https//.."
                 />
             </View>
             <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
-                <TouchableOpacity
-                    style={Style.buttonMenuPage}
-                    onPress={() => navigation.replace("Social")}
-                >
+                <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Social")} >
                     <Text style={Style.blackText} >Добавить соц.сеть</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Social")}>
-                    <Text style={Style.DefText}>←Назад</Text>
+                    <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                    <Text style={Style.DefText}>Назад</Text>
                 </TouchableOpacity>
                 </View>
       </SafeAreaView>

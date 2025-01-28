@@ -101,10 +101,11 @@ export default function AssignmentPointFirm({ navigation }) {
           />
         <View style={[styles.containerButtonsBottomFlatList, {marginTop:10}]}>
           <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("newSocial")}>
-            <Text style={styles.textInButtonsMenuPage}>Добавить соц.сеть</Text>
+            <Text style={styles.blackText}>Добавить соц.сеть</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={styles.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

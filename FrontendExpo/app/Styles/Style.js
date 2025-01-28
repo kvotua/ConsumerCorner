@@ -41,7 +41,6 @@ export default StyleSheet.create({
       containerButtonsMenuPages: {
         width: "100%",
         height: 120,
-        paddingVertical: 10,
         justifyContent: 'flex-end',
         flex: 1,
       },
@@ -278,17 +277,19 @@ export default StyleSheet.create({
       //Это кнопка сливающаяся с фоном и текс белый
       DefButton: {
         width: "100%",
-        borderWidth: 2,
-        borderColor: "#FFFFFF",
-        paddingVertical: 15,
+        height: 55,
+        flexDirection: "row",
         alignItems: "center",
-        borderTopLeftRadius: 10,
+        justifyContent: "center",
+        borderWidth: 2,
+        borderColor: '#FAFBFF',
         borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
         borderBottomRightRadius: 10,
       },
       DefText: {
         fontFamily: 'Montserrat',
-        fontSize: isTablet ? 20 : 16,
+        fontSize: isTablet ? 20 : 15,
         fontWeight: "bold",
         color: "#FFFFFF",
       },

@@ -38,7 +38,7 @@ export default function StartPage({ navigation }) {
             message={toast.message}
             subMessage={toast.subMessage}
             visible={toast.visible}
-            onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
+            onDismiss={() => setToast({ ...toast, visible: false })}
           />
         )}
 

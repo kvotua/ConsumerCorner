@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
+import Icons from "react-native-vector-icons/Feather";
 import Toast from "../Notif/toasts/Toast";
 import { apiRequest } from '../../../Api/RefreshToken';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -189,7 +190,8 @@ export default function RegPage({ navigation }) {
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Start")}>
-                <Text style={Style.DefText}>←Назад</Text>
+                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>

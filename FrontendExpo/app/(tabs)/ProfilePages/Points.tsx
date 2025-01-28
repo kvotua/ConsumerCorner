@@ -112,7 +112,7 @@ export default function Points({ navigation, route  }) {
       ? { uri: `data:image/png;base64,${item.image_data}` }
       : require("../../../assets/images/test.jpg");
       return (
-        <TouchableOpacity key={item.id} onPress={() => navigation.replace("Points", {id: item.id})}>
+        <TouchableOpacity key={item.id} activeOpacity={1} onPress={() => navigation.replace("Points", {id: item.id})}>
                 <>
           <Swipeable
             renderRightActions={renderRightActions}
@@ -195,10 +195,11 @@ export default function Points({ navigation, route  }) {
         </View>
         <View style={styles.containerButtonsBottomFlatList}>
           <TouchableOpacity style={styles.buttonMenuPage} onPress={()=>navigation.replace("EditMarketPoint", {id: id})}>
-            <Text style={styles.textInButtonsMenuPage}>Добавить точку</Text>
+            <Text style={styles.blackText}>Добавить точку</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Firms")}>
-            <Text style={styles.textInButtonsBackMenuPage}>←Назад</Text>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={styles.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

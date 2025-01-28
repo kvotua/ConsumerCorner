@@ -5,6 +5,7 @@ import Style from "../../Styles/Style";
 import { TextInputMask } from "react-native-masked-text";
 import Toast from "../Notif/toasts/Toast";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icons from "react-native-vector-icons/Feather";
 import { apiRequest } from '../../../Api/RefreshToken';
 
 export default function InnRegAuth({navigation}){
@@ -95,7 +96,8 @@ export default function InnRegAuth({navigation}){
                         <Text style={[Style.blackText, { fontSize: 18 }]}>Далее</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={localStyles.WhiteButton} onPress={() => navigation.replace("Firms")}>
-                        <Text style={[Style.blackText, { fontSize: 18 }]}>Назад</Text>
+                        <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                        <Text style={[Style.DefText, { fontSize: 18 }]}>Назад</Text>
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
