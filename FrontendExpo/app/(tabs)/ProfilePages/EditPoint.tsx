@@ -57,7 +57,22 @@ export default function EditMarketPoint({ navigation, route }) {
   useEffect(() => {
     fetchFirms();
   }, []);
-
+  
+  const DeletePoint = async () => {
+    try {
+      const jwt = await AccessGetToken();
+      const response = await fetch(`https://consumer-corner.kvotua.ru/points/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
   const handleCompleteRegistration = async () => {
     try {
       const jwt = await AccessGetToken();
@@ -229,6 +244,9 @@ export default function EditMarketPoint({ navigation, route }) {
                 </TouchableOpacity>
               </View>
             </View>
+              <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: 'red'}]} onPress={() => DeletePoint()}>
+                <Text style={Style.DefText}>Удалить</Text>
+              </TouchableOpacity>
             </ScrollView>
 
             <View style={[Style.containerButtonsMenuPages, {marginTop: 120}]}>

@@ -52,6 +52,21 @@ export default function EditFirma({ navigation, route }) {
     }
   };
 
+  const DeletePoint = async () => {
+    try {
+      const jwt = await AccessGetToken();
+      const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     fetchFirms();
   }, []);
@@ -146,6 +161,9 @@ export default function EditFirma({ navigation, route }) {
               )}
             </TouchableOpacity>
           </View>
+          <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: 'red'}]} onPress={DeletePoint}>
+            <Text style={Style.DefText}>Удалить</Text>
+          </TouchableOpacity>
         </ScrollView>
         <View style={localStyles.containerButtonsMenuPages}>
           <TouchableOpacity style={Style.buttonMenuPage} onPress={SendToServerReg}>

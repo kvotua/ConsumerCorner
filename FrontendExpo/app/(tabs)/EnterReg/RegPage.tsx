@@ -51,7 +51,6 @@ export default function RegPage({ navigation }) {
     // Извлекаем только цифры из введенного значения
     const numericValue = text.replace(/\D/g, ""); 
     setRawPhoneValue(numericValue);
-    console.log(numericValue)
   };
 
   const handleFocus = () => {
@@ -89,6 +88,7 @@ export default function RegPage({ navigation }) {
         }
       );
       const res = await data.json();
+
       await AsyncStorage.setItem("access_token", res.access_token);
       await AsyncStorage.setItem("refresh_token", res.refresh_token);
 
