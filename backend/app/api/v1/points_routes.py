@@ -11,7 +11,7 @@ from app.services.auth_bearer import dependencies
 from app.core.databases.mongodb import MongoDBClient
 import datetime
 
-router = APIRouter(prefix="/points", tags=["Points"])
+router = APIRouter(prefix="/points", tags=["points"])
 mongo = MongoDBClient("image", "doc")
 
 @router.post("/register", response_model=ResponseSchema, dependencies=dependencies)
@@ -258,7 +258,7 @@ async def delete_point(
     if point_id not in points_id:
         raise HTTPException(status_code=403, detail='The user does not own this point')
 
-    await points_crud.delete_point(session=session, point=await points_crud.get_point_by_id(session=session, point_id=point_id))
+    await points_crud.delete_point(session=session, point=await points_crud.get_point_by_id_v2(session=session, point_id=point_id))
     return ResponseSchema(status_code=200, detail={"message": "Point could be deleted", "point_id": point_id})
 
 

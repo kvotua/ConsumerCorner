@@ -9,7 +9,7 @@ from app.schemas.points_schemas import ResponseSchema
 from app.schemas.sysadmin_schemas import SysAdminLogin
 from app.config import example_jwt_token, sysadmin_login, sysadmin_password
 
-router = APIRouter(prefix="/sysadmin",tags=["Sys Admin"])
+router = APIRouter(prefix="/sysadmin",tags=["system admin"])
 
 
 @router.post('/login', response_model=ResponseSchema)

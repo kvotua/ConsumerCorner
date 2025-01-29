@@ -9,7 +9,7 @@ from app.core.cruds import users_crud
 from app.services.auth_bearer import dependencies
 
 
-router = APIRouter(prefix="/profile", tags=["Profile"], dependencies=dependencies)
+router = APIRouter(prefix="/profile", tags=["profile"], dependencies=dependencies)
 
 
 @router.get("/me", response_model=UserSchema)
@@ -24,7 +24,7 @@ async def get_users_me(
 
 
 @router.patch("/change", response_model=ResponseSchema)
-async def get_users_me(
+async def change_users_me(
     request: Request,
     user_data: ChangeUserSchema,
     session: AsyncSession = Depends(get_session),
