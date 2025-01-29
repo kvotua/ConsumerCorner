@@ -94,6 +94,7 @@ export default function MarketPointAuth({ navigation }) {
               <Text style={Style.titleSimple}>Адрес торговой точки</Text>
 
               <TextInput
+              returnKeyType="done"
                 style={Style.textInputProfile}
                 onChangeText={handleInputChangeAdress2}
                 value={Adress}
@@ -103,6 +104,7 @@ export default function MarketPointAuth({ navigation }) {
               <Text style={Style.titleSimple}>Телефон администратора точки</Text>
 
               <TextInputMask
+              returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "+7 (999) 999-99-99", // Маска
@@ -118,6 +120,7 @@ export default function MarketPointAuth({ navigation }) {
               <Text style={Style.titleSimple}>Рабочее название магазина</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
+                returnKeyType="done"
                     style={Style.textInputProfile}
                     onChangeText={handleInputName}
                     value={Name}
@@ -127,6 +130,7 @@ export default function MarketPointAuth({ navigation }) {
 
               <Text style={Style.titleSimple}>Открытие точки</Text>
               <TextInputMask
+              returnKeyType="done"
                 type={"custom"}
                  options={{
                   mask: "99:99",
@@ -137,6 +141,7 @@ export default function MarketPointAuth({ navigation }) {
 
               <Text style={Style.titleSimple}>Закрытие точки</Text>
               <TextInputMask 
+              returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "99:99",

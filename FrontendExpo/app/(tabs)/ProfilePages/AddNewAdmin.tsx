@@ -88,7 +88,7 @@ export default function AddNewAdmin({ navigation }) {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-            <View style={StyleSheet.flatten([Style.containerLine, {paddingEnd: "uset"}])}>
+            <View style={StyleSheet.flatten([Style.containerLine, {paddingEnd: "10%"}])}>
                 <View style={StyleSheet.flatten([Style.header, {alignSelf: "flex-start",}])}>
                     <Text style={([Style.titleHead, {textAlign: "unset", }])}>Добавить администратора</Text>
                 </View>
@@ -98,13 +98,15 @@ export default function AddNewAdmin({ navigation }) {
               <Text style={Style.titleSimple}>ФИО сотрудника или партнера</Text>
 
               <TextInput
-                value={phoneValue}
+                // value={phoneValue}
+                returnKeyType="done"
                 style={Style.textInputProfile}
-                placeholder="+7 (999) 999-99-99"
+                placeholder="Иван Иванов Иванович"
               />
 
               <Text style={Style.titleSimple}>Номер телефона</Text>
               <TextInputMask
+              returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "+7 (999) 999-99-99",
@@ -118,19 +120,19 @@ export default function AddNewAdmin({ navigation }) {
               />
               <Text style={Style.titleSimple}>На указанный Вами номер телефона будет отправлена авторизационная ссылка</Text>
               <Text style={Style.titleSimple}>Выберите роль</Text>
-              <TextInput style={Style.textInputProfile} placeholder="Администратор . партнер" autoCapitalize="words" onChangeText={setfio}/>
+              <TextInput returnKeyType="done" style={Style.textInputProfile} placeholder="Администратор . партнер" autoCapitalize="words" onChangeText={setfio}/>
             </View>
 
             <View style={[Style.buttons, {paddingVertical: -10,}]}>
               <TouchableOpacity
-                style={Style.WhiteButton}
+                style={Style.buttonMenuPage}
                 onPress={() => {
                   navigation.replace("AssignmentPointFirm");
                 }}
               >
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("MenuPage")}>
+              <TouchableOpacity style={[Style.DefButton, , { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
                 <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
                 <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>

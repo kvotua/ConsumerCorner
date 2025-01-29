@@ -74,11 +74,11 @@ export default function CodePage({ navigation}) {
             </View>
               <View style={StyleSheet.flatten([Style.fields, {marginTop: 20}])}>
                 <Text style={Style.titleSimple}>
-                  Введите код подтверждения из SMS - сообщнеия, отправленного на
-                  номер
+                Введите последние 4 цифры входящего номера телефона, звонок поступит на номер +7 (961) ХХХ ХХ 36
                 </Text>
                 <TextInput
                   style={[Style.textInputProfile, {marginTop: 10}]}
+                  returnKeyType="done"
                   keyboardType="phone-pad"
                   onChangeText={handleInputChange}
                   placeholder="Код подтверждения"

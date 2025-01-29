@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'react-native';
 import NavigateApp from '../navigation/NavigationApp';
 // import ScreenOrientation from 'expo-screen-orientation';
 
@@ -42,6 +43,9 @@ export default function HomeScreen() {
   }
 
   return (
-            <NavigateApp onLayout={onLayoutRootView} />
+    <>
+      <StatusBar hidden />
+      <NavigateApp onLayout={onLayoutRootView} />
+    </>
   );
 }

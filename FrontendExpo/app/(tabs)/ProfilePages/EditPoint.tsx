@@ -96,6 +96,7 @@ export default function EditMarketPoint({ navigation, route }) {
 
               <TextInput
                 style={Style.textInputProfile}
+                returnKeyType="done"
                 onChangeText={handleInputChangeAdress2}
                 value={Adress}
                 placeholder="ул. Пушкина дом Победы 32"
@@ -105,6 +106,7 @@ export default function EditMarketPoint({ navigation, route }) {
 
               <TextInputMask
                 type={"custom"}
+                returnKeyType="done"
                 options={{
                   mask: "+7 (999) 999-99-99", // Маска
                 }}
@@ -119,6 +121,7 @@ export default function EditMarketPoint({ navigation, route }) {
               <Text style={Style.titleSimple}>Рабочее название магазина</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
+                returnKeyType="done"
                     style={Style.textInputProfile}
                     onChangeText={handleInputName}
                     value={Name}
@@ -128,6 +131,7 @@ export default function EditMarketPoint({ navigation, route }) {
 
               <Text style={Style.titleSimple}>Открытие точки</Text>
               <TextInputMask
+              returnKeyType="done"
                 type={"custom"}
                  options={{
                   mask: "99:99",
@@ -138,6 +142,7 @@ export default function EditMarketPoint({ navigation, route }) {
 
               <Text style={Style.titleSimple}>Закрытие точки</Text>
               <TextInputMask 
+              returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "99:99",

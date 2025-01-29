@@ -85,7 +85,7 @@ export default function AdminPanel({ navigation }) {
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
         <View style={styles.firmsAndPointsHeader}>
-          <Text style={styles.menuTitle}>Администраторы</Text>
+          <Text style={styles.menuTitle}>Команда</Text>
         </View>
         <View style={styles.containerLine}>
           <View style={styles.menuPagesLine}/>

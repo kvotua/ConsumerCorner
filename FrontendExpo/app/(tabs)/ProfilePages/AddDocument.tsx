@@ -29,7 +29,7 @@ export default function AddDocument({ navigation }) {
         </View>
         <View style={localStyles.containerInputBox}>
             <Text style={[localStyles.textTopInput, { marginBottom: 10 }]}>Название документа</Text>
-            <TextInput style={styles.textInputProfile} placeholder="Барная лицензия" />
+            <TextInput returnKeyType="done" style={styles.textInputProfile} placeholder="Барная лицензия" />
         </View>
         <View style={[styles.switchContainer, { marginTop: 28 }]}>
             <Text style={styles.switchText}>Документ имеет срок годности</Text>
@@ -43,7 +43,7 @@ export default function AddDocument({ navigation }) {
         {isEnabled && (
           <View style={localStyles.containerInputBox}>
             <Text style={[localStyles.textTopInput, { marginBottom: 10 }]}>Укажите дату окончания действия документа</Text>
-            <TextInput style={styles.textInputProfile} placeholder="Мы напомним вам о сроках" />
+            <TextInput returnKeyType="done" style={styles.textInputProfile} placeholder="Мы напомним вам о сроках" />
         </View>
         )}
         <View style={localStyles.containerButtonAddFile}>

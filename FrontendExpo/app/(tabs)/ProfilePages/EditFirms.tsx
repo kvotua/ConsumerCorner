@@ -77,6 +77,7 @@ export default function EditFirma({ navigation }) {
           <View style={localStyles.fields}>
             <Text style={Style.titleSimple}>Название фирмы</Text>
             <TextInput
+            returnKeyType="done"
               value={NameFima}
               onChangeText={handleInputChange}
               style={Style.textInputProfile}
@@ -86,6 +87,7 @@ export default function EditFirma({ navigation }) {
             <Text style={Style.titleSimple}>ОГРН юридического лица</Text>
             <TextInputMask
               type={"custom"}
+              returnKeyType="done"
               options={{ mask: "9999999999999" }}
               value={OGRN}
               onChangeText={handleInputChange2}
@@ -96,6 +98,7 @@ export default function EditFirma({ navigation }) {
 
             <Text style={Style.titleSimple}>Фактический адрес</Text>
             <TextInput
+            returnKeyType="done"
               style={[Style.textInputProfile, isAddressFilled && { backgroundColor: '#fddb67' }]}
               placeholder="ул. Павлика Морозова 74Б"
               value={Adress}
@@ -104,6 +107,7 @@ export default function EditFirma({ navigation }) {
 
             <Text style={Style.titleSimple}>Основной вид деятельности</Text>
             <TextInput
+            returnKeyType="done"
               style={Style.textInputProfile}
               placeholder="Частное предприятие"
               value={VidDo}

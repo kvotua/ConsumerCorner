@@ -86,24 +86,26 @@ const showToast = (type :string, message:string, subMessage:string) => {
             </View>
             <View style={Style.fields}>
               <Text style={Style.titleSimple}>Номер телефона</Text>
-
               <TextInputMask
                 type={"custom"}
                 options={{
                   mask: "+7 (999) 999-99-99",
                 }}
                 value={phoneValue}
+                returnKeyType="done"
                 onChangeText={handleInputChange}
                 keyboardType="phone-pad"
                 style={Style.textInputProfile}
                 placeholder="+7 (999) 999-99-99"
                 onFocus={handleFocus}
               />
+              
                 <Text style={Style.titleSimple}>Пароль</Text>
 
                 <TextInput
                   style={Style.textInputProfile}
                   value={password}
+                  returnKeyType="done"
                   onChangeText={setPassword}
                   secureTextEntry={isSecure}
                   placeholder="Пароль"

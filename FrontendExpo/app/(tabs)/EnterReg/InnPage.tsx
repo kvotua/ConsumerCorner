@@ -83,6 +83,7 @@ export default function InnReg({navigation}){
                     options={{
                     mask: "999 999 999 999",
                     }}
+                    returnKeyType="done"
                     value={value}
                     onChangeText={handleInputChange}
                     // keyboardType="phone-pad"

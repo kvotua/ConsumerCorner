@@ -148,9 +148,11 @@ export default function RegPage({ navigation }) {
 
               <TextInputMask
                 type={"custom"}
+                returnKeyType="done"
                 options={{
                   mask: "+7 (999) 999-99-99", // Маска
                 }}
+                returnKeyType="done"
                 value={phoneValue} // Значение с маской
                 onChangeText={handleInputChange} // Обработчик изменения текста
                 keyboardType="phone-pad"
@@ -162,6 +164,7 @@ export default function RegPage({ navigation }) {
               <Text style={Style.titleSimple}>Пароль</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
+                returnKeyType="done"
                   style={Style.textInputProfile}
                   value={password}
                   onChangeText={setPassword}
@@ -177,7 +180,7 @@ export default function RegPage({ navigation }) {
               </View>
 
               <Text style={Style.titleSimple}>Ф.И.О</Text>
-              <TextInput style={Style.textInputProfile} placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio}/>
+              <TextInput style={Style.textInputProfile} returnKeyType="done" placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio}/>
             </View>
 
             <View style={[Style.buttons, {paddingVertical: -10,}]}>
