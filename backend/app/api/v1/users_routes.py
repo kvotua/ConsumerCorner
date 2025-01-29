@@ -31,7 +31,7 @@ async def get_users_me(
     )
 
 
-@router.patch("/change", response_model=ResponseSchema)
+@router.patch("/change", response_model=TokenPair)
 async def change_users_me(
     request: Request,
     user_data: ChangeUserSchema,
