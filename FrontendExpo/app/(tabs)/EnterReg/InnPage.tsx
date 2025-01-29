@@ -42,8 +42,13 @@ export default function InnReg({navigation}){
       
         try {
           // Выполняем GET-запрос через универсальную функцию
-          const data = await apiRequest(url, "GET", {});
-      
+          const data = await fetch(url, {
+            method: 'GET',
+            headers:{
+              'accept': 'application/json'
+            }
+          })
+          const res = data.json();
           // Сохраняем тип компании и переходим на следующий экран
           await AsyncStorage.setItem("TypeFirm", data.type);
           navigation.replace("RegFirma", { companyData: data });
@@ -86,7 +91,7 @@ export default function InnReg({navigation}){
                     returnKeyType="done"
                     value={value}
                     onChangeText={handleInputChange}
-                    // keyboardType="phone-pad"
+                    keyboardType="phone-pad"
                     style={Style.textInputProfile}
                     placeholder="255 055 034 235"
                     />

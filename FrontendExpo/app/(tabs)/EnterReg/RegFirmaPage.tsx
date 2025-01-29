@@ -19,7 +19,8 @@ import { SendInfFirm } from "@/Api/RegFirmaRoot";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 
-export default function RegFirma({ navigation }) {
+export default function RegFirma({ navigation, route }) {
+  const {companyData} = route.params;
   const [NameFima, setValue] = useState();
   const [OGRN, setValue2] = useState();
   const [Adress, setValue3] = useState();
@@ -27,6 +28,15 @@ export default function RegFirma({ navigation }) {
   const [isAddressFilled, setIsAddressFilled] = useState(false);
   const [isOgrnFilled, setIsOgrnFilled] = useState(false);
   const [logo, setLogo] = useState(null);
+
+  useEffect(() => {
+    if (companyData) {
+      setValue(companyData.name || ""); 
+      setValue2(companyData.ogrn || ""); 
+      setValue3(companyData.address || ""); 
+      setValue4(companyData.activity || "");
+    }
+  }, [companyData]);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -47,7 +57,6 @@ export default function RegFirma({ navigation }) {
   };
 
   const SendToServerReg = async () => {
-    console.log(NameFima, OGRN, Adress, VidDo);
     const res = await SendInfFirm(NameFima, OGRN, Adress, VidDo);
     if (!res) return;
     navigation.replace("MarketInfo");
@@ -131,7 +140,7 @@ export default function RegFirma({ navigation }) {
             </View>
         </ScrollView>
         <View style={localStyles.containerButtonsMenuPages}>
-          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => SendToServerReg}>
+          <TouchableOpacity style={[Style.buttonMenuPage]} onPress={SendToServerReg}>
             <Text style={Style.textInButtonsMenuPage}>Далее</Text>
           </TouchableOpacity>
           <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Inn")}>

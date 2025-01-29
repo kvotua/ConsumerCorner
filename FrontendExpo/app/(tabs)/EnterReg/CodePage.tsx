@@ -13,6 +13,7 @@ import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken, SesIdToken } from "@/app/AsyncStore/StoreTokens";
 import { apiRequest } from '../../../Api/RefreshToken';
 import Icons from "react-native-vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function CodePage({ navigation}) {
@@ -29,25 +30,29 @@ export default function CodePage({ navigation}) {
   };
   
   const handleNext = async () => {
-    const url = 'https://consumer-corner.kvotua.ru/verify/phone/check';
-  
     try {
-      // Получаем токены из локального хранилища
       const token = await AccessGetToken();
       const ses = await SesIdToken();
-  
-      // Выполняем запрос с помощью универсальной функции
-      const data = await apiRequest(
-        url,
-        "POST",
-        {
-          req_id: ses,
-          sms_code: code,
+      console.log(token)
+
+      const payload = {
+        req_id: ses,
+        code: code,
+      }
+
+
+      const data = await fetch('https://consumer-corner.kvotua.ru/verify/phone/check', {
+        method: "POST",
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        {
-          "access-token": token,
-        }
-      );
+        body: JSON.stringify(payload),
+      })
+
+      const res2 = await data.json();
+      await AsyncStorage.setItem('access_token', res2.access_token);
   
       // Если успешный запрос, переходим на следующий экран
       navigation.replace("Inn");
