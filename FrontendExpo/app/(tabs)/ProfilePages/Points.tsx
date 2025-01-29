@@ -8,6 +8,7 @@ import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import { Swipeable } from "react-native-gesture-handler";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import { replace } from "expo-router/build/global-state/routing";
+import MaskedView from "@react-native-community/masked-view";
 
 export default function Points({ navigation, route }) {
   const { id } = route.params;
@@ -111,9 +112,11 @@ export default function Points({ navigation, route }) {
     const imageSource = item.image_data
       ? { uri: `data:image/png;base64,${item.image_data}` }
       : require("../../../assets/images/test.jpg");
+
     return (
       <TouchableOpacity key={item.id} activeOpacity={1} onPress={() => navigation.replace("Points", { id: item.id })}>
         <>
+          {/* Карточка с информацией */}
           <View style={{ width: "100%", backgroundColor: 'transparent', position: "absolute", zIndex: 2, borderRadius: 10 }} pointerEvents="none">
             <View style={[localStyles.card, {
               zIndex: -5,
@@ -129,41 +132,32 @@ export default function Points({ navigation, route }) {
                 <Text style={localStyles.subtitle}>{item.address}</Text>
                 <Text style={localStyles.cardTitle}>{item.title}</Text>
                 <View style={localStyles.ratingContainer}>
-                  <Text style={localStyles.cardRating}>
-                    {/* {item.rating.toFixed(2)} */}
-                  </Text>
+                  <Text style={localStyles.cardRating}></Text>
                   {renderStars(item.middle_stars)}
                 </View>
               </View>
             </View>
           </View>
-          <Swipeable
-            overshootRight={false} // Disable right overshoot
-            rightThreshold={100} // Adjust this value as needed
-            renderRightActions={renderRightActions}
-            containerStyle={{ overflow: "visible" }}
-          >
-            <View>
-              {/* Карточка */}
-              <View style={localStyles.card}>
-                <View style={[localStyles.logoContainer, { backgroundColor: 'transparent'}]}>
-                </View>
-                <View style={localStyles.cardContent}>
-                  <Text style={localStyles.subtitle}></Text>
-                  <Text style={localStyles.cardTitle}></Text>
-                  <View style={localStyles.ratingContainer}>
-                    <Text style={localStyles.cardRating}>
-                      {/* {item.rating.toFixed(2)} */}
-                    </Text>
+
+          {/* Карточка для свайпа */}
+          <View style={{ borderRadius: 10, overflow: "hidden", width: '100%', height: '100%' }}>
+            <Swipeable overshootRight={false} rightThreshold={100} renderRightActions={renderRightActions} containerStyle={{ overflow: "visible" }}>
+              <View>
+                <View style={localStyles.card}>
+                  <View style={[localStyles.logoContainer, { backgroundColor: 'transparent' }]}></View>
+                  <View style={localStyles.cardContent}>
+                    <Text style={localStyles.subtitle}></Text>
+                    <Text style={localStyles.cardTitle}></Text>
+                    <View style={localStyles.ratingContainer}>
+                      <Text style={localStyles.cardRating}></Text>
+                    </View>
                   </View>
                 </View>
               </View>
+            </Swipeable>
+          </View>
 
-              {/* Серые плашки */}
-
-            </View>
-          </Swipeable>
-
+          {/* Карточка для фона */}
           <View style={{ width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10 }}>
             <View style={[localStyles.card, {
               zIndex: -5, marginVertical: 0,
@@ -176,9 +170,7 @@ export default function Points({ navigation, route }) {
                 <Text style={[localStyles.subtitle, { color: backgroungColor }]}>Пивоваренная компания</Text>
                 <Text style={[localStyles.cardTitle, { color: backgroungColor }]}>{item.title}</Text>
                 <View style={[localStyles.ratingContainer, { backgroundColor: backgroungColor }]}>
-                  <Text style={[localStyles.cardRating, { color: backgroungColor }]}>
-                    {/* {item.rating.toFixed(2)} */}
-                  </Text>
+                  <Text style={[localStyles.cardRating, { color: backgroungColor }]}></Text>
                 </View>
               </View>
             </View>
@@ -187,6 +179,7 @@ export default function Points({ navigation, route }) {
       </TouchableOpacity>
     );
   };
+
 
 
 

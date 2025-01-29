@@ -82,7 +82,6 @@ class Comments(Base):
     name: Mapped[str] = mapped_column(Text, nullable=True)
     number: Mapped[str] = mapped_column(Text, nullable=True)
     isAnonimus: Mapped[bool] = mapped_column(Boolean)
-    # isReport: Mapped[bool] = mapped_column(Boolean)
     category: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 

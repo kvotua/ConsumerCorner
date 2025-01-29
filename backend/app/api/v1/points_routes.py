@@ -186,7 +186,7 @@ async def get_points_info(
         point_id: Annotated[int, Path(title="Point ID")],
         session: AsyncSession = Depends(get_session),
 ):
-    point_exists = points_crud.point_exists(session=session, point_id=point_id)
+    point_exists = await points_crud.point_exists(session=session, point_id=point_id)
     if point_exists:
         return await points_crud.get_point_by_id(session=session, point_id=point_id)
     else:
