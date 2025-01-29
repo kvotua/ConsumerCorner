@@ -90,9 +90,9 @@ class SendEmail:
         except Exception as e:
             raise Exception(f"Failed to connect to the SMTP server: {e}")
 
-    def send_message(self, to_send: str, token: str):
+    def send_message(self, to_send: str, code: str):
         """Send a verification email."""
-        msg = MIMEText(f"Your verification link: {token}", 'plain', 'utf-8')
+        msg = MIMEText(f"Your verification code: {code}", 'plain', 'utf-8')
         msg['Message-ID'] = make_msgid()
         msg['Subject'] = "Mail verification"
         msg['From'] = self.email
@@ -102,7 +102,7 @@ class SendEmail:
             self.server.sendmail(from_addr=self.email, to_addrs=[to_send], msg=msg.as_string())
         except smtplib.SMTPServerDisconnected:
             self.connect()  # Attempt to reconnect
-            self.send_message(to_send, token)  # Retry sending the message
+            self.send_message(to_send, code)  # Retry sending the message
         except Exception as e:
             raise Exception(f"Error sending the message: {e}")
 

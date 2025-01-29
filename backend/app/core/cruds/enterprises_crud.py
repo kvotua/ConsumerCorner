@@ -14,7 +14,7 @@ async def add_enterprise(session: AsyncSession, data: RegisterCompany, user_id: 
     )
     session.add(company)
     await session.commit()
-    return True
+    return company.id
 
 async def add_image(session: AsyncSession, image_data: ImageData):
     stmt = select(Enterprises).where(Enterprises.id == image_data.enterprise_id)

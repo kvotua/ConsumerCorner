@@ -82,11 +82,16 @@ class Login(BaseModel):
                 return ValueError("Invalid phone number")
         return values
 
-
 class ReqID(BaseModel):
     req_id: Annotated[int, Field(
-        title='The ID received after sending the number',
+        title='The ID received after getting the call',
         examples=['1191273219673078']
+    )]
+
+class EmailReqID(BaseModel):
+    req_id: Annotated[str, Field(
+        title='The ID received after sending the email',
+        examples=['643340e3-96a1-4d04-aa24-9043d73bb695']
     )]
 
 class EmailSchema(BaseModel):
