@@ -29,7 +29,9 @@ async def registration(
             'id': user_data.id,
             'phone': data.phone,
             'fio': data.fio,
+            'email': user_data.email,
             'verify_phone': user_data.verify_phone,
+            'verify_email': user_data.verify_email
         }
 
         jwt_tokens = set_token_pair(payload)
@@ -54,7 +56,9 @@ async def login(
         'id': data_by_db.id,
         'phone': data_by_db.phone,
         'fio': data_by_db.fio,
+        'email': data_by_db.email,
         'verify_phone': data_by_db.verify_phone,
+        'verify_email': data_by_db.verify_email
     }
     jwt_tokens = set_token_pair(payload)
     return TokenPair(

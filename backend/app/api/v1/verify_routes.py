@@ -59,10 +59,10 @@ async def send_code(
 @router.post('/phone/check', response_model=VerifePhone, dependencies=dependencies)
 async def check_code(
         request: Request,
-        req_id: Annotated[int, Body(..., title='ID, полученный после отправки номера',
+        req_id: Annotated[int, Body(..., title='The ID received after sending the number',
                                     examples=['1191273219673078'])],
         code: Annotated[
-            str, Body(..., title='Код, отправленный на номер', examples=['1234'], min_length=4, max_length=4)],
+            str, Body(..., title='The code sent by the call to the number', examples=['1234'], min_length=4, max_length=4)],
         session: AsyncSession = Depends(get_session),
 ):
     dict_by_token = get_token_data(request)
@@ -114,10 +114,10 @@ async def send_email(
 @router.post('/email/check', response_model=ResponseSchema, dependencies=dependencies)
 async def check_email(
         request: Request,
-        req_id: Annotated[str, Body(..., title='ID, полученный после отправки номера',
+        req_id: Annotated[str, Body(..., title='The ID received after sending it to the mail',
                                     examples=['643340e3-96a1-4d04-aa24-9043d73bb695'])],
-        email_code: Annotated[str, Body(..., title='Код, полученный на почту',
-                                    examples=['102450'])],
+        email_code: Annotated[str, Body(..., title='The code received by mail',
+                                    examples=['10240'])],
         session: AsyncSession = Depends(get_session),
 ):
     dict_by_token = get_token_data(request)

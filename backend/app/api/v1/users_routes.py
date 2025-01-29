@@ -20,6 +20,14 @@ async def get_users_me(
     dict_by_token = get_token_data(request)
     if dict_by_token is None:
         raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    return UserSchema(
+        id=dict_by_token.get("id"),
+        phone=dict_by_token.get("phone"),
+        fio=dict_by_token.get("fio"),
+        email=dict_by_token.get("email"),
+        verify_phone=dict_by_token.get("verify_phone"),
+        verify_email=dict_by_token.get("verify_email"),
+    )
     return await users_crud.get_user_by_id(session=session, user_id=dict_by_token.get("id"))
 
 
