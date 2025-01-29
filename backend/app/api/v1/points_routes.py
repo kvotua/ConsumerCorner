@@ -186,7 +186,11 @@ async def get_points_info(
         point_id: Annotated[int, Path(title="Point ID")],
         session: AsyncSession = Depends(get_session),
 ):
-    return await points_crud.get_point_by_id(session=session, point_id=point_id)
+    point_exists = points_crud.point_exists(session=session, point_id=point_id)
+    if point_exists:
+        return await points_crud.get_point_by_id(session=session, point_id=point_id)
+    else:
+        raise HTTPException(status_code=404, detail='Point not found')
 
 
 @router.get("/points-by-enterprise/{enterprise_id}", response_model=List[PointInfo], dependencies=dependencies)
@@ -232,7 +236,7 @@ async def change_point(
     points_id = await points_crud.get_point_by_user_id(session=session, user_id=user_id)
 
     if point_id not in points_id:
-        raise HTTPException(status_code=403, detail='The user does not own this company')
+        raise HTTPException(status_code=403, detail='The user does not own this point')
 
     point = await points_crud.get_point_by_id_v2(session=session, point_id=point_id)
     if point is None:
