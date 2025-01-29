@@ -12,6 +12,8 @@ import Style from "../../Styles/Style"
 import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken, SesIdToken } from "@/app/AsyncStore/StoreTokens";
 import { apiRequest } from '../../../Api/RefreshToken';
+import Icons from "react-native-vector-icons/Feather";
+
 
 export default function CodePage({ navigation}) {
   const [code, setcode] = useState("");
@@ -27,7 +29,7 @@ export default function CodePage({ navigation}) {
   };
   
   const handleNext = async () => {
-    const url = 'http://127.0.0.1:8080/auth/check';
+    const url = 'https://consumer-corner.kvotua.ru/verify/phone/check';
   
     try {
       // Получаем токены из локального хранилища
@@ -72,10 +74,10 @@ export default function CodePage({ navigation}) {
             </View>
               <View style={StyleSheet.flatten([Style.fields, {marginTop: 20}])}>
                 <Text style={Style.titleSimple}>
-                  Введите код подтверждения из SMS - сообщнеия, отправленного на
-                  номер
+                  Введите последние 4 цифры входящего номера телефона, звонок поступит на номер +7 (961) ХХХ ХХ 36
                 </Text>
                 <TextInput
+                  returnKeyType="done"
                   style={[Style.textInputProfile, {marginTop: 10}]}
                   keyboardType="phone-pad"
                   onChangeText={handleInputChange}
@@ -89,11 +91,8 @@ export default function CodePage({ navigation}) {
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Register")}>
-                <Text
-                  style={Style.DefText}
-                >
-                  Назад
-                </Text>
+                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                <Text style={Style.DefText} >Назад</Text>
               </TouchableOpacity>
             </View>
       </SafeAreaView>

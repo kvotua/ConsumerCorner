@@ -5,28 +5,72 @@ import {
   StyleSheet,
   Dimensions,
   ImageBackground,
-  SafeAreaView,
   FlatList,
   TouchableOpacity,
+  Image
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "../../Styles/Style";
 import { apiRequest } from "@/Api/RefreshToken";
 import Toast from "../Notif/toasts/Toast";
 import { getEnterprisesInfo, registerEnterprise } from '../../../Api/registerEnterprise';
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function Firms({ navigation }) {
   const [firms, setfirms] = useState();
-  const data = [
-    { id: "1", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
-    { id: "2", name: "Пивоваренная компания\nПК ПОНАРТ", middle_stars: 3.87 },
-  ];
 
-
+    useEffect(() => {
+      fetchfirms();
+    }, []);
+  
+    const fetchfirms = async () => {
+      try {
+        const jwt = await AccessGetToken();
+        const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/enterprises-info`, {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+    
+        const data = await response.json();
+    
+        const filteredData = await Promise.all(
+          data.map(async (item) => {
+            let imageData = null;
+            if (item.image_id) {
+              const imageResponse = await fetch(`https://consumer-corner.kvotua.ru/mongo/image/${item.image_id}`, {
+                method: "GET",
+                headers: {
+                  accept: "application/json",
+                  Authorization: `Bearer ${jwt}`,
+                },
+              });
+              const imageJson = await imageResponse.json();
+              imageData = imageJson.image_data; 
+            }
+            return {
+              id: item.id,
+              name: item.name,
+              middle_stars: item.middle_stars,
+              general_type_activity: item.general_type_activity,
+              image_data: imageData, 
+            };
+          })
+        );
+    
+        setfirms(filteredData);
+      } catch (error) {
+        console.error("Error fetching firms:", error);
+      }
+    };
+    
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -62,90 +106,91 @@ export default function Firms({ navigation }) {
 
 const backgroungColor = "#d3d3d3";
   const renderItem = ({ item }) => {
+    const imageSource = item.image_data
+    ? { uri: `data:image/png;base64,${item.image_data}` }
+    : require("../../../assets/images/test.jpg");
     return (
-      <>
-      <Swipeable
-        renderRightActions={renderRightActions}
-        containerStyle={{overflow: "visible"}}
-      >
-        <View>
-          {/* Карточка */}
-          <View style={localStyles.card}>
-            <View style={localStyles.logoContainer}>
-              <Text style={localStyles.logoText}>A</Text>
-            </View>
-            <View style={localStyles.cardContent}>
-              <Text style={localStyles.subtitle}>Пивоваренная компания</Text>
-              <Text style={localStyles.cardTitle}>{item.name}</Text>
-              <View style={localStyles.ratingContainer}>
-                <Text style={localStyles.cardRating}>
-                  {/* {item.rating.toFixed(2)} */}
-                </Text>
-                {renderStars(item.middle_stars)}
+      <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => navigation.replace("Points", {id: item.id})}>
+              <>
+        <Swipeable
+          renderRightActions={renderRightActions}
+          containerStyle={{overflow: "visible"}}
+        >
+          <View>
+            {/* Карточка */}
+            <View style={localStyles.card}>
+              <View style={[localStyles.logoContainer]}>
+                <Image source={imageSource} style={{ height: 50, width: 50 }} />
+              </View>
+              <View style={localStyles.cardContent}>
+                <Text style={localStyles.subtitle}>{item.general_type_activity}</Text>
+                <Text style={localStyles.cardTitle}>{item.name}</Text>
+                <View style={localStyles.ratingContainer}>
+                  <Text style={localStyles.cardRating}>
+                    {/* {item.rating.toFixed(2)} */}
+                  </Text>
+                  {renderStars(item.middle_stars)}
+                </View>
               </View>
             </View>
-          </View>
 
-          {/* Серые плашки */}
-          
-          </View>
-      </Swipeable>
+            {/* Серые плашки */}
+            
+            </View>
+        </Swipeable>
 
-<View style={{width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10}}>
-<View style={[localStyles.card, { zIndex: -5, marginVertical: 0,
-padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
-  <View style={[localStyles.logoContainer, {backgroundColor: backgroungColor}]}>
-    <Text style={[localStyles.logoText, {color: backgroungColor}]}>A</Text>
-  </View>
-  <View style={localStyles.cardContent}>
-    <Text style={[localStyles.subtitle, {color: backgroungColor}]}>Пивоваренная компания</Text>
-    <Text style={[localStyles.cardTitle, {color: backgroungColor}]}>{item.name}</Text>
-    <View style={[localStyles.ratingContainer, {backgroundColor: backgroungColor}]}>
-      <Text style={[localStyles.cardRating, {color: backgroungColor}]}>
-        {/* {item.rating.toFixed(2)} */}
-      </Text>
+  <View style={{width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10}}>
+  <View style={[localStyles.card, { zIndex: -5, marginVertical: 0,
+  padding: 10,  backgroundColor: backgroungColor, borderRadius: 10}]}>
+    <View style={[localStyles.logoContainer, {backgroundColor: backgroungColor}]}>
+      <Text style={[localStyles.logoText, {color: backgroungColor}]}>A</Text>
+    </View>
+    <View style={localStyles.cardContent}>
+      <Text style={[localStyles.subtitle, {color: backgroungColor}]}>Пивоваренная компания</Text>
+      <Text style={[localStyles.cardTitle, {color: backgroungColor}]}>{item.name}</Text>
+      <View style={[localStyles.ratingContainer, {backgroundColor: backgroungColor}]}>
+        <Text style={[localStyles.cardRating, {color: backgroungColor}]}>
+          {/* {item.rating.toFixed(2)} */}
+        </Text>
+      </View>
     </View>
   </View>
-</View>
-</View>
-</>
+  </View>
+  </>
+      </TouchableOpacity>
     );
   };
 
 
   return (
-    <ImageBackground
-      source={require("../../../assets/images/background.png")}
-      style={styles.background}
-    >
-      <SafeAreaView style={styles.containerMainPage}>
-        <View style={styles.firmsAndPointsHeader}>
-          <Text style={styles.menuTitle}>Мои фирмы</Text>
-        </View>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={localStyles.listContainer}
-          style={{ overflow: "visible"}}
-        />
-        <View style={styles.containerButtonsBottomFlatList}>
-
-          <TouchableOpacity
-            style={styles.buttonMenuPage}
-            onPress={() => navigation.replace("Social")}
-          >
-            <Text style={styles.textInButtonsMenuPage}>Добавить фирму</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.buttonBackMenuPage, { marginTop: 10 }]}
-            onPress={() => navigation.replace("MenuPage")}
-          >
-            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+        <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
+          <SafeAreaView style={[styles.containerMainPage, {marginRight: 5}]}>
+            <View style={styles.firmsAndPointsHeader}>
+              <Text style={styles.menuTitle}>Мои фирмы</Text>
+            </View>
+            <View style={styles.containerLine}>
+              <View style={styles.menuPagesLine} />
+            </View>
+            <View style={styles.firmsAndPointsFlatListContainer}>
+            <FlatList
+              style={[{ paddingRight: 10 }]}
+              data={firms}
+              keyExtractor={(item) => item.name.toString()}
+              renderItem={renderItem}
+              indicatorStyle="white"
+            />
+            </View>
+            <View style={styles.containerButtonsBottomFlatList}>
+              <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace('EditFirma')}>
+                <Text style={styles.blackText}>Добавить фирму</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
+                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                <Text style={styles.DefText}>Назад</Text>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        </ImageBackground>
   );
 }
 
@@ -173,6 +218,7 @@ const localStyles = StyleSheet.create({
     backgroundColor: "#f4f4f4",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
     marginRight: 10,
   },
   logoText: {

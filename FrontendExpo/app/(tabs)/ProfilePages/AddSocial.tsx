@@ -9,19 +9,17 @@ import {
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
+import Icons from "react-native-vector-icons/Feather";
 import Style from "@/app/Styles/Style";
 import Toast from "../Notif/toasts/Toast";
 import { handleNext, SendNumber } from "@/Api/EnterRoot";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import { decodeJwt } from "@/app/AsyncStore/Decode";
-import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function Enter({ navigation }) {
+export default function newSocial({ navigation }) {
   const [password, setPassword] = useState("");
-  const [isSecure, setIsSecure] = useState(true);
-  const [phoneValue, setPhoneValue] = useState(""); 
-  const [rawPhoneValue, setRawPhoneValue] = useState(""); 
+  const [SocValue, setSocValue] = useState(""); 
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
 const showToast = (type :string, message:string, subMessage:string) => {
@@ -30,10 +28,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
   };
   
   const handleInputChange = (text) => {
-    setPhoneValue(text);
-
-    const numericValue = text.replace(/\D/g, ""); 
-    setRawPhoneValue(numericValue);
+    setSocValue(text);
   };
 
   const SendtoServer = async () =>{
@@ -63,65 +58,40 @@ const showToast = (type :string, message:string, subMessage:string) => {
     }
     
   }
-
-  const handleFocus = () => {
-    if (!phoneValue) {
-      setPhoneValue("+7 () - - -");
-    }
-  };
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
-                  {toast.visible && (
-                <Toast
-                    type={toast.type}
-                    message={toast.message}
-                    subMessage={toast.subMessage}
-                    visible={toast.visible}
-                    onDismiss={() => setToast({ ...toast, visible: false })}
-                />
-                )}
-            <View style={[Style.menuHeader, {alignItems: "center",}]}>
-              <Text style={StyleSheet.flatten([Style.titleHead])}>Вход</Text>
-            </View>
+          <View style={Style.firmsAndPointsHeader}>
+            <Text style={Style.menuTitle}>Мои точки</Text>
+          </View>
+          <View style={Style.containerLine}>
+            <View style={Style.menuPagesLine} />
+          </View>
             <View style={Style.fields}>
-              <Text style={Style.titleSimple}>Номер телефона</Text>
+              <Text style={Style.titleSimple}>Название соц.сети</Text>
 
-              <TextInputMask
+              <TextInput
                 returnKeyType="done"
-                type={"custom"}
-                options={{
-                  mask: "+7 (999) 999-99-99",
-                }}
-                value={phoneValue}
+                value={SocValue}
                 onChangeText={handleInputChange}
-                keyboardType="phone-pad"
                 style={Style.textInputProfile}
-                placeholder="+7 (999) 999-99-99"
-                onFocus={handleFocus}
+                placeholder="vk - Алябьева 39"
               />
-                <Text style={Style.titleSimple}>Пароль</Text>
+                <Text style={Style.titleSimple}>Вставьте ссылку на соц.сеть</Text>
 
                 <TextInput
                   returnKeyType="done"
                   style={Style.textInputProfile}
                   value={password}
                   onChangeText={setPassword}
-                  secureTextEntry={isSecure}
-                  placeholder="Пароль"
+                  placeholder="https//.."
                 />
-                <TouchableOpacity>
-                  <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver", marginTop: 4}])}>Восстановить пароль</Text>
-                </TouchableOpacity>
             </View>
             <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
-                <TouchableOpacity
-                    style={Style.buttonMenuPage}
-                    onPress={SendtoServer}
-                >
-                    <Text style={Style.blackText} >Далее</Text>
+                <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Social")} >
+                    <Text style={Style.blackText} >Добавить соц.сеть</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Start")}>
+                <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Social")}>
                     <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
                     <Text style={Style.DefText}>Назад</Text>
                 </TouchableOpacity>

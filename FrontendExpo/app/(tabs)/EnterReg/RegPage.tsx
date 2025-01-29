@@ -13,8 +13,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
+import Icons from "react-native-vector-icons/Feather";
 import Toast from "../Notif/toasts/Toast";
 import { apiRequest } from '../../../Api/RefreshToken';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function RegPage({ navigation }) {
   const [fio, setfio] = useState("");
@@ -69,7 +72,7 @@ export default function RegPage({ navigation }) {
       return;
     }
   
-    const url = 'http://localhost:8765/registration';
+    const url = 'https://consumer-corner.kvotua.ru/registration';
   
     try {
       // Выполняем POST-запрос через универсальную функцию
@@ -85,7 +88,28 @@ export default function RegPage({ navigation }) {
           "Content-Type": "application/json",
         }
       );
-  
+      const res = await data.json();
+      await AsyncStorage.setItem("access_token", res.access_token);
+      await AsyncStorage.setItem("refresh_token", res.refresh_token);
+
+      try {
+        const url2 = 'https://consumer-corner.kvotua.ru/verify/phone/send';
+        const jwt = await AccessGetToken();
+        const data2 = await apiRequest(
+          url2,
+          "POST",
+          {
+            Authorization: `Bearer ${jwt}`,
+          },
+          {
+            "Content-Type": "application/json",
+          }
+        )
+        const res2 = await data2.json();
+        await AsyncStorage.setItem('Ses_id', res2.req_id);
+      } catch (error) {
+        console.log(error.message);
+      }
       // Навигация на следующий экран
       navigation.replace("CodeConfirm");
     } catch (error) {
@@ -123,6 +147,7 @@ export default function RegPage({ navigation }) {
               <Text style={Style.titleSimple}>Телефон</Text>
 
               <TextInputMask
+                returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "+7 (999) 999-99-99", // Маска
@@ -138,6 +163,7 @@ export default function RegPage({ navigation }) {
               <Text style={Style.titleSimple}>Пароль</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
+                  returnKeyType="done"
                   style={Style.textInputProfile}
                   value={password}
                   onChangeText={setPassword}
@@ -151,21 +177,21 @@ export default function RegPage({ navigation }) {
                   <Icon name={isSecure ? 'eye-off' : 'eye'} size={24} color="#00000" />
                 </TouchableOpacity>
               </View>
-
               <Text style={Style.titleSimple}>Ф.И.О</Text>
-              <TextInput style={Style.textInputProfile} placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio}/>
+              <TextInput style={Style.textInputProfile} returnKeyType="done" placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio}/>
             </View>
 
             <View style={[Style.buttons, {paddingVertical: -10,}]}>
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() => {
-                  navigation.replace("RegFirma");
+                  handleNext();
                 }}
               >
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Start")}>
+                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
                 <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>

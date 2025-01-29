@@ -5,9 +5,10 @@ import Style from "../../Styles/Style";
 import { TextInputMask } from "react-native-masked-text";
 import Toast from "../Notif/toasts/Toast";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icons from "react-native-vector-icons/Feather";
 import { apiRequest } from '../../../Api/RefreshToken';
 
-export default function InnReg({navigation}){
+export default function InnRegAuth({navigation}){
     const [value, setValue] = useState("");
     const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
@@ -38,15 +39,15 @@ export default function InnReg({navigation}){
         // Сохраняем ИНН в локальное хранилище
         await AsyncStorage.setItem("Inn", inn);
         
-        const url = `https://consumer-corner.kvotua.ru/inn/inn_info?inn=${inn}`;
+        const url = `http://localhost:8765/inn/inn_info?inn=${inn}`;
       
         try {
           // Выполняем GET-запрос через универсальную функцию
-          const data = await apiRequest(url, "GET", {});
+          const data = await apiRequest(url, "GET");
       
           // Сохраняем тип компании и переходим на следующий экран
           await AsyncStorage.setItem("TypeFirm", data.type);
-          navigation.replace("RegFirma", { companyData: data });
+          navigation.replace("RegFirmaAuth", { companyData: data });
         } catch (error) {
           // Обработка ошибки
           showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
@@ -79,7 +80,6 @@ export default function InnReg({navigation}){
                 <View style={StyleSheet.flatten([Style.fields, {justifyContent: 'flex-start'}])}>
                     <Text style={StyleSheet.flatten([Style.subtitle, {fontSize: 16, color: "#FFFFFF", marginTop: 10}])}>ИНН юридического лица</Text>
                     <TextInputMask
-                    returnKeyType="done"
                     type={"custom"}
                     options={{
                     mask: "999 999 999 999",
@@ -92,8 +92,12 @@ export default function InnReg({navigation}){
                     />
                 </View>
                 <View style={localStyles.buttons}>
-                        <TouchableOpacity style={localStyles.WhiteButton} onPress={() => handleNext()}>
+                        <TouchableOpacity style={localStyles.WhiteButton} onPress={() => navigation.replace("RegFirmaAuth")}>
                         <Text style={[Style.blackText, { fontSize: 18 }]}>Далее</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={localStyles.WhiteButton} onPress={() => navigation.replace("Firms")}>
+                        <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                        <Text style={[Style.DefText, { fontSize: 18 }]}>Назад</Text>
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>

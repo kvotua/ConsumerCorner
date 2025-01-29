@@ -38,7 +38,7 @@ export default function StartPage({ navigation }) {
             message={toast.message}
             subMessage={toast.subMessage}
             visible={toast.visible}
-            onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
+            onDismiss={() => setToast({ ...toast, visible: false })}
           />
         )}
 
@@ -57,7 +57,7 @@ export default function StartPage({ navigation }) {
         <View style={StyleSheet.flatten([styles.containerButtonsMenuPages, {justifyContent: 'center', alignItems: "center",}])}>
           <TouchableOpacity
             style={styles.WhiteButton}
-            // onPress={() => navigation.replace("Register")}
+            onPress={() => navigation.replace("Register")}
           >
             <Text style={styles.blackText}>Регистрация</Text>
           </TouchableOpacity>

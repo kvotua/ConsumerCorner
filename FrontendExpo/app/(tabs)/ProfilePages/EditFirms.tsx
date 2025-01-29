@@ -16,10 +16,11 @@ import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
 import Share from "../../../assets/images/svg/share.svg";
 import { SendInfFirm } from "@/Api/RegFirmaRoot";
+import Icons from "react-native-vector-icons/Feather";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 
-export default function RegFirma({ navigation }) {
+export default function EditFirma({ navigation }) {
   const [NameFima, setValue] = useState();
   const [OGRN, setValue2] = useState();
   const [Adress, setValue3] = useState();
@@ -65,8 +66,8 @@ export default function RegFirma({ navigation }) {
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
         <View style={Style.headerLeft}>
-          <Text style={Style.titleHead}>Зарегистрируйте </Text>
-          <Text style={Style.titleHead}>фирму</Text>
+          <Text style={Style.titleHead}>Редактор фирм </Text>
+          <Text style={[Style.titleHead, {color:"#FFFFFF", opacity: 50, fontSize: 14}]}>название фирмы</Text>
           <View style={Style.containerLine}>
             <View style={Style.menuPagesLine} />
           </View>
@@ -131,11 +132,12 @@ export default function RegFirma({ navigation }) {
             </View>
         </ScrollView>
         <View style={localStyles.containerButtonsMenuPages}>
-          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => SendToServerReg}>
-            <Text style={Style.textInButtonsMenuPage}>Далее</Text>
+          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Firms")}>
+            <Text style={Style.blackText}>Далее</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Inn")}>
-            <Text style={Style.textInButtonsBackMenuPage}>←Назад</Text>
+          <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Firms")}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={Style.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

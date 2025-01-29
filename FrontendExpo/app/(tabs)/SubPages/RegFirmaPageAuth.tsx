@@ -13,13 +13,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
-import Icon from 'react-native-vector-icons/Feather';
-import Share from "../../../assets/images/svg/share.svg";
 import { SendInfFirm } from "@/Api/RegFirmaRoot";
+import Icons from "react-native-vector-icons/Feather";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 
-export default function RegFirma({ navigation }) {
+export default function RegFirmaAuth({ navigation }) {
   const [NameFima, setValue] = useState();
   const [OGRN, setValue2] = useState();
   const [Adress, setValue3] = useState();
@@ -72,11 +71,10 @@ export default function RegFirma({ navigation }) {
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={localStyles.scrollViewContent} indicatorStyle="white">
+        <ScrollView contentContainerStyle={[localStyles.scrollViewContent, {marginRight: 5}]} indicatorStyle="white">
           <View style={localStyles.fields}>
             <Text style={Style.titleSimple}>Название фирмы</Text>
             <TextInput
-              returnKeyType="done"
               value={NameFima}
               onChangeText={handleInputChange}
               style={Style.textInputProfile}
@@ -85,7 +83,6 @@ export default function RegFirma({ navigation }) {
 
             <Text style={Style.titleSimple}>ОГРН юридического лица</Text>
             <TextInputMask
-              returnKeyType="done"
               type={"custom"}
               options={{ mask: "9999999999999" }}
               value={OGRN}
@@ -97,7 +94,6 @@ export default function RegFirma({ navigation }) {
 
             <Text style={Style.titleSimple}>Фактический адрес</Text>
             <TextInput
-              returnKeyType="done"
               style={[Style.textInputProfile, isAddressFilled && { backgroundColor: '#fddb67' }]}
               placeholder="ул. Павлика Морозова 74Б"
               value={Adress}
@@ -106,7 +102,6 @@ export default function RegFirma({ navigation }) {
 
             <Text style={Style.titleSimple}>Основной вид деятельности</Text>
             <TextInput
-              returnKeyType="done"
               style={Style.textInputProfile}
               placeholder="Частное предприятие"
               value={VidDo}
@@ -131,11 +126,12 @@ export default function RegFirma({ navigation }) {
             </View>
         </ScrollView>
         <View style={localStyles.containerButtonsMenuPages}>
-          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => SendToServerReg}>
-            <Text style={Style.textInButtonsMenuPage}>Далее</Text>
+          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Firms")}>
+            <Text style={Style.blackText}>Закончить регистрацию</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Inn")}>
-            <Text style={Style.textInButtonsBackMenuPage}>←Назад</Text>
+          <TouchableOpacity style={[Style.buttonBackMenuPage, {marginTop:10}]} onPress={() => navigation.replace("Firms")}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={Style.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -182,6 +178,7 @@ const localStyles = StyleSheet.create({
   image: { width: "100%", height: "100%", borderRadius: 10 },
   containerButtonsMenuPages: {
     marginTop: 10,
+    marginBottom: -10,
     alignItems: "center",
     justifyContent: "center",
   },

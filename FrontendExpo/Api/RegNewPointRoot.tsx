@@ -3,7 +3,7 @@ import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 // Получение ID предприятия
 export const GetIdEnterprise = async () => {
-  const url = 'http://localhost:8765/enterprises/enterprises-info';
+  const url = 'https://consumer-corner.kvotua.ru/enterprises/enterprises-info';
   try {
     const data = await apiRequest(url, "POST", {});
     return data.id;
@@ -15,7 +15,7 @@ export const GetIdEnterprise = async () => {
 
 // Регистрация новой точки
 export const RegNewPointServer = async (NamePoint, adress, StartTime, EndTime, Phone) => {
-  const url = "http://localhost:8765/enterprises/register-point"; // Укажите корректный URL
+  const url = "https://consumer-corner.kvotua.ru/points/register"; // Укажите корректный URL
   try {
     const token = await AccessGetToken();
     const id = await GetIdEnterprise(); // ID предприятия автоматически запрашивается с обновлением токена, если нужно

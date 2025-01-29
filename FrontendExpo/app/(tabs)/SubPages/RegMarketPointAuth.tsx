@@ -7,8 +7,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform, 
-  ScrollView, 
-  Image
+  ScrollView
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "@/app/Styles/Style";
@@ -17,8 +16,9 @@ import { TextInput } from "react-native-gesture-handler";
 import { RegNewPointServer } from "@/Api/RegNewPointRoot";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
+import Icons from "react-native-vector-icons/Feather";
 
-export default function MarketPoint({ navigation }) {
+export default function MarketPointAuth({ navigation }) {
   const [Start, setValue] = useState();
   const [End, setValue2] = useState();
   const [Name, setName] = useState();
@@ -94,7 +94,6 @@ export default function MarketPoint({ navigation }) {
               <Text style={Style.titleSimple}>Адрес торговой точки</Text>
 
               <TextInput
-                returnKeyType="done"
                 style={Style.textInputProfile}
                 onChangeText={handleInputChangeAdress2}
                 value={Adress}
@@ -104,7 +103,6 @@ export default function MarketPoint({ navigation }) {
               <Text style={Style.titleSimple}>Телефон администратора точки</Text>
 
               <TextInputMask
-                returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "+7 (999) 999-99-99", // Маска
@@ -120,7 +118,6 @@ export default function MarketPoint({ navigation }) {
               <Text style={Style.titleSimple}>Рабочее название магазина</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
-                  returnKeyType="done"
                     style={Style.textInputProfile}
                     onChangeText={handleInputName}
                     value={Name}
@@ -130,7 +127,6 @@ export default function MarketPoint({ navigation }) {
 
               <Text style={Style.titleSimple}>Открытие точки</Text>
               <TextInputMask
-                returnKeyType="done"
                 type={"custom"}
                  options={{
                   mask: "99:99",
@@ -141,7 +137,6 @@ export default function MarketPoint({ navigation }) {
 
               <Text style={Style.titleSimple}>Закрытие точки</Text>
               <TextInputMask 
-                returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "99:99",
@@ -170,10 +165,11 @@ export default function MarketPoint({ navigation }) {
 
             <View style={[Style.containerButtonsMenuPages, {marginTop: 120}]}>
               <TouchableOpacity style={Style.buttonMenuPage} onPress={() => RegNewPointServer(Name, Adress, Start, End, rawPhoneValue)}>
-                  <Text style={Style.textInButtonsMenuPage}>Завершение регистрации</Text>
+                  <Text style={Style.blackText}>Завершение регистрации</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("RegFirma")}>
-                  <Text style={Style.textInButtonsBackMenuPage}>←Назад</Text>
+                  <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                  <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>

@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiRequest } from '../Api/RefreshToken';
 
 export const SendInfFirm = async (NameFima, OGRN, Adress, VidDo) => {
-  const url = 'http://localhost:8765/enterprises/register-enterprise';
+  const url = 'https://consumer-corner.kvotua.ru/enterprises/register';
   try {
     const data = await apiRequest(url, "POST", {
       name: NameFima,
