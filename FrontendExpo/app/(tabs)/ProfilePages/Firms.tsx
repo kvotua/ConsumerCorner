@@ -17,6 +17,8 @@ import { apiRequest } from "@/Api/RefreshToken";
 import Toast from "../Notif/toasts/Toast";
 import { getEnterprisesInfo, registerEnterprise } from '../../../Api/registerEnterprise';
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
+import { replace } from 'expo-router/build/global-state/routing';
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const screenWidth = Dimensions.get("window").width;
@@ -70,6 +72,12 @@ export default function Firms({ navigation }) {
         console.error("Error fetching firms:", error);
       }
     };
+
+      useFocusEffect(
+        React.useCallback(() => {
+          fetchfirms();
+        }, [])
+      );
     
 
   const renderStars = (rating) => {
@@ -93,14 +101,16 @@ export default function Firms({ navigation }) {
     );
   };
 
-  const renderRightActions = () => (
+  const renderRightActions = (id) => (
     <View style={[localStyles.rightAction]}>
-      <Icons
-        name="pencil"
-        size={24}
-        color="#FFFFFF"
-        style={[{ marginEnd: "5%" }]}
-      />
+      <TouchableOpacity onPress={() => navigation.replace("EditFirma", { id })}>
+        <Icons
+          name="pencil"
+          size={24}
+          color="#FFFFFF"
+          style={[{ marginEnd: "5%" }]}
+        />
+      </TouchableOpacity>
     </View>
   );
 
@@ -113,7 +123,7 @@ const backgroungColor = "#d3d3d3";
       <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => navigation.replace("Points", {id: item.id})}>
               <>
         <Swipeable
-          renderRightActions={renderRightActions}
+          renderRightActions={() => renderRightActions(item.id)}
           containerStyle={{overflow: "visible"}}
         >
           <View>

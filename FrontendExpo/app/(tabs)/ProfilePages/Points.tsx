@@ -8,6 +8,7 @@ import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import { Swipeable } from "react-native-gesture-handler";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import { replace } from "expo-router/build/global-state/routing";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Points({ navigation, route  }) {
   const {id} = route.params;
@@ -23,8 +24,6 @@ export default function Points({ navigation, route  }) {
   useEffect(() => {
     const fetchPoints = async () => {
       try {
-        const url = `123`;
-        console.log(url);
         const jwt = await AccessGetToken();
         const response = await fetch(`https://consumer-corner.kvotua.ru/points/points-by-enterprise/${id}`, {
           method: "GET",
@@ -44,6 +43,32 @@ export default function Points({ navigation, route  }) {
 
     fetchPoints();
   }, []);
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPoints = async () => {
+        try {
+          const jwt = await AccessGetToken();
+          const response = await fetch(`https://consumer-corner.kvotua.ru/points/points-by-enterprise/${id}`, {
+            method: "GET",
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+          const data = await response.json(); 
+          setPoints(data);
+        } catch (error) {
+          console.error("Ошибка при загрузке точек:", error.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchPoints();
+    }, [])
+  );
 
   if (loading) {
     return (
@@ -74,14 +99,16 @@ export default function Points({ navigation, route  }) {
     }
   };
 
-    const renderRightActions = () => (
+    const renderRightActions = (id) => (
       <View style={[localStyles.rightAction]}>
-        <Icons
-          name="pencil"
-          size={24}
-          color="#FFFFFF"
-          style={[{ marginEnd: "5%" }]}
-        />
+        <TouchableOpacity onPress={() => navigation.replace("EditMarketPoint", { id })}>
+          <Icons
+            name="pencil"
+            size={24}
+            color="#FFFFFF"
+            style={[{ marginEnd: "5%" }]}
+          />
+        </TouchableOpacity>
       </View>
     );
 
@@ -115,7 +142,7 @@ export default function Points({ navigation, route  }) {
         <TouchableOpacity key={item.id} activeOpacity={1} onPress={() => navigation.replace("Points", {id: item.id})}>
                 <>
           <Swipeable
-            renderRightActions={renderRightActions}
+            renderRightActions={() => renderRightActions(item.id)}
             containerStyle={{overflow: "visible"}}
           >
             <View>
