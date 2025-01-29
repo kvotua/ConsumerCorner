@@ -79,6 +79,7 @@ export default function InnReg({navigation}){
                 <View style={StyleSheet.flatten([Style.fields, {justifyContent: 'flex-start'}])}>
                     <Text style={StyleSheet.flatten([Style.subtitle, {fontSize: 16, color: "#FFFFFF", marginTop: 10}])}>ИНН юридического лица</Text>
                     <TextInputMask
+                    returnKeyType="done"
                     type={"custom"}
                     options={{
                     mask: "999 999 999 999",

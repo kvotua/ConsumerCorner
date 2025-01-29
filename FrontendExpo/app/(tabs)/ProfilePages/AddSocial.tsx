@@ -71,6 +71,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
               <Text style={Style.titleSimple}>Название соц.сети</Text>
 
               <TextInput
+                returnKeyType="done"
                 value={SocValue}
                 onChangeText={handleInputChange}
                 style={Style.textInputProfile}
@@ -79,6 +80,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
                 <Text style={Style.titleSimple}>Вставьте ссылку на соц.сеть</Text>
 
                 <TextInput
+                  returnKeyType="done"
                   style={Style.textInputProfile}
                   value={password}
                   onChangeText={setPassword}

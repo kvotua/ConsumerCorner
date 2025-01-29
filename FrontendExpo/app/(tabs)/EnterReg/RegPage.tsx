@@ -147,6 +147,7 @@ export default function RegPage({ navigation }) {
               <Text style={Style.titleSimple}>Телефон</Text>
 
               <TextInputMask
+                returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "+7 (999) 999-99-99", // Маска
@@ -162,6 +163,7 @@ export default function RegPage({ navigation }) {
               <Text style={Style.titleSimple}>Пароль</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
+                  returnKeyType="done"
                   style={Style.textInputProfile}
                   value={password}
                   onChangeText={setPassword}
@@ -175,9 +177,8 @@ export default function RegPage({ navigation }) {
                   <Icon name={isSecure ? 'eye-off' : 'eye'} size={24} color="#00000" />
                 </TouchableOpacity>
               </View>
-
               <Text style={Style.titleSimple}>Ф.И.О</Text>
-              <TextInput style={Style.textInputProfile} placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio}/>
+              <TextInput style={Style.textInputProfile} returnKeyType="done" placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio}/>
             </View>
 
             <View style={[Style.buttons, {paddingVertical: -10,}]}>

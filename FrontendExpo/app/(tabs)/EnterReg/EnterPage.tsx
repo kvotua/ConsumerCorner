@@ -88,6 +88,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
               <Text style={Style.titleSimple}>Номер телефона</Text>
 
               <TextInputMask
+                returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "+7 (999) 999-99-99",
@@ -102,6 +103,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
                 <Text style={Style.titleSimple}>Пароль</Text>
 
                 <TextInput
+                  returnKeyType="done"
                   style={Style.textInputProfile}
                   value={password}
                   onChangeText={setPassword}

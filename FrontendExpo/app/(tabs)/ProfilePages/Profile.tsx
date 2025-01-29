@@ -15,6 +15,7 @@ import {
 import Style from "@/app/Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
+import Icons from "react-native-vector-icons/Feather";
 
 export default function Profile({ navigation }) {
   const [userData, setUserData] = useState({});
@@ -113,6 +114,7 @@ export default function Profile({ navigation }) {
         />
       ) : (
         <TextInput 
+          returnKeyType="done"
           style={Style.textInputProfile} 
           placeholder={item.placeholder} 
           value={item.value} 
@@ -124,7 +126,7 @@ export default function Profile({ navigation }) {
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-      <SafeAreaView style={[Style.containerMainPage, { paddingVertical: getPaddingVertical(), paddingHorizontal: 16  }]}>
+       <SafeAreaView style={[Style.containerMainPage]}>
         <View style={Style.profileHeader}>
           <Image
             source={require("../../../assets/images/profileImage.png")}
@@ -141,9 +143,10 @@ export default function Profile({ navigation }) {
           />
         </View>
 
-        <View style={localStyles.containerButtonsBottomFlatList}>
-          <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("MenuPage")}>
-            <Text style={Style.textInButtonsMenuPage}>Вернуться на главную</Text>
+        <View style={Style.containerButtonsMenuPages}>
+          <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("MenuPage")}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={Style.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
