@@ -9,7 +9,7 @@ from app.core.cruds import comments_crud, points_crud
 from app.core.databases.mongodb import MongoDBClient
 
 
-router = APIRouter(prefix='/comments', tags=['Comments'])
+router = APIRouter(prefix='/comments', tags=['comments'])
 mongo = MongoDBClient("image", "doc")
 
 

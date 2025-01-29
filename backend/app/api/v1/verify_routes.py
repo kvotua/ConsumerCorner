@@ -28,7 +28,7 @@ async def only_for_testing(session: AsyncSession = Depends(get_session)):
 
 
 @router.post("/phone/send", response_model=ReqID, dependencies=dependencies)
-async def send_message(
+async def send_code(
         request: Request,
         session: AsyncSession = Depends(get_session)
 ):

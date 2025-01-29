@@ -108,3 +108,7 @@ async def update_enterprise(session: AsyncSession, enterprise: Enterprises, ente
     await session.commit()
     await session.refresh(enterprise)
     return enterprise
+
+async def delete_enterprise(session: AsyncSession, enterprise: Enterprises):
+    await session.delete(enterprise)
+    await session.commit()
