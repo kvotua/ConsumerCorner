@@ -221,7 +221,7 @@ export default function Firms({ navigation }) {
           />
         </View>
         <View style={styles.containerButtonsBottomFlatList}>
-          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace('EditFirma')}>
+          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace('Inn')}>
             <Text style={styles.blackText}>Добавить фирму</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>

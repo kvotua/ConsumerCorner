@@ -51,7 +51,7 @@ export default function InnReg({navigation}){
           const res = data.json();
           // Сохраняем тип компании и переходим на следующий экран
           await AsyncStorage.setItem("TypeFirm", data.type);
-          navigation.replace("RegFirma", { companyData: data });
+          navigation.replace("RegFirma", { companyData: res });
         } catch (error) {
           // Обработка ошибки
           showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");

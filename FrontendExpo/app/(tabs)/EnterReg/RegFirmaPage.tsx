@@ -30,11 +30,13 @@ export default function RegFirma({ navigation, route }) {
   const [logo, setLogo] = useState(null);
 
   useEffect(() => {
-    if (companyData) {
-      setValue(companyData.name || ""); 
-      setValue2(companyData.ogrn || ""); 
-      setValue3(companyData.address || ""); 
-      setValue4(companyData.activity || "");
+    console.log(companyData)
+    var data = companyData['_j']
+    if (data) {
+      setValue(data.name || ""); 
+      setValue2(data.ogrn || ""); 
+      setValue3(data.address || ""); 
+      setValue4(data.activity || "");
     }
   }, [companyData]);
 
