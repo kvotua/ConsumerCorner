@@ -127,9 +127,6 @@ export default function Documents({ navigation }) {
             <View style={styles.menuPagesFooterHeader}>
             <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
             </View>
-            <View style={styles.menuPagesHeader}>
-            <Text style={styles.menuTitle}>ИП Акулич В.С</Text>
-            </View>
             <View style={styles.menuPagesSecondHeader}>
             <Text style={styles.menuTitle}>Документы</Text>
             </View>
@@ -155,14 +152,16 @@ export default function Documents({ navigation }) {
             snapToInterval={120} // Прокручивать по 120 пикселей
             decelerationRate="fast" // Быстрое замедление
           />
-        <View style={styles.containerLine}>
-          <View style={styles.menuPagesLine}/>
-        </View>
+
         <FlatList style={[{ paddingRight: 10}]}
           data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          ListEmptyComponent={<Text>Нет фирм/точек</Text>}
+          ListEmptyComponent={
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "40%" }}>
+            <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет документов.</Text>
+          </View>
+          }
           indicatorStyle="white"
         />
       </View>

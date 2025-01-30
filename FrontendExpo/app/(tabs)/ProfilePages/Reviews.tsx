@@ -92,13 +92,12 @@ export default function Reviews({ navigation, pointId }) {
 
   const renderItem = ({ item }) => (
     <View style={styles.reviewsItemFlatList}>
-      <Text style={localStyles.companyPointText}>{item.title || '' }</Text> {/* Название точки */}
+      <Text style={localStyles.companyPointText}>{item.title || '' }</Text> 
       {item.reviews.length > 0 ? (
         <FlatList
           data={item.reviews}
           keyExtractor={(review) => review.id.toString()}
           renderItem={({ item: review }) => {
-            // Преобразуем дату для каждого отзыва
             const date = new Date(review.created_at);
             const day = date.getDate();
             const month = months[date.getMonth()];
@@ -119,7 +118,7 @@ export default function Reviews({ navigation, pointId }) {
                       <Text style={[localStyles.textInReview, { marginTop: 4 }]}>
                         {review.name && review.name.trim() !== '' ? review.name : 'Гость'}
                       </Text>
-                      {renderStars(Number(review.stars) || 0)} {/* Рейтинг отзыва (если есть поле stars) */}
+                      {renderStars(Number(review.stars) || 0)} 
                     </View>
                   </View>
                   <View style={[styles.containerLine, { marginTop: 10, paddingEnd: 186 }]}>
@@ -129,7 +128,6 @@ export default function Reviews({ navigation, pointId }) {
                     {review.text || ''} 
                   </Text>
                 </TouchableOpacity>
-                {/* Дата сверху справа */}
                 <Text style={{ position: 'absolute', top: 20, right: 10, fontSize: 13, color: '#999' }}>
                   {formattedDate}
                 </Text>
@@ -137,9 +135,7 @@ export default function Reviews({ navigation, pointId }) {
             );
           }}
         />
-      ) : (
-        <Text style={{ color: '#fff', padding: 10 }}>Нет отзывов</Text>
-      )}
+      ) : 0}
     </View>
   );
   
@@ -149,7 +145,10 @@ export default function Reviews({ navigation, pointId }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
-        <View style={styles.firmsAndPointsHeader}>
+        <View style={styles.menuPagesFooterHeader}>
+          <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
+          </View>
+          <View style={styles.menuPagesSecondHeader}>
           <Text style={styles.menuTitle}>Все отзывы</Text>
         </View>
         <View style={styles.containerLine}>
