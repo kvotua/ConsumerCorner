@@ -14,8 +14,6 @@ export const SendInfFirm = async (NameFima, OGRN, Adress, VidDo) => {
     general_type_activity: VidDo,
   };
 
-  console.log(payload)
-
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -26,7 +24,7 @@ export const SendInfFirm = async (NameFima, OGRN, Adress, VidDo) => {
       },
       body: JSON.stringify(payload),
     });
-
+    console.log(response.toString());
     // Проверяем текст ответа от сервера
     const responseData = await response.json();
     console.log(responseData)

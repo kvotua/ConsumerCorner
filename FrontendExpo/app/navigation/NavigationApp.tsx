@@ -2,6 +2,7 @@ import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LayoutChangeEvent } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 
 import StartPage from '../(tabs)/EnterReg/StartPage';
 import RegPage from '../(tabs)/EnterReg/RegPage';
@@ -42,7 +43,10 @@ interface NavigateAppProps {
 export default function App({ onLayout }: NavigateAppProps) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack.Navigator initialRouteName="Start">
+        <Stack.Navigator initialRouteName="Start"
+        screenOptions={{
+            headerShown: false, // Скрыть заголовок
+          }} >
           <Stack.Screen name="Start" component={StartPage} options={{ headerShown: false }} />
           <Stack.Screen name="Auth" component={Enter} options={{ headerShown: false }}/>
           <Stack.Screen name="Register" component={RegPage} options={{ headerShown: false }} />

@@ -220,7 +220,10 @@ export default function Points({ navigation, route }) {
             onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
           />
         )}
-        <View style={styles.firmsAndPointsHeader}>
+        <View style={styles.menuPagesFooterHeader}>
+                                     <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
+                         </View>
+                         <View style={styles.menuPagesSecondHeader}>
           <Text style={styles.menuTitle}>Мои точки</Text>
         </View>
         <View style={styles.containerLine}>

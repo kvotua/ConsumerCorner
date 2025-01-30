@@ -205,11 +205,11 @@ export default function MarketPoint({ navigation, route }) {
 
           <View style={[Style.containerButtonsMenuPages, { marginTop: 120 }]}>
             <TouchableOpacity style={Style.buttonMenuPage} onPress={() => RegNewPointServer(Name, Adress, Start, End, rawPhoneValue, e_id, navigation)}>
-              <Text style={Style.textInButtonsMenuPage}>Завершение регистрации</Text>
+              <Text style={Style.blackText}>Завершение регистрации</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => goNext()}>
-              <Text style={Style.textInButtonsBackMenuPage}>
-                {from == 'reg' ? 'Пропустить →' : '← Назад'}
+              <Text style={Style.DefText}>
+                {from == 'reg' ? 'Пропустить' : ' Назад'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -235,6 +235,7 @@ const localStyles = StyleSheet.create({
     borderTopRightRadius: 10,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+    marginBottom: 10,
     padding: 10,
     width: '90%',
     height: 150,

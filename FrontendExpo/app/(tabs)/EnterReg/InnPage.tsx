@@ -103,7 +103,7 @@ export default function InnReg({ navigation, route }) {
               <Text style={[Style.blackText]}>Далее</Text>
             </TouchableOpacity>
             {from === 'login' && (
-              <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Firms")}>
+              <TouchableOpacity style={[Style.buttonBackMenuPage]} onPress={() => navigation.replace("Firms")}>
                 <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{ marginEnd: 6 }]} />
                 <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
