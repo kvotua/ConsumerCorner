@@ -57,8 +57,8 @@ export default function Reviews({ navigation, pointId }) {
         Object.values(reviewsData).forEach(enterprise => {
           if (enterprise[point.id]) {
             // Перебираем комментарии по point_id
-            Object.values(enterprise[point.id]).forEach(comment => {
-              comments.push(comment);
+            Object.entries(enterprise[point.id]).forEach(([commentId, comment]) => {
+              comments.push({ id: commentId, ...comment });
             });
           }
         });
@@ -69,8 +69,8 @@ export default function Reviews({ navigation, pointId }) {
           reviews: comments
         };
       }).filter(point => point.reviews.length > 0); // Оставляем только те точки, у которых есть отзывы
-  
-      console.log(formattedData);
+
+      console.log(formattedData[0]['reviews']);
       setData(formattedData); // Сохраняем данные
     } catch (error) {
       console.error('Ошибка при загрузке отзывов:', error);
@@ -119,7 +119,7 @@ export default function Reviews({ navigation, pointId }) {
                       <Text style={[localStyles.textInReview, { marginTop: 4 }]}>
                         {review.name && review.name.trim() !== '' ? review.name : 'Гость'}
                       </Text>
-                      {renderStars(review.stars || "")} {/* Рейтинг отзыва (если есть поле stars) */}
+                      {renderStars(Number(review.stars) || 0)} {/* Рейтинг отзыва (если есть поле stars) */}
                     </View>
                   </View>
                   <View style={[styles.containerLine, { marginTop: 10, paddingEnd: 186 }]}>
