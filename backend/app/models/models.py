@@ -34,7 +34,7 @@ class Enterprises(Base):
     type: Mapped[str] = mapped_column(String)
     create_id: Mapped[int] = mapped_column(BigInteger)
     inn: Mapped[str] = mapped_column(String(12))
-    ogrn: Mapped[str] = mapped_column(String(13))
+    ogrn: Mapped[str] = mapped_column(String(15))
     address: Mapped[str] = mapped_column(Text)
     image_id: Mapped[str] = mapped_column(nullable=True)
     general_type_activity: Mapped[str] = mapped_column(String)
