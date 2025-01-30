@@ -14,7 +14,7 @@ from app.services.auth_bearer import dependencies
 router = APIRouter(prefix="/profile", tags=["profile"])
 
 @router.get("/docs_socials_exist", response_model=dict, dependencies=dependencies)
-async def send_message(
+async def docs_socials_exist(
         request: Request,
         session: AsyncSession = Depends(get_session)
 ):

@@ -56,7 +56,7 @@ class FirmInfo(BaseModel):
                                                                                            "isTemp": False}]])]
     social_data: Annotated[Optional[List[dict]], Field(title="Socials", examples=[{"social_id": 2, "link": "https://example.com", "name": "example"}])]
     inn: Annotated[str, Field(title="INN", examples=['400889349705'], min_length=10, max_length=12)]
-    ogrn: Annotated[str, Field(title="OGRN of a legal entity", examples=['1177704000005'],min_length=13, max_length=13)]
+    ogrn: Annotated[str, Field(title="OGRN of a legal entity", examples=['1177704000005'],min_length=13, max_length=15)]
     name: Annotated[str, Field(title="NAME", examples=[""])]
 
 class PointInfo(BaseModel):
