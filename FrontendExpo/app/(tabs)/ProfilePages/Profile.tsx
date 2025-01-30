@@ -139,6 +139,9 @@ export default function Profile({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
         <SafeAreaView style={[Style.containerMainPage]}>
+          <View style={Style.menuPagesFooterHeader}>
+                      <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
+                      </View>
         <View style={[Style.profileHeader, {flexDirection: 'row', justifyContent: "center"}]}>
           <Image
             source={require("../../../assets/images/profileImage.png")}
@@ -171,10 +174,10 @@ export default function Profile({ navigation }) {
 
 const localStyles = StyleSheet.create({
   profileImage: {
-    width: 100,
-    height: 100, 
+    width: 80,
+    height: 80, 
     borderRadius: 50,
-    marginBottom: 12, 
+    marginTop: 12,
     borderWidth: 1, 
     borderColor: "#FFFFFF", 
   },

@@ -139,6 +139,7 @@ export default function RegPage({ navigation }) {
                     onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
                 />
                 )}
+        
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}

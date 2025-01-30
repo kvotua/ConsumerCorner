@@ -61,7 +61,10 @@ const showToast = (type :string, message:string, subMessage:string) => {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
-          <View style={Style.firmsAndPointsHeader}>
+          <View style={Style.menuPagesFooterHeader}>
+                              <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
+                  </View>
+                  <View style={Style.menuPagesSecondHeader}>
             <Text style={Style.menuTitle}>Мои точки</Text>
           </View>
           <View style={Style.containerLine}>

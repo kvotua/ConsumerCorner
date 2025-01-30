@@ -205,7 +205,10 @@ export default function Firms({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={[styles.containerMainPage, { marginRight: 5 }]}>
-        <View style={styles.firmsAndPointsHeader}>
+       <View style={styles.menuPagesFooterHeader}>
+                           <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
+               </View>
+               <View style={styles.menuPagesSecondHeader}>
           <Text style={styles.menuTitle}>Мои фирмы</Text>
         </View>
         <View style={styles.containerLine}>
