@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from "../Notif/toasts/Toast";
@@ -26,6 +27,8 @@ export default function StartPage({ navigation }) {
 
 
   return (
+    <>
+    <StatusBar hidden />
     <ImageBackground
       source={require("../../../assets/images/background.png")}
       style={styles.background}
@@ -89,6 +92,7 @@ export default function StartPage({ navigation }) {
         </View>
       </SafeAreaView>
     </ImageBackground>
+    </>
   );
 }
 

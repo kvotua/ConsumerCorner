@@ -8,9 +8,10 @@ const PointScelteton: React.FC = () => {
         <div className="w-full h-32 rounded-2xl bg-white/50 mt-2"></div>
         <div className="w-full h-32 rounded-2xl bg-white/50 mt-2"></div>
         <div className="w-full h-32 rounded-2xl bg-white/50 mt-2"></div>
-        <div className="w-full h-32 rounded-2xl bg-white/50 mt-2"></div>
-        <div className="w-full h-32 rounded-2xl bg-white/50 mt-2"></div>
       </div>
+      <div className="w-52 h-10 rounded-2xl bg-white/50"></div>
+      <div className="w-52 h-10 rounded-2xl bg-white/50 mt-2"></div>
+      <div className="w-full h-10 rounded-2xl bg-white/50 mt-2"></div>
     </div>
   );
 };

@@ -28,6 +28,33 @@ class RegisterCompany(BaseModel):
             raise ValueError('The OGRN should contain only numbers.')
 
         return values
+    
+
+class ChangeEnterpriseSchema(BaseModel):
+    name: Annotated[str, Field(title="Company name",)]
+    type: Annotated[str, Field(title="Type of company (sole proprietor, LLC, etc.)", examples=['ИП'])]
+    inn: Annotated[str, Field(title="INN", examples=['400889349705'], min_length=10, max_length=12)]
+    ogrn: Annotated[str, Field(title="OGRN of a legal entity", examples=['1177704000005'],min_length=13, max_length=13)]
+    address: Annotated[str, Field(title="Actual address", examples=['ул. Павлика Морозова 74, Б'])]
+    general_type_activity: Annotated[str, Field(title='The main type of activity', examples=["Private enterprise"])]
+
+    @model_validator(mode="before")
+    def check_inn_ogrn(cls, values):
+        type_ = values.get('type')
+        if type_ not in ["ИП", "ООО", "ОАО", "ЗАО", "ПАО"]:
+            raise ValueError('Invalid type enterprise')
+
+        inn = values.get('inn')
+        if inn and not inn.isdigit():
+            raise ValueError('The INN must contain only numbers.')
+        if len(inn) not in [10, 12]:
+            raise ValueError('The must contain 10 or 12 digits')
+
+        ogrn = values.get('ogrn')
+        if ogrn and not ogrn.isdigit():
+            raise ValueError('The OGRN should contain only numbers.')
+
+        return values
 
 
 class EnterpriseInfo(BaseModel):

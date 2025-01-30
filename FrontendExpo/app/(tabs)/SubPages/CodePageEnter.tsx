@@ -78,6 +78,7 @@ export default function CodePage({ navigation}) {
                   номер
                 </Text>
                 <TextInput
+                returnKeyType="done"
                   style={[Style.textInputProfile, {marginTop: 10}]}
                   keyboardType="phone-pad"
                   onChangeText={handleInputChange}

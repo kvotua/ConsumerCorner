@@ -26,6 +26,7 @@ export default function MarketPoint({ navigation }) {
   const [Adress, setAdress] = useState(""); 
   const [rawPhoneValue, setRawPhoneValue] = useState("");
   const [logo, setLogo] = useState(null);
+  const companyData = {}
 
   const pickImage = async () => {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -53,7 +54,6 @@ export default function MarketPoint({ navigation }) {
     // Извлекаем только цифры из введенного значения
     const numericValue = text.replace(/\D/g, ""); 
     setRawPhoneValue(numericValue);
-    console.log(numericValue)
   };
 
   const handleFocus = () => {
@@ -172,7 +172,7 @@ export default function MarketPoint({ navigation }) {
               <TouchableOpacity style={Style.buttonMenuPage} onPress={() => RegNewPointServer(Name, Adress, Start, End, rawPhoneValue)}>
                   <Text style={Style.textInButtonsMenuPage}>Завершение регистрации</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("RegFirma")}>
+              <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("RegFirma", companyData)}>
                   <Text style={Style.textInButtonsBackMenuPage}>←Назад</Text>
               </TouchableOpacity>
             </View>

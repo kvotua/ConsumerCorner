@@ -51,7 +51,6 @@ export default function RegPage({ navigation }) {
     // Извлекаем только цифры из введенного значения
     const numericValue = text.replace(/\D/g, ""); 
     setRawPhoneValue(numericValue);
-    console.log(numericValue)
   };
 
   const handleFocus = () => {
@@ -72,23 +71,27 @@ export default function RegPage({ navigation }) {
       return;
     }
   
-    const url = 'https://consumer-corner.kvotua.ru/registration';
+    const url = '';
   
     try {
       // Выполняем POST-запрос через универсальную функцию
-      const data = await apiRequest(
-        url,
-        "POST",
-        {
-          phone: rawPhoneValue,
-          fio: fio,
-          password: password,
+      const payload = {
+        phone: rawPhoneValue,
+        fio: fio,
+        password: password,
+      }
+      const data = await fetch('https://consumer-corner.kvotua.ru/registration', {
+        method: "POST",
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
         },
-        {
-          "Content-Type": "application/json",
-        }
-      );
+        body: JSON.stringify(payload),
+
+      })
+
       const res = await data.json();
+
       await AsyncStorage.setItem("access_token", res.access_token);
       await AsyncStorage.setItem("refresh_token", res.refresh_token);
 
@@ -105,8 +108,8 @@ export default function RegPage({ navigation }) {
             "Content-Type": "application/json",
           }
         )
-        const res2 = await data2.json();
-        await AsyncStorage.setItem('Ses_id', res2.req_id);
+        console.log(data2)
+        await AsyncStorage.setItem('Ses_id', String(data2.req_id));
       } catch (error) {
         console.log(error.message);
       }
@@ -149,9 +152,11 @@ export default function RegPage({ navigation }) {
               <TextInputMask
                 returnKeyType="done"
                 type={"custom"}
+                returnKeyType="done"
                 options={{
                   mask: "+7 (999) 999-99-99", // Маска
                 }}
+                returnKeyType="done"
                 value={phoneValue} // Значение с маской
                 onChangeText={handleInputChange} // Обработчик изменения текста
                 keyboardType="phone-pad"

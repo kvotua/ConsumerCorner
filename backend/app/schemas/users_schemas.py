@@ -19,8 +19,6 @@ class UserSchema(BaseModel):
 
 
 class ChangeUserSchema(BaseModel):
-
-    new_phone: Annotated[Optional[str], Field(title="The user's phone number", examples=['79211234567'], max_length=14, default=None)]
     new_fio: Annotated[Optional[str], Field(title="User's full name", examples=['Игнатьев Алексей Алиевич'], default=None)]
     new_email: Annotated[Optional[str], Field(title="User's email address", examples=['example@gmail.com'], default=None)]
 

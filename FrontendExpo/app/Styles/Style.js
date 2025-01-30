@@ -22,7 +22,7 @@ export default StyleSheet.create({
       },
       containerMainPage: {
         flex: 1,
-        paddingVertical: isTablet ? 192 : 25, 
+        paddingVertical: isTablet ? 192 : 0, 
         paddingHorizontal: isTablet ? 152 : 25, 
       },
       containerProfile: {
@@ -139,7 +139,7 @@ export default StyleSheet.create({
       firmsAndPointsHeader: {
         width: "100%",
         alignItems: 'flex-start',
-        marginTop: 70,
+        marginTop: 20,
       },
       menuPagesFooterHeader: {
         width: "100%",
@@ -235,9 +235,9 @@ export default StyleSheet.create({
       },
       whiteButtonMenuTopActive: {
         flex: 1,
-        height: 77,
+        height:  isTablet ? 100 : 77,
         backgroundColor: "#FFFFFF",
-        paddingTop: 25,
+        paddingTop: isTablet ? 30 : 25,
         paddingStart: 15,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
@@ -245,7 +245,7 @@ export default StyleSheet.create({
       },
       whiteButtonMenuTopNoActive: {
         flex: 1,
-        height: 77,
+        height:  isTablet ? 100 : 77,
         backgroundColor: "#C3C2C2",
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
@@ -254,9 +254,9 @@ export default StyleSheet.create({
       whiteButtonMenuBottomActive: {
         flexDirection: 'row',
         flex: 1, 
-        height: 128,
+        height:  isTablet ? 155 : 128,
         backgroundColor: "#FFFFFF",
-        paddingTop: 23,
+        paddingTop: isTablet ? 33 :  23,
         paddingStart: 16,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,

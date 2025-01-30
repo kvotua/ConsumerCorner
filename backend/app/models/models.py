@@ -78,10 +78,11 @@ class Comments(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     point_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('points.id'))
     text: Mapped[str] = mapped_column(Text)
-    stars: Mapped[int] = mapped_column(Integer)
+    stars: Mapped[int] = mapped_column(Integer, nullable=True)
     name: Mapped[str] = mapped_column(Text, nullable=True)
     number: Mapped[str] = mapped_column(Text, nullable=True)
     isAnonimus: Mapped[bool] = mapped_column(Boolean)
+    category: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
 
 
@@ -121,7 +122,33 @@ class DocsPoint(Base):
 class Verification(Base):
     __tablename__ = 'verification'
 
-    request_id: Mapped[str] = mapped_column(String(36), primary_key=True)
-    sms_code: Mapped[str] = mapped_column(String)
+    request_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    code: Mapped[str] = mapped_column(String)
     phone: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+
+class EmailVerification(Base):
+    __tablename__ = 'email_verification'
+
+    request_id: Mapped[str] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.id'))
+    email: Mapped[str] = mapped_column(String)
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+
+class PasswordRestore(Base):
+    __tablename__ = 'password_restore'
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    code: Mapped[str] = mapped_column(String)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.id'))
+    phone: Mapped[str] = mapped_column(String)
+    is_checked: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_changed: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
+
+
+class SysAdminSessions(Base):
+    __tablename__ = "sys_admin_sessions"
+    
+    active_session: Mapped[str] = mapped_column(primary_key=True)

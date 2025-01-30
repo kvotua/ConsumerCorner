@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ImageBackground,
   Text,
@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from "react-native-vector-icons/Feather";
 import styles from "../../Styles/Style";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 const viewabilityConfig = { itemVisiblePercentThreshold: 80 };
 
@@ -48,30 +49,110 @@ const data3 = [
 
 export default function Documents({ navigation }) {
   const flatListRef = useRef(null);
-  const [selectedId, setSelectedId] = useState(data3[0]?.id);
+  const [visibleIndex, setVisibleIndex] = useState(0);
+  const [data, setData] = useState();
+  const [cards, setCards] = useState([]); 
+  const fetchPoints = async () => {
+    try {
+      const jwt = await AccessGetToken();
+      const response = await fetch('https://consumer-corner.kvotua.ru/points/', {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${jwt}`
+        },
+      });
+      const points = await response.json();
+      
+      console.log('Fetched points:', points); // Log the API response
+  
+      if (Array.isArray(points)) {
+        setCards(points);  // Сохраняем точки в стейт
+        points.forEach(async (point) => {
+          await fetchDocuments(point.id);
+        });
+      } else {
+        console.error('Error: API response is not an array');
+      }
+    } catch (error) {
+      console.error("Error fetching points:", error);
+    }
+  };
 
+  // Функция для получения документов для точки
+  const fetchDocuments = async (pointId) => {
+    try {
+      const response = await fetch(`https://consumer-corner.kvotua.ru/mongo/document/${pointId}`, {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+        },
+      });
+      const documents = await response.json();
+      if (documents && documents.document_data) {
+        setData((prevData) => [...prevData, ...documents.document_data]);
+      } else {
+        console.error('Данные документов недоступны', documents);
+      }
+  // Сохраняем документы
+    } catch (error) {
+      console.error(`Error fetching documents for point ${pointId}:`, error);
+    }
+  };
+  
 
-  const Item = ({ title, image, id }) => { 
-    const backgroundColor = id === selectedId ? 'lightblue' : 'white';
-    const scale = id === selectedId  ? 1.2 : 1;
-    return(
-    <View key={id} style={[styles3.item, {backgroundColor, transform: [{ scale }]}]}>
-        <Text style={styles3.title}>{title}</Text>
-    </View>
-)};
-  const renderItem = ({ item }) => { 
-    
-    return(
-    <TouchableOpacity onPress={() => {
-      setSelectedId(item.id);
-      const index = data3.findIndex(i => i.id === item.id);
-      flatListRef.current.scrollToIndex({ index, animated: true, viewPosition: 0, viewOffset: 50 });
-  }} activeOpacity={1}>
-      <View >
-      <Item id={item.id} image={item.image} title={item.title} />
-      </ View>
-    </TouchableOpacity>
-)};
+  const onEndReached = () => {
+    setCards((prevCards) => [...prevCards, ...cards]);
+  };
+
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    if (viewableItems && viewableItems.length > 0) {
+      const firstVisibleItem = viewableItems[0];
+      const { index } = firstVisibleItem;
+      setVisibleIndex(index);
+      scrollToIndex(index);
+    }
+  }).current;
+
+  const scrollToIndex = (index) => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({ index, animated: true });
+    }
+  };
+  
+  
+  const Card = ({ image_id, title, isHighlighted }) => {
+    const imageSource = image_id
+    ? { uri: `data:image/png;base64,${image_id}` }
+    : require("../../../assets/images/test.jpg");
+    return (
+      <View
+        style={[
+          styles2.card,
+          isHighlighted && styles2.highlightedCard,
+        ]}
+      >
+        <View style={styles2.logoContainer}>
+          <Image source={imageSource} style={{ height: 50, width: 50 }} />
+        </View>
+        <Text style={styles2.text}>{title}</Text>
+      </View>
+    );
+  };
+  
+    // Функция рендеринга каждого элемента
+  const renderItem = ({ item }) => (
+      <View style={styles.documentsItemFlatList}>
+        <TouchableOpacity style={localStyles.button}>
+            <Text style={localStyles.buttonText}>{item.title}</Text>
+        </TouchableOpacity>
+      </View>
+  );
+
+  useEffect(() => {
+    fetchPoints();
+  }, []);
+
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
@@ -85,23 +166,40 @@ export default function Documents({ navigation }) {
             <View style={styles.menuPagesLine}/>
             </View>
       <View style={localStyles.flatListContainer}>
-        <View style={{marginHorizontal: -30}}>
-            <FlatList
-              ref={flatListRef}
-                data={data3}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-                horizontal
-                contentContainerStyle={{
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}
-            />
-         </View>
+
+      <FlatList
+            ref={flatListRef}
+            data={cards}
+            horizontal
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            renderItem={({ item, index }) => (
+              <Card image_id={item.image_id} title={item.title} isHighlighted={index === visibleIndex} />
+            )}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles2.flatListContent}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewabilityConfig} // Передаем конфигурацию только один раз
+            initialScrollIndex={0} // Начать с первого элемента
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.5}
+            snapToInterval={120} // Прокручивать по 120 пикселей
+            decelerationRate="fast" // Быстрое замедление
+          />
+        <View style={styles.containerLine}>
+          <View style={styles.menuPagesLine}/>
+        </View>
+        <FlatList style={[{ paddingRight: 10}]}
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={<Text>Нет фирм/точек</Text>}
+          indicatorStyle="white"
+        />
+
       </View>
         <View style={styles.containerButtonsBottomFlatList}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddDocument")}>
-            <Text style={styles.blackText}>Добавить документ</Text>
+            <Text style={styles.textInButtonsMenuPage}>Добавить документ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>

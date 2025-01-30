@@ -17,6 +17,11 @@ async def get_user_by_id(session: AsyncSession, user_id: int) -> Users:
     result: Result = await session.execute(stmt)
     return result.scalars().first()
 
+async def get_user_by_phone(session: AsyncSession, phone: str) -> Users:
+    stmt = select(Users).where(Users.phone == phone)
+    result: Result = await session.execute(stmt)
+    return result.scalars().first()
+
 async def get_user_without_pass(session: AsyncSession, user_id: int):
     stmt = select(Users).where(Users.id == user_id)
     result: Result = await session.execute(stmt)
@@ -27,16 +32,7 @@ async def get_user_without_pass(session: AsyncSession, user_id: int):
                       )
 
 async def update_user(session: AsyncSession, user: Users, update_user_data: ChangeUserSchema):
-    try:
-        new_phone = validate_phone(update_user_data.new_phone)
-    except Exception as e:
-        new_phone = None
-
     if user:
-        if new_phone is not None and new_phone != user.phone:
-            user.phone = new_phone
-            user.verify_phone = False
-
         new_email = validate_email_address(update_user_data.new_email)
         if new_email is not None and new_email != user.email:
             user.email = new_email

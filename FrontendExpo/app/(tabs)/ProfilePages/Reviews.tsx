@@ -14,6 +14,10 @@ import Icons from "react-native-vector-icons/Feather";
 import styles from "../../Styles/Style";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
+const months = [
+  'Янв.', 'Фев.', 'Мар.', 'Апр.', 'Май', 'Июн', 'Июл.', 'Авг.', 'Сен.', 'Окт.', 'Ноя.', 'Дек.'
+];
+
 export default function Reviews({ navigation, pointId }) {
   const [data, setData] = useState([]);
   
@@ -23,7 +27,7 @@ export default function Reviews({ navigation, pointId }) {
 
   const fetchReviews = async () => {
     try {
-      const Points = await GetCountPoints(); // Убедитесь, что это возвращает массив точек
+      const Points = await GetCountPoints(); // Получаем список точек
       const reviewPromises = Points.map(point =>
         fetch(`https://consumer-corner.kvotua.ru/comments/?point_id=${point.id}`, {
           method: 'GET',
@@ -39,16 +43,20 @@ export default function Reviews({ navigation, pointId }) {
       );
   
       const reviewsData = await Promise.all(reviewPromises);
-      const mergedData = Points.map((point, index) => ({
+      
+      // Фильтруем только те точки, у которых есть отзывы
+      const filteredData = Points.map((point, index) => ({
         ...point,
         reviews: reviewsData[index],
-      }));
-      console.log(mergedData)
-      setData(mergedData); // Сохраняем объединенные данные
+      })).filter(point => point.reviews.length > 0); 
+      
+      console.log(filteredData);
+      setData(filteredData); // Сохраняем только нужные точки
     } catch (error) {
       console.error('Ошибка при загрузке отзывов:', error);
     }
   };
+  
   
   const renderStars = (rating) => {
     const stars = [];
@@ -68,34 +76,52 @@ export default function Reviews({ navigation, pointId }) {
         <FlatList
           data={item.reviews}
           keyExtractor={(review) => review.id.toString()}
-          renderItem={({ item: review }) => (
-            <View style={localStyles.reviewContainer}>
-              <TouchableOpacity style={localStyles.button}>
-                <View style={localStyles.reviewContainer}>
-                  <Image
-                    source={require("../../../assets/images/reviewImage.png")}
-                    style={{ width: 50, height: 50, borderRadius: 25 }}
-                  />
-                  <View style={localStyles.guestContainer}>
-                    <Text style={[localStyles.textInReview, { marginTop: 4 }]}>Гость</Text>
-                    {renderStars(review.stars || "")} {/* Рейтинг отзыва (если есть поле stars) */}
+          renderItem={({ item: review }) => {
+            // Преобразуем дату для каждого отзыва
+            const date = new Date(review.created_at);
+            const day = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            const formattedDate = `${day} ${month} ${year}`;
+  
+            return (
+              <View style={localStyles.reviewContainer}>
+                <TouchableOpacity style={localStyles.button}>
+                  <View style={localStyles.reviewContainer}>
+                    <Image
+                      source={review.image_data
+                        ? { uri: `data:image/png;base64,${review.image_data}` }
+                        : require("../../../assets/images/reviewImage.png")}
+                      style={{ width: 50, height: 50, borderRadius: 25 }}
+                    />
+                    <View style={localStyles.guestContainer}>
+                      <Text style={[localStyles.textInReview, { marginTop: 4 }]}>
+                        {review.name && review.name.trim() !== '' ? review.name : 'Гость'}
+                      </Text>
+                      {renderStars(review.stars || "")} {/* Рейтинг отзыва (если есть поле stars) */}
+                    </View>
                   </View>
-                </View>
-                <View style={[styles.containerLine, { marginTop: 10, paddingEnd: 186 }]}>
-                  <View style={[styles.menuPagesLine, { backgroundColor: "#3A6CE9" }]} />
-                </View>
-                <Text style={[localStyles.textInReview, { color: "#313231", marginTop: 10 }]}>
-                  {review.text || ''} 
+                  <View style={[styles.containerLine, { marginTop: 10, paddingEnd: 186 }]}>
+                    <View style={[styles.menuPagesLine, { backgroundColor: "#3A6CE9" }]} />
+                  </View>
+                  <Text style={[localStyles.textInReview, { color: "#313231", marginTop: 10 }]}>
+                    {review.text || ''} 
+                  </Text>
+                </TouchableOpacity>
+                {/* Дата сверху справа */}
+                <Text style={{ position: 'absolute', top: 20, right: 10, fontSize: 13, color: '#999' }}>
+                  {formattedDate}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          )}
+              </View>
+            );
+          }}
         />
       ) : (
         <Text style={{ color: '#fff', padding: 10 }}>Нет отзывов</Text>
       )}
     </View>
   );
+  
   
   
 

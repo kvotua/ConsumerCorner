@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
   StyleSheet,
   Text,
@@ -17,6 +17,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { RegNewPointServer } from "@/Api/RegNewPointRoot";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function EditMarketPoint({ navigation, route }) {
   const {id} = route.params;
@@ -27,6 +28,85 @@ export default function EditMarketPoint({ navigation, route }) {
   const [Adress, setAdress] = useState(""); 
   const [rawPhoneValue, setRawPhoneValue] = useState("");
   const [logo, setLogo] = useState(null);
+
+  const fetchFirms = async () => {
+      try {
+        const response = await fetch(`https://consumer-corner.kvotua.ru/points/${id}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Ошибка: ${response.status}`);
+        }
+  
+        const data = await response.json();
+  
+        setValue(data.opening_time || "");
+        setValue2(data.closing_time || "");
+        setName(data.title || "");
+        setAdress(data.address || "");
+        setPhoneValue(data.phone)
+      } catch (error) {
+        console.error("Ошибка при загрузке данных:", error);
+      }
+    };
+
+  useEffect(() => {
+    fetchFirms();
+  }, []);
+  
+  const DeletePoint = async () => {
+    try {
+      const jwt = await AccessGetToken();
+      const response = await fetch(`https://consumer-corner.kvotua.ru/points/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+  const handleCompleteRegistration = async () => {
+    try {
+      const jwt = await AccessGetToken();
+      const timeWithoutSeconds = Start.split(':').slice(0, 2).join(':');
+      const formattedEnd = End.split(':').slice(0, 2).join(':');
+      const payload = {
+        title: Name,
+        address: Adress,
+        opening_time: timeWithoutSeconds,
+        closing_time: formattedEnd,
+        phone: rawPhoneValue,
+        type_activity: "Продажи"
+      };
+  
+      const response = await fetch(`https://consumer-corner.kvotua.ru/points/change/${id}`, {
+        method: "PATCH",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Ошибка: ${response.text}`);
+      }
+  
+      navigation.replace("Points", { id });
+    } catch (error) {
+      console.error("Ошибка при отправке данных:", error);
+    }
+  };
+  
 
   const pickImage = async () => {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -48,13 +128,10 @@ export default function EditMarketPoint({ navigation, route }) {
   
 
   const handleInputPhone = (text) => {
-    // Устанавливаем значение с маской для отображения
     setPhoneValue(text);
 
-    // Извлекаем только цифры из введенного значения
     const numericValue = text.replace(/\D/g, ""); 
     setRawPhoneValue(numericValue);
-    console.log(numericValue)
   };
 
   const handleFocus = () => {
@@ -97,6 +174,7 @@ export default function EditMarketPoint({ navigation, route }) {
               <TextInput
                 returnKeyType="done"
                 style={Style.textInputProfile}
+                returnKeyType="done"
                 onChangeText={handleInputChangeAdress2}
                 value={Adress}
                 placeholder="ул. Пушкина дом Победы 32"
@@ -107,6 +185,7 @@ export default function EditMarketPoint({ navigation, route }) {
               <TextInputMask
                 returnKeyType="done"
                 type={"custom"}
+                returnKeyType="done"
                 options={{
                   mask: "+7 (999) 999-99-99", // Маска
                 }}
@@ -143,6 +222,7 @@ export default function EditMarketPoint({ navigation, route }) {
               <Text style={Style.titleSimple}>Закрытие точки</Text>
               <TextInputMask 
               returnKeyType="done"
+              returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "99:99",
@@ -167,11 +247,14 @@ export default function EditMarketPoint({ navigation, route }) {
                 </TouchableOpacity>
               </View>
             </View>
+              <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: 'red'}]} onPress={() => DeletePoint()}>
+                <Text style={Style.DefText}>Удалить</Text>
+              </TouchableOpacity>
             </ScrollView>
 
             <View style={[Style.containerButtonsMenuPages, {marginTop: 120}]}>
-              <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Points", {id: id})}>
-                  <Text style={Style.textInButtonsMenuPage}>Завершение регистрации</Text>
+              <TouchableOpacity style={Style.buttonMenuPage} onPress={handleCompleteRegistration}>
+                <Text style={Style.textInButtonsMenuPage}>Сохранить</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Points", {id: id})}>
                   <Text style={Style.textInButtonsBackMenuPage}>←Назад</Text>

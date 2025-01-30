@@ -1,14 +1,25 @@
+import asyncio
 from typing import Dict
 import jwt
 from datetime import datetime, timedelta, timezone
-from app.config import secret_key, algo
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Request
+
+
+from app.config import secret_key, algo
+from app.core.cruds.sysadmin_crud import check_status_session
+from app.core.databases.postgresdb import get_session
 
 
 def sign_jwt(data: dict) -> str:
     payload = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(days=3)
     payload.update({"exp": expire, "type": "access"})
+    return jwt.encode(payload, secret_key, algorithm=algo)
+
+def sign_sysadmin_jwt():
+    expire = datetime.now(timezone.utc) + timedelta(days=365)
+    payload = {"exp": expire, "type": "sysadmin"}
     return jwt.encode(payload, secret_key, algorithm=algo)
 
 def sing_email_jwt(user_id: int, email: str) -> str:
@@ -27,6 +38,11 @@ def decode_jwt(token: str) -> dict:
         data_now = datetime.now(timezone.utc)
         if decoded_token.get("exp") <= int(data_now.timestamp()):
             return None
+        if decoded_token.get("type") == "sysadmin":
+            session = get_session()
+            if not asyncio.run(check_status_session(session, token)):
+                return None
+            return decoded_token
         if decoded_token.get("type") != "access":
             return None
         return decoded_token
@@ -37,6 +53,7 @@ def decode_jwt_with_verify(token: str) -> dict:
     try:
         decoded_token = jwt.decode(token, secret_key, algorithms=[algo])
         data_now = datetime.now(timezone.utc)
+        print(decoded_token)
         if decoded_token.get("exp") <= int(data_now.timestamp()):
             return None
         if decoded_token.get("type") != "access":
