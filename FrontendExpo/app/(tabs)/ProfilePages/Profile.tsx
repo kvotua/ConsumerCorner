@@ -126,7 +126,12 @@ export default function Profile({ navigation }) {
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
+     
        <SafeAreaView style={[Style.containerMainPage]}>
+       <View style={Style.menuPagesFooterHeader}>
+          <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
+          </View>
+          <View style={Style.menuPagesSecondHeader}></View>
         <View style={Style.profileHeader}>
           <Image
             source={require("../../../assets/images/profileImage.png")}

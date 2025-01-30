@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   FlatList, 
   StyleSheet,
-  Image
+  Image,
+  Dimensions
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from "react-native-vector-icons/Feather";
@@ -14,84 +15,68 @@ import styles from "../../Styles/Style";
 
 const viewabilityConfig = { itemVisiblePercentThreshold: 80 };
 
+const { width: screenWidth } = Dimensions.get('window');
+
+
+
+const data3 = [
+  {
+    id: "1",
+    title: "Dog 1"
+},
+{
+    id: "2",
+    title: "Dog 2"
+},
+{
+    id: "3",
+    title: "Dog 3"
+},
+{
+    id: "4",
+    title: "Dog 4"
+},
+{
+  id: "5",
+  title: "Dog 5"
+},
+{
+  id: "6",
+  title: "Dog 6"
+},
+];
+
 export default function Documents({ navigation }) {
   const flatListRef = useRef(null);
-  const [visibleIndex, setVisibleIndex] = useState(0);
-  const [data, setData] = useState([    { id: '1', title: "Лицензия 1" },
-    { id: '2', title: "Лицензия 1" },
-    { id: '3', title: 'Лицензия 1' },
-    { id: '4', title: 'Item 4' },
-    { id: '5', title: 'Item 5' },
-    { id: '6', title: 'Item 6' },
-    { id: '7', title: 'Item 7' },])
+  const [selectedId, setSelectedId] = useState(data3[0]?.id);
 
-  const baseCards = [
-    { id: 1, logo: "", text: "ПК ПОНАРТ" },
-    { id: 2, logo: "", text: "ПК2 ПОНАРТ" },
-    { id: 3, logo: "", text: "ПК3 ПОНАРТ" },
-    { id: 4, logo: "", text: "ПК4 ПОНАРТ" },
-  ];
 
-  const [cards, setCards] = useState([...baseCards, ...baseCards]);
-  
-
-  const onEndReached = () => {
-    setCards((prevCards) => [...prevCards, ...baseCards]);
-  };
-
-  const onViewableItemsChanged = useRef(({ viewableItems }) => {
-    if (viewableItems && viewableItems.length > 0) {
-      const firstVisibleItem = viewableItems[0];
-      const { index } = firstVisibleItem;
-      setVisibleIndex(index);
-      scrollToIndex(index);
-    }
-  }).current;
-
-  const scrollToIndex = (index) => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToIndex({ index, animated: true });
-    }
-  };
-  
-  
-  const Card = ({ logo, text, isHighlighted }) => {
-    return (
-      <View
-        style={[
-          styles2.card,
-          isHighlighted && styles2.highlightedCard,
-        ]}
-      >
-        <View style={styles2.logoContainer}>
-          {logo ? (
-            <Image source={{ uri: logo }} style={styles2.logo} />
-          ) : (
-            <Text style={styles2.placeholderText}>A</Text>
-          )}
-        </View>
-        <Text style={styles2.text}>{text}</Text>
-      </View>
-    );
-  };
-  
-    // Функция рендеринга каждого элемента
-  const renderItem = ({ item }) => (
-      <View style={styles.documentsItemFlatList}>
-        <TouchableOpacity style={localStyles.button}>
-            <Text style={localStyles.buttonText}>{item.title}</Text>
-        </TouchableOpacity>
-      </View>
-  );
-
+  const Item = ({ title, image, id }) => { 
+    const backgroundColor = id === selectedId ? 'lightblue' : 'white';
+    const scale = id === selectedId  ? 1.2 : 1;
+    return(
+    <View key={id} style={[styles3.item, {backgroundColor, transform: [{ scale }]}]}>
+        <Text style={styles3.title}>{title}</Text>
+    </View>
+)};
+  const renderItem = ({ item }) => { 
+    
+    return(
+    <TouchableOpacity onPress={() => {
+      setSelectedId(item.id);
+      const index = data3.findIndex(i => i.id === item.id);
+      flatListRef.current.scrollToIndex({ index, animated: true, viewPosition: 0, viewOffset: 50 });
+  }} activeOpacity={1}>
+      <View >
+      <Item id={item.id} image={item.image} title={item.title} />
+      </ View>
+    </TouchableOpacity>
+)};
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
             <View style={styles.menuPagesFooterHeader}>
             <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
-            </View>
-            <View style={styles.menuPagesHeader}>
-            <Text style={styles.menuTitle}>ИП Акулич В.С</Text>
             </View>
             <View style={styles.menuPagesSecondHeader}>
             <Text style={styles.menuTitle}>Документы</Text>
@@ -100,34 +85,19 @@ export default function Documents({ navigation }) {
             <View style={styles.menuPagesLine}/>
             </View>
       <View style={localStyles.flatListContainer}>
-      <FlatList
-            ref={flatListRef}
-            data={cards}
-            horizontal
-            keyExtractor={(item, index) => `${item.id}-${index}`}
-            renderItem={({ item, index }) => (
-              <Card logo={item.logo} text={item.text} isHighlighted={index === visibleIndex} />
-            )}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles2.flatListContent}
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={viewabilityConfig} // Передаем конфигурацию только один раз
-            initialScrollIndex={0} // Начать с первого элемента
-            onEndReached={onEndReached}
-            onEndReachedThreshold={0.5}
-            snapToInterval={120} // Прокручивать по 120 пикселей
-            decelerationRate="fast" // Быстрое замедление
-          />
-        <View style={styles.containerLine}>
-          <View style={styles.menuPagesLine}/>
-        </View>
-        <FlatList style={[{ paddingRight: 10}]}
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          ListEmptyComponent={<Text>Нет фирм/точек</Text>}
-          indicatorStyle="white"
-        />
+        <View style={{marginHorizontal: -30}}>
+            <FlatList
+              ref={flatListRef}
+                data={data3}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                horizontal
+                contentContainerStyle={{
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+            />
+         </View>
       </View>
         <View style={styles.containerButtonsBottomFlatList}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddDocument")}>
@@ -143,10 +113,36 @@ export default function Documents({ navigation }) {
   );
 }
 
+
+
+const styles3 = StyleSheet.create({
+  container: {
+      flex: 1,
+      backgroundColor: 'pink',
+      justifyContent: 'center',
+      alignItems: 'center'
+  },
+  item: {
+      backgroundColor: "#FFFFFF",
+      marginVertical: 8,
+      marginHorizontal: 10,
+      height: 50,
+      width: 100,
+      borderRadius: 8,
+  },
+  title: {
+      fontSize: 18,
+  },
+  image: {
+      flex: 1,
+  },
+});
+
 const localStyles = StyleSheet.create({
   flatListContainer: {
     flex: 1,
     marginBottom: 12,
+    marginTop: 12,
   },
   button: {
     width: "100%",

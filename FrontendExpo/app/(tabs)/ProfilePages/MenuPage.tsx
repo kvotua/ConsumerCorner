@@ -24,8 +24,8 @@ export default function Menupage({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
-        <View style={[styles.menuHeader, { marginTop: Platform.OS === 'ios' ? 38 : 128, }]}>
-          <Text style={styles.menuTitle}>Здравствуйте,</Text>
+        <View style={[styles.menuHeader, { marginTop: Platform.OS === 'ios' ? 10 : 50, height: 80,justifyContent: 'flex-end', }]}>
+          <Text style={styles.menuTitle} >Здравствуйте, Екатерина</Text>
         </View>
 
         <View style={styles.menuTopButtons}>
@@ -119,12 +119,13 @@ export default function Menupage({ navigation }) {
 }
 
 const localStyles = StyleSheet.create({
+
   footerText: {
     fontSize: isTablet ? 16 : 12 ,
     color: "#EEF3FF",
     textAlign: "center",
     fontFamily: 'Montserrat',
-    marginBottom: 15,
+    marginBottom: Platform.OS === 'ios' ? 0 : 25,
     fontWeight: "400"
   },
   footerTextContainer: {
