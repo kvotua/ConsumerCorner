@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import { decodeJwt } from "@/app/AsyncStore/Decode";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
+import { apiRequest } from "@/Api/RefreshToken";
 
 export default function Enter({ navigation }) {
   const [password, setPassword] = useState("");
@@ -51,7 +52,24 @@ const showToast = (type :string, message:string, subMessage:string) => {
           navigation.replace("MenuPage");
         else{
           const token = await AccessGetToken();
-          await SendNumber(token);
+          try {
+            const url2 = 'https://consumer-corner.kvotua.ru/verify/phone/send';
+            const jwt = await AccessGetToken();
+            const data2 = await apiRequest(
+              url2,
+              "POST",
+              {
+                Authorization: `Bearer ${jwt}`,
+              },
+              {
+                "Content-Type": "application/json",
+              }
+            )
+            console.log(data2)
+            await AsyncStorage.setItem('Ses_id', String(data2.req_id));
+          } catch (error) {
+            console.log(error.message);
+          }
           navigation.replace("CodeConfirmEnt");
         }
 
