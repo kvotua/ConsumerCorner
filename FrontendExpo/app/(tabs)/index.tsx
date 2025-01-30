@@ -44,7 +44,6 @@ export default function HomeScreen() {
 
   return (
     <>
-      <StatusBar hidden />
       <NavigateApp onLayout={onLayoutRootView} />
     </>
   );

@@ -41,6 +41,7 @@ async def add_image(session: AsyncSession, image_data: ImageData):
 async def get_all_comments_filter(session: AsyncSession, point_ids: list[int] = None, enterprises_ids: list[int] = None, category: list[str] = None) -> dict:
     result = {}
     only_points_ids = []
+    print(point_ids, enterprises_ids, category)
 
     if enterprises_ids is None and point_ids is None:
         stmt_enterprises = select(Enterprises)
@@ -53,19 +54,18 @@ async def get_all_comments_filter(session: AsyncSession, point_ids: list[int] = 
         result_enterprises: Result = await session.execute(stmt_enterprises)
         enterprises_ids = [enterprise_id for enterprise_id in result_enterprises.scalars().all()]
 
-    stmt_points = select(Points).where(
-        Points.enterprise_id.in_(enterprises_ids),
-        or_(only_points_ids == [], Points.id.in_(only_points_ids))
-    )
+    stmt_points = select(Points).where(Points.enterprise_id.in_(enterprises_ids))
+
+    if only_points_ids:
+        stmt_points = stmt_points.where(Points.id.in_(only_points_ids))
     result_points: Result = await session.execute(stmt_points)
     points = result_points.scalars().all()
 
     point_ids = [point.id for point in points]
 
-    stmt_comments = select(Comments).where(
-        Comments.point_id.in_(point_ids),
-        or_(category is None, Comments.category.in_(category))
-    )
+    stmt_comments = select(Comments).where(Comments.point_id.in_(point_ids))
+    if category:
+        stmt_comments = stmt_comments.where(Comments.category.in_(category))
     result_comments: Result = await session.execute(stmt_comments)
     comments = result_comments.scalars().all()
 
@@ -87,7 +87,7 @@ async def get_all_comments_filter(session: AsyncSession, point_ids: list[int] = 
         enterprise_id = point.enterprise_id
         point_comments = [comment for comment in comments if comment.point_id == point.id]
         
-        if point_comments:  # Only add point and enterprise if there are comments
+        if point_comments:
             if enterprise_id not in result:
                 result[enterprise_id] = {}
 

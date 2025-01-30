@@ -28,34 +28,55 @@ export default function Reviews({ navigation, pointId }) {
   const fetchReviews = async () => {
     try {
       const Points = await GetCountPoints(); // Получаем список точек
-      const reviewPromises = Points.map(point =>
-        fetch(`https://consumer-corner.kvotua.ru/comments/?point_id=${point.id}`, {
-          method: 'GET',
-          headers: {
-            'accept': 'application/json',
-          },
-        }).then(response => {
-          if (!response.ok) {
-            throw new Error(`Failed to fetch reviews for point_id=${point.id}`);
-          }
-          return response.json();
-        })
-      );
   
-      const reviewsData = await Promise.all(reviewPromises);
-      
-      // Фильтруем только те точки, у которых есть отзывы
-      const filteredData = Points.map((point, index) => ({
-        ...point,
-        reviews: reviewsData[index],
-      })).filter(point => point.reviews.length > 0); 
-      
-      console.log(filteredData);
-      setData(filteredData); // Сохраняем только нужные точки
+      const payload = {
+        point_ids: Points.map(point => point.id) // Формируем массив id всех точек
+      };
+  
+      const response = await fetch(`https://consumer-corner.kvotua.ru/comments/`, {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+      console.log(response.status)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch reviews`);
+      }
+  
+      const reviewsData = await response.json();
+      console.log(reviewsData);
+  
+      // Парсим данные и формируем массив [{ id, reviews, title }]
+      const formattedData = Points.map(point => {
+        let comments = [];
+  
+        // Перебираем enterprise_id
+        Object.values(reviewsData).forEach(enterprise => {
+          if (enterprise[point.id]) {
+            // Перебираем комментарии по point_id
+            Object.values(enterprise[point.id]).forEach(comment => {
+              comments.push(comment);
+            });
+          }
+        });
+  
+        return {
+          id: point.id,
+          title: point.title,
+          reviews: comments
+        };
+      }).filter(point => point.reviews.length > 0); // Оставляем только те точки, у которых есть отзывы
+  
+      console.log(formattedData);
+      setData(formattedData); // Сохраняем данные
     } catch (error) {
       console.error('Ошибка при загрузке отзывов:', error);
     }
   };
+  
   
   
   const renderStars = (rating) => {

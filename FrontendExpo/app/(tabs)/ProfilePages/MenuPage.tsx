@@ -124,7 +124,7 @@ const localStyles = StyleSheet.create({
     color: "#EEF3FF",
     textAlign: "center",
     fontFamily: 'Montserrat',
-    marginBottom: 15,
+    marginBottom: 0,
     fontWeight: "400"
   },
   footerTextContainer: {
