@@ -22,6 +22,16 @@ import Points from '../(tabs)/ProfilePages/Points';
 import CodePageEnter from '../(tabs)/SubPages/CodePageEnter';
 import AllPointsSoc from '../(tabs)/SubPages/AllPointsSoc';
 import FirmsSoc from '../(tabs)/SubPages/FirmsSoc';
+import AddNewAdmin from '../(tabs)/ProfilePages/AddNewAdmin';
+import AssignmentPointFirm from '../(tabs)/ProfilePages/AssignmentPointFirm';
+import RegFirmaAuth from '../(tabs)/SubPages/RegFirmaPageAuth';
+import MarketPointAuth from '../(tabs)/SubPages/RegMarketPointAuth';
+import InnRegAuth from '../(tabs)/SubPages/InnPageAuth';
+import newSocial from '../(tabs)/ProfilePages/AddSocial';
+import EditFirma from '../(tabs)/ProfilePages/EditFirms';
+import EditMarketPoint from '../(tabs)/ProfilePages/EditPoint';
+import DesignYourCorner from '../(tabs)/ProfilePages/QrPage';
+import AssignmentDoc from '../(tabs)/ProfilePages/DuplicatePages/AssignmentDocument';
 
 const Stack = createStackNavigator();
 
@@ -52,6 +62,16 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="Points" component={Points} options={{ headerShown: false }} />
           <Stack.Screen name="AllPointsSoc" component={AllPointsSoc} options={{ headerShown: false }} />
           <Stack.Screen name="FirmsSoc" component={FirmsSoc} options={{ headerShown: false }} />
+          <Stack.Screen name="AssignmentPointFirm" component={AssignmentPointFirm} options={{ headerShown: false }} />
+          <Stack.Screen name="AddNewAdmin" component={AddNewAdmin} options={{ headerShown: false }} />
+          <Stack.Screen name="RegFirmaAuth" component={RegFirmaAuth} options={{ headerShown: false }} />
+          <Stack.Screen name="MarketPointAuth" component={MarketPointAuth} options={{ headerShown: false }} />
+          <Stack.Screen name="InnRegAuth" component={InnRegAuth} options={{ headerShown: false }} />
+          <Stack.Screen name="newSocial" component={newSocial} options={{ headerShown: false }} />
+          <Stack.Screen name="EditFirma" component={EditFirma} options={{ headerShown: false }} />
+          <Stack.Screen name="EditMarketPoint" component={EditMarketPoint} options={{ headerShown: false }} />
+          <Stack.Screen name="DesignYourCorner" component={DesignYourCorner} options={{ headerShown: false }} />
+          <Stack.Screen name="AssignmentDoc" component={AssignmentDoc} options={{ headerShown: false }} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );

@@ -5,9 +5,10 @@ import Style from "../../Styles/Style";
 import { TextInputMask } from "react-native-masked-text";
 import Toast from "../Notif/toasts/Toast";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icons from "react-native-vector-icons/Feather";
 import { apiRequest } from '../../../Api/RefreshToken';
 
-export default function InnReg({navigation}){
+export default function InnRegAuth({navigation}){
     const [value, setValue] = useState("");
     const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
@@ -38,20 +39,15 @@ export default function InnReg({navigation}){
         // Сохраняем ИНН в локальное хранилище
         await AsyncStorage.setItem("Inn", inn);
         
-        const url = `https://consumer-corner.kvotua.ru/inn/inn_info?inn=${inn}`;
+        const url = `http://localhost:8765/inn/inn_info?inn=${inn}`;
       
         try {
           // Выполняем GET-запрос через универсальную функцию
-          const data = await fetch(url, {
-            method: 'GET',
-            headers:{
-              'accept': 'application/json'
-            }
-          })
-          const res = data.json();
+          const data = await apiRequest(url, "GET");
+      
           // Сохраняем тип компании и переходим на следующий экран
           await AsyncStorage.setItem("TypeFirm", data.type);
-          navigation.replace("RegFirma", { companyData: data });
+          navigation.replace("RegFirmaAuth", { companyData: data });
         } catch (error) {
           // Обработка ошибки
           showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
@@ -89,17 +85,20 @@ export default function InnReg({navigation}){
                     options={{
                     mask: "999 999 999 999",
                     }}
-                    returnKeyType="done"
                     value={value}
                     onChangeText={handleInputChange}
-                    keyboardType="phone-pad"
+                    // keyboardType="phone-pad"
                     style={Style.textInputProfile}
                     placeholder="255 055 034 235"
                     />
                 </View>
                 <View style={localStyles.buttons}>
-                        <TouchableOpacity style={localStyles.WhiteButton} onPress={() => handleNext()}>
+                        <TouchableOpacity style={localStyles.WhiteButton} onPress={() => navigation.replace("RegFirmaAuth")}>
                         <Text style={[Style.blackText, { fontSize: 18 }]}>Далее</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={localStyles.WhiteButton} onPress={() => navigation.replace("Firms")}>
+                        <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                        <Text style={[Style.DefText, { fontSize: 18 }]}>Назад</Text>
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>

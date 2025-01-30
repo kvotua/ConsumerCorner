@@ -13,8 +13,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputMask } from "react-native-masked-text";
 import Style from "@/app/Styles/Style";
 import Icon from 'react-native-vector-icons/Feather';
+import Icons from "react-native-vector-icons/Feather";
 import Toast from "../Notif/toasts/Toast";
 import { apiRequest } from '../../../Api/RefreshToken';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function RegPage({ navigation }) {
   const [fio, setfio] = useState("");
@@ -48,7 +51,6 @@ export default function RegPage({ navigation }) {
     // Извлекаем только цифры из введенного значения
     const numericValue = text.replace(/\D/g, ""); 
     setRawPhoneValue(numericValue);
-    console.log(numericValue)
   };
 
   const handleFocus = () => {
@@ -69,23 +71,48 @@ export default function RegPage({ navigation }) {
       return;
     }
   
-    const url = 'http://localhost:8765/registration';
+    const url = '';
   
     try {
       // Выполняем POST-запрос через универсальную функцию
-      const data = await apiRequest(
-        url,
-        "POST",
-        {
-          phone: rawPhoneValue,
-          fio: fio,
-          password: password,
+      const payload = {
+        phone: rawPhoneValue,
+        fio: fio,
+        password: password,
+      }
+      const data = await fetch('https://consumer-corner.kvotua.ru/registration', {
+        method: "POST",
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
         },
-        {
-          "Content-Type": "application/json",
-        }
-      );
-  
+        body: JSON.stringify(payload),
+
+      })
+
+      const res = await data.json();
+
+      await AsyncStorage.setItem("access_token", res.access_token);
+      await AsyncStorage.setItem("refresh_token", res.refresh_token);
+
+      try {
+        const url2 = 'https://consumer-corner.kvotua.ru/verify/phone/send';
+        const jwt = await AccessGetToken();
+        const data2 = await apiRequest(
+          url2,
+          "POST",
+          {
+            Authorization: `Bearer ${jwt}`,
+          },
+          {
+            "Content-Type": "application/json",
+          }
+        )
+        console.log(data2)
+        await AsyncStorage.setItem('Ses_id', String(data2.req_id));
+      } catch (error) {
+        console.log(error.message);
+      }
       // Навигация на следующий экран
       navigation.replace("CodeConfirm");
     } catch (error) {
@@ -123,10 +150,13 @@ export default function RegPage({ navigation }) {
               <Text style={Style.titleSimple}>Телефон</Text>
 
               <TextInputMask
+                returnKeyType="done"
                 type={"custom"}
+                returnKeyType="done"
                 options={{
                   mask: "+7 (999) 999-99-99", // Маска
                 }}
+                returnKeyType="done"
                 value={phoneValue} // Значение с маской
                 onChangeText={handleInputChange} // Обработчик изменения текста
                 keyboardType="phone-pad"
@@ -138,6 +168,7 @@ export default function RegPage({ navigation }) {
               <Text style={Style.titleSimple}>Пароль</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
+                  returnKeyType="done"
                   style={Style.textInputProfile}
                   value={password}
                   onChangeText={setPassword}
@@ -151,21 +182,21 @@ export default function RegPage({ navigation }) {
                   <Icon name={isSecure ? 'eye-off' : 'eye'} size={24} color="#00000" />
                 </TouchableOpacity>
               </View>
-
               <Text style={Style.titleSimple}>Ф.И.О</Text>
-              <TextInput style={Style.textInputProfile} placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio}/>
+              <TextInput style={Style.textInputProfile} returnKeyType="done" placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio}/>
             </View>
 
             <View style={[Style.buttons, {paddingVertical: -10,}]}>
               <TouchableOpacity
                 style={Style.WhiteButton}
                 onPress={() => {
-                  navigation.replace("RegFirma");
+                  handleNext();
                 }}
               >
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Start")}>
+                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
                 <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>

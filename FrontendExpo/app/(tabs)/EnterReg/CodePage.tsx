@@ -12,6 +12,9 @@ import Style from "../../Styles/Style"
 import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken, SesIdToken } from "@/app/AsyncStore/StoreTokens";
 import { apiRequest } from '../../../Api/RefreshToken';
+import Icons from "react-native-vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 export default function CodePage({ navigation}) {
   const [code, setcode] = useState("");
@@ -27,25 +30,29 @@ export default function CodePage({ navigation}) {
   };
   
   const handleNext = async () => {
-    const url = 'http://127.0.0.1:8080/auth/check';
-  
     try {
-      // Получаем токены из локального хранилища
       const token = await AccessGetToken();
       const ses = await SesIdToken();
-  
-      // Выполняем запрос с помощью универсальной функции
-      const data = await apiRequest(
-        url,
-        "POST",
-        {
-          req_id: ses,
-          sms_code: code,
+      console.log(token)
+
+      const payload = {
+        req_id: ses,
+        code: code,
+      }
+
+
+      const data = await fetch('https://consumer-corner.kvotua.ru/verify/phone/check', {
+        method: "POST",
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        {
-          "access-token": token,
-        }
-      );
+        body: JSON.stringify(payload),
+      })
+
+      const res2 = await data.json();
+      await AsyncStorage.setItem('access_token', res2.access_token);
   
       // Если успешный запрос, переходим на следующий экран
       navigation.replace("Inn");
@@ -72,11 +79,12 @@ export default function CodePage({ navigation}) {
             </View>
               <View style={StyleSheet.flatten([Style.fields, {marginTop: 20}])}>
                 <Text style={Style.titleSimple}>
-                  Введите код подтверждения из SMS - сообщнеия, отправленного на
-                  номер
+                  Введите последние 4 цифры входящего номера телефона, звонок поступит на номер +7 (961) ХХХ ХХ 36
                 </Text>
                 <TextInput
+                  returnKeyType="done"
                   style={[Style.textInputProfile, {marginTop: 10}]}
+                  returnKeyType="done"
                   keyboardType="phone-pad"
                   onChangeText={handleInputChange}
                   placeholder="Код подтверждения"
@@ -89,11 +97,8 @@ export default function CodePage({ navigation}) {
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
               <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Register")}>
-                <Text
-                  style={Style.DefText}
-                >
-                  Назад
-                </Text>
+                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+                <Text style={Style.DefText} >Назад</Text>
               </TouchableOpacity>
             </View>
       </SafeAreaView>

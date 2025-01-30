@@ -12,10 +12,18 @@
       "supportsTablet": true
     },
     "android": {
+      "fullscreen": true,
+      "statusBar": {
+        "translucent": true,
+        "backgroundColor": "transparent"
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
+    },
+    "ios": {
+      "requiresFullScreen": true
     },
     "web": {
       "bundler": "metro",

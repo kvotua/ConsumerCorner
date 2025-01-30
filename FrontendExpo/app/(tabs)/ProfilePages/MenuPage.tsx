@@ -42,7 +42,7 @@ export default function Menupage({ navigation }) {
           />
         </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.whiteButtonMenuTopActive} onPress={() => navigation.replace("FirmsSoc")}>
+          <TouchableOpacity style={styles.whiteButtonMenuTopActive} onPress={() => navigation.replace("Social")}>
           <View style={[{flex: 1, justifyContent: "space-between",}]}>
             <Text style={styles.blackText}>Соц. сети</Text>
             <Image
@@ -59,10 +59,10 @@ export default function Menupage({ navigation }) {
             onPress={() => navigation.replace("Reviews")}
           >
             <View style={[{flex: 1, justifyContent: "space-between",}]}>
-                <Text style={styles.blackText}>Отзывы и приложения</Text>
+                <Text style={styles.blackText}>Отзывы и предложения</Text>
                 <View style={styles.containerBell}>  
-                  <Text style={[{fontSize: 10, fontWeight: "bold", fontFamily: "Montserrat", textAlign: "right", top: 4}]}>4</Text>
-                  <Icons style={[{alignSelf: "flex-end"}]} name="bell" size={22} color="black" />
+                  {/* <Text style={[{fontSize: 10, fontWeight: "bold", fontFamily: "Montserrat", textAlign: "right", top: 4}]}>4</Text> */}
+                  {/* <Icons style={[{alignSelf: "flex-end"}]} name="bell" size={22} color="black" /> */}
             </View>
             <Image
                 source={require("../../../assets/images/corner.png")}
@@ -87,7 +87,7 @@ export default function Menupage({ navigation }) {
             onPress={() => navigation.replace("AdminPanel")}
           >
           <View style={[{flex: 1, justifyContent: "space-between",}]}>
-            <Text style={[styles.blackText, { paddingEnd: 24 }]}>Админ-панель</Text>
+            <Text style={[styles.blackText, { paddingEnd: 24 }]}>Команда</Text>
             <Image
             source={require("../../../assets/images/corner.png")}
             style={[{ width: 25, height: 25, alignSelf: "flex-end", bottom: 10, right: 10}]}/>
@@ -124,7 +124,7 @@ const localStyles = StyleSheet.create({
     color: "#EEF3FF",
     textAlign: "center",
     fontFamily: 'Montserrat',
-    marginBottom: 15,
+    marginBottom: 0,
     fontWeight: "400"
   },
   footerTextContainer: {

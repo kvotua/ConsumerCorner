@@ -16,8 +16,8 @@ class CommentData(BaseModel):
     @field_validator("stars")
     def check_stars_if_report(cls, v: Optional[int], info):
         category = info.data.get('category', '')
-        if category == 'report' and v is None:
-            raise ValueError('The comment-report requires stars')
+        if category in ['report', 'appeal'] and v is None:
+            raise ValueError('The comment-report or comment-appeal requires stars')
         if v is not None and (v < 1 or v > 5):
             raise ValueError('Stars must be between 1 and 5')
         return v
@@ -44,6 +44,22 @@ class ImageData(BaseModel):
     id: Annotated[str, Field(title="Photo ID", examples=['5f2fcae09b58c38603442a4f'])]
     comment_id: Annotated[int, Field(title="Comment ID", examples=[1])]
 
+class GetCommentsRequest(BaseModel):
+    point_ids: Annotated[List[int], Field(
+        default_factory=list,
+        title="Points ID's",
+        examples=[[1, 2, 10]]
+    )]
+    enterprises_ids: Annotated[List[int], Field(
+        default_factory=list,
+        title="Enterprises ID's",
+        examples=[[2, 5, 3]]
+    )]
+    category: Annotated[List[str], Field(
+        default_factory=list,
+        title="Comment categoryies",
+        examples=[['report', 'appeal']]
+    )]
 
 class CommentsSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)

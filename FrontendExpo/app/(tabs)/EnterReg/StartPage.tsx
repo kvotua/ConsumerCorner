@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from "../Notif/toasts/Toast";
@@ -26,6 +27,8 @@ export default function StartPage({ navigation }) {
 
 
   return (
+    <>
+    <StatusBar hidden />
     <ImageBackground
       source={require("../../../assets/images/background.png")}
       style={styles.background}
@@ -38,7 +41,7 @@ export default function StartPage({ navigation }) {
             message={toast.message}
             subMessage={toast.subMessage}
             visible={toast.visible}
-            onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
+            onDismiss={() => setToast({ ...toast, visible: false })}
           />
         )}
 
@@ -57,7 +60,7 @@ export default function StartPage({ navigation }) {
         <View style={StyleSheet.flatten([styles.containerButtonsMenuPages, {justifyContent: 'center', alignItems: "center",}])}>
           <TouchableOpacity
             style={styles.WhiteButton}
-            // onPress={() => navigation.replace("Register")}
+            onPress={() => navigation.replace("Register")}
           >
             <Text style={styles.blackText}>Регистрация</Text>
           </TouchableOpacity>
@@ -89,6 +92,7 @@ export default function StartPage({ navigation }) {
         </View>
       </SafeAreaView>
     </ImageBackground>
+    </>
   );
 }
 

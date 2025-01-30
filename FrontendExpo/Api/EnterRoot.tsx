@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { apiRequest } from '../Api/RefreshToken';
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export const SendNumber = async (token) => {
   const url = 'https://consumer-corner.kvotua.ru/auth/send';
@@ -13,9 +14,19 @@ export const SendNumber = async (token) => {
 };
 
 export const handleNext = async (phone, password) => {
+  let token = await AccessGetToken();
   const url = 'https://consumer-corner.kvotua.ru/login';
   try {
-    return await apiRequest(url, "POST", { phone, password });
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({phone, password})
+    });
+    return response.json();
   } catch (error) {
     console.error(error.message);
   }

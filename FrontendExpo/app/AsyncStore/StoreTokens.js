@@ -21,7 +21,8 @@ export const RefreshGetToken = async () => {
 export const SesIdToken = async () => {
     try {
         const token = await AsyncStorage.getItem('Ses_id');
-        return token ? token : null;
+        console.log(token)
+        return token ? Number(token) : null;
     } catch (error) {
         return null;
     }
@@ -40,6 +41,15 @@ export const GetTypeFirma = async () => {
     try {
         const token = await AsyncStorage.getItem("TypeFirm")
         return token;
+    } catch (error) {
+        return null;
+    }
+}
+
+export const GetIdFirma = async () => {
+    try {
+        const token = await AsyncStorage.getItem("TypeFirm")
+        return Number(token);
     } catch (error) {
         return null;
     }
