@@ -24,8 +24,8 @@ export default function Menupage({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
-        <View style={[styles.menuHeader, { marginTop: Platform.OS === 'ios' ? 38 : 128, }]}>
-          <Text style={styles.menuTitle}>Здравствуйте,</Text>
+      <View style={[styles.menuHeader, { marginTop: Platform.OS === 'ios' ? 10 : 50, height: 80,justifyContent: 'flex-end', }]}>
+      <Text style={styles.menuTitle} >Здравствуйте, Екатерина</Text>
         </View>
 
         <View style={styles.menuTopButtons}>
@@ -34,7 +34,7 @@ export default function Menupage({ navigation }) {
             onPress={() => navigation.replace("Documents")}
           >
           <View style={[{flex: 1, justifyContent: "space-between",}]}>
-            <Text style={[styles.blackText, {paddingTop: 25, paddingStart: 15}]}>Документы</Text>
+          <Text style={[styles.blackText, {paddingTop: isTablet ? 30 : 25, paddingStart: 15}]}>Документы</Text>
             <Text style={[styles.alertText, { paddingStart: 15, }]}>Не заполнены</Text>
             <Image
             source={require("../../../assets/images/corner.png")}
@@ -124,7 +124,7 @@ const localStyles = StyleSheet.create({
     color: "#EEF3FF",
     textAlign: "center",
     fontFamily: 'Montserrat',
-    marginBottom: 0,
+    marginBottom: Platform.OS === 'ios' ? isTablet ? 0 : "10%" : "10%",
     fontWeight: "400"
   },
   footerTextContainer: {
