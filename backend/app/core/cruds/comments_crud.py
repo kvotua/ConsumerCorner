@@ -38,7 +38,7 @@ async def add_image(session: AsyncSession, image_data: ImageData):
     session.add(data_for_db)
     await session.commit()
 
-async def get_all_comments_filter(session: AsyncSession, point_ids: list[int] = None, enterprises_ids: list[int] = None, category: str = None) -> dict:
+async def get_all_comments_filter(session: AsyncSession, point_ids: list[int] = None, enterprises_ids: list[int] = None, category: list[str] = None) -> dict:
     result = {}
     only_points_ids = []
 
@@ -64,7 +64,7 @@ async def get_all_comments_filter(session: AsyncSession, point_ids: list[int] = 
 
     stmt_comments = select(Comments).where(
         Comments.point_id.in_(point_ids),
-        or_(category is None, Comments.category == category)
+        or_(category is None, Comments.category.in_(category))
     )
     result_comments: Result = await session.execute(stmt_comments)
     comments = result_comments.scalars().all()
@@ -85,13 +85,15 @@ async def get_all_comments_filter(session: AsyncSession, point_ids: list[int] = 
 
     for point in points:
         enterprise_id = point.enterprise_id
-        if enterprise_id not in result:
-            result[enterprise_id] = {}
-        if point.id not in result[enterprise_id]:
+        point_comments = [comment for comment in comments if comment.point_id == point.id]
+        
+        if point_comments:  # Only add point and enterprise if there are comments
+            if enterprise_id not in result:
+                result[enterprise_id] = {}
+
             result[enterprise_id][point.id] = {}
 
-        for comment in comments:
-            if comment.point_id == point.id:
+            for comment in point_comments:
                 result[enterprise_id][point.id][comment.id] = {
                     'text': comment.text,
                     'stars': comment.stars,

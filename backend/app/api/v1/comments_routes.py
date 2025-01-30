@@ -69,8 +69,9 @@ async def get_comments(
     if point_ids and enterprises_ids:
         raise HTTPException(status_code=400, detail="Specify either point_ids or enterprises_ids, not both.")
     if category is not None:
-        if category not in ['report', 'offer', 'appeal']:
-            raise HTTPException(status_code=400, detail="Category can only be: report, offer or appeal")
+        invalid_categories = [cat for cat in category if cat not in ['report', 'offer', 'appeal']]
+        if invalid_categories:
+            raise HTTPException(status_code=400, detail=f"Invalid categories: {', '.join(invalid_categories)}. Category can only be: report, offer or appeal")
     
     if not point_ids and not enterprises_ids:
         return await comments_crud.get_all_comments_filter(session=session, category=category)

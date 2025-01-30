@@ -55,7 +55,11 @@ class GetCommentsRequest(BaseModel):
         title="Enterprises ID's",
         examples=[[2, 5, 3]]
     )]
-    category: Optional[str] = Field(None, title="Comment category", examples=['report'])
+    category: Annotated[List[str], Field(
+        default_factory=list,
+        title="Comment categoryies",
+        examples=[['report', 'appeal']]
+    )]
 
 class CommentsSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
