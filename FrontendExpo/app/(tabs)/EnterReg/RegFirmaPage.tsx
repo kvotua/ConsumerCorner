@@ -21,7 +21,7 @@ import Icons from "react-native-vector-icons/Feather";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 
 export default function RegFirma({ navigation, route }) {
-  const {companyData} = route.params;
+  const {companyData, from, inn} = route.params;
   const [NameFima, setValue] = useState();
   const [OGRN, setValue2] = useState();
   const [Adress, setValue3] = useState();
@@ -146,7 +146,7 @@ export default function RegFirma({ navigation, route }) {
           <TouchableOpacity style={[Style.buttonMenuPage]} onPress={SendToServerReg}>
             <Text style={Style.blackText}>Далее</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[Style.buttonBackMenuPage, , { marginTop: 10 }]} onPress={() => navigation.replace("Inn")}>
+          <TouchableOpacity style={[Style.buttonBackMenuPage, , { marginTop: 10 }]} onPress={() => navigation.replace("Inn", {from: from, inn: inn})}>
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
             <Text style={Style.DefText}>Назад</Text>
           </TouchableOpacity>
