@@ -17,6 +17,8 @@ import { apiRequest } from "@/Api/RefreshToken";
 import Toast from "../Notif/toasts/Toast";
 import { getEnterprisesInfo, registerEnterprise } from '../../../Api/registerEnterprise';
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
+import { replace } from 'expo-router/build/global-state/routing';
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const screenWidth = Dimensions.get("window").width;
@@ -24,53 +26,59 @@ const screenWidth = Dimensions.get("window").width;
 export default function Firms({ navigation }) {
   const [firms, setfirms] = useState();
 
-  useEffect(() => {
-    fetchfirms();
-  }, []);
+    useEffect(() => {
+      fetchfirms();
+    }, []);
+  
+    const fetchfirms = async () => {
+      try {
+        const jwt = await AccessGetToken();
+        const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/enterprises-info`, {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+    
+        const data = await response.json();
+    
+        const filteredData = await Promise.all(
+          data.map(async (item) => {
+            let imageData = null;
+            if (item.image_id) {
+              const imageResponse = await fetch(`https://consumer-corner.kvotua.ru/mongo/image/${item.image_id}`, {
+                method: "GET",
+                headers: {
+                  accept: "application/json",
+                  Authorization: `Bearer ${jwt}`,
+                },
+              });
+              const imageJson = await imageResponse.json();
+              imageData = imageJson.image_data; 
+            }
+            return {
+              id: item.id,
+              name: item.name,
+              middle_stars: item.middle_stars,
+              general_type_activity: item.general_type_activity,
+              image_data: imageData, 
+            };
+          })
+        );
+    
+        setfirms(filteredData);
+      } catch (error) {
+        console.error("Error fetching firms:", error);
+      }
+    };
 
-  const fetchfirms = async () => {
-    try {
-      const jwt = await AccessGetToken();
-      const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/enterprises-info`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-
-      const data = await response.json();
-
-      const filteredData = await Promise.all(
-        data.map(async (item) => {
-          let imageData = null;
-          if (item.image_id) {
-            const imageResponse = await fetch(`https://consumer-corner.kvotua.ru/mongo/image/${item.image_id}`, {
-              method: "GET",
-              headers: {
-                accept: "application/json",
-                Authorization: `Bearer ${jwt}`,
-              },
-            });
-            const imageJson = await imageResponse.json();
-            imageData = imageJson.image_data;
-          }
-          return {
-            id: item.id,
-            name: item.name,
-            middle_stars: item.middle_stars,
-            general_type_activity: item.general_type_activity,
-            image_data: imageData,
-          };
-        })
+      useFocusEffect(
+        React.useCallback(() => {
+          fetchfirms();
+        }, [])
       );
-
-      setfirms(filteredData);
-    } catch (error) {
-      console.error("Error fetching firms:", error);
-    }
-  };
-
+    
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -93,14 +101,16 @@ export default function Firms({ navigation }) {
     );
   };
 
-  const renderRightActions = () => (
+  const renderRightActions = (id) => (
     <View style={[localStyles.rightAction]}>
-      <Icons
-        name="pencil"
-        size={24}
-        color="#FFFFFF"
-        style={[{ marginEnd: "5%" }]}
-      />
+      <TouchableOpacity onPress={() => navigation.replace("EditFirma", { id })}>
+        <Icons
+          name="pencil"
+          size={24}
+          color="#FFFFFF"
+          style={[{ marginEnd: "5%" }]}
+        />
+      </TouchableOpacity>
     </View>
   );
 
@@ -143,7 +153,7 @@ export default function Firms({ navigation }) {
           <Swipeable
         overshootRight={false} // Disable right overshoot
         rightThreshold={100} // Adjust this value as needed
-            renderRightActions={renderRightActions}
+            renderRightActions={() => renderRightActions(item.id)}
             containerStyle={{ overflow: "visible" }}
           >
             <View>

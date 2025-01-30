@@ -39,7 +39,6 @@ const showToast = (type :string, message:string, subMessage:string) => {
   const SendtoServer = async () =>{
     try {
       const data = await handleNext(rawPhoneValue, password)
-
       if(data.message == "Input should be a valid dictionary or object to extract fields from")
         showToast("error", "Ошибка!", data.message || "Неверный логин или пароль");
       await AsyncStorage.setItem("access_token", data.access_token);
@@ -86,7 +85,6 @@ const showToast = (type :string, message:string, subMessage:string) => {
             </View>
             <View style={Style.fields}>
               <Text style={Style.titleSimple}>Номер телефона</Text>
-
               <TextInputMask
                 returnKeyType="done"
                 type={"custom"}
@@ -94,18 +92,21 @@ const showToast = (type :string, message:string, subMessage:string) => {
                   mask: "+7 (999) 999-99-99",
                 }}
                 value={phoneValue}
+                returnKeyType="done"
                 onChangeText={handleInputChange}
                 keyboardType="phone-pad"
                 style={Style.textInputProfile}
                 placeholder="+7 (999) 999-99-99"
                 onFocus={handleFocus}
               />
+              
                 <Text style={Style.titleSimple}>Пароль</Text>
 
                 <TextInput
                   returnKeyType="done"
                   style={Style.textInputProfile}
                   value={password}
+                  returnKeyType="done"
                   onChangeText={setPassword}
                   secureTextEntry={isSecure}
                   placeholder="Пароль"

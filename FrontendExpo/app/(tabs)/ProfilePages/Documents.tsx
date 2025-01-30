@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ImageBackground,
   Text,
@@ -11,32 +11,66 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from "react-native-vector-icons/Feather";
 import styles from "../../Styles/Style";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 const viewabilityConfig = { itemVisiblePercentThreshold: 80 };
 
 export default function Documents({ navigation }) {
   const flatListRef = useRef(null);
   const [visibleIndex, setVisibleIndex] = useState(0);
-  const [data, setData] = useState([    { id: '1', title: "Лицензия 1" },
-    { id: '2', title: "Лицензия 1" },
-    { id: '3', title: 'Лицензия 1' },
-    { id: '4', title: 'Item 4' },
-    { id: '5', title: 'Item 5' },
-    { id: '6', title: 'Item 6' },
-    { id: '7', title: 'Item 7' },])
+  const [data, setData] = useState();
+  const [cards, setCards] = useState([]); 
+  const fetchPoints = async () => {
+    try {
+      const jwt = await AccessGetToken();
+      const response = await fetch('https://consumer-corner.kvotua.ru/points/', {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${jwt}`
+        },
+      });
+      const points = await response.json();
+      
+      console.log('Fetched points:', points); // Log the API response
+  
+      if (Array.isArray(points)) {
+        setCards(points);  // Сохраняем точки в стейт
+        points.forEach(async (point) => {
+          await fetchDocuments(point.id);
+        });
+      } else {
+        console.error('Error: API response is not an array');
+      }
+    } catch (error) {
+      console.error("Error fetching points:", error);
+    }
+  };
 
-  const baseCards = [
-    { id: 1, logo: "", text: "ПК ПОНАРТ" },
-    { id: 2, logo: "", text: "ПК2 ПОНАРТ" },
-    { id: 3, logo: "", text: "ПК3 ПОНАРТ" },
-    { id: 4, logo: "", text: "ПК4 ПОНАРТ" },
-  ];
-
-  const [cards, setCards] = useState([...baseCards, ...baseCards]);
+  // Функция для получения документов для точки
+  const fetchDocuments = async (pointId) => {
+    try {
+      const response = await fetch(`https://consumer-corner.kvotua.ru/mongo/document/${pointId}`, {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+        },
+      });
+      const documents = await response.json();
+      if (documents && documents.document_data) {
+        setData((prevData) => [...prevData, ...documents.document_data]);
+      } else {
+        console.error('Данные документов недоступны', documents);
+      }
+  // Сохраняем документы
+    } catch (error) {
+      console.error(`Error fetching documents for point ${pointId}:`, error);
+    }
+  };
   
 
   const onEndReached = () => {
-    setCards((prevCards) => [...prevCards, ...baseCards]);
+    setCards((prevCards) => [...prevCards, ...cards]);
   };
 
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
@@ -55,7 +89,10 @@ export default function Documents({ navigation }) {
   };
   
   
-  const Card = ({ logo, text, isHighlighted }) => {
+  const Card = ({ image_id, title, isHighlighted }) => {
+    const imageSource = image_id
+    ? { uri: `data:image/png;base64,${image_id}` }
+    : require("../../../assets/images/test.jpg");
     return (
       <View
         style={[
@@ -64,13 +101,9 @@ export default function Documents({ navigation }) {
         ]}
       >
         <View style={styles2.logoContainer}>
-          {logo ? (
-            <Image source={{ uri: logo }} style={styles2.logo} />
-          ) : (
-            <Text style={styles2.placeholderText}>A</Text>
-          )}
+          <Image source={imageSource} style={{ height: 50, width: 50 }} />
         </View>
-        <Text style={styles2.text}>{text}</Text>
+        <Text style={styles2.text}>{title}</Text>
       </View>
     );
   };
@@ -83,6 +116,10 @@ export default function Documents({ navigation }) {
         </TouchableOpacity>
       </View>
   );
+
+  useEffect(() => {
+    fetchPoints();
+  }, []);
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
@@ -106,7 +143,7 @@ export default function Documents({ navigation }) {
             horizontal
             keyExtractor={(item, index) => `${item.id}-${index}`}
             renderItem={({ item, index }) => (
-              <Card logo={item.logo} text={item.text} isHighlighted={index === visibleIndex} />
+              <Card image_id={item.image_id} title={item.title} isHighlighted={index === visibleIndex} />
             )}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles2.flatListContent}
@@ -131,11 +168,11 @@ export default function Documents({ navigation }) {
       </View>
         <View style={styles.containerButtonsBottomFlatList}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddDocument")}>
-            <Text style={styles.blackText}>Добавить документ</Text>
+            <Text style={styles.textInButtonsMenuPage}>Добавить документ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
-            <Text style={styles.DefText}>Назад</Text>
+            <Text style={styles.textInButtonsBackMenuPage}>Назад</Text>
         </TouchableOpacity>
         </View>
       </SafeAreaView>

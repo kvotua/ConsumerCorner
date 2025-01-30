@@ -75,6 +75,7 @@ export default function RegFirmaAuth({ navigation }) {
           <View style={localStyles.fields}>
             <Text style={Style.titleSimple}>Название фирмы</Text>
             <TextInput
+            returnKeyType="done"
               value={NameFima}
               onChangeText={handleInputChange}
               style={Style.textInputProfile}
@@ -83,6 +84,7 @@ export default function RegFirmaAuth({ navigation }) {
 
             <Text style={Style.titleSimple}>ОГРН юридического лица</Text>
             <TextInputMask
+            returnKeyType="done"
               type={"custom"}
               options={{ mask: "9999999999999" }}
               value={OGRN}
@@ -94,6 +96,7 @@ export default function RegFirmaAuth({ navigation }) {
 
             <Text style={Style.titleSimple}>Фактический адрес</Text>
             <TextInput
+            returnKeyType="done"
               style={[Style.textInputProfile, isAddressFilled && { backgroundColor: '#fddb67' }]}
               placeholder="ул. Павлика Морозова 74Б"
               value={Adress}
@@ -102,6 +105,7 @@ export default function RegFirmaAuth({ navigation }) {
 
             <Text style={Style.titleSimple}>Основной вид деятельности</Text>
             <TextInput
+            returnKeyType="done"
               style={Style.textInputProfile}
               placeholder="Частное предприятие"
               value={VidDo}

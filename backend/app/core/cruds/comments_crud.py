@@ -140,6 +140,37 @@ async def get_all_comments(session: AsyncSession, point_id: int) -> list[Comment
 
     return comments_data
 
+async def get_comment_by_id(session: AsyncSession, comment_id: int) -> CommentsSchema | None:
+    # Запрашиваем комментарий по id
+    stmt_comment = select(Comments).where(Comments.id == comment_id)
+    result_comment: Result = await session.execute(stmt_comment)
+    comment = result_comment.scalars().first()
+
+    # Если комментарий не найден, возвращаем None
+    if not comment:
+        return None
+
+    # Запрашиваем изображения, связанные с этим комментарием
+    stmt_imgs = select(Imgs).where(Imgs.comment_id == comment.id)
+    result_imgs: Result = await session.execute(stmt_imgs)
+    imgs = result_imgs.scalars().all()
+
+    # Собираем список изображений для этого комментария
+    images_data = [img.id for img in imgs]
+
+    # Формируем и возвращаем объект CommentsSchema
+    return CommentsSchema(
+        id=comment.id,
+        point_id=comment.point_id,
+        text=comment.text,
+        stars=comment.stars,
+        name=comment.name,
+        number=comment.number,
+        isAnonimus=comment.isAnonimus,
+        category=comment.category,
+        created_at=comment.created_at,
+        images_data=images_data
+    )
 
 
 async def get_points_id(session: AsyncSession):

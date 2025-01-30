@@ -117,6 +117,7 @@ export default function AllPointsSoc({ navigation, route}) {
               </View>
               <Text style={[{textAlign: "left", width: "100%", color: "#1644B5", fontSize: 18, marginTop: 8}]}>URL</Text>
               <TextInput
+              returnKeyType="done"
                 style={localStyles.modalInput}
                 placeholder="Введите название соц.сети"
                 value={socialName}
@@ -124,6 +125,7 @@ export default function AllPointsSoc({ navigation, route}) {
               />
             <Text style={[{textAlign: "left", width: "100%", color: "#1644B5", fontSize: 18, marginTop: 8}]}>Пометка</Text>
               <TextInput
+              returnKeyType="done"
                 style={localStyles.modalInput}
                 placeholder=""
                 value={socialName}

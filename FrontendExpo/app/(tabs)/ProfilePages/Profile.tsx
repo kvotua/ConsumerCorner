@@ -16,6 +16,8 @@ import Style from "@/app/Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import Icons from "react-native-vector-icons/Feather";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Profile({ navigation }) {
   const [userData, setUserData] = useState({});
@@ -29,6 +31,15 @@ export default function Profile({ navigation }) {
     if (Platform.OS === 'ios') return isTablet ? 192 : -25; 
     else if (Platform.OS === 'android') return isTablet ? 192 : 25; 
     return 0; 
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear(); // Очищаем асинхронное хранилище
+      navigation.replace("Start"); // Перенаправляем на страницу Start
+    } catch (error) {
+      console.error("Ошибка при выходе из аккаунта:", error);
+    }
   };
 
   // Функция для получения данных профиля
@@ -95,18 +106,17 @@ export default function Profile({ navigation }) {
   // Данные для FlatList
   const inputData = [
     { id: '1', label: 'Ф.И.О', placeholder: 'Введите Ф.И.О', value: userData.name || '', isSwitch: false, key: 'name' },
-    { id: '2', label: 'Номер телефона', placeholder: 'Введите номер телефона', value: userData.phone || '', isSwitch: false, key: 'phone' },
+    { id: '2', label: 'Номер телефона', placeholder: 'Введите номер телефона', value: userData.phone || '', isSwitch: false, key: 'phone', editable: false },
     { id: '3', label: 'Email', placeholder: 'Введите email', value: userData.email || '', isSwitch: false, key: 'email' },
-    { id: '5', label: 'Получать отзывы в Telegram', isSwitch: true }, // Новый элемент для переключателя
+    { id: '5', label: 'Получать отзывы в Telegram', isSwitch: true },
   ];
-
-  // Функция рендеринга каждого элемента FlatList
+  
   const renderInputItem = ({ item }) => (
     <View style={{ marginBottom: 18, flexDirection: item.isSwitch ? 'row' : 'column', alignItems: item.isSwitch ? 'center' : 'flex-start' }}>
       <Text style={Style.textDescriptionProfile}>{item.label}</Text>
       {item.isSwitch ? (
         <Switch 
-          style={[{ transform: isTablet ? [{ scale: 1 }] : [{ scale: 1 }] }, { marginStart: "auto" }]} // Добавляем отступ слева
+          style={[{ transform: isTablet ? [{ scale: 1 }] : [{ scale: 1 }] }, { marginStart: "auto" }]} 
           onValueChange={toggleSwitch}
           value={isEnabled}
           trackColor={{ false: "#7B9DF2", true: "#7B9DF2" }}
@@ -114,24 +124,29 @@ export default function Profile({ navigation }) {
         />
       ) : (
         <TextInput 
-          returnKeyType="done"
-          style={Style.textInputProfile} 
+          style={[Style.textInputProfile, item.editable === false && localStyles.disabledInput]} 
           placeholder={item.placeholder} 
           value={item.value} 
+          editable={item.editable !== false} 
           onChangeText={(text) => setUserData({ ...userData, [item.key]: text })}
         />
       )}
     </View>
   );
 
+
+
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
-       <SafeAreaView style={[Style.containerMainPage]}>
-        <View style={Style.profileHeader}>
+        <SafeAreaView style={[Style.containerMainPage]}>
+        <View style={[Style.profileHeader, {flexDirection: 'row', justifyContent: "center"}]}>
           <Image
             source={require("../../../assets/images/profileImage.png")}
             style={localStyles.profileImage} 
           />
+          <TouchableOpacity onPress={() => handleLogout()} style={{top: -5, left: 100}}>
+            <Icon name='exit-to-app' size={32} color={'white'}/>
+          </TouchableOpacity>
         </View>
         
         <View style={Style.containerProfile}>
@@ -167,5 +182,10 @@ const localStyles = StyleSheet.create({
     width: "100%",
     height: 45,  
     justifyContent: 'flex-end', 
+  },
+  disabledInput: {
+    backgroundColor: "#E0E0E0", // Светло-серый фон
+    color: "#A0A0A0", // Серый текст
+    borderColor: "#C0C0C0", // Серый бордер
   },
 });

@@ -8,7 +8,7 @@ import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import { Swipeable } from "react-native-gesture-handler";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import { replace } from "expo-router/build/global-state/routing";
-import MaskedView from "@react-native-community/masked-view";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Points({ navigation, route }) {
   const { id } = route.params;
@@ -24,8 +24,6 @@ export default function Points({ navigation, route }) {
   useEffect(() => {
     const fetchPoints = async () => {
       try {
-        const url = `123`;
-        console.log(url);
         const jwt = await AccessGetToken();
         const response = await fetch(`https://consumer-corner.kvotua.ru/points/points-by-enterprise/${id}`, {
           method: "GET",
@@ -45,6 +43,32 @@ export default function Points({ navigation, route }) {
 
     fetchPoints();
   }, []);
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPoints = async () => {
+        try {
+          const jwt = await AccessGetToken();
+          const response = await fetch(`https://consumer-corner.kvotua.ru/points/points-by-enterprise/${id}`, {
+            method: "GET",
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
+          const data = await response.json(); 
+          setPoints(data);
+        } catch (error) {
+          console.error("Ошибка при загрузке точек:", error.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchPoints();
+    }, [])
+  );
 
   if (loading) {
     return (
@@ -75,16 +99,18 @@ export default function Points({ navigation, route }) {
     }
   };
 
-  const renderRightActions = () => (
-    <View style={[localStyles.rightAction]}>
-      <Icons
-        name="pencil"
-        size={24}
-        color="#FFFFFF"
-        style={[{ marginEnd: "5%" }]}
-      />
-    </View>
-  );
+    const renderRightActions = (id) => (
+      <View style={[localStyles.rightAction]}>
+        <TouchableOpacity onPress={() => navigation.replace("EditMarketPoint", { id })}>
+          <Icons
+            name="pencil"
+            size={24}
+            color="#FFFFFF"
+            style={[{ marginEnd: "5%" }]}
+          />
+        </TouchableOpacity>
+      </View>
+    );
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -141,7 +167,7 @@ export default function Points({ navigation, route }) {
 
           {/* Карточка для свайпа */}
           <View style={{ borderRadius: 10, overflow: "hidden", width: '100%', height: '100%' }}>
-            <Swipeable overshootRight={false} rightThreshold={100} renderRightActions={renderRightActions} containerStyle={{ overflow: "visible" }}>
+            <Swipeable overshootRight={false} rightThreshold={100} renderRightActions={() => renderRightActions(item.id)} containerStyle={{ overflow: "visible" }}>
               <View>
                 <View style={localStyles.card}>
                   <View style={[localStyles.logoContainer, { backgroundColor: 'transparent' }]}></View>

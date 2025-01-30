@@ -139,7 +139,7 @@ export default StyleSheet.create({
       firmsAndPointsHeader: {
         width: "100%",
         alignItems: 'flex-start',
-        marginTop: 70,
+        marginTop: 20,
       },
       menuPagesFooterHeader: {
         width: "100%",
