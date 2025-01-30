@@ -57,7 +57,7 @@ export default function Points({ navigation, route }) {
               Authorization: `Bearer ${jwt}`,
             },
           });
-          const data = await response.json(); 
+          const data = await response.json();
           setPoints(data);
         } catch (error) {
           console.error("Ошибка при загрузке точек:", error.message);
@@ -65,7 +65,7 @@ export default function Points({ navigation, route }) {
           setLoading(false);
         }
       };
-  
+
       fetchPoints();
     }, [])
   );
@@ -99,18 +99,18 @@ export default function Points({ navigation, route }) {
     }
   };
 
-    const renderRightActions = (id) => (
-      <View style={[localStyles.rightAction]}>
-        <TouchableOpacity onPress={() => navigation.replace("EditMarketPoint", { id })}>
-          <Icons
-            name="pencil"
-            size={24}
-            color="#FFFFFF"
-            style={[{ marginEnd: "5%" }]}
-          />
-        </TouchableOpacity>
-      </View>
-    );
+  const renderRightActions = (id) => (
+    <View style={[localStyles.rightAction]}>
+      <TouchableOpacity onPress={() => navigation.replace("EditMarketPoint", { id })}>
+        <Icons
+          name="pencil"
+          size={24}
+          color="#FFFFFF"
+          style={[{ marginEnd: "5%" }]}
+        />
+      </TouchableOpacity>
+    </View>
+  );
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -140,7 +140,7 @@ export default function Points({ navigation, route }) {
       : require("../../../assets/images/test.jpg");
 
     return (
-      <TouchableOpacity key={item.id} activeOpacity={1} onPress={() => navigation.replace("Points", { id: item.id })}>
+      <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => navigation.replace("Points", { id: item.id })} style={{ overflow: 'hidden' }}>
         <>
           {/* Карточка с информацией */}
           <View style={{ width: "100%", backgroundColor: 'transparent', position: "absolute", zIndex: 2, borderRadius: 10 }} pointerEvents="none">
@@ -151,13 +151,13 @@ export default function Points({ navigation, route }) {
               borderRadius: 10,
               shadowColor: 'black', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0, shadowRadius: 0, elevation: 0
             }]}>
-              <View style={[localStyles.logoContainer]}>
+              <View style={[localStyles.logoContainer, { backgroundColor: 'transparent' }]}>
                 <Image source={imageSource} style={{ height: 50, width: 50 }} />
               </View>
-              <View style={localStyles.cardContent}>
-                <Text style={localStyles.subtitle}>{item.address}</Text>
-                <Text style={localStyles.cardTitle}>{item.title}</Text>
-                <View style={localStyles.ratingContainer}>
+              <View style={[localStyles.cardContent, { backgroundColor: 'transparent' }]}>
+                <Text style={[localStyles.subtitle, { backgroundColor: 'transparent' }]}>{item.address}</Text>
+                <Text style={[localStyles.cardTitle, { backgroundColor: 'transparent' }]}>{item.title}</Text>
+                <View style={[localStyles.ratingContainer, { backgroundColor: 'transparent' }]}>
                   <Text style={localStyles.cardRating}></Text>
                   {renderStars(item.middle_stars)}
                 </View>
@@ -166,7 +166,6 @@ export default function Points({ navigation, route }) {
           </View>
 
           {/* Карточка для свайпа */}
-          <View style={{ borderRadius: 10, overflow: "hidden", width: '100%', height: '100%' }}>
             <Swipeable overshootRight={false} rightThreshold={100} renderRightActions={() => renderRightActions(item.id)} containerStyle={{ overflow: "visible" }}>
               <View>
                 <View style={localStyles.card}>
@@ -181,7 +180,6 @@ export default function Points({ navigation, route }) {
                 </View>
               </View>
             </Swipeable>
-          </View>
 
           {/* Карточка для фона */}
           <View style={{ width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10 }}>
@@ -232,13 +230,13 @@ export default function Points({ navigation, route }) {
           <FlatList
             style={[{ paddingRight: 10 }]}
             data={points}
-            keyExtractor={(item) => item.title.toString()}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
             indicatorStyle="white"
           />
         </View>
         <View style={styles.containerButtonsBottomFlatList}>
-          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("EditMarketPoint", { id: id })}>
+          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("MarketInfo", { e_id: id, from: 'points' })}>
             <Text style={styles.blackText}>Добавить точку</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Firms")}>

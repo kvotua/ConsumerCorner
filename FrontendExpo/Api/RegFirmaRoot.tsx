@@ -14,6 +14,8 @@ export const SendInfFirm = async (NameFima, OGRN, Adress, VidDo) => {
     general_type_activity: VidDo,
   };
 
+  console.log(payload)
+
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -30,8 +32,8 @@ export const SendInfFirm = async (NameFima, OGRN, Adress, VidDo) => {
     console.log(responseData)
     console.log("Parsed server response:", responseData.detail.enterprise_id);
 
-    await AsyncStorage.setItem('IdFirm', responseData.detail.enterprise_id);
-    return true;
+    await AsyncStorage.setItem('IdFirm', responseData.detail.enterprise_id.toString());
+    return responseData.detail.enterprise_id;
   } catch (error) {
     console.error("Ошибка SendInfFirm:", error.message);
     return false;

@@ -26,59 +26,59 @@ const screenWidth = Dimensions.get("window").width;
 export default function Firms({ navigation }) {
   const [firms, setfirms] = useState();
 
-    useEffect(() => {
-      fetchfirms();
-    }, []);
-  
-    const fetchfirms = async () => {
-      try {
-        const jwt = await AccessGetToken();
-        const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/enterprises-info`, {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
-    
-        const data = await response.json();
-    
-        const filteredData = await Promise.all(
-          data.map(async (item) => {
-            let imageData = null;
-            if (item.image_id) {
-              const imageResponse = await fetch(`https://consumer-corner.kvotua.ru/mongo/image/${item.image_id}`, {
-                method: "GET",
-                headers: {
-                  accept: "application/json",
-                  Authorization: `Bearer ${jwt}`,
-                },
-              });
-              const imageJson = await imageResponse.json();
-              imageData = imageJson.image_data; 
-            }
-            return {
-              id: item.id,
-              name: item.name,
-              middle_stars: item.middle_stars,
-              general_type_activity: item.general_type_activity,
-              image_data: imageData, 
-            };
-          })
-        );
-    
-        setfirms(filteredData);
-      } catch (error) {
-        console.error("Error fetching firms:", error);
-      }
-    };
+  useEffect(() => {
+    fetchfirms();
+  }, []);
 
-      useFocusEffect(
-        React.useCallback(() => {
-          fetchfirms();
-        }, [])
+  const fetchfirms = async () => {
+    try {
+      const jwt = await AccessGetToken();
+      const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/enterprises-info`, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      const data = await response.json();
+
+      const filteredData = await Promise.all(
+        data.map(async (item) => {
+          let imageData = null;
+          if (item.image_id) {
+            const imageResponse = await fetch(`https://consumer-corner.kvotua.ru/mongo/image/${item.image_id}`, {
+              method: "GET",
+              headers: {
+                accept: "application/json",
+                Authorization: `Bearer ${jwt}`,
+              },
+            });
+            const imageJson = await imageResponse.json();
+            imageData = imageJson.image_data;
+          }
+          return {
+            id: item.id,
+            name: item.name,
+            middle_stars: item.middle_stars,
+            general_type_activity: item.general_type_activity,
+            image_data: imageData,
+          };
+        })
       );
-    
+
+      setfirms(filteredData);
+    } catch (error) {
+      console.error("Error fetching firms:", error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchfirms();
+    }, [])
+  );
+
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -151,8 +151,8 @@ export default function Firms({ navigation }) {
           </View>
           {/* Карточка 1 */}
           <Swipeable
-        overshootRight={false} // Disable right overshoot
-        rightThreshold={100} // Adjust this value as needed
+            overshootRight={false} // Disable right overshoot
+            rightThreshold={100} // Adjust this value as needed
             renderRightActions={() => renderRightActions(item.id)}
             containerStyle={{ overflow: "visible" }}
           >
@@ -205,10 +205,10 @@ export default function Firms({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={[styles.containerMainPage, { marginRight: 5 }]}>
-       <View style={styles.menuPagesFooterHeader}>
-                           <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
-               </View>
-               <View style={styles.menuPagesSecondHeader}>
+        <View style={styles.menuPagesFooterHeader}>
+          <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
+        </View>
+        <View style={styles.menuPagesSecondHeader}>
           <Text style={styles.menuTitle}>Мои фирмы</Text>
         </View>
         <View style={styles.containerLine}>
@@ -224,7 +224,7 @@ export default function Firms({ navigation }) {
           />
         </View>
         <View style={styles.containerButtonsBottomFlatList}>
-          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace('EditFirma')}>
+          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace('Inn', {from: 'login'})}>
             <Text style={styles.blackText}>Добавить фирму</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>

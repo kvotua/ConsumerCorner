@@ -55,7 +55,7 @@ export default function CodePage({ navigation}) {
       await AsyncStorage.setItem('access_token', res2.access_token);
   
       // Если успешный запрос, переходим на следующий экран
-      navigation.replace("Inn");
+      navigation.replace("Inn", {from: 'reg'});
     } catch (error) {
       // Обрабатываем ошибку и показываем тост
       showToast("error", "Ошибка!", error.message || "Неверный код");

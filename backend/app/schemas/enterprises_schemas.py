@@ -7,7 +7,7 @@ class RegisterCompany(BaseModel):
     name: Annotated[str, Field(title="Company name",)]
     type: Annotated[str, Field(title="Type of company (sole proprietor, LLC, etc.)", examples=['ИП'])]
     inn: Annotated[str, Field(title="INN", examples=['400889349705'], min_length=10, max_length=12)]
-    ogrn: Annotated[str, Field(title="OGRN of a legal entity", examples=['1177704000005'],min_length=13, max_length=13)]
+    ogrn: Annotated[str, Field(title="OGRN of a legal entity", examples=['1177704000005'],min_length=13, max_length=15)]
     address: Annotated[str, Field(title="Actual address", examples=['ул. Павлика Морозова 74, Б'])]
     general_type_activity: Annotated[str, Field(title='The main type of activity', examples=["Private enterprise"])]
 

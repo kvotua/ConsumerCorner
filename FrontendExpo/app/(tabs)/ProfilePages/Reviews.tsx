@@ -70,7 +70,6 @@ export default function Reviews({ navigation, pointId }) {
         };
       }).filter(point => point.reviews.length > 0); // Оставляем только те точки, у которых есть отзывы
 
-      console.log(formattedData[0]['reviews']);
       setData(formattedData); // Сохраняем данные
     } catch (error) {
       console.error('Ошибка при загрузке отзывов:', error);

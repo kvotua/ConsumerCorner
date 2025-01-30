@@ -32,18 +32,16 @@ export const GetIdEnterprise = async () => {
 };
 
 // Регистрация новой точки
-export const RegNewPointServer = async (NamePoint, adress, StartTime, EndTime, Phone) => {
+export const RegNewPointServer = async (NamePoint, adress, StartTime, EndTime, Phone, e_id, navigation) => {
   const url = "https://consumer-corner.kvotua.ru/points/register"; // Указание правильного URL
   console.log(NamePoint, adress, StartTime, EndTime, Phone)
   try {
     const token = await AccessGetToken(); // Получение актуального токена
-    const id = await GetIdFirma();  // Получение ID предприятия
-
     
 
     const payload = {
       title: NamePoint,
-      enterprise_id: id,
+      enterprise_id: e_id,
       address: adress,
       opening_time: StartTime,  // Время открытия
       closing_time: EndTime,   // Время закрытия
@@ -60,16 +58,20 @@ export const RegNewPointServer = async (NamePoint, adress, StartTime, EndTime, P
       },
       body: JSON.stringify(payload),
     });
-    console.log(response)
-    // Проверка на успешность ответа
+    
     if (!response.ok) {
-      throw new Error(`Server error: ${response.status}`);
+      const errorData = await response.json();
+      console.error('Error details:', errorData);
+      throw new Error(`Server error: ${response.status} - ${JSON.stringify(errorData)}`);
     }
+    
 
     // Получение ответа и логирование для отладки
     const data = await response.json();
     console.log('Response data:', data);
-
+    if (data['status_code'] == 200) {
+      navigation.replace('MenuPage')
+    }
     return true;
   } catch (error) {
     console.error("Error in RegNewPointServer:", error.message);

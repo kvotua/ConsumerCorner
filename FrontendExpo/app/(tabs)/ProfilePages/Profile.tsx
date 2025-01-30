@@ -145,16 +145,17 @@ export default function Profile({ navigation }) {
               <View style={[Style.containerLine]}>
                 <View style={Style.menuPagesLine} />
               </View>
-        <View style={[Style.profileHeader, {flexDirection: 'row', justifyContent: "center"}]}>
+        <View style={[Style.profileHeader, {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
+        <View style={{ flex: 1, alignItems: 'center' }}>
           <Image
             source={require("../../../assets/images/profileImage.png")}
             style={localStyles.profileImage} 
           />
-          <TouchableOpacity onPress={() => handleLogout()} style={{justifyContent: "center", marginRight: 50}}>
+          </View>
+          <TouchableOpacity onPress={() => handleLogout()} style={{alignSelf: 'flex-start', marginTop: "2%"}}>
             <Icon name='exit-to-app' size={32} color={'white'}/>
           </TouchableOpacity>
         </View>
-        
         <View style={Style.containerProfile}>
           <FlatList
             data={inputData}

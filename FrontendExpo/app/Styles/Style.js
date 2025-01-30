@@ -133,7 +133,6 @@ export default StyleSheet.create({
         marginTop: 128,
       },
       profileHeader: {
-        width: "100%",
         alignItems: 'center',
       },
       firmsAndPointsHeader: {
