@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "../../Styles/Style";
@@ -10,10 +10,8 @@ import { apiRequest } from '../../../Api/RefreshToken';
 
 export default function InnReg({ navigation, route }) {
   const { from, inn } = route.params;
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(inn ?? "");
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
-
-  setValue(inn);
 
   const handleInputChange = (text: string) => {
     setValue(text);
