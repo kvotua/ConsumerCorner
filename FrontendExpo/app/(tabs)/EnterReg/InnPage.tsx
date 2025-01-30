@@ -9,10 +9,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiRequest } from '../../../Api/RefreshToken';
 
 export default function InnReg({ navigation, route }) {
-  const { from } = route.params;
+  const { from, inn } = route.params;
   const [value, setValue] = useState("");
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
+  setValue(inn);
 
   const handleInputChange = (text: string) => {
     setValue(text);
@@ -53,7 +54,7 @@ export default function InnReg({ navigation, route }) {
       const res = data.json();
       // Сохраняем тип компании и переходим на следующий экран
       await AsyncStorage.setItem("TypeFirm", data.type);
-      navigation.replace("RegFirma", { companyData: res });
+      navigation.replace("RegFirma", { companyData: res, from: from, inn: inn });
     } catch (error) {
       // Обработка ошибки
       showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
