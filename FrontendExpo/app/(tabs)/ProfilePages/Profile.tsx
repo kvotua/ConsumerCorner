@@ -140,14 +140,17 @@ export default function Profile({ navigation }) {
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
         <SafeAreaView style={[Style.containerMainPage]}>
           <View style={Style.menuPagesFooterHeader}>
-                      <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
-                      </View>
+              <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
+              </View>
+              <View style={[Style.containerLine]}>
+                <View style={Style.menuPagesLine} />
+              </View>
         <View style={[Style.profileHeader, {flexDirection: 'row', justifyContent: "center"}]}>
           <Image
             source={require("../../../assets/images/profileImage.png")}
             style={localStyles.profileImage} 
           />
-          <TouchableOpacity onPress={() => handleLogout()} style={{top: -5, left: 100}}>
+          <TouchableOpacity onPress={() => handleLogout()} style={{justifyContent: "center", marginRight: 50}}>
             <Icon name='exit-to-app' size={32} color={'white'}/>
           </TouchableOpacity>
         </View>

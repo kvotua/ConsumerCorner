@@ -40,7 +40,7 @@ export default StyleSheet.create({
       },
       containerButtonsMenuPages: {
         width: "100%",
-        height: 120,
+        height: "100%",
         justifyContent: 'flex-end',
         flex: 1,
       },

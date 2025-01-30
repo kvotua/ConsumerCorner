@@ -17,6 +17,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { RegNewPointServer } from "@/Api/RegNewPointRoot";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
+import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function MarketPoint({ navigation }) {
   const [Start, setValue] = useState();

@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import Share from "../../../assets/images/svg/share.svg";
 import { SendInfFirm } from "@/Api/RegFirmaRoot";
 import * as ImagePicker from "expo-image-picker";
+import Icons from "react-native-vector-icons/Feather";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 
 export default function RegFirma({ navigation, route }) {
@@ -81,7 +82,7 @@ export default function RegFirma({ navigation, route }) {
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={localStyles.scrollViewContent} indicatorStyle="white">
+        <ScrollView contentContainerStyle={[localStyles.scrollViewContent, { paddingRight: 10}]} indicatorStyle="white">
           <View style={localStyles.fields}>
             <Text style={Style.titleSimple}>Название фирмы</Text>
             <TextInput
@@ -141,10 +142,11 @@ export default function RegFirma({ navigation, route }) {
         </ScrollView>
         <View style={localStyles.containerButtonsMenuPages}>
           <TouchableOpacity style={[Style.buttonMenuPage]} onPress={SendToServerReg}>
-            <Text style={Style.textInButtonsMenuPage}>Далее</Text>
+            <Text style={Style.blackText}>Далее</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Inn")}>
-            <Text style={Style.textInButtonsBackMenuPage}>←Назад</Text>
+          <TouchableOpacity style={[Style.buttonBackMenuPage, , { marginTop: 10 }]} onPress={() => navigation.replace("Inn")}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+            <Text style={Style.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

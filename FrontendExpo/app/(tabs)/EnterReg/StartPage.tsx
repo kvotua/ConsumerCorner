@@ -28,13 +28,11 @@ export default function StartPage({ navigation }) {
 
   return (
     <>
-    <StatusBar hidden />
     <ImageBackground
       source={require("../../../assets/images/background.png")}
       style={styles.background}
     >
       <SafeAreaView style={styles.containerMainPage}>
-        {/* Компонент Toast */}
         {toast.visible && (
           <Toast
             type={toast.type}
@@ -44,7 +42,7 @@ export default function StartPage({ navigation }) {
             onDismiss={() => setToast({ ...toast, visible: false })}
           />
         )}
-
+      
         <View style={StyleSheet.flatten([styles.header, { marginTop: 100 }])}>
           <Text style={StyleSheet.flatten([styles.titleHead])}>Добро пожаловать!</Text>
           <Text
@@ -73,15 +71,6 @@ export default function StartPage({ navigation }) {
           >
             <Text style={StyleSheet.flatten([styles.DefText, {}])}>Вход</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            style={StyleSheet.flatten([
-              styles.DefButton,
-              { borderBottomLeftRadius: 10, borderTopLeftRadius: 0 },
-            ])}
-            onPress={() => showToast("", "Успех!", "Успешный успех!")}
-          >
-            <Text style={styles.DefText}>Тест</Text>
-          </TouchableOpacity> */}
         </View>
         
         <View style={localStyles.footerTextContainer}>
@@ -106,7 +95,7 @@ const localStyles = StyleSheet.create({
     fontWeight: "400",
   },
   footerTextContainer: {
-      flex: 1,
+      flex: isTablet ? 0 : 1,
       justifyContent: 'flex-end',
   }
 });
