@@ -88,3 +88,12 @@ async def get_comments(
         if invalid_enterprises:
             raise HTTPException(status_code=404, detail=f"Enterprises not found: {invalid_enterprises}")
         return await comments_crud.get_all_comments_filter(session=session, enterprises_ids=enterprises_ids, category=category)
+    
+@router.get("/{point_id}", response_model=list[CommentsSchema])
+async def get_comments(
+    point_id: Annotated[int, Path(..., title="Point ID", example=1)],
+    session: AsyncSession = Depends(get_session),
+) -> list[CommentsSchema]:
+    if point_id not in await comments_crud.get_points_id(session=session):
+        raise HTTPException(status_code=404, detail="The point was not found")
+    return await comments_crud.get_all_comments(session=session, point_id=point_id)

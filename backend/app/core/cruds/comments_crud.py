@@ -106,6 +106,41 @@ async def get_all_comments_filter(session: AsyncSession, point_ids: list[int] = 
     return result
 
 
+async def get_all_comments(session: AsyncSession, point_id: int) -> list[CommentsSchema]:
+    stmt_comments = (select(Comments).where(Comments.point_id == point_id))
+    result_comments: Result = await session.execute(stmt_comments)
+    comments = result_comments.scalars().all()
+
+    comment_ids = [comment.id for comment in comments]
+    stmt_imgs = (select(Imgs).where(Imgs.comment_id.in_(comment_ids)))
+    result_imgs: Result = await session.execute(stmt_imgs)
+    imgs = result_imgs.scalars().all()
+
+    images_dict = {}
+    for img in imgs:
+        if img.comment_id not in images_dict:
+            images_dict[img.comment_id] = []
+        images_dict[img.comment_id].append(img.id)
+
+    comments_data = [
+        CommentsSchema(
+            id=comment.id,
+            point_id=comment.point_id,
+            text=comment.text,
+            stars=comment.stars,
+            name=comment.name,
+            number=comment.number,
+            isAnonimus=comment.isAnonimus,
+            category=comment.category,
+            created_at=comment.created_at,
+            images_data=images_dict.get(comment.id, [])
+        )
+        for comment in comments
+    ]
+
+    return comments_data
+
+
 
 async def get_points_id(session: AsyncSession):
     stmt = select(Points.id)
