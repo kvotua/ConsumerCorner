@@ -25,4 +25,5 @@ async def docs_socials_exist(
         "documents": await profile_crud.get_documents_exist(session=session, user_id=dict_by_token.get('id')),
         "socials": await profile_crud.get_socials_exist(session=session, user_id=dict_by_token.get('id')),
         "comments": await profile_crud.get_comments_count(session=session, user_id=dict_by_token.get('id')),
+        "name": dict_by_token.get('fio').split()[1]
     }
