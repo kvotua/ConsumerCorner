@@ -61,7 +61,7 @@ export default function RegFirma({ navigation, route }) {
   const SendToServerReg = async () => {
     const res = await SendInfFirm(NameFima, OGRN, Adress, VidDo);
     if (!res) return;
-    navigation.replace("MarketInfo");
+    navigation.replace("MarketInfo", {e_id: res, from: 'reg'});
   };
 
   const handleInputChange = (text) => setValue(text);
@@ -98,7 +98,7 @@ export default function RegFirma({ navigation, route }) {
             <TextInputMask
               returnKeyType="done"
               type={"custom"}
-              options={{ mask: "9999999999999" }}
+              options={{ mask: "999999999999999" }}
               value={OGRN}
               onChangeText={handleInputChange2}
               keyboardType="phone-pad"
