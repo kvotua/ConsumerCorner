@@ -139,7 +139,7 @@ export default function RegPage({ navigation }) {
                     onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
                 />
                 )}
-        
+
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -196,7 +196,7 @@ export default function RegPage({ navigation }) {
               >
                 <Text style={Style.blackText}>Далее</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={Style.DefButton} onPress={() => navigation.replace("Start")}>
+              <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Start")}>
                 <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
                 <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>

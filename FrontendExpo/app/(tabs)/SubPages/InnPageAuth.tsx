@@ -93,12 +93,12 @@ export default function InnRegAuth({navigation}){
                     />
                 </View>
                 <View style={localStyles.buttons}>
-                        <TouchableOpacity style={localStyles.WhiteButton} onPress={() => navigation.replace("RegFirmaAuth")}>
-                        <Text style={[Style.blackText, { fontSize: 18 }]}>Далее</Text>
+                        <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("RegFirmaAuth")}>
+                        <Text style={[Style.blackText]}>Далее</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={localStyles.WhiteButton} onPress={() => navigation.replace("Firms")}>
+                    <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Firms")}>
                         <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
-                        <Text style={[Style.DefText, { fontSize: 18 }]}>Назад</Text>
+                        <Text style={[Style.DefText]}>Назад</Text>
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>

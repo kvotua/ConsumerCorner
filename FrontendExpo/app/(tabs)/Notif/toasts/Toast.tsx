@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     right: "5%",
     width: "60%",
     padding: 15,
+    zIndex: 1000,
     borderRadius: 10,
     borderWidth: 1,
     elevation: 5,

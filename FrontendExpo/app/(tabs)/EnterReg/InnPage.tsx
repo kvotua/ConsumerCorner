@@ -101,7 +101,7 @@ export default function InnReg({ navigation, route }) {
           </View>
           <View style={localStyles.buttons}>
             <TouchableOpacity style={localStyles.WhiteButton} onPress={() => handleNext()}>
-              <Text style={[Style.blackText, { fontSize: 18 }]}>Далее</Text>
+              <Text style={[Style.blackText]}>Далее</Text>
             </TouchableOpacity>
             {from === 'login' && (
               <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Firms")}>
