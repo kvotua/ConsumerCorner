@@ -47,46 +47,28 @@ export default function Documents({ navigation }) {
     }
   };
 
-  // Функция для получения документов для точки
-  const fetchDocuments = async (pointId) => {
-    try {
-      const response = await fetch(`https://consumer-corner.kvotua.ru/mongo/document/${pointId}`, {
-        method: 'GET',
-        headers: {
-          'accept': 'application/json',
-        },
-      });
-      const documents = await response.json();
-      if (documents && documents.document_data) {
-        setData((prevData) => [...prevData, ...documents.document_data]);
-      } else {
-        console.error('Данные документов недоступны', documents);
-      }
-  // Сохраняем документы
-    } catch (error) {
-      console.error(`Error fetching documents for point ${pointId}:`, error);
-    }
-  };
+  // // Функция для получения документов для точки
+  // const fetchDocuments = async (pointId) => {
+  //   try {
+  //     const response = await fetch(`https://consumer-corner.kvotua.ru/points/document/${pointId}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'accept': 'application/json',
+  //       },
+  //     });
+  //     const documents = await response.json();
+  //     if (documents && documents.document_data) {
+  //       setData((prevData) => [...prevData, ...documents.document_data]);
+  //     } else {
+  //       console.error('Данные документов недоступны', documents);
+  //     }
+  // // Сохраняем документы
+  //   } catch (error) {
+  //     console.error(`Error fetching documents for point ${pointId}:`, error);
+  //   }
+  // };
   
 
-  const onEndReached = () => {
-    setCards((prevCards) => [...prevCards, ...cards]);
-  };
-
-  const onViewableItemsChanged = useRef(({ viewableItems }) => {
-    if (viewableItems && viewableItems.length > 0) {
-      const firstVisibleItem = viewableItems[0];
-      const { index } = firstVisibleItem;
-      setVisibleIndex(index);
-      scrollToIndex(index);
-    }
-  }).current;
-
-  const scrollToIndex = (index) => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToIndex({ index, animated: true });
-    }
-  };
   
   
   const Card = ({ image_id, title, isHighlighted }) => {
@@ -143,16 +125,8 @@ export default function Documents({ navigation }) {
               <Card image_id={item.image_id} title={item.title} isHighlighted={index === visibleIndex} />
             )}
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles2.flatListContent}
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={viewabilityConfig} // Передаем конфигурацию только один раз
-            initialScrollIndex={0} // Начать с первого элемента
-            onEndReached={onEndReached}
-            onEndReachedThreshold={0.5}
-            snapToInterval={120} // Прокручивать по 120 пикселей
-            decelerationRate="fast" // Быстрое замедление
           />
-
+{/* 
         <FlatList style={[{ paddingRight: 10}]}
           data={data}
           renderItem={renderItem}
@@ -163,7 +137,7 @@ export default function Documents({ navigation }) {
           </View>
           }
           indicatorStyle="white"
-        />
+        /> */}
       </View>
         <View style={styles.containerButtonsBottomFlatList}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddDocument")}>
@@ -182,6 +156,7 @@ export default function Documents({ navigation }) {
 const localStyles = StyleSheet.create({
   flatListContainer: {
     flex: 1,
+    marginTop: 12,
     marginBottom: 12,
   },
   button: {
@@ -230,9 +205,9 @@ const styles2 = StyleSheet.create({
     backgroundColor: "#d6e4ff",
     borderRadius: 8,
     width: 100,
-    height: 140,
+    height: 110,
     marginHorizontal: 8,
-    marginVertical: "100%",
+    marginVertical: 8,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -252,12 +227,13 @@ const styles2 = StyleSheet.create({
   },
   logoContainer: {
     backgroundColor: "white",
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 8,
+    overflow: "hidden"
   },
   logo: {
     width: 40,
