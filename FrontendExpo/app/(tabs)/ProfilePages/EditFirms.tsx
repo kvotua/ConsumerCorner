@@ -98,9 +98,11 @@ export default function EditFirma({ navigation, route }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
-        <View style={Style.headerLeft}>
+        <View style={Style.menuPagesFooterHeader}>
+                  <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
+      </View>
+      <View style={Style.menuPagesSecondHeader}>
           <Text style={Style.titleHead}>Редактор фирм </Text>
-          <Text style={[Style.titleHead, { color: "#FFFFFF", opacity: 50, fontSize: 14 }]}>{NameFima || 'название фирмы'}</Text>
           <View style={Style.containerLine}>
             <View style={Style.menuPagesLine} />
           </View>
@@ -151,18 +153,22 @@ export default function EditFirma({ navigation, route }) {
             />
           </View>
           <View style={localStyles.centeredContainer}>
-            <TouchableOpacity style={localStyles.uploadBox} onPress={pickImage}>
-              {logo ? (
-                <Image source={{ uri: logo }} style={localStyles.image} />
-              ) : (
-                <>
-                  <IconImg width={100} height={100} />
-                  <Text style={localStyles.uploadText}>Прикрепите логотип фирмы</Text>
-                </>
-              )}
-            </TouchableOpacity>
+            <View style={localStyles.transparentContainer}>
+          <TouchableOpacity style={localStyles.uploadBox} onPress={pickImage}>
+                  {logo ? (
+                    <Image source={{ uri: logo }} style={localStyles.image} />
+                  ) : (
+                    <>
+                      <View style={localStyles.iconBox}>
+                        <IconImg width={100} height={100}/>
+                      </View>
+                      <Text style={localStyles.uploadText}>Прикрепите логотип фирмы</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
           </View>
-          <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: 'red'}]} onPress={DeletePoint}>
+          </View>
+          <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: '#E75759',  marginTop: 10,  marginBottom: 10  }]} onPress={DeletePoint}>
             <Text style={Style.DefText}>Удалить</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -181,7 +187,25 @@ export default function EditFirma({ navigation, route }) {
 }
 
 const localStyles = StyleSheet.create({
-  scrollViewContent: { flexGrow: 1 },
+  transparentContainer: {
+    backgroundColor: 'transparent', 
+    borderWidth: 2,              
+    borderColor: '#FFFFFF',           
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,            
+    padding: 10,                   
+    width: '90%',                   
+    height: 150,                    
+    alignItems: 'center',           
+    justifyContent: 'center',       
+  },
+  iconBox: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+  scrollViewContent: { flexGrow: 1 , paddingRight: 10},
   centeredContainer: {
     marginTop: 15,
     flex: 0.9,
@@ -198,7 +222,6 @@ const localStyles = StyleSheet.create({
   uploadText: { color: "#FFFFFF", fontSize: 16, textAlign: "center" },
   image: { width: "100%", height: "100%", borderRadius: 10 },
   containerButtonsMenuPages: {
-    marginTop: 10,
     alignItems: "center",
     justifyContent: "center",
   },

@@ -160,9 +160,11 @@ export default function EditMarketPoint({ navigation, route }) {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-            <View style={Style.headerLeft}>
+            <View style={Style.menuPagesFooterHeader}>
+                                                 <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
+                                     </View>
+                                     <View style={Style.menuPagesSecondHeader}>
               <Text style={Style.titleHead}>Редактор точки </Text>
-              <Text style={[Style.titleHead, {color:"#FFFFFF", opacity: 50, fontSize: 14}]}>Название точки</Text>
               <View style={StyleSheet.flatten([Style.containerLine])}>
               <View style={Style.menuPagesLine}/>
               </View>
@@ -247,17 +249,17 @@ export default function EditMarketPoint({ navigation, route }) {
                 </TouchableOpacity>
               </View>
             </View>
-              <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: 'red'}]} onPress={() => DeletePoint()}>
+              <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: '#E75759',  marginTop: 10,  marginBottom: 10  }]} onPress={() => DeletePoint()}>
                 <Text style={Style.DefText}>Удалить</Text>
               </TouchableOpacity>
             </ScrollView>
 
             <View style={[Style.containerButtonsMenuPages, {marginTop: 120}]}>
               <TouchableOpacity style={Style.buttonMenuPage} onPress={handleCompleteRegistration}>
-                <Text style={Style.textInButtonsMenuPage}>Сохранить</Text>
+                <Text style={Style.blackText}>Сохранить</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Points", {id: id})}>
-                  <Text style={Style.textInButtonsBackMenuPage}>←Назад</Text>
+                  <Text style={Style.DefText}>Назад</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
