@@ -33,6 +33,7 @@ import EditFirma from '../(tabs)/ProfilePages/EditFirms';
 import EditMarketPoint from '../(tabs)/ProfilePages/EditPoint';
 import DesignYourCorner from '../(tabs)/ProfilePages/QrPage';
 import AssignmentDoc from '../(tabs)/ProfilePages/DuplicatePages/AssignmentDocument';
+import CodePagePasswordRestore from '../(tabs)/SubPages/CodePagePasswordRestore';
 
 const Stack = createStackNavigator();
 
@@ -52,6 +53,7 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="Register" component={RegPage} options={{ headerShown: false, animation: "fade" }} />
           <Stack.Screen name="CodeConfirm" component={CodePage} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="CodeConfirmEnt" component={CodePageEnter} options={{ headerShown: false, animation: "fade"}} />
+          <Stack.Screen name="CodePagePasswordRestore" component={CodePagePasswordRestore} options={{ headerShown: false, animation: "fade"}} />
           <Stack.Screen name="Inn" component={InnReg} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="RegFirma" component={RegFirma} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="MarketInfo" component={MarketPoint} options={{headerShown: false, animation: "fade"}} />
