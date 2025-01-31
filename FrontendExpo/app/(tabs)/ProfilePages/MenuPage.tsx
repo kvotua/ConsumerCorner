@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ImageBackground,
   Text,
@@ -12,13 +12,40 @@ import {
 import styles from "../../Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from "react-native-vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 const { width } = Dimensions.get('window');
 
 const isTablet = width >= 768;
 
 export default function Menupage({ navigation }) {
-
+  const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
+  const showToast = (type: string, message: string, subMessage: string) => {
+    setToast({ type, message, subMessage, visible: true });
+    setTimeout(() => setToast({ ...toast, visible: false }), 3000);
+  };
+  var info = {}
+  // useEffect(() => {
+  //   fetchReviews();
+  // }, []);
+  const fetchReviews = async () => {
+    try {
+      const token = AccessGetToken();
+      const url = `https://consumer-corner.kvotua.ru/enterprises/get-users`;
+      const data = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
+      })
+      const res = data.json();
+      info = res;
+    } catch (error) {
+      showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
+    }
+  }
 
 
   return (

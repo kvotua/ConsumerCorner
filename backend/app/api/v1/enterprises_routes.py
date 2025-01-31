@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, Request, File, UploadFile, Path
+from fastapi import APIRouter, Depends, HTTPException, Body, Request, File, UploadFile, Path, Query
 from typing import Annotated, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.databases.postgresdb import get_session
-from app.schemas.enterprises_schemas import RegisterCompany, ResponseSchema, EnterpriseInfo, ImageData, ChangeEnterpriseSchema
-from app.core.cruds import enterprises_crud
+from app.schemas.enterprises_schemas import RegisterCompany, ResponseSchema, EnterpriseInfo, ImageData, ChangeEnterpriseSchema, AddUser
+from app.core.cruds import enterprises_crud, users_crud
 from app.services.auth_bearer import dependencies
 from app.services.auth_handler import get_token_data, get_token_data_verify
 
@@ -115,7 +115,7 @@ async def change_enterprise(
     return ResponseSchema(status_code=200, detail={"message": "Enterprise could be changed", "enterprise_id": enterprise_id})
 
 @router.get("/enterprises-info", response_model=List[EnterpriseInfo], dependencies=dependencies)
-async def get_companies_info(
+async def get_enterprises_info(
         request: Request,
         session: AsyncSession = Depends(get_session),
 ):
@@ -125,8 +125,45 @@ async def get_companies_info(
         raise HTTPException(status_code=404, detail="No companies found")
     return result
 
+
+@router.get("/get-users", response_model=dict, dependencies=dependencies)
+async def get_users(
+        request: Request,
+        session: AsyncSession = Depends(get_session),
+):
+    dict_by_token = get_token_data_verify(request)
+    if dict_by_token is None:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    user_id = dict_by_token.get("id")
+    enterprises_ids = await enterprises_crud.get_enterprises_id_by_user_id(session=session, user_id=user_id)
+    if len(enterprises_ids) == 0:
+        enterprises_ids = await enterprises_crud.get_enterprises_ids_in_users_enterprises(session=session, user_id=user_id)
+        if len(enterprises_ids) == 0:
+            raise HTTPException(status_code=404, detail="No companies found")
+    return await enterprises_crud.get_users_in_enterprises_by_ids(session=session, enterprises_ids=enterprises_ids, user_id=user_id)
+
+
+@router.get("/add-users", response_model=ResponseSchema)
+async def add_users(
+        user_id: Annotated[int, Query(title="User ID", example=3)],
+        enterprise_id: Annotated[int, Query(title="Enterprise ID", example=21)],
+        role: Annotated[str, Query(title="Role name", example='Администратор')],
+        session: AsyncSession = Depends(get_session),
+):
+    user = await users_crud.get_user_by_id(session=session, user_id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    enterprise = await enterprises_crud.get_enterprise_by_id_v2(session=session, enterprise_id=enterprise_id)
+    if not enterprise:
+        raise HTTPException(status_code=404, detail="Enterprise not found")
+    if enterprise.create_id == user.id:
+        raise HTTPException(status_code=403, detail="User owner of this enterprise")
+    
+    await enterprises_crud.add_user_enterprises_role(session=session, user_id=user_id, enterprise_id=enterprise_id, role=role)
+    return ResponseSchema(status_code=200, detail={"message": "Successful user registration", "user_id": user_id}) 
+
 @router.get("/{enterprise_id}", response_model=EnterpriseInfo, dependencies=dependencies)
-async def get_enterprise_info(
+async def get_enterprise(
         request: Request,
         enterprise_id: Annotated[int, Path(title="Enterprise ID")],
         session: AsyncSession = Depends(get_session),
