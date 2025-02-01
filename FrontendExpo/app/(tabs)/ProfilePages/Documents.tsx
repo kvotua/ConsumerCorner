@@ -20,6 +20,8 @@ export default function Documents({ navigation }) {
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [data, setData] = useState();
   const [cards, setCards] = useState([]); 
+  const [activeIndex, setActiveIndex] = useState(null);
+
   const fetchPoints = async () => {
     try {
       const jwt = await AccessGetToken();
@@ -37,7 +39,7 @@ export default function Documents({ navigation }) {
       if (Array.isArray(points)) {
         setCards(points);  // Сохраняем точки в стейт
         points.forEach(async (point) => {
-          await fetchDocuments(point.id);
+          // await fetchDocuments(point.id);
         });
       } else {
         console.error('Error: API response is not an array');
@@ -68,10 +70,8 @@ export default function Documents({ navigation }) {
   //   }
   // };
   
-
   
-  
-  const Card = ({ image_id, title, isHighlighted }) => {
+  const Card = ({ image_id, title, id}) => {
     const imageSource = image_id
     ? { uri: `data:image/png;base64,${image_id}` }
     : require("../../../assets/images/test.jpg");
@@ -79,7 +79,6 @@ export default function Documents({ navigation }) {
       <View
         style={[
           styles2.card,
-          isHighlighted && styles2.highlightedCard,
         ]}
       >
         <View style={styles2.logoContainer}>
@@ -122,9 +121,15 @@ export default function Documents({ navigation }) {
             horizontal
             keyExtractor={(item, index) => `${item.id}-${index}`}
             renderItem={({ item, index }) => (
-              <Card image_id={item.image_id} title={item.title} isHighlighted={index === visibleIndex} />
+              <Card image_id={item.image_id} title={item.title} id={item.id}/>
             )}
             showsHorizontalScrollIndicator={false}
+            ListEmptyComponent={
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "40%" }}>
+              <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет документов.</Text>
+            </View>
+            }
+            
           />
 {/* 
         <FlatList style={[{ paddingRight: 10}]}
