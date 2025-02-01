@@ -21,7 +21,6 @@ export const RefreshGetToken = async () => {
 export const SesIdToken = async () => {
     try {
         const token = await AsyncStorage.getItem('Ses_id');
-        console.log(token)
         return token ? Number(token) : null;
     } catch (error) {
         return null;

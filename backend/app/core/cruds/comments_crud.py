@@ -41,7 +41,6 @@ async def add_image(session: AsyncSession, image_data: ImageData):
 async def get_all_comments_filter(session: AsyncSession, point_ids: list[int] = None, enterprises_ids: list[int] = None, category: list[str] = None) -> dict:
     result = {}
     only_points_ids = []
-    print(point_ids, enterprises_ids, category)
 
     if enterprises_ids is None and point_ids is None:
         stmt_enterprises = select(Enterprises)

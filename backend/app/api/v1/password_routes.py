@@ -17,19 +17,17 @@ from app.services.auth_bearer import dependencies
 
 router = APIRouter(prefix="/password", tags=["password"])
 
-@router.post("/phone/send", response_model=ReqID, dependencies=dependencies)
+@router.post("/phone/send/", response_model=ReqID)
 async def send_message(
         request: Request,
+        phone: Annotated[str, Body(..., title='Phone number', examples=['79123456789'])],
         session: AsyncSession = Depends(get_session)
 ):
-    dict_by_token = get_token_data(request)
-    if dict_by_token is None:
-        raise HTTPException(status_code=403, detail="Invalid token or expired token")
-    number = dict_by_token.get('phone')
-    user_id = dict_by_token.get('id')
-    phone = validate_phone(number)
-    if not await verify_crud.get_verify_phone(session=session, phone=phone):
-        raise HTTPException(status_code=400, detail='The phone number has not been verified')
+    phone = validate_phone(phone)
+    user = await verify_crud.get_user_by_phone(session=session, phone=phone)
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    user_id = user.id
     data = {
         'public_key': api_key,
         'phone': phone,
@@ -40,12 +38,14 @@ async def send_message(
             response = await client.send_message('https://zvonok.com/manager/cabapi_external/api/v1/phones/flashcall/', data)
             response_data = response['data']
     except Exception as s:
-        raise HTTPException(status_code=500, detail="Error when sending code")
+        raise HTTPException(status_code=500, detail="Error when sending sms")
+    if response['status'] == 'error':
+        raise HTTPException(status_code=500, detail=response_data)
     await password_crud.add_password_restore(session=session, id=response_data['call_id'], code=response_data['pincode'], phone=phone, user_id=user_id)
     return ReqID(req_id=response_data['call_id'])
 
 
-@router.post('/phone/check', response_model=ResponseSchema, dependencies=dependencies)
+@router.post('/phone/check', response_model=ResponseSchema)
 async def check_code(
         request: Request,
         req_id: Annotated[int, Body(..., title='ID received after sending the number',
@@ -54,29 +54,25 @@ async def check_code(
             str, Body(..., title='The code, which consists of the last 4 digits of the calling number', examples=['1234'], min_length=4, max_length=4)],
         session: AsyncSession = Depends(get_session),
 ):
-    dict_by_token = get_token_data(request)
-    if dict_by_token is None:
-        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     response1 = await password_crud.get_password_restore_info(session=session, id=req_id)
+    if not response1:
+        raise HTTPException(status_code=401, detail='Invalid ID or code')
     if response1.is_checked:
         raise HTTPException(status_code=401, detail="This ID has already been checked for change password")
     response = await password_crud.get_password_restore_info_by_code(session=session, id=req_id, code=code)
-    if response is None:
+    if not response:
         raise HTTPException(status_code=401, detail='Invalid ID or code')
     if response.is_changed:
         raise HTTPException(status_code=401, detail="This ID has already been used for changed password")
     if await password_crud.set_password_restore_checked(session=session, id=req_id):
         return ResponseSchema(status_code=200, detail={"message": "Password-restore successfully set true of checked", "phone": response.phone})
     
-@router.post('/restore', response_model=ResponseSchema, dependencies=dependencies)
+@router.post('/restore', response_model=ResponseSchema)
 async def restore_password(
     request: Request,
     data: Annotated[Restore, Body()],
     session: AsyncSession = Depends(get_session)
 ):
-    dict_by_token = get_token_data(request)
-    if dict_by_token is None:
-        raise HTTPException(status_code=403, detail="Invalid token or expired token")
     response = await password_crud.get_password_restore_info(session=session, id=data.req_id)
     if response is None:
         raise HTTPException(status_code=401, detail='Invalid ID')

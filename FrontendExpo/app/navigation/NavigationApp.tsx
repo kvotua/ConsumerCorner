@@ -33,6 +33,9 @@ import EditFirma from '../(tabs)/ProfilePages/EditFirms';
 import EditMarketPoint from '../(tabs)/ProfilePages/EditPoint';
 import DesignYourCorner from '../(tabs)/ProfilePages/QrPage';
 import AssignmentDoc from '../(tabs)/ProfilePages/DuplicatePages/AssignmentDocument';
+import InputCodePR from '../(tabs)/PasswordRestore/InputCodePR';
+import InputPasswordPR from '../(tabs)/PasswordRestore/InputPasswordPR';
+import InputPhonePR from '../(tabs)/PasswordRestore/InputPhonePR';
 
 const Stack = createStackNavigator();
 
@@ -52,6 +55,9 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="Register" component={RegPage} options={{ headerShown: false, animation: "fade" }} />
           <Stack.Screen name="CodeConfirm" component={CodePage} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="CodeConfirmEnt" component={CodePageEnter} options={{ headerShown: false, animation: "fade"}} />
+          <Stack.Screen name="InputCodePR" component={InputCodePR} options={{ headerShown: false, animation: "fade"}} />
+          <Stack.Screen name="InputPasswordPR" component={InputPasswordPR} options={{ headerShown: false, animation: "fade"}} />
+          <Stack.Screen name="InputPhonePR" component={InputPhonePR} options={{ headerShown: false, animation: "fade"}} />
           <Stack.Screen name="Inn" component={InnReg} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="RegFirma" component={RegFirma} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="MarketInfo" component={MarketPoint} options={{headerShown: false, animation: "fade"}} />

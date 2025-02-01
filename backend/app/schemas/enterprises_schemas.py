@@ -76,6 +76,11 @@ class EnterpriseInfo(BaseModel):
 class ResponseSchema(BaseModel):
     status_code: Annotated[int, Field(title="Status code", examples=[200])]
     detail: Annotated[Any, Field(title="detail", examples=["OK"])]
+    
+class AddUser(BaseModel):
+    user_id: Annotated[int, Field(title="User ID", examples=[1])]
+    enterprise_id: Annotated[int, Field(title="Enterprise ID", examples=[21])]
+    role: Annotated[str, Field(title="Role name", examples=['Администратор'])]
 
 class ImageData(BaseModel):
     id: Annotated[str, Field(title="Photo ID", examples=['5f2fcae09b58c38603442a4f'])]

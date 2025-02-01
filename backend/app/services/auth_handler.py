@@ -53,7 +53,6 @@ def decode_jwt_with_verify(token: str) -> dict:
     try:
         decoded_token = jwt.decode(token, secret_key, algorithms=[algo])
         data_now = datetime.now(timezone.utc)
-        print(decoded_token)
         if decoded_token.get("exp") <= int(data_now.timestamp()):
             return None
         if decoded_token.get("type") != "access":

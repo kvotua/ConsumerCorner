@@ -22,7 +22,8 @@ class Users(Base):
 class UserEnterprisesRole(Base):
     __tablename__ = 'user_enterprises_role'
 
-    user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int | None] = mapped_column(BigInteger, primary_key=True, autoincrement=True, nullable=True)
+    user_id: Mapped[int] = mapped_column(BigInteger)
     enterprise_id: Mapped[str] = mapped_column(BigInteger, ForeignKey('enterprises.id'))
     role: Mapped[str] = mapped_column(String)
 
