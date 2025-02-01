@@ -236,8 +236,6 @@ export default StyleSheet.create({
         flex: 1,
         height:  isTablet ? 100 : 77,
         backgroundColor: "#FFFFFF",
-        paddingTop: isTablet ? 30 : 25,
-        paddingStart: 15,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderBottomLeftRadius: 20,
