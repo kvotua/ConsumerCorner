@@ -105,20 +105,21 @@ export default function Documents({ navigation }) {
             <View style={styles.containerLine}>
             <View style={styles.menuPagesLine}/>
             </View>
-      <View style={[localStyles.flatListContainer, {height: 110, flex: "unset"}]}>
+      <View style={[localStyles.flatListContainer, {height: 110, flex: cards.length === 0 ? 1 : "unset"}]}>
       <FlatList
             ref={flatListRef}
-            data={[]}
-            horizontal
+            data={cards}
+            horizontal={cards.length > 0}
             keyExtractor={(item, index) => `${item.id}-${index}`}
             renderItem={({ item, index }) => (
               <Card image_id={item.image_id} title={item.title} id={item.id}/>
             )}
             showsHorizontalScrollIndicator={false}
             ListEmptyComponent={
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "40%"}}>
               <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>
-                У вас пока что нет торговых точек.</Text>
+                У вас пока что нет торговых точек.
+              </Text>
             </View>
             }
             
@@ -155,6 +156,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     marginTop: 12,
     marginBottom: 12,
+    marginLeft: -20,
   },
   button: {
     width: "100%",

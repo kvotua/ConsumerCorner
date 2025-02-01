@@ -160,7 +160,7 @@ export default function Reviews({ navigation, pointId }) {
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             ListEmptyComponent={
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "40%" }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "50%" }}>
                   <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет отзывов.</Text>
                 </View>
             }
