@@ -54,10 +54,7 @@ export default function AdminPanel({ navigation }) {
         }
       });
       const res = await data.json();
-      if (res.detail) {
-        const text = res.detail || "Неизвестная ошибка";
-        showToast("error", "Ошибка!", text);
-      } else {
+      if (!res.detail) {
         // Группируем данные по enterprise_title
         const groupedData: { [key: string]: UserInfo[] } = {};
         Object.keys(res).forEach(enterpriseId => {
