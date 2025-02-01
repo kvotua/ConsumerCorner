@@ -88,15 +88,6 @@ export default function Documents({ navigation }) {
       </View>
     );
   };
-  
-    // Функция рендеринга каждого элемента
-  const renderItem = ({ item }) => (
-      <View style={styles.documentsItemFlatList}>
-        <TouchableOpacity style={localStyles.button}>
-            <Text style={localStyles.buttonText}>{item.title}</Text>
-        </TouchableOpacity>
-      </View>
-  );
 
   useEffect(() => {
     fetchPoints();
@@ -114,10 +105,10 @@ export default function Documents({ navigation }) {
             <View style={styles.containerLine}>
             <View style={styles.menuPagesLine}/>
             </View>
-      <View style={localStyles.flatListContainer}>
+      <View style={[localStyles.flatListContainer, {height: 110, flex: "unset"}]}>
       <FlatList
             ref={flatListRef}
-            data={cards}
+            data={[]}
             horizontal
             keyExtractor={(item, index) => `${item.id}-${index}`}
             renderItem={({ item, index }) => (
@@ -125,8 +116,9 @@ export default function Documents({ navigation }) {
             )}
             showsHorizontalScrollIndicator={false}
             ListEmptyComponent={
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "40%" }}>
-              <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет документов.</Text>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>
+                У вас пока что нет торговых точек.</Text>
             </View>
             }
             
@@ -210,7 +202,6 @@ const styles2 = StyleSheet.create({
     backgroundColor: "#d6e4ff",
     borderRadius: 8,
     width: 100,
-    height: 110,
     marginHorizontal: 8,
     marginVertical: 8,
     alignItems: "center",
