@@ -1,23 +1,92 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ImageBackground,
   Text,
   View,
   TouchableOpacity,
   FlatList,
-  StyleSheet
+  StyleSheet,
+  SectionList
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from "../../Styles/Style";
 import { Swipeable } from "react-native-gesture-handler";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
+import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
+import Toast from "../Notif/toasts/Toast";
+
+type UserInfo = {
+  id: string;
+  role: string;
+  fio: string;
+  enterprise_title: string;
+};
+
+type SectionData = {
+  title: string;
+  data: UserInfo[];
+};
 
 
 export default function AdminPanel({ navigation }) {
+  const [infoTeam, setInfoTeam] = useState<SectionData[]>([]);
+  const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
+
+  const showToast = (type: string, message: string, subMessage: string) => {
+    setToast({ type, message, subMessage, visible: true });
+    setTimeout(() => setToast({ ...toast, visible: false }), 3000); // Авто-скрытие через 3 сек
+  };
+
   const backgroungColor = "#d3d3d3";
-  const data = [
-    { id: '1', status: "Собственник", title: "Егоров Егор" },
-  ];
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
+  const fetchInfo = async () => {
+    try {
+      const token = await AccessGetToken();
+      const url = `https://consumer-corner.kvotua.ru/enterprises/get-users`;
+      const data = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+      const res = await data.json();
+      if (res.detail) {
+        const text = res.detail || "Неизвестная ошибка";
+        showToast("error", "Ошибка!", text);
+      } else {
+        // Группируем данные по enterprise_title
+        const groupedData: { [key: string]: UserInfo[] } = {};
+        Object.keys(res).forEach(enterpriseId => {
+          Object.keys(res[enterpriseId]).forEach(userId => {
+            const user = res[enterpriseId][userId];
+            if (!groupedData[user.enterprise_title]) {
+              groupedData[user.enterprise_title] = [];
+            }
+            groupedData[user.enterprise_title].push({
+              id: userId,
+              role: user.role,
+              fio: user.fio,
+              enterprise_title: user.enterprise_title,
+            });
+          });
+        });
+
+        // Преобразуем в массив для SectionList
+        const sectionData = Object.keys(groupedData).map(title => ({
+          title,
+          data: groupedData[title],
+        }));
+
+        setInfoTeam(sectionData);
+      }
+    } catch (error) {
+      showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
+    }
+  };
 
   const renderRightActions = () => (
     <View style={[localStyles.rightAction]}>
@@ -31,7 +100,7 @@ export default function AdminPanel({ navigation }) {
   );
 
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }: { item: UserInfo }) => {
     return (
       <>
         <View style={{ width: "100%", backgroundColor: 'transparent', position: "absolute", zIndex: 2, borderRadius: 10 }} pointerEvents="none">
@@ -46,8 +115,8 @@ export default function AdminPanel({ navigation }) {
               <Text style={[localStyles.logoText, { backgroundColor: 'transparent' }]}>A</Text>
             </View>
             <View style={[localStyles.cardContent, { backgroundColor: 'transparent' }]}>
-              <Text style={[localStyles.subtitle, { backgroundColor: 'transparent' }]}>{item.status}</Text>
-              <Text style={[localStyles.cardTitle, { backgroundColor: 'transparent' }]}>{item.title}</Text>
+              <Text style={[localStyles.subtitle, { backgroundColor: 'transparent' }]}>{item.role}</Text>
+              <Text style={[localStyles.cardTitle, { backgroundColor: 'transparent' }]}>{item.fio}</Text>
               <View style={[localStyles.ratingContainer, { backgroundColor: 'transparent' }]}>
                 <Text style={[localStyles.cardRating, { backgroundColor: 'transparent' }]}>
                   {/* {item.rating.toFixed(2)} */}
@@ -57,8 +126,8 @@ export default function AdminPanel({ navigation }) {
           </View>
         </View>
         <Swipeable
-        overshootRight={false} // Disable right overshoot
-        rightThreshold={100} // Adjust this value as needed
+          overshootRight={false} // Disable right overshoot
+          rightThreshold={100} // Adjust this value as needed
           renderRightActions={renderRightActions}
           containerStyle={{ overflow: "visible" }}
         >
@@ -107,11 +176,26 @@ export default function AdminPanel({ navigation }) {
     );
   };
 
+  const renderSectionHeader = ({ section }: { section: SectionData }) => (
+    <View style={localStyles.sectionHeader}>
+      <Text style={localStyles.sectionHeaderText}>{section.title}</Text>
+    </View>
+  );
+
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
-       <View style={styles.menuPagesFooterHeader}>
-        <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
+        {toast.visible && (
+          <Toast
+            type={toast.type}
+            message={toast.message}
+            subMessage={toast.subMessage}
+            visible={toast.visible}
+            onDismiss={() => setToast({ ...toast, visible: false })}
+          />
+        )}
+        <View style={styles.menuPagesFooterHeader}>
+          <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
         </View>
         <View style={styles.menuPagesSecondHeader}>
           <Text style={styles.menuTitle}>Команда</Text>
@@ -120,10 +204,11 @@ export default function AdminPanel({ navigation }) {
           <View style={styles.menuPagesLine} />
         </View>
         <View style={styles.firmsAndPointsFlatListContainer}>
-          <FlatList style={[{ paddingRight: 10 }]}
-            data={data}
-            renderItem={renderItem}
+        <SectionList
+            sections={infoTeam}
             keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            renderSectionHeader={renderSectionHeader}
             ListEmptyComponent={
               <View style={{ alignItems: 'center', marginTop: '50%' }}>
                 <Text style={[styles.DefText, { textAlign: "center", fontSize: 30 }]}>
@@ -249,5 +334,14 @@ const localStyles = StyleSheet.create({
     width: "20%",
     backgroundColor: "#D3D3D3",
     borderRadius: 3,
+  },
+  sectionHeader: {
+    padding: 4,
+    marginTop: 10,
+  },
+  sectionHeaderText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
   },
 });
