@@ -101,7 +101,7 @@ export default function Points({ navigation, route }) {
 
   const renderRightActions = (id) => (
     <View style={[localStyles.rightAction]}>
-      <TouchableOpacity onPress={() => navigation.replace("EditMarketPoint", { id })}>
+      <TouchableOpacity onPress={() => navigation.replace("EditMarketPoint", { id, e_id: id })}>
         <Icons
           name="pencil"
           size={24}

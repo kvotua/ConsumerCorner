@@ -49,10 +49,14 @@ export default function InnReg({ navigation, route }) {
           'accept': 'application/json'
         }
       })
-      const res = data.json();
+      const res = await data.json();
+      if (res.inn) {
+        await AsyncStorage.setItem("TypeFirm", data.type);
+        navigation.replace("RegFirma", { companyData: res, from: from, inn: inn });
+      } else {
+        showToast("error", "Ошибка!", "Введите корректный ИНН!");
+      }
       // Сохраняем тип компании и переходим на следующий экран
-      await AsyncStorage.setItem("TypeFirm", data.type);
-      navigation.replace("RegFirma", { companyData: res, from: from, inn: inn });
     } catch (error) {
       // Обработка ошибки
       showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");

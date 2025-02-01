@@ -49,7 +49,7 @@ export default function RegPage({ navigation }) {
     setPhoneValue(text);
 
     // Извлекаем только цифры из введенного значения
-    const numericValue = text.replace(/\D/g, ""); 
+    const numericValue = text.replace(/\D/g, "");
     setRawPhoneValue(numericValue);
   };
 
@@ -70,9 +70,9 @@ export default function RegPage({ navigation }) {
       showToast("error", "Ошибка!", errorMessage);
       return;
     }
-  
+
     const url = '';
-  
+
     try {
       // Выполняем POST-запрос через универсальную функцию
       const payload = {
@@ -91,37 +91,57 @@ export default function RegPage({ navigation }) {
       })
 
       const res = await data.json();
+      if (res.access_token || res.refresh_token) {
+        await AsyncStorage.setItem("access_token", res.access_token);
+        await AsyncStorage.setItem("refresh_token", res.refresh_token);
 
-      await AsyncStorage.setItem("access_token", res.access_token);
-      await AsyncStorage.setItem("refresh_token", res.refresh_token);
+        try {
+          const url2 = 'https://consumer-corner.kvotua.ru/verify/phone/send';
+          const jwt = await AccessGetToken();
+          const data2 = await apiRequest(
+            url2,
+            "POST",
+            {
+              Authorization: `Bearer ${jwt}`,
+            },
+            {
+              "Content-Type": "application/json",
+            }
+          )
+          if (data2.req_id) {
+            await AsyncStorage.setItem('Ses_id', String(data2.req_id));
+          } else {
+            const errorMessages: { [key: string]: string } = {
+              "The phone number has already been registered": "Данный номер уже зарегистрирован",
+              "The phone number has not been verified": "Номер телефона не подтвержден",
+              "Error when sending sms": "Ошибка при отправке SMS",
+            };
 
-      try {
-        const url2 = 'https://consumer-corner.kvotua.ru/verify/phone/send';
-        const jwt = await AccessGetToken();
-        const data2 = await apiRequest(
-          url2,
-          "POST",
-          {
-            Authorization: `Bearer ${jwt}`,
-          },
-          {
-            "Content-Type": "application/json",
+            // Получаем текст ошибки на русском
+            const text = errorMessages[data2.detail as keyof typeof errorMessages] || data2.detail || "Неизвестная ошибка";
+            showToast("error", "Ошибка!", text);
           }
-        )
-        console.log(data2)
-        await AsyncStorage.setItem('Ses_id', String(data2.req_id));
-      } catch (error) {
-        console.log(error.message);
+        } catch (error) {
+          console.log(error.message);
+        }
+        // Навигация на следующий экран
+        navigation.replace("CodeConfirm");
+      } else {
+        const errorMessages: { [key: string]: string } = {
+          "The phone number has already been registered": "Данный номер уже зарегистрирован",
+        };
+
+        // Получаем текст ошибки на русском
+        const text = errorMessages[res.detail as keyof typeof errorMessages] || res.detail || "Неизвестная ошибка";
+        showToast("error", "Ошибка!", text);
       }
-      // Навигация на следующий экран
-      navigation.replace("CodeConfirm");
     } catch (error) {
       // Обработка ошибки
       showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
     }
   };
 
-  const showToast = (type :string, message:string, subMessage:string) => {
+  const showToast = (type: string, message: string, subMessage: string) => {
     setToast({ type, message, subMessage, visible: true });
     setTimeout(() => setToast({ ...toast, visible: false }), 3000); // Авто-скрытие через 3 сек
   };
@@ -129,78 +149,78 @@ export default function RegPage({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
-                        {/* Компонент Toast */}
-                  {toast.visible && (
-                <Toast 
-                    type={toast.type}
-                    message={toast.message}
-                    subMessage={toast.subMessage}
-                    visible={toast.visible}
-                    onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
-                />
-                )}
+        {/* Компонент Toast */}
+        {toast.visible && (
+          <Toast
+            type={toast.type}
+            message={toast.message}
+            subMessage={toast.subMessage}
+            visible={toast.visible}
+            onDismiss={() => setToast({ ...toast, visible: false })} // Здесь важно передать функцию
+          />
+        )}
 
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-            <View style={[Style.header, {marginTop:40}]}>
-              <Text style={Style.titleHead}>Регистрация</Text>
-            </View>
-            <View style={Style.fields}>
-              <Text style={Style.titleSimple}>Телефон</Text>
+          <View style={[Style.header, { marginTop: 40 }]}>
+            <Text style={Style.titleHead}>Регистрация</Text>
+          </View>
+          <View style={Style.fields}>
+            <Text style={Style.titleSimple}>Телефон</Text>
 
-              <TextInputMask
+            <TextInputMask
+              returnKeyType="done"
+              type={"custom"}
+              returnKeyType="done"
+              options={{
+                mask: "+7 (999) 999-99-99", // Маска
+              }}
+              returnKeyType="done"
+              value={phoneValue} // Значение с маской
+              onChangeText={handleInputChange} // Обработчик изменения текста
+              keyboardType="phone-pad"
+              style={Style.textInputProfile}
+              placeholder="+7 (999) 999-99-99"
+              onFocus={handleFocus} // Устанавливаем шаблон при фокусе
+            />
+
+            <Text style={Style.titleSimple}>Пароль</Text>
+            <View style={Style.passwordContainer}>
+              <TextInput
                 returnKeyType="done"
-                type={"custom"}
-                returnKeyType="done"
-                options={{
-                  mask: "+7 (999) 999-99-99", // Маска
-                }}
-                returnKeyType="done"
-                value={phoneValue} // Значение с маской
-                onChangeText={handleInputChange} // Обработчик изменения текста
-                keyboardType="phone-pad"
                 style={Style.textInputProfile}
-                placeholder="+7 (999) 999-99-99"
-                onFocus={handleFocus} // Устанавливаем шаблон при фокусе
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={isSecure}
+                placeholder="Пароль"
               />
-
-              <Text style={Style.titleSimple}>Пароль</Text>
-              <View style={Style.passwordContainer}>
-                <TextInput
-                  returnKeyType="done"
-                  style={Style.textInputProfile}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={isSecure}
-                  placeholder="Пароль"
-                />
-                <TouchableOpacity
-                  onPress={toggleSecureTextEntry}
-                  style={Style.iconButton}
-                >
-                  <Icon name={isSecure ? 'eye-off' : 'eye'} size={24} color="#00000" />
-                </TouchableOpacity>
-              </View>
-              <Text style={Style.titleSimple}>Ф.И.О</Text>
-              <TextInput style={Style.textInputProfile} returnKeyType="done" placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio}/>
-            </View>
-
-            <View style={[Style.buttons, {paddingVertical: -10,}]}>
               <TouchableOpacity
-                style={Style.WhiteButton}
-                onPress={() => {
-                  handleNext();
-                }}
+                onPress={toggleSecureTextEntry}
+                style={Style.iconButton}
               >
-                <Text style={Style.blackText}>Далее</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Start")}>
-                <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
-                <Text style={Style.DefText}>Назад</Text>
+                <Icon name={isSecure ? 'eye-off' : 'eye'} size={24} color="#00000" />
               </TouchableOpacity>
             </View>
+            <Text style={Style.titleSimple}>Ф.И.О</Text>
+            <TextInput style={Style.textInputProfile} returnKeyType="done" placeholder="Ф.И.О" autoCapitalize="words" onChangeText={setfio} />
+          </View>
+
+          <View style={[Style.buttons, { paddingVertical: -10, }]}>
+            <TouchableOpacity
+              style={Style.WhiteButton}
+              onPress={() => {
+                handleNext();
+              }}
+            >
+              <Text style={Style.blackText}>Далее</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={Style.buttonBackMenuPage} onPress={() => navigation.replace("Start")}>
+              <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{ marginEnd: 6 }]} />
+              <Text style={Style.DefText}>Назад</Text>
+            </TouchableOpacity>
+          </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>

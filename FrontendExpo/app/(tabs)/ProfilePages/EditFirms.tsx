@@ -17,6 +17,7 @@ import Icon from "react-native-vector-icons/Feather";
 import * as ImagePicker from "expo-image-picker";
 import IconImg from "../../../assets/images/svg/Icon.svg";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
+import Toast from "../Notif/toasts/Toast";
 
 export default function EditFirma({ navigation, route }) {
   const {id} = route.params;
@@ -25,6 +26,12 @@ export default function EditFirma({ navigation, route }) {
   const [Adress, setValue3] = useState("");
   const [VidDo, setValue4] = useState("");
   const [logo, setLogo] = useState(null);
+    const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
+  
+    const showToast = (type: string, message: string, subMessage: string) => {
+      setToast({ type, message, subMessage, visible: true });
+      setTimeout(() => setToast({ ...toast, visible: false }), 3000);
+    };
 
   const fetchFirms = async () => {
     try {
@@ -42,6 +49,7 @@ export default function EditFirma({ navigation, route }) {
       }
 
       const data = await response.json();
+      console.log(data)
 
       setValue(data.name || "");
       setValue2(data.ogrn || "");
@@ -52,16 +60,23 @@ export default function EditFirma({ navigation, route }) {
     }
   };
 
-  const DeletePoint = async () => {
+  const DeleteEnterprise = async () => {
     try {
       const jwt = await AccessGetToken();
       const response = await fetch(`https://consumer-corner.kvotua.ru/enterprises/delete/${id}`, {
         method: "DELETE",
         headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${jwt}`,
+          'Accept': "application/json",
+          'Authorization': `Bearer ${jwt}`,
         },
       });
+      console.log(await response.text())
+      const data = await response.json()
+      if (data.detail.message) {
+        navigation.replace("Firms");
+      } else {
+        showToast("error", "Ошибка!", "Вы не владеете данной фирмой!")
+      }
     } catch (error) {
       console.log(error);
     }
@@ -98,6 +113,15 @@ export default function EditFirma({ navigation, route }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
+              {toast.visible && (
+                <Toast
+                  type={toast.type}
+                  message={toast.message}
+                  subMessage={toast.subMessage}
+                  visible={toast.visible}
+                  onDismiss={() => setToast({ ...toast, visible: false })}
+                />
+              )}
         <View style={Style.menuPagesFooterHeader}>
                   <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
       </View>
@@ -168,7 +192,7 @@ export default function EditFirma({ navigation, route }) {
                 </TouchableOpacity>
           </View>
           </View>
-          <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: '#E75759',  marginTop: 10,  marginBottom: 10  }]} onPress={DeletePoint}>
+          <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: '#E75759',  marginTop: 10,  marginBottom: 10  }]} onPress={DeleteEnterprise}>
             <Text style={Style.DefText}>Удалить</Text>
           </TouchableOpacity>
         </ScrollView>

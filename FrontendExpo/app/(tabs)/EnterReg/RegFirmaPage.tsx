@@ -18,10 +18,11 @@ import Share from "../../../assets/images/svg/share.svg";
 import { SendInfFirm } from "@/Api/RegFirmaRoot";
 import * as ImagePicker from "expo-image-picker";
 import Icons from "react-native-vector-icons/Feather";
+import Toast from "../Notif/toasts/Toast";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 
 export default function RegFirma({ navigation, route }) {
-  const {companyData, from, inn} = route.params;
+  const { companyData, from, inn } = route.params;
   const [NameFima, setValue] = useState();
   const [OGRN, setValue2] = useState();
   const [Adress, setValue3] = useState();
@@ -29,15 +30,19 @@ export default function RegFirma({ navigation, route }) {
   const [isAddressFilled, setIsAddressFilled] = useState(false);
   const [isOgrnFilled, setIsOgrnFilled] = useState(false);
   const [logo, setLogo] = useState(null);
+  const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
+
+  const showToast = (type: string, message: string, subMessage: string) => {
+    setToast({ type, message, subMessage, visible: true });
+    setTimeout(() => setToast({ ...toast, visible: false }), 3000);
+  };
 
   useEffect(() => {
-    console.log(companyData)
-    var data = companyData['_j']
-    if (data) {
-      setValue(data.name || ""); 
-      setValue2(data.ogrn || ""); 
-      setValue3(data.address || ""); 
-      setValue4(data.activity || "");
+    if (companyData) {
+      setValue(companyData.name || "");
+      setValue2(companyData.ogrn || "");
+      setValue3(companyData.address || "");
+      setValue4(companyData.activity || "");
     }
   }, [companyData]);
 
@@ -60,9 +65,17 @@ export default function RegFirma({ navigation, route }) {
   };
 
   const SendToServerReg = async () => {
-    const res = await SendInfFirm(NameFima, OGRN, Adress, VidDo);
+    if (!NameFima || !Adress) {
+      showToast("error", "Ошибка!", "Укажите адрес и название фирмы!")
+      return;
+    }
+    if (NameFima.length <= 0 || Adress.length <= 0) {
+      showToast("error", "Ошибка!", "Укажите адрес и название фирмы!")
+      return;
+    }
+    const res = await SendInfFirm(NameFima, OGRN, Adress, VidDo, showToast);
     if (!res) return;
-    navigation.replace("MarketInfo", {e_id: res, from: 'reg'});
+    navigation.replace("MarketInfo", { e_id: res, from: 'reg' });
   };
 
   const handleInputChange = (text) => setValue(text);
@@ -76,6 +89,15 @@ export default function RegFirma({ navigation, route }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
+        {toast.visible && (
+          <Toast
+            type={toast.type}
+            message={toast.message}
+            subMessage={toast.subMessage}
+            visible={toast.visible}
+            onDismiss={() => setToast({ ...toast, visible: false })}
+          />
+        )}
         <View style={Style.headerLeft}>
           <Text style={Style.titleHead}>Зарегистрируйте </Text>
           <Text style={Style.titleHead}>фирму</Text>
@@ -84,7 +106,7 @@ export default function RegFirma({ navigation, route }) {
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={[localStyles.scrollViewContent, { paddingRight: 10}]} indicatorStyle="white">
+        <ScrollView contentContainerStyle={[localStyles.scrollViewContent, { paddingRight: 10 }]} indicatorStyle="white">
           <View style={localStyles.fields}>
             <Text style={Style.titleSimple}>Название фирмы</Text>
             <TextInput
@@ -125,29 +147,29 @@ export default function RegFirma({ navigation, route }) {
               onChangeText={handleInputChange4}
             />
           </View>
-            <View style={localStyles.centeredContainer}>
-              <View style={localStyles.transparentContainer}>
-                <TouchableOpacity style={localStyles.uploadBox} onPress={pickImage}>
-                  {logo ? (
-                    <Image source={{ uri: logo }} style={localStyles.image} />
-                  ) : (
-                    <>
-                      <View style={localStyles.iconBox}>
-                        <IconImg width={100} height={100}/>
-                      </View>
-                      <Text style={localStyles.uploadText}>Прикрепите логотип фирмы</Text>
-                    </>
-                  )}
-                </TouchableOpacity>
-              </View>
+          <View style={localStyles.centeredContainer}>
+            <View style={localStyles.transparentContainer}>
+              <TouchableOpacity style={localStyles.uploadBox} onPress={pickImage}>
+                {logo ? (
+                  <Image source={{ uri: logo }} style={localStyles.image} />
+                ) : (
+                  <>
+                    <View style={localStyles.iconBox}>
+                      <IconImg width={100} height={100} />
+                    </View>
+                    <Text style={localStyles.uploadText}>Прикрепите логотип фирмы</Text>
+                  </>
+                )}
+              </TouchableOpacity>
             </View>
+          </View>
         </ScrollView>
         <View style={localStyles.containerButtonsMenuPages}>
           <TouchableOpacity style={[Style.buttonMenuPage]} onPress={SendToServerReg}>
             <Text style={Style.blackText}>Далее</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[Style.buttonBackMenuPage, , { marginTop: 10 }]} onPress={() => navigation.replace("Inn", {from: from, inn: inn})}>
-            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
+          <TouchableOpacity style={[Style.buttonBackMenuPage, , { marginTop: 10 }]} onPress={() => navigation.replace("Inn", { from: from, inn: inn })}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{ marginEnd: 6 }]} />
             <Text style={Style.DefText}>Назад</Text>
           </TouchableOpacity>
         </View>
@@ -160,26 +182,26 @@ const localStyles = StyleSheet.create({
   scrollViewContent: { flexGrow: 1 },
   centeredContainer: {
     marginTop: 15,
-    flex: 0.9,                  
-    justifyContent: 'center',  
-    alignItems: 'center',     
+    flex: 0.9,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   transparentContainer: {
-    backgroundColor: 'transparent', 
-    borderWidth: 2,              
-    borderColor: '#FFFFFF',           
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
     borderTopRightRadius: 10,
     borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,            
-    padding: 10,                   
-    width: '90%',                   
-    height: 150,                    
-    alignItems: 'center',           
-    justifyContent: 'center',       
+    borderBottomRightRadius: 10,
+    padding: 10,
+    width: '90%',
+    height: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   fields: { width: "100%" },
   uploadBox: {
-    width: "90%",        
+    width: "90%",
     height: 150,
     alignItems: "center",
     justifyContent: "center",

@@ -38,44 +38,69 @@ export default function Enter({ navigation }) {
   };
 
   const SendtoServer = async () => {
+    if (rawPhoneValue.length != 11) {
+      showToast("error", "Ошибка!", "Введите корректный номер телефона!");
+      return;
+    }
     try {
       const data = await handleNext(rawPhoneValue, password)
-      console.log(123, data)
+      if (data.access_token || data.refresh_token) {
+        await AsyncStorage.setItem("access_token", data.access_token);
+        await AsyncStorage.setItem("refresh_token", data.refresh_token);
+        try {
+          const token = await AccessGetToken()
+          const decodeToken = decodeJwt(token);
+          if (decodeToken.verify_phone != false)
+            navigation.replace("MenuPage");
+          else {
+            const token = await AccessGetToken();
+            try {
+              const url2 = 'https://consumer-corner.kvotua.ru/verify/phone/send';
+              const jwt = await AccessGetToken();
+              const data2 = await apiRequest(
+                url2,
+                "POST",
+                {
+                  Authorization: `Bearer ${jwt}`,
+                },
+                {
+                  "Content-Type": "application/json",
+                }
+              )
+              console.log(data2)
+              if (data2.req_id) {
+                await AsyncStorage.setItem('Ses_id', String(data2.req_id));
+              } else {
+                const errorMessages: { [key: string]: string } = {
+                  "Invalid ID or code": "Неверный код!",
+                };
+
+                // Получаем текст ошибки на русском
+                const text = errorMessages[data2.detail as keyof typeof errorMessages] || data2.detail || "Неизвестная ошибка";
+                showToast("error", "Ошибка!", text);
+              }
+            } catch (error) {
+              console.log(error.message);
+            }
+            navigation.replace("CodeConfirmEnt");
+          }
+
+        } catch (error) {
+          console.log(error.message)
+        }
+      } else {
+        const errorMessages: { [key: string]: string } = {
+          "The user was not found": "Пользователь не найден",
+          "Invalid password": "Неправильный пароль",
+        };
+
+        // Получаем текст ошибки на русском
+        const text = errorMessages[data.detail as keyof typeof errorMessages] || data.detail || "Неизвестная ошибка";
+        showToast("error", "Ошибка!", text);
+      }
       if (data.message == "Input should be a valid dictionary or object to extract fields from")
         showToast("error", "Ошибка!", data.message || "Неверный логин или пароль");
-      await AsyncStorage.setItem("access_token", data.access_token);
-      await AsyncStorage.setItem("refresh_token", data.refresh_token);
-      try {
-        const token = await AccessGetToken()
-        const decodeToken = decodeJwt(token);
-        if (decodeToken.verify_phone != false)
-          navigation.replace("MenuPage");
-        else {
-          const token = await AccessGetToken();
-          try {
-            const url2 = 'https://consumer-corner.kvotua.ru/verify/phone/send';
-            const jwt = await AccessGetToken();
-            const data2 = await apiRequest(
-              url2,
-              "POST",
-              {
-                Authorization: `Bearer ${jwt}`,
-              },
-              {
-                "Content-Type": "application/json",
-              }
-            )
-            console.log(data2)
-            await AsyncStorage.setItem('Ses_id', String(data2.req_id));
-          } catch (error) {
-            console.log(error.message);
-          }
-          navigation.replace("CodeConfirmEnt");
-        }
 
-      } catch (error) {
-        console.log(error.message)
-      }
     } catch (error) {
       showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
     }

@@ -32,13 +32,25 @@ export const GetIdEnterprise = async () => {
 };
 
 // Регистрация новой точки
-export const RegNewPointServer = async (NamePoint, adress, StartTime, EndTime, Phone, e_id, navigation) => {
+export const RegNewPointServer = async (NamePoint, adress, StartTime, EndTime, Phone, e_id, navigation, showToast) => {
   const url = "https://consumer-corner.kvotua.ru/points/register"; // Указание правильного URL
-  console.log(NamePoint, adress, StartTime, EndTime, Phone)
+  
+  if (!NamePoint || !adress || !StartTime || !EndTime || !Phone) {
+    showToast("error", "Ошибка!", "Вы заполнили не все поля!")
+    return;
+  }
+
+  if (NamePoint.length <= 0 || adress.length <= 0 || StartTime.length <= 0 || EndTime.length <= 0 || Phone.length <= 0) {
+    showToast("error", "Ошибка!", "Вы заполнили не все поля!")
+    return;
+  }
+  const phoneRegex = /^79\d{9}$/;
+  if (!phoneRegex.test(Phone)) {
+    showToast("error", "Ошибка!", "Номер телефона должен начинаться с +79 и состоять из 11 цифр!");
+    return;
+  }
   try {
     const token = await AccessGetToken(); // Получение актуального токена
-    
-
     const payload = {
       title: NamePoint,
       enterprise_id: e_id,

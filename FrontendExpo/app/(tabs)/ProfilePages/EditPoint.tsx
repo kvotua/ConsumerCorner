@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,8 +6,8 @@ import {
   ImageBackground,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform, 
-  ScrollView, 
+  Platform,
+  ScrollView,
   Image
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,44 +20,46 @@ import IconImg from '../../../assets/images/svg/Icon.svg';
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 export default function EditMarketPoint({ navigation, route }) {
-  const {id} = route.params;
+  const { id } = route.params;
   const [Start, setValue] = useState();
   const [End, setValue2] = useState();
   const [Name, setName] = useState();
-  const [phoneValue, setPhoneValue] = useState(""); 
-  const [Adress, setAdress] = useState(""); 
+  const [phoneValue, setPhoneValue] = useState("");
+  const [Adress, setAdress] = useState("");
   const [rawPhoneValue, setRawPhoneValue] = useState("");
   const [logo, setLogo] = useState(null);
+  const [e_id, setEID] = useState();
 
   const fetchFirms = async () => {
-      try {
-        const response = await fetch(`https://consumer-corner.kvotua.ru/points/${id}`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        });
-  
-        if (!response.ok) {
-          throw new Error(`Ошибка: ${response.status}`);
-        }
-  
-        const data = await response.json();
-  
-        setValue(data.opening_time || "");
-        setValue2(data.closing_time || "");
-        setName(data.title || "");
-        setAdress(data.address || "");
-        setPhoneValue(data.phone)
-      } catch (error) {
-        console.error("Ошибка при загрузке данных:", error);
+    try {
+      const response = await fetch(`https://consumer-corner.kvotua.ru/points/${id}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ошибка: ${response.status}`);
       }
-    };
+
+      const data = await response.json();
+
+      setValue(data.opening_time || "");
+      setValue2(data.closing_time || "");
+      setName(data.title || "");
+      setAdress(data.address || "");
+      setPhoneValue(data.phone)
+      setEID(data.enterprise_id);
+    } catch (error) {
+      console.error("Ошибка при загрузке данных:", error);
+    }
+  };
 
   useEffect(() => {
     fetchFirms();
   }, []);
-  
+
   const DeletePoint = async () => {
     try {
       const jwt = await AccessGetToken();
@@ -68,11 +70,12 @@ export default function EditMarketPoint({ navigation, route }) {
           Authorization: `Bearer ${jwt}`,
         },
       });
+      navigation.replace('Firms')
     } catch (error) {
       console.log(error);
     }
   }
-  
+
   const handleCompleteRegistration = async () => {
     try {
       const jwt = await AccessGetToken();
@@ -86,7 +89,7 @@ export default function EditMarketPoint({ navigation, route }) {
         phone: rawPhoneValue,
         type_activity: "Продажи"
       };
-  
+
       const response = await fetch(`https://consumer-corner.kvotua.ru/points/change/${id}`, {
         method: "PATCH",
         headers: {
@@ -96,41 +99,41 @@ export default function EditMarketPoint({ navigation, route }) {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (!response.ok) {
         throw new Error(`Ошибка: ${response.text}`);
       }
-  
-      navigation.replace("Points", { id });
+
+      navigation.replace("Points", { id: id });
     } catch (error) {
       console.error("Ошибка при отправке данных:", error);
     }
   };
-  
+
 
   const pickImage = async () => {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permissionResult.granted) {
-        alert("Разрешите доступ к галерее для прикрепления логотипа!");
-        return;
-      }
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-  
-      if (!result.canceled) {
-        setLogo(result.assets[0].uri);
-      }
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert("Разрешите доступ к галерее для прикрепления логотипа!");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setLogo(result.assets[0].uri);
+    }
   };
-  
+
 
   const handleInputPhone = (text) => {
     setPhoneValue(text);
 
-    const numericValue = text.replace(/\D/g, ""); 
+    const numericValue = text.replace(/\D/g, "");
     setRawPhoneValue(numericValue);
   };
 
@@ -160,17 +163,17 @@ export default function EditMarketPoint({ navigation, route }) {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-            <View style={Style.menuPagesFooterHeader}>
-                                                 <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
-                                     </View>
-                                     <View style={Style.menuPagesSecondHeader}>
-              <Text style={Style.titleHead}>Редактор точки </Text>
-              <View style={StyleSheet.flatten([Style.containerLine])}>
-              <View style={Style.menuPagesLine}/>
-              </View>
+          <View style={Style.menuPagesFooterHeader}>
+            <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
+          </View>
+          <View style={Style.menuPagesSecondHeader}>
+            <Text style={Style.titleHead}>Редактор точки </Text>
+            <View style={StyleSheet.flatten([Style.containerLine])}>
+              <View style={Style.menuPagesLine} />
             </View>
-            <ScrollView contentContainerStyle={[{flexGrow: 1, paddingRight: 10}]} indicatorStyle="white">
-            <View style={StyleSheet.flatten([Style.fields, {marginBottom: 0}])}>
+          </View>
+          <ScrollView contentContainerStyle={[{ flexGrow: 1, paddingRight: 10 }]} indicatorStyle="white">
+            <View style={StyleSheet.flatten([Style.fields, { marginBottom: 0 }])}>
               <Text style={Style.titleSimple}>Адрес торговой точки</Text>
 
               <TextInput
@@ -202,11 +205,11 @@ export default function EditMarketPoint({ navigation, route }) {
               <Text style={Style.titleSimple}>Рабочее название магазина</Text>
               <View style={Style.passwordContainer}>
                 <TextInput
-                    returnKeyType="done"
-                    style={Style.textInputProfile}
-                    onChangeText={handleInputName}
-                    value={Name}
-                    placeholder="Пироги"
+                  returnKeyType="done"
+                  style={Style.textInputProfile}
+                  onChangeText={handleInputName}
+                  value={Name}
+                  placeholder="Пироги"
                 />
               </View>
 
@@ -214,24 +217,24 @@ export default function EditMarketPoint({ navigation, route }) {
               <TextInputMask
                 returnKeyType="done"
                 type={"custom"}
-                 options={{
+                options={{
                   mask: "99:99",
-                   }}
-                   value={Start}
-                   onChangeText={handleInputChange}
-               style={StyleSheet.flatten([Style.textInputProfile, {width:"30%"}])} keyboardType="phone-pad" placeholder="11:00" />
+                }}
+                value={Start}
+                onChangeText={handleInputChange}
+                style={StyleSheet.flatten([Style.textInputProfile, { width: "30%" }])} keyboardType="phone-pad" placeholder="11:00" />
 
               <Text style={Style.titleSimple}>Закрытие точки</Text>
-              <TextInputMask 
-              returnKeyType="done"
-              returnKeyType="done"
+              <TextInputMask
+                returnKeyType="done"
+                returnKeyType="done"
                 type={"custom"}
                 options={{
                   mask: "99:99",
-                  }}
-                  value={End}
-                  onChangeText={handleInputChange2}
-              style={StyleSheet.flatten([Style.textInputProfile, {width:"30%"}])} keyboardType="phone-pad" placeholder="22:00" />
+                }}
+                value={End}
+                onChangeText={handleInputChange2}
+                style={StyleSheet.flatten([Style.textInputProfile, { width: "30%" }])} keyboardType="phone-pad" placeholder="22:00" />
             </View>
             <View style={localStyles.centeredContainer}>
               <View style={localStyles.transparentContainer}>
@@ -241,7 +244,7 @@ export default function EditMarketPoint({ navigation, route }) {
                   ) : (
                     <>
                       <View style={localStyles.iconBox}>
-                        <IconImg width={100} height={100}/>
+                        <IconImg width={100} height={100} />
                       </View>
                       <Text style={localStyles.uploadText}>Прикрепите логотип фирмы</Text>
                     </>
@@ -249,19 +252,19 @@ export default function EditMarketPoint({ navigation, route }) {
                 </TouchableOpacity>
               </View>
             </View>
-              <TouchableOpacity style={[Style.buttonMenuPage, {backgroundColor: '#E75759',  marginTop: 10,  marginBottom: 10  }]} onPress={() => DeletePoint()}>
-                <Text style={Style.DefText}>Удалить</Text>
-              </TouchableOpacity>
-            </ScrollView>
+            <TouchableOpacity style={[Style.buttonMenuPage, { backgroundColor: '#E75759', marginTop: 10, marginBottom: 10 }]} onPress={() => DeletePoint()}>
+              <Text style={Style.DefText}>Удалить</Text>
+            </TouchableOpacity>
+          </ScrollView>
 
-            <View style={[Style.containerButtonsMenuPages, {marginTop: 120}]}>
-              <TouchableOpacity style={Style.buttonMenuPage} onPress={handleCompleteRegistration}>
-                <Text style={Style.blackText}>Сохранить</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Points", {id: id})}>
-                  <Text style={Style.DefText}>Назад</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={[Style.containerButtonsMenuPages, { marginTop: 120 }]}>
+            <TouchableOpacity style={Style.buttonMenuPage} onPress={handleCompleteRegistration}>
+              <Text style={Style.blackText}>Сохранить</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Points", {id: e_id})}>
+              <Text style={Style.DefText}>Назад</Text>
+            </TouchableOpacity>
+          </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>
@@ -273,26 +276,26 @@ const localStyles = StyleSheet.create({
   scrollViewContent: { flexGrow: 1 },
   centeredContainer: {
     marginTop: 15,
-    flex: 0.9,                  
-    justifyContent: 'center',  
-    alignItems: 'center',     
+    flex: 0.9,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   transparentContainer: {
-    backgroundColor: 'transparent', 
-    borderWidth: 2,              
-    borderColor: '#FFFFFF',           
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
     borderTopRightRadius: 10,
     borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,            
-    padding: 10,                   
-    width: '90%',                   
-    height: 150,                    
-    alignItems: 'center',           
-    justifyContent: 'center',       
+    borderBottomRightRadius: 10,
+    padding: 10,
+    width: '90%',
+    height: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   fields: { width: "100%" },
   uploadBox: {
-    width: "90%",        
+    width: "90%",
     height: 150,
     alignItems: "center",
     justifyContent: "center",

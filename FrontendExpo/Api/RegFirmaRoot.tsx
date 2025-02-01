@@ -1,10 +1,10 @@
 import { AccessGetToken, Getinn } from "@/app/AsyncStore/StoreTokens";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const SendInfFirm = async (NameFima, OGRN, Adress, VidDo) => {
+export const SendInfFirm = async (NameFima, OGRN, Adress, VidDo, showToast) => {
   const url = 'https://consumer-corner.kvotua.ru/enterprises/register';
   const jwt = await AccessGetToken();
-  
+
   const payload = {
     name: NameFima,
     type: "ООО",
@@ -24,14 +24,20 @@ export const SendInfFirm = async (NameFima, OGRN, Adress, VidDo) => {
       },
       body: JSON.stringify(payload),
     });
-    console.log(response.toString());
-    // Проверяем текст ответа от сервера
     const responseData = await response.json();
-    console.log(responseData)
-    console.log("Parsed server response:", responseData.detail.enterprise_id);
+    if (responseData.detail && (responseData.detail.message || responseData.detail.phone)) {
 
-    await AsyncStorage.setItem('IdFirm', responseData.detail.enterprise_id.toString());
-    return responseData.detail.enterprise_id;
+      await AsyncStorage.setItem('IdFirm', responseData.detail.enterprise_id.toString());
+      return responseData.detail.enterprise_id;
+    } else {
+      const errorMessages: { [key: string]: string } = {
+        "Error when registering a company": "Ошибка при регистрации компании",
+      };
+
+      // Получаем текст ошибки на русском
+      const text = errorMessages[responseData.detail as keyof typeof errorMessages] || responseData.detail || "Неизвестная ошибка";
+      showToast("error", "Ошибка!", text);
+    }
   } catch (error) {
     console.error("Ошибка SendInfFirm:", error.message);
     return false;

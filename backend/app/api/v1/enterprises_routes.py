@@ -196,5 +196,5 @@ async def delete_enteprise(
     if enterprise_id not in enterprises_id:
         raise HTTPException(status_code=403, detail='The user does not own this enterprise')
 
-    await enterprises_crud.delete_enterprise(session=session, point=await enterprises_crud.get_enterprise_by_id_v2(session=session, enterprise_id=enterprise_id))
+    await enterprises_crud.delete_enterprise(session=session, enterprise=await enterprises_crud.get_enterprise_by_id_v2(session=session, enterprise_id=enterprise_id))
     return ResponseSchema(status_code=200, detail={"message": "Enterprise could be deleted", "enterprise_id": enterprise_id})

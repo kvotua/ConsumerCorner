@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import IconImg from '../../../assets/images/svg/Icon.svg';
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "../Notif/toasts/Toast";
 
 export default function MarketPoint({ navigation, route }) {
   const { e_id, from } = route.params;
@@ -37,9 +38,9 @@ export default function MarketPoint({ navigation, route }) {
   };
 
   useEffect(() => {
-    fetchReviews();
+    fetchInnInfo();
   }, []);
-  const fetchReviews = async () => {
+  const fetchInnInfo = async () => {
     try {
       const inn = await AsyncStorage.getItem("inn");
       const url = `https://consumer-corner.kvotua.ru/inn/inn_info?inn=${inn}`;
@@ -113,6 +114,15 @@ export default function MarketPoint({ navigation, route }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
+        {toast.visible && (
+          <Toast
+            type={toast.type}
+            message={toast.message}
+            subMessage={toast.subMessage}
+            visible={toast.visible}
+            onDismiss={() => setToast({ ...toast, visible: false })}
+          />
+        )}
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -204,7 +214,7 @@ export default function MarketPoint({ navigation, route }) {
           </ScrollView>
 
           <View style={[Style.containerButtonsMenuPages, { marginTop: 120 }]}>
-            <TouchableOpacity style={Style.buttonMenuPage} onPress={() => RegNewPointServer(Name, Adress, Start, End, rawPhoneValue, e_id, navigation)}>
+            <TouchableOpacity style={Style.buttonMenuPage} onPress={() => RegNewPointServer(Name, Adress, Start, End, rawPhoneValue, e_id, navigation, showToast)}>
               <Text style={Style.blackText}>Завершение регистрации</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => goNext()}>
