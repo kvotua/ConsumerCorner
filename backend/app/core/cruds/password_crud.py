@@ -31,6 +31,7 @@ async def change_password(session: AsyncSession, id: int, password: str):
     if not user:
         return {"status_code": 404, "message": "User not found"}
     user.password = hash_password(password).decode('utf-8')
+    user.verify_phone = True
     passwordrestore.is_changed = True
     await session.commit()
     await session.refresh(user)

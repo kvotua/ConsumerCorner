@@ -28,8 +28,6 @@ async def send_message(
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
     user_id = user.id
-    if not await verify_crud.get_verify_phone(session=session, phone=phone):
-        raise HTTPException(status_code=400, detail='The phone number has not been verified')
     data = {
         'public_key': api_key,
         'phone': phone,
