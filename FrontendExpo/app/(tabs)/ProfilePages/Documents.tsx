@@ -15,12 +15,19 @@ import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 
 const viewabilityConfig = { itemVisiblePercentThreshold: 80 };
 
+const DATA = [
+  { id: '1', title: 'Item 1', image: 'https://via.placeholder.com/150' },
+  { id: '2', title: 'Item 2', image: 'https://via.placeholder.com/150' },
+  { id: '3', title: 'Item 3', image: 'https://via.placeholder.com/150' },
+];
+
 export default function Documents({ navigation }) {
   const flatListRef = useRef(null);
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [data, setData] = useState();
   const [cards, setCards] = useState([]); 
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [selectedCardId, setSelectedCardId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
 
   const fetchPoints = async () => {
     try {
@@ -69,29 +76,51 @@ export default function Documents({ navigation }) {
   //     console.error(`Error fetching documents for point ${pointId}:`, error);
   //   }
   // };
-  
-  
-  const Card = ({ image_id, title, id}) => {
-    const imageSource = image_id
-    ? { uri: `data:image/png;base64,${image_id}` }
-    : require("../../../assets/images/test.jpg");
-    return (
-      <View
-        style={[
-          styles2.card,
-        ]}
-      >
-        <View style={styles2.logoContainer}>
-          <Image source={imageSource} style={{ height: 50, width: 50 }} />
-        </View>
-        <Text style={styles2.text}>{title}</Text>
-      </View>
-    );
-  };
 
   useEffect(() => {
     fetchPoints();
   }, []);
+
+//   const Card = ({ logo, text, isHighlighted }) => {
+//   return (
+//     <View
+//       style={[
+//         styles2.card,
+//         isHighlighted && styles2.highlightedCard,
+//       ]}
+//     >
+//       <View style={styles2.logoContainer}>
+//         {logo ? (
+//           <Image source={{ uri: logo }} style={styles2.logo} />
+//         ) : (
+//           <Text style={styles2.placeholderText}>A</Text>
+//         )}
+//       </View>
+//       <Text style={styles2.text}>{text}</Text>
+//     </View>
+//   );
+// };
+const handlePress = (item) => {
+  const isSelected = item.id === selectedId;
+  setSelectedId(isSelected ? null : item.id);
+  if (!isSelected) {
+    const index = cards.findIndex(i => i.id === item.id);
+    flatListRef.current.scrollToIndex({ index, animated: true });
+  }
+};
+
+const renderItem = ({ item }) => {
+  const isSelected = item.id === selectedId;
+  return (
+    <TouchableOpacity onPress={() => handlePress(item)}>
+      <View style={[styles2.card, isSelected && style.selectedItem]}>
+        <Image source={{ uri: item.image }} style={style.image} />
+        <Text style={styles2.text}>{item.title}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
@@ -105,14 +134,14 @@ export default function Documents({ navigation }) {
             <View style={styles.containerLine}>
             <View style={styles.menuPagesLine}/>
             </View>
-      <View style={[localStyles.flatListContainer, {height: 110, flex: cards.length === 0 ? 1 : "unset"}]}>
-      <FlatList
+      <View style={[localStyles.flatListContainer, {height: 110, flex: cards.length === 0 ? 1 : 1}]}>
+      {/* <FlatList
             ref={flatListRef}
             data={cards}
             horizontal={cards.length > 0}
-            keyExtractor={(item, index) => `${item.id}-${index}`}
+            keyExtractor={(item) => `${item.id}`} 
             renderItem={({ item, index }) => (
-              <Card image_id={item.image_id} title={item.title} id={item.id}/>
+              <Card logo={item.logo} text={item.title} isHighlighted={index === visibleIndex} />
             )}
             showsHorizontalScrollIndicator={false}
             ListEmptyComponent={
@@ -123,6 +152,14 @@ export default function Documents({ navigation }) {
             </View>
             }
             
+          /> */}
+           <FlatList
+            data={cards}
+            ref={flatListRef}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            horizontal={cards.length > 0}
+            showsHorizontalScrollIndicator={false}
           />
 {/* 
         <FlatList style={[{ paddingRight: 10}]}
@@ -151,12 +188,38 @@ export default function Documents({ navigation }) {
   );
 }
 
+const style = StyleSheet.create({
+  item: {
+    width: 100,
+    height: 100,
+    margin: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  selectedItem: {
+    borderColor: '#000',
+    transform: [{ scale: 1.2 }],
+  },
+  image: {
+    width: '100%',
+    height: '70%',
+    resizeMode: 'cover',
+  },
+  title: {
+    textAlign: 'center',
+  },
+});
+
 const localStyles = StyleSheet.create({
+  selectedCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)', // стиль выделения
+  },
   flatListContainer: {
     flex: 1,
     marginTop: 12,
     marginBottom: 12,
-    marginLeft: -20,
   },
   button: {
     width: "100%",
@@ -204,6 +267,7 @@ const styles2 = StyleSheet.create({
     backgroundColor: "#d6e4ff",
     borderRadius: 8,
     width: 100,
+    height: 100,
     marginHorizontal: 8,
     marginVertical: 8,
     alignItems: "center",
