@@ -21,36 +21,36 @@ import { apiRequest } from "@/Api/RefreshToken";
 export default function Enter({ navigation }) {
   const [password, setPassword] = useState("");
   const [isSecure, setIsSecure] = useState(true);
-  const [phoneValue, setPhoneValue] = useState(""); 
-  const [rawPhoneValue, setRawPhoneValue] = useState(""); 
+  const [phoneValue, setPhoneValue] = useState("");
+  const [rawPhoneValue, setRawPhoneValue] = useState("");
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
-const showToast = (type :string, message:string, subMessage:string) => {
+  const showToast = (type: string, message: string, subMessage: string) => {
     setToast({ type, message, subMessage, visible: true });
-    setTimeout(() => setToast({ ...toast, visible: false }), 3000); 
+    setTimeout(() => setToast({ ...toast, visible: false }), 3000);
   };
-  
+
   const handleInputChange = (text) => {
     setPhoneValue(text);
 
-    const numericValue = text.replace(/\D/g, ""); 
+    const numericValue = text.replace(/\D/g, "");
     setRawPhoneValue(numericValue);
   };
 
-  const SendtoServer = async () =>{
+  const SendtoServer = async () => {
     try {
       const data = await handleNext(rawPhoneValue, password)
       console.log(123, data)
-      if(data.message == "Input should be a valid dictionary or object to extract fields from")
+      if (data.message == "Input should be a valid dictionary or object to extract fields from")
         showToast("error", "Ошибка!", data.message || "Неверный логин или пароль");
       await AsyncStorage.setItem("access_token", data.access_token);
       await AsyncStorage.setItem("refresh_token", data.refresh_token);
       try {
         const token = await AccessGetToken()
-        const decodeToken =  decodeJwt(token);
-        if(decodeToken.verify_phone != false)
+        const decodeToken = decodeJwt(token);
+        if (decodeToken.verify_phone != false)
           navigation.replace("MenuPage");
-        else{
+        else {
           const token = await AccessGetToken();
           try {
             const url2 = 'https://consumer-corner.kvotua.ru/verify/phone/send';
@@ -79,7 +79,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
     } catch (error) {
       showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
     }
-    
+
   }
 
   const handleFocus = () => {
@@ -90,62 +90,62 @@ const showToast = (type :string, message:string, subMessage:string) => {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>
-                  {toast.visible && (
-                <Toast
-                    type={toast.type}
-                    message={toast.message}
-                    subMessage={toast.subMessage}
-                    visible={toast.visible}
-                    onDismiss={() => setToast({ ...toast, visible: false })}
-                />
-                )}
-            <View style={[Style.menuHeader, {alignItems: "center",}]}>
-              <Text style={StyleSheet.flatten([Style.titleHead])}>Вход</Text>
-            </View>
-            <View style={Style.fields}>
-              <Text style={Style.titleSimple}>Номер телефона</Text>
-              <TextInputMask
-                returnKeyType="done"
-                type={"custom"}
-                options={{
-                  mask: "+7 (999) 999-99-99",
-                }}
-                value={phoneValue}
-                returnKeyType="done"
-                onChangeText={handleInputChange}
-                keyboardType="phone-pad"
-                style={Style.textInputProfile}
-                placeholder="+7 (999) 999-99-99"
-                onFocus={handleFocus}
-              />
-              
-                <Text style={Style.titleSimple}>Пароль</Text>
+        {toast.visible && (
+          <Toast
+            type={toast.type}
+            message={toast.message}
+            subMessage={toast.subMessage}
+            visible={toast.visible}
+            onDismiss={() => setToast({ ...toast, visible: false })}
+          />
+        )}
+        <View style={[Style.menuHeader, { alignItems: "center", }]}>
+          <Text style={StyleSheet.flatten([Style.titleHead])}>Вход</Text>
+        </View>
+        <View style={Style.fields}>
+          <Text style={Style.titleSimple}>Номер телефона</Text>
+          <TextInputMask
+            returnKeyType="done"
+            type={"custom"}
+            options={{
+              mask: "+7 (999) 999-99-99",
+            }}
+            value={phoneValue}
+            returnKeyType="done"
+            onChangeText={handleInputChange}
+            keyboardType="phone-pad"
+            style={Style.textInputProfile}
+            placeholder="+7 (999) 999-99-99"
+            onFocus={handleFocus}
+          />
 
-                <TextInput
-                  returnKeyType="done"
-                  style={Style.textInputProfile}
-                  value={password}
-                  returnKeyType="done"
-                  onChangeText={setPassword}
-                  secureTextEntry={isSecure}
-                  placeholder="Пароль"
-                />
-                <TouchableOpacity>
-                  <Text style={StyleSheet.flatten([Style.subtitle, {color:"silver", marginTop: 4}])}>Восстановить пароль</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
-                <TouchableOpacity
-                    style={Style.buttonMenuPage}
-                    onPress={SendtoServer}
-                >
-                    <Text style={Style.blackText} >Далее</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Start")}>
-                    <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
-                    <Text style={Style.DefText}>Назад</Text>
-                </TouchableOpacity>
-                </View>
+          <Text style={Style.titleSimple}>Пароль</Text>
+
+          <TextInput
+            returnKeyType="done"
+            style={Style.textInputProfile}
+            value={password}
+            returnKeyType="done"
+            onChangeText={setPassword}
+            secureTextEntry={isSecure}
+            placeholder="Пароль"
+          />
+          <TouchableOpacity onPress={() => navigation.replace("InputPhonePR")}>
+            <Text style={StyleSheet.flatten([Style.subtitle, { color: "silver", marginTop: 4 }])}>Восстановить пароль</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
+          <TouchableOpacity
+            style={Style.buttonMenuPage}
+            onPress={SendtoServer}
+          >
+            <Text style={Style.blackText} >Далее</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Start")}>
+            <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{ marginEnd: 6 }]} />
+            <Text style={Style.DefText}>Назад</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );

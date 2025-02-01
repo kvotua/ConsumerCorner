@@ -16,7 +16,7 @@ import Toast from "../Notif/toasts/Toast";
 import { AccessGetToken, SesIdToken } from "@/app/AsyncStore/StoreTokens";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function CodePage({ navigation }) {
+export default function InputCodePR({ navigation }) {
   const [code, setcode] = useState("");
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
@@ -31,7 +31,6 @@ export default function CodePage({ navigation }) {
 
   const handleNext = async () => {
     try {
-      const token = await AccessGetToken();
       const ses = await SesIdToken();
 
       const payload = {
@@ -39,21 +38,32 @@ export default function CodePage({ navigation }) {
         code: code,
       }
 
-      const data = await fetch('https://consumer-corner.kvotua.ru/verify/phone/check', {
+      const data = await fetch('https://consumer-corner.kvotua.ru/password/phone/check', {
         method: "POST",
         headers: {
           'accept': 'application/json',
-          'Authorization': `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       })
 
       const res2 = await data.json();
-      await AsyncStorage.setItem('access_token', res2.access_token);
 
-      // Если успешный запрос, переходим на следующий экран
-      navigation.replace("MenuPage");
+      // Проверяем наличие detail.message или detail.phone в ответе
+      if (res2.detail && (res2.detail.message || res2.detail.phone)) {
+        // Если есть, переходим на следующий экран
+        navigation.replace("InputPasswordPR");
+      } else {
+        const errorMessages: { [key: string]: string } = {
+          "Invalid ID or code": "Неверный код!",
+          "This ID has already been checked for change password": "Смена пароля невозможна №1.",
+          "This ID has already been used for changed password": "Смена пароля невозможна №2.",
+        };
+        
+        // Получаем текст ошибки на русском
+        const text = errorMessages[res2.detail as keyof typeof errorMessages] || res2.detail || "Неизвестная ошибка";
+        showToast("error", "Ошибка!", text);
+      }
     } catch (error) {
       // Обрабатываем ошибку и показываем тост
       showToast("error", "Ошибка!", error.message || "Неверный код");
