@@ -99,6 +99,19 @@ export default function Points({ navigation, route }) {
     }
   };
 
+  const renderQR = () => (
+    <View style={[localStyles.rightAction]}>
+      <TouchableOpacity onPress={() => navigation.replace("QR")}>
+        <Icons
+          name="pencil"
+          size={24}
+          color="#FFFFFF"
+          style={[{ marginEnd: "5%" }]}
+        />
+      </TouchableOpacity>
+    </View>
+  );
+
   const renderRightActions = (id) => (
     <View style={[localStyles.rightAction]}>
       <TouchableOpacity onPress={() => navigation.replace("EditMarketPoint", { id, e_id: id })}>
@@ -166,20 +179,20 @@ export default function Points({ navigation, route }) {
           </View>
 
           {/* Карточка для свайпа */}
-            <Swipeable overshootRight={false} rightThreshold={100} renderRightActions={() => renderRightActions(item.id)} containerStyle={{ overflow: "visible" }}>
-              <View>
-                <View style={localStyles.card}>
-                  <View style={[localStyles.logoContainer, { backgroundColor: 'transparent' }]}></View>
-                  <View style={localStyles.cardContent}>
-                    <Text style={localStyles.subtitle}></Text>
-                    <Text style={localStyles.cardTitle}></Text>
-                    <View style={localStyles.ratingContainer}>
-                      <Text style={localStyles.cardRating}></Text>
-                    </View>
+          <Swipeable overshootRight={false} rightThreshold={100} renderRightActions={() => renderRightActions(item.id)} containerStyle={{ overflow: "visible" }}>
+            <View>
+              <View style={localStyles.card}>
+                <View style={[localStyles.logoContainer, { backgroundColor: 'transparent' }]}></View>
+                <View style={localStyles.cardContent}>
+                  <Text style={localStyles.subtitle}></Text>
+                  <Text style={localStyles.cardTitle}></Text>
+                  <View style={localStyles.ratingContainer}>
+                    <Text style={localStyles.cardRating}></Text>
                   </View>
                 </View>
               </View>
-            </Swipeable>
+            </View>
+          </Swipeable>
 
           {/* Карточка для фона */}
           <View style={{ width: "100%", backgroundColor: backgroungColor, position: "absolute", marginVertical: 10, zIndex: -5, borderRadius: 10 }}>
@@ -221,10 +234,10 @@ export default function Points({ navigation, route }) {
           />
         )}
         <View style={styles.menuPagesFooterHeader}>
-                                     <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
-                         </View>
-                         <View style={styles.menuPagesSecondHeader}>
-          <Text style={styles.menuTitle}>Мои точки</Text>
+          <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
+        </View>
+        <View style={styles.menuPagesSecondHeader}>
+          <Text style={styles.menuTitle} onPress={() => navigation.replace("QR", {id: 1})}>Мои точки</Text>
         </View>
         <View style={styles.containerLine}>
           <View style={styles.menuPagesLine} />

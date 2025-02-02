@@ -1,7 +1,7 @@
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
-import { LayoutChangeEvent } from 'react-native';
+import { LayoutChangeEvent, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
 import StartPage from '../(tabs)/EnterReg/StartPage';
@@ -36,6 +36,7 @@ import AssignmentDoc from '../(tabs)/ProfilePages/DuplicatePages/AssignmentDocum
 import InputCodePR from '../(tabs)/PasswordRestore/InputCodePR';
 import InputPasswordPR from '../(tabs)/PasswordRestore/InputPasswordPR';
 import InputPhonePR from '../(tabs)/PasswordRestore/InputPhonePR';
+import GeneratorQR from '../(tabs)/Qr/Generator';
 
 const Stack = createStackNavigator();
 
@@ -82,6 +83,7 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="EditMarketPoint" component={EditMarketPoint} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="DesignYourCorner" component={DesignYourCorner} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="AssignmentDoc" component={AssignmentDoc} options={{headerShown: false, animation: "fade"}} />
+          <Stack.Screen name="QR" component={GeneratorQR} options={{headerShown: false, animation: "fade"}} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );
