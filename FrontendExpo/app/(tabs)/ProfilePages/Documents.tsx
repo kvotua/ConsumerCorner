@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   FlatList, 
   StyleSheet,
-  Image
+  Image,
+  Animated,
+  Easing
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from "react-native-vector-icons/Feather";
@@ -24,6 +26,7 @@ const DATA = [
 export default function Documents({ navigation }) {
   const flatListRef = useRef(null);
   const [visibleIndex, setVisibleIndex] = useState(0);
+  const [documents, setDocuments] = useState([]);
   const [data, setData] = useState();
   const [cards, setCards] = useState([]); 
   const [selectedCardId, setSelectedCardId] = useState(null);
@@ -56,26 +59,27 @@ export default function Documents({ navigation }) {
     }
   };
 
-  // // Функция для получения документов для точки
-  // const fetchDocuments = async (pointId) => {
-  //   try {
-  //     const response = await fetch(`https://consumer-corner.kvotua.ru/points/document/${pointId}`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'accept': 'application/json',
-  //       },
-  //     });
-  //     const documents = await response.json();
-  //     if (documents && documents.document_data) {
-  //       setData((prevData) => [...prevData, ...documents.document_data]);
-  //     } else {
-  //       console.error('Данные документов недоступны', documents);
-  //     }
-  // // Сохраняем документы
-  //   } catch (error) {
-  //     console.error(`Error fetching documents for point ${pointId}:`, error);
-  //   }
-  // };
+  // Функция для получения документов для точки
+  const fetchDocuments = async (pointId) => {
+    try {
+      const response = await fetch(`https://consumer-corner.kvotua.ru/points/${pointId}`, {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+        },
+      });
+      const point_info = await response.json();
+      if (point_info && point_info.documents_data) {
+        setDocuments(point_info.documents_data);
+        console.log(point_info);
+      } else {
+        console.error(`Error fetching documents for point ${pointId}:`, error);
+      }
+  // Сохраняем документы
+    } catch (error) {
+      console.error(`Error fetching documents for point ${pointId}:`, error);
+    }
+  };
 
   useEffect(() => {
     fetchPoints();
@@ -100,26 +104,48 @@ export default function Documents({ navigation }) {
 //     </View>
 //   );
 // };
+const scaleAnim = useRef(new Animated.Value(1)).current;
+
 const handlePress = (item) => {
   const isSelected = item.id === selectedId;
+  
+  const toValue = isSelected ? 1 : 1.1; // Уменьшить, если не выбран, иначе увеличить
+  const duration = 300; // Продолжительность анимации
+
   setSelectedId(isSelected ? null : item.id);
+
   if (!isSelected) {
     const index = cards.findIndex(i => i.id === item.id);
     flatListRef.current.scrollToIndex({ index, animated: true });
+    fetchDocuments(item.id);
   }
+
+  Animated.timing(scaleAnim, {
+    toValue: toValue,
+    duration: duration,
+    easing: Easing.out(Easing.exp),
+    useNativeDriver: true,
+  }).start();
 };
 
 const renderItem = ({ item }) => {
   const isSelected = item.id === selectedId;
   return (
-    <TouchableOpacity onPress={() => handlePress(item)}>
-      <View style={[styles2.card, isSelected && style.selectedItem]}>
+    <TouchableOpacity activeOpacity={1} onPress={() => handlePress(item)}>
+        <Animated.View style={[styles2.card, { transform: [{ scale: isSelected ? scaleAnim : 1 }] }]}>
         <Image source={{ uri: item.image }} style={style.image} />
         <Text style={styles2.text}>{item.title}</Text>
-      </View>
+      </Animated.View>
     </TouchableOpacity>
   );
 };
+const renderDocument = ({ item }) => (
+    <View >
+           <TouchableOpacity style={style.button}>
+               <Text style={localStyles.buttonText}>{item.name}</Text>
+           </TouchableOpacity>
+         </View>
+);
 
 
   return (
@@ -134,7 +160,7 @@ const renderItem = ({ item }) => {
             <View style={styles.containerLine}>
             <View style={styles.menuPagesLine}/>
             </View>
-      <View style={[localStyles.flatListContainer, {height: 110, flex: cards.length === 0 ? 1 : 1}]}>
+      <View style={[localStyles.flatListContainer, {height: 120, flex: cards.length === 0 ? 1 : "unset"}]}>
       {/* <FlatList
             ref={flatListRef}
             data={cards}
@@ -161,6 +187,8 @@ const renderItem = ({ item }) => {
             horizontal={cards.length > 0}
             showsHorizontalScrollIndicator={false}
           />
+
+         
 {/* 
         <FlatList style={[{ paddingRight: 10}]}
           data={data}
@@ -174,6 +202,14 @@ const renderItem = ({ item }) => {
           indicatorStyle="white"
         /> */}
       </View>
+      <View style={{ flex: 1 }}>
+          <FlatList
+            data={documents}
+            renderItem={renderDocument}
+            keyExtractor={(item) => item.id.toString()} // Измените на соответствующий уникальный идентификатор
+            style={{ marginTop: 20 }} // Отступ для списка документов
+          />
+        </View>
         <View style={styles.containerButtonsBottomFlatList}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddDocument")}>
             <Text style={styles.blackText}>Добавить документ</Text>
@@ -189,6 +225,18 @@ const renderItem = ({ item }) => {
 }
 
 const style = StyleSheet.create({
+  button: {
+    width: "100%",
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    borderTopRightRadius: 10,
+    marginTop: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+
+  },
   item: {
     width: 100,
     height: 100,
@@ -217,7 +265,6 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.3)', // стиль выделения
   },
   flatListContainer: {
-    flex: 1,
     marginTop: 12,
     marginBottom: 12,
   },
@@ -234,7 +281,7 @@ const localStyles = StyleSheet.create({
 
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 15,
     fontFamily: 'Montserrat',
     fontWeight: "bold"
   },
@@ -247,7 +294,6 @@ const localStyles = StyleSheet.create({
     alignSelf: 'flex-start', 
   },
 });
-
 
 const styles2 = StyleSheet.create({
   container: {
@@ -268,8 +314,8 @@ const styles2 = StyleSheet.create({
     borderRadius: 8,
     width: 100,
     height: 100,
-    marginHorizontal: 8,
-    marginVertical: 8,
+    marginHorizontal: 10,
+    marginVertical: 10,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -279,8 +325,8 @@ const styles2 = StyleSheet.create({
     elevation: 3,
   },
   highlightedCard: {
-      backgroundColor: "#a6c8ff", // Более яркий фон
-      transform: [{ scale: 1.1 }], // Увеличение масштаба
+      backgroundColor: "#a6c8ff", 
+      transform: [{ scale: 1.1 }],
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.3,
