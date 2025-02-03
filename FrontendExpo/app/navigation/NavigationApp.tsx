@@ -37,6 +37,7 @@ import InputCodePR from '../(tabs)/PasswordRestore/InputCodePR';
 import InputPasswordPR from '../(tabs)/PasswordRestore/InputPasswordPR';
 import InputPhonePR from '../(tabs)/PasswordRestore/InputPhonePR';
 import GeneratorQR from '../(tabs)/Qr/Generator';
+import Document from '../(tabs)/ProfilePages/Document';
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,7 @@ interface NavigateAppProps {
 export default function App({ onLayout }: NavigateAppProps) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar barStyle="light-content" backgroundColor="#3A6CE9" />
         <Stack.Navigator initialRouteName="Start"
         screenOptions={{
             headerShown: false, // Скрыть заголовок
@@ -84,6 +86,7 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="DesignYourCorner" component={DesignYourCorner} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="AssignmentDoc" component={AssignmentDoc} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="QR" component={GeneratorQR} options={{headerShown: false, animation: "fade"}} />
+          <Stack.Screen name="Doc" component={Document} options={{headerShown: false, animation: "fade"}} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );

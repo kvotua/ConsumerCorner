@@ -45,7 +45,7 @@
     "react-native-device-info": "^14.0.1",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-image-picker": "^7.2.3",
-    "react-native-masked-text": "^1.13.0",
+    "react-native-masked-text": "^1.12.5",
     "react-native-qrcode-svg": "^6.3.14",
     "react-native-randombytes": "^3.6.1",
     "react-native-reanimated": "~3.16.1",

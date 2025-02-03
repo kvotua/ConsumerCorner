@@ -21,7 +21,10 @@ export default function AddDocument({ navigation }) {
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <SafeAreaView style={styles.containerMainPage}>
-        <View style={styles.menuPagesSecondHeader}>
+        <View style={styles.menuPagesFooterHeader}>
+                    <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
+                    </View>
+                    <View style={styles.menuPagesSecondHeader}>
             <Text style={styles.menuTitle}>Добавить новый документ</Text>
         </View>
         <View style={styles.containerLine}>

@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from "react-native-vector-icons/Feather";
 import styles from "../../Styles/Style";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
 const viewabilityConfig = { itemVisiblePercentThreshold: 80 };
 
@@ -25,41 +26,33 @@ const DATA = [
 
 export default function Documents({ navigation }) {
   const flatListRef = useRef(null);
-  const [visibleIndex, setVisibleIndex] = useState(0);
   const [documents, setDocuments] = useState([]);
-  const [data, setData] = useState();
   const [cards, setCards] = useState([]); 
-  const [selectedCardId, setSelectedCardId] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
 
-  const fetchPoints = async () => {
+  const [currentDocument, setCurrentDocument] = useState(null); // Состояние для текущего документа
+
+  const fetchDocument = async (id, navigation) => {
     try {
-      const jwt = await AccessGetToken();
-      const response = await fetch('https://consumer-corner.kvotua.ru/points/', {
+      const response = await fetch(`https://consumer-corner.kvotua.ru/mongo/document/${id}`, {
         method: 'GET',
         headers: {
           'accept': 'application/json',
-          'Authorization': `Bearer ${jwt}`
         },
       });
-      const points = await response.json();
-      
-      console.log('Fetched points:', points); // Log the API response
-  
-      if (Array.isArray(points)) {
-        setCards(points);  // Сохраняем точки в стейт
-        points.forEach(async (point) => {
-          // await fetchDocuments(point.id);
-        });
+      const document = await response.json();
+      if (document && document.id) {
+        console.log(document);
+        setCurrentDocument(document); // Сохраняем документ в состоянии
+        navigation.navigate('Doc', { document }); // Навигация к экрану документа
       } else {
-        console.error('Error: API response is not an array');
+        console.error(`Error fetching document ${id}:`, new Error('Invalid document data'));
       }
     } catch (error) {
-      console.error("Error fetching points:", error);
+      console.error(`Error fetching document ${id}:`, error);
     }
   };
 
-  // Функция для получения документов для точки
   const fetchDocuments = async (pointId) => {
     try {
       const response = await fetch(`https://consumer-corner.kvotua.ru/points/${pointId}`, {
@@ -81,36 +74,43 @@ export default function Documents({ navigation }) {
     }
   };
 
+  const fetchPoints = async () => {
+    try {
+      const jwt = await AccessGetToken();
+      const response = await fetch('https://consumer-corner.kvotua.ru/points/', {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${jwt}`
+        },
+      });
+      const points = await response.json();
+      
+      console.log('Fetched points:', points); // Log the API response
+  
+      if (Array.isArray(points)) {
+        setCards(points);  // Сохраняем точки в стейт
+        setSelectedId(points[0].id); // Устанавливаем выбранный ID на первый элемент
+        fetchDocuments(points[0].id); // Загружаем документы для первого элемента
+      } else {
+        console.error('Error: API response is not an array');
+      }
+    } catch (error) {
+      console.error("Error fetching points:", error);
+    }
+  };
+
   useEffect(() => {
     fetchPoints();
   }, []);
 
-//   const Card = ({ logo, text, isHighlighted }) => {
-//   return (
-//     <View
-//       style={[
-//         styles2.card,
-//         isHighlighted && styles2.highlightedCard,
-//       ]}
-//     >
-//       <View style={styles2.logoContainer}>
-//         {logo ? (
-//           <Image source={{ uri: logo }} style={styles2.logo} />
-//         ) : (
-//           <Text style={styles2.placeholderText}>A</Text>
-//         )}
-//       </View>
-//       <Text style={styles2.text}>{text}</Text>
-//     </View>
-//   );
-// };
 const scaleAnim = useRef(new Animated.Value(1)).current;
 
 const handlePress = (item) => {
   const isSelected = item.id === selectedId;
   
   const toValue = isSelected ? 1 : 1.1; // Уменьшить, если не выбран, иначе увеличить
-  const duration = 300; // Продолжительность анимации
+  const duration = 300; 
 
   setSelectedId(isSelected ? null : item.id);
 
@@ -128,25 +128,35 @@ const handlePress = (item) => {
   }).start();
 };
 
+const handlePressDoc = (item) => {
+  fetchDocument(item.id, navigation);
+  }
+
+
 const renderItem = ({ item }) => {
   const isSelected = item.id === selectedId;
   return (
     <TouchableOpacity activeOpacity={1} onPress={() => handlePress(item)}>
-        <Animated.View style={[styles2.card, { transform: [{ scale: isSelected ? scaleAnim : 1 }] }]}>
+        <Animated.View style={[styles2.card, { transform: [{ scale: isSelected ? 1.1 : 1 }] , backgroundColor: isSelected ? "#fff" : "#BDBDBD" },
+        [!isSelected && {opacity: 0.5}]
+        ]}>
         <Image source={{ uri: item.image }} style={style.image} />
         <Text style={styles2.text}>{item.title}</Text>
       </Animated.View>
     </TouchableOpacity>
   );
 };
-const renderDocument = ({ item }) => (
-    <View >
-           <TouchableOpacity style={style.button}>
-               <Text style={localStyles.buttonText}>{item.name}</Text>
-           </TouchableOpacity>
-         </View>
-);
 
+const renderDocument = ({ item }) => (
+    <View style={{ flex: 1}}>
+      <TouchableOpacity style={style.button} onPress={() => handlePressDoc(item) }>
+      {item.isTemp && <Fontisto name="date" size={18} color="#fff" style={[{marginRight: "10%"}]}/> }
+
+          <Text style={localStyles.buttonText}>{item.name}</Text>
+          {item.isTemp && <Fontisto name="date" size={18} color="#000" style={[{marginRight: "10%"}]}/> }
+      </TouchableOpacity>
+    </View>
+);
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
@@ -161,24 +171,6 @@ const renderDocument = ({ item }) => (
             <View style={styles.menuPagesLine}/>
             </View>
       <View style={[localStyles.flatListContainer, {height: 120, flex: cards.length === 0 ? 1 : "unset"}]}>
-      {/* <FlatList
-            ref={flatListRef}
-            data={cards}
-            horizontal={cards.length > 0}
-            keyExtractor={(item) => `${item.id}`} 
-            renderItem={({ item, index }) => (
-              <Card logo={item.logo} text={item.title} isHighlighted={index === visibleIndex} />
-            )}
-            showsHorizontalScrollIndicator={false}
-            ListEmptyComponent={
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "40%"}}>
-              <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>
-                У вас пока что нет торговых точек.
-              </Text>
-            </View>
-            }
-            
-          /> */}
            <FlatList
             data={cards}
             ref={flatListRef}
@@ -187,29 +179,16 @@ const renderDocument = ({ item }) => (
             horizontal={cards.length > 0}
             showsHorizontalScrollIndicator={false}
           />
-
-         
-{/* 
-        <FlatList style={[{ paddingRight: 10}]}
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          ListEmptyComponent={
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "40%" }}>
-            <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет документов.</Text>
-          </View>
-          }
-          indicatorStyle="white"
-        /> */}
       </View>
       <View style={{ flex: 1 }}>
           <FlatList
             data={documents}
             renderItem={renderDocument}
             keyExtractor={(item) => item.id.toString()} // Измените на соответствующий уникальный идентификатор
-            style={{ marginTop: 20 }} // Отступ для списка документов
+            style={{ paddingRight: 10 }} // Отступ для списка документов
           />
         </View>
+        
         <View style={styles.containerButtonsBottomFlatList}>
         <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddDocument")}>
             <Text style={styles.blackText}>Добавить документ</Text>
@@ -227,6 +206,8 @@ const renderDocument = ({ item }) => (
 const style = StyleSheet.create({
   button: {
     width: "100%",
+    flexDirection: 'row', // Располагаем элементы в ряд
+    justifyContent: 'space-between', 
     height: 50,
     alignItems: "center",
     justifyContent: "center",
@@ -281,6 +262,8 @@ const localStyles = StyleSheet.create({
 
   },
   buttonText: {
+    flex: 1,
+    textAlign: 'center', 
     fontSize: 15,
     fontFamily: 'Montserrat',
     fontWeight: "bold"
@@ -310,8 +293,10 @@ const styles2 = StyleSheet.create({
       alignItems: "center",
     },
   card: {
-    backgroundColor: "#d6e4ff",
-    borderRadius: 8,
+    backgroundColor: "#F2F2F2",
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    borderTopRightRadius: 8,
     width: 100,
     height: 100,
     marginHorizontal: 10,
@@ -357,5 +342,6 @@ const styles2 = StyleSheet.create({
     color: "#000",
     fontSize: 12,
     fontWeight: "bold",
+    paddingBottom: 8
   },
 });

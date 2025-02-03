@@ -221,7 +221,7 @@ export default function AdminPanel({ navigation }) {
         </View>
         <View style={styles.containerButtonsBottomFlatList}>
           <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("AddNewAdmin")}>
-            <Text style={styles.blackText}>Добавить администратора</Text>
+            <Text style={styles.blackText}>Пригласить</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{ marginEnd: 6 }]} />
