@@ -291,7 +291,7 @@ async def add_social(
         raise HTTPException(status_code=404, detail="The point was not found")
 
 
-@router.delete("/social/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
+@router.delete("/social/{point_id}/{social_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def delete_social(
     request: Request,
     point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],
