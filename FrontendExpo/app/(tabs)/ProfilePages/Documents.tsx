@@ -66,7 +66,7 @@ export default function Documents({ navigation }) {
         setDocuments(point_info.documents_data);
         console.log(point_info);
       } else {
-        console.error(`Error fetching documents for point ${pointId}:`, error);
+        console.error(`Error fetching documents for point ${pointId}:`, point_info);
       }
   // Сохраняем документы
     } catch (error) {

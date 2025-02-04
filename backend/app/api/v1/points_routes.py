@@ -306,7 +306,7 @@ async def delete_social(
     if point_id not in points_id:
         raise HTTPException(status_code=403, detail='The user does not own this point')
 
-    if await points_crud.delete_social_by_id(session=session, social_id=social_id):
+    if await points_crud.delete_social_by_id(session=session, social_id=social_id.social_id):
         return ResponseSchema(status_code=200, detail={"message": "Social deleted", "point_id": point_id})
     else:
         raise HTTPException(status_code=404, detail="Invalid social ID")

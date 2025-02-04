@@ -49,45 +49,45 @@ export default function App({ onLayout }: NavigateAppProps) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar barStyle="light-content" backgroundColor="#3A6CE9" />
-        <Stack.Navigator initialRouteName="Start"
+      <Stack.Navigator initialRouteName="Start"
         screenOptions={{
-            headerShown: false, // Скрыть заголовок
-          }} >
-          <Stack.Screen name="Start" component={StartPage} options={{ headerShown: false, animation: "fade" }} />
-          <Stack.Screen name="Auth" component={Enter} options={{headerShown: false, animation: "fade"}}/>
-          <Stack.Screen name="Register" component={RegPage} options={{ headerShown: false, animation: "fade" }} />
-          <Stack.Screen name="CodeConfirm" component={CodePage} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="CodeConfirmEnt" component={CodePageEnter} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="InputCodePR" component={InputCodePR} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="InputPasswordPR" component={InputPasswordPR} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="InputPhonePR" component={InputPhonePR} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="Inn" component={InnReg} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="RegFirma" component={RegFirma} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="MarketInfo" component={MarketPoint} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="MenuPage" component={MenuPage} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="Documents" component={Documents} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="Social" component={Social} options={{ headerShown: false, animation: "fade" }} />
-          <Stack.Screen name="Reviews" component={Reviews} options={{headerShown: false, animation: "fade" }} />
-          <Stack.Screen name="Firms" component={Firms} options={{headerShown: false, animation: "fade" }} />
-          <Stack.Screen name="AdminPanel" component={AdminPanel} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="Profile" component={Profile} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="AddDocument" component={AddDocument} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="Points" component={Points} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="AllPointsSoc" component={AllPointsSoc} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="FirmsSoc" component={FirmsSoc} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="AssignmentPointFirm" component={AssignmentPointFirm} options={{ headerShown: false, animation: "fade" }} />
-          <Stack.Screen name="AddNewAdmin" component={AddNewAdmin} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="RegFirmaAuth" component={RegFirmaAuth} options={{ headerShown: false, animation: "fade" }} />
-          <Stack.Screen name="MarketPointAuth" component={MarketPointAuth} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="InnRegAuth" component={InnRegAuth} options={{ headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="newSocial" component={newSocial} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="EditFirma" component={EditFirma} options={{headerShown: false, animation: "fade" }} />
-          <Stack.Screen name="EditMarketPoint" component={EditMarketPoint} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="AssignmentDoc" component={AssignmentDoc} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="QR" component={GeneratorQR} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="Doc" component={Document} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="ChoosePoints" component={ChoosePoints} options={{headerShown: false, animation: "fade"}} />
-        </Stack.Navigator>
+          headerShown: false, // Скрыть заголовок
+        }} >
+        <Stack.Screen name="Start" component={StartPage} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Auth" component={Enter} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Register" component={RegPage} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="CodeConfirm" component={CodePage} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="CodeConfirmEnt" component={CodePageEnter} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="InputCodePR" component={InputCodePR} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="InputPasswordPR" component={InputPasswordPR} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="InputPhonePR" component={InputPhonePR} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Inn" component={InnReg} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="RegFirma" component={RegFirma} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="MarketInfo" component={MarketPoint} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="MenuPage" component={MenuPage} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Documents" component={Documents} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Social" component={Social} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Reviews" component={Reviews} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Firms" component={Firms} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="AdminPanel" component={AdminPanel} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="AddDocument" component={AddDocument} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Points" component={Points} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="AllPointsSoc" component={AllPointsSoc} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="FirmsSoc" component={FirmsSoc} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="AssignmentPointFirm" component={AssignmentPointFirm} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="AddNewAdmin" component={AddNewAdmin} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="RegFirmaAuth" component={RegFirmaAuth} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="MarketPointAuth" component={MarketPointAuth} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="InnRegAuth" component={InnRegAuth} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="newSocial" component={newSocial} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="EditFirma" component={EditFirma} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="EditMarketPoint" component={EditMarketPoint} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="AssignmentDoc" component={AssignmentDoc} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="QR" component={GeneratorQR} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="Doc" component={Document} options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="ChoosePoints" component={ChoosePoints} options={{ headerShown: false, animation: "fade" }} />
+      </Stack.Navigator>
     </GestureHandlerRootView>
   );
 }
