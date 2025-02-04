@@ -95,7 +95,7 @@ const localStyles = StyleSheet.create({
     fontWeight: "400",
   },
   footerTextContainer: {
-      flex: isTablet ? 0 : 1,
+      flex: isTablet ? 1 : 1,
       justifyContent: 'flex-end',
   }
 });

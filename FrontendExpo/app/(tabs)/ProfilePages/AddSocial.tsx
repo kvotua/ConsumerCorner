@@ -65,7 +65,8 @@ const showToast = (type :string, message:string, subMessage:string) => {
                               <Text style={Style.footerDocumentsText}>уголок потребителя</Text>
                   </View>
                   <View style={Style.menuPagesSecondHeader}>
-            <Text style={Style.menuTitle}>Мои точки</Text>
+            <Text style={Style.menuTitle}>Добавить новую 
+            соц.сеть</Text>
           </View>
           <View style={Style.containerLine}>
             <View style={Style.menuPagesLine} />
@@ -91,7 +92,7 @@ const showToast = (type :string, message:string, subMessage:string) => {
                 />
             </View>
             <View style={StyleSheet.flatten([Style.containerButtonsMenuPages])}>
-                <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("Social")} >
+                <TouchableOpacity style={Style.buttonMenuPage} onPress={() => navigation.replace("ChoosePoints", { socValue: SocValue, link: password })} >
                     <Text style={Style.blackText} >Добавить соц.сеть</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[Style.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Social")}>

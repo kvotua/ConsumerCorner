@@ -48,51 +48,52 @@ export default function GeneratorQR({ navigation, route }) {
                 </View>
 
                 {/* Swiper с увеличенной высотой */}
+                <View style={{flex: 1}}>
                 <Swiper style={localStyles.wrapper} showsButtons={true}
 
-                    nextButton={<Icons name="chevron-right" size={30} color="#FFFFFF" />}
-                    prevButton={<Icons name="chevron-left" size={30} color="#FFFFFF" />}
+                    nextButton={<Icons name="chevron-right" size={30} color="#FFFFFF" style={{marginRight:-10}} />}
+                    prevButton={<Icons name="chevron-left" size={30} color="#FFFFFF" style={{marginLeft:-10}} />}
                     paginationStyle={localStyles.paginationStyle}
                     >
-                    <View style={[localStyles.slide, { height: 250 }]}>
+                    <View style={[localStyles.slide]}>
                         <View style={localStyles.card}>
                             <QRCode
                                 value={url} // Генерируем QR-код по URL
-                                size={200} // Размер QR-кода
+                                size={150} // Размер QR-кода
                                 color="black" // Цвет QR-кода
                                 backgroundColor="white" // Цвет фона
                             />
                         </View>
                     </View>
                     {/* Слайд с изображением */}
-                    <View style={[localStyles.slide, { height: 250 }]}>
+                    <View style={[localStyles.slide]}>
                         <View style={localStyles.card}>
                             <QRCode
                                 value={url} // Генерируем QR-код по URL
-                                size={200} // Размер QR-кода
+                                size={150} // Размер QR-кода
                                 color="black" // Цвет QR-кода
                                 backgroundColor="white" // Цвет фона
                             />
                         </View>
                     </View>
-                    <View style={[localStyles.slide, { height: 250 }]}>
+                    <View style={[localStyles.slide]}>
                         <View style={localStyles.card}>
                             <QRCode
                                 value={url} // Генерируем QR-код по URL
-                                size={200} // Размер QR-кода
+                                size={150} // Размер QR-кода
                                 color="black" // Цвет QR-кода
                                 backgroundColor="white" // Цвет фона
                             />
                         </View>
                     </View>
                 </Swiper>
+                </View>
 
-
-                <View style={[styles.buttons]}>
-                    <TouchableOpacity style={styles.WhiteButton}>
+                <View style={[styles.buttons, {marginTop: 0, flex: 'unset'}]}>
+                    <TouchableOpacity style={styles.buttonMenuPage}>
                         <Text style={styles.blackText}>Скачать</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
+                    <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("Points")}>
                         <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{ marginEnd: 6 }]} />
                         <Text style={styles.DefText}>Назад</Text>
                     </TouchableOpacity>
@@ -104,10 +105,8 @@ export default function GeneratorQR({ navigation, route }) {
 
 const localStyles = StyleSheet.create({
     wrapper: {
-        marginTop: 40,
         justifyContent: 'center', // Центрирует содержимое по вертикали
         alignItems: 'center', // Центрирует содержимое по горизонтали
-        marginBottom: 20,
     },
     slide: {
         justifyContent: 'center',
@@ -118,8 +117,8 @@ const localStyles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 15,
         padding: 20,
-        width: 250,
-        height: 250,
+        width: 275,
+        height: 390,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
@@ -135,11 +134,7 @@ const localStyles = StyleSheet.create({
         resizeMode: 'cover',
     },
     paginationStyle: {
-        position: 'absolute',  // Позиционирует пагинацию относительно родителя
-        bottom: 5,            // Отступ снизу
-        left: 0,
-        right: 0,
+        position: 'absolute',
         justifyContent: 'center',
-        alignItems: 'center',
     },
 });

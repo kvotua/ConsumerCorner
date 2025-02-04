@@ -1,28 +1,35 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, FlatList, ImageBackground, TouchableOpacity, StyleSheet, Image, Animated, Easing, Linking, Alert } from "react-native";
+import { View, Text, FlatList, ImageBackground, TouchableOpacity, ActivityIndicator, StyleSheet, Image, Animated, Easing } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from "../../Styles/Style";
+import { apiRequest } from "../../../Api/RefreshToken"; 
+import Toast from "../Notif/toasts/Toast";
+import { Swipeable } from "react-native-gesture-handler";
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import Fontisto from 'react-native-vector-icons/Fontisto';
 
-export default function AssignmentPointFirm({ navigation }) {
+export default function ChoosePoints({ navigation, route }) {
+    const { socValue, link } = route.params;
     const flatListRef = useRef(null);
-    const [social, setSocial] = useState([]);
+    const [point, setPoint] = useState([]);
     const [cards, setCards] = useState([]); 
     const [selectedId, setSelectedId] = useState(null);
+    const [selectedIds, setSelectedIds] = useState([]);
 
-  const fetchSocial = async (pointId) => {
+  const fetchPoints = async (pointId) => {
     try {
-      const response = await fetch(`https://consumer-corner.kvotua.ru/points/${pointId}`, {
+        const jwt = await AccessGetToken();
+      const response = await fetch(`https://consumer-corner.kvotua.ru/points/points-by-enterprise/${pointId}`, {
         method: 'GET',
         headers: {
           'accept': 'application/json',
+            'Authorization': `Bearer ${jwt}`
         },
       });
       const point_info = await response.json();
-      if (point_info && point_info.social_data) {
-        setSocial(point_info.social_data);
+      if (point_info) {
+        setPoint(point_info);
         console.log(point_info);
       } else {
         console.error(`Error fetching documents for point ${pointId}:`, error);
@@ -32,35 +39,39 @@ export default function AssignmentPointFirm({ navigation }) {
       console.error(`Error fetching documents for point ${pointId}:`, error);
     }
   };
-
-  const  onDelete = async (social) => {
+  
+  const fetchSocialPoints = async (pointId) => {
     try {
-      console.log(social);
-      
+        console.log(pointId, socValue, link );
       const jwt = await AccessGetToken();
-      const response = await fetch(`https://consumer-corner.kvotua.ru/points/social/${social}`, {
-        method: 'DELETE',
+      const payload = {
+        name: socValue,
+        link: link
+      };
+      const response = await fetch(`https://consumer-corner.kvotua.ru/points/social/${pointId}`, {
+        method: 'POST',
         headers: {
           'accept': 'application/json',
-          'Authorization': `Bearer ${jwt}`
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwt}`,
         },
+        body: JSON.stringify(payload),
       });
-      const point_info = await response.json();
-      if (point_info) {
-        console.log(point_info);
+      const info = await response.json();
+      if (info) {
+        console.log(info);
       } else {
-        console.error(`Error fetching documents for point ${social}:`, error);
+        console.error(`Error fetching documents for point ${pointId}:`, error);
       }
   // Сохраняем документы
     } catch (error) {
-      console.error(`Error fetching documents for point ${social}:`, error);
+      console.error(`Error fetching documents for point ${pointId}:`, error);
     }
   };
-
-    const fetchPoints = async () => {
+    const fetchEnterprises = async () => {
       try {
         const jwt = await AccessGetToken();
-        const response = await fetch('https://consumer-corner.kvotua.ru/points/', {
+        const response = await fetch('https://consumer-corner.kvotua.ru/enterprises/enterprises-info', {
           method: 'GET',
           headers: {
             'accept': 'application/json',
@@ -74,7 +85,7 @@ export default function AssignmentPointFirm({ navigation }) {
         if (Array.isArray(points)) {
           setCards(points);  // Сохраняем точки в стейт
           setSelectedId(points[0].id); // Устанавливаем выбранный ID на первый элемент
-          fetchSocial(points[0].id); // Загружаем документы для первого элемента
+          fetchPoints(points[0].id); // Загружаем документы для первого элемента
         } else {
           console.error('Error: API response is not an array');
         }
@@ -82,9 +93,11 @@ export default function AssignmentPointFirm({ navigation }) {
         console.error("Error fetching points:", error);
       }
     };
+
+
   
     useEffect(() => {
-      fetchPoints();
+        fetchEnterprises();
     }, []);
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -100,7 +113,7 @@ export default function AssignmentPointFirm({ navigation }) {
       if (!isSelected) {
         const index = cards.findIndex(i => i.id === item.id);
         flatListRef.current.scrollToIndex({ index, animated: true });
-        fetchSocial(item.id);
+        fetchPoints(item.id);
       }
     
       Animated.timing(scaleAnim, {
@@ -120,50 +133,44 @@ export default function AssignmentPointFirm({ navigation }) {
             [!isSelected && {opacity: 0.5}]
             ]}>
             <Image source={{ uri: item.image }} style={style.image} />
-            <Text style={style.text}>{item.title}</Text>
+            <Text style={style.text}>{item.name}</Text>
           </Animated.View>
         </TouchableOpacity>
       );
     };
 
-    const handlePressSoc = ({ item }) => {
-      // Проверяем, если у элемента есть ссылка
-      console.log(item);
-      if (item.link) {
-        Linking.openURL(item.link).catch(err => console.error('Ошибка при открытии ссылки:', err));
-      }
-    };
-  
-    const handleLongPress = ({ item }) => {
-      // Логика для длинного нажатия
-      Alert.alert(
-        `Удалить соц.сеть ${item.name}`,
-        "Вы уверены, что хотите удалить этот элемент?",
-        [
-          {
-            text: "Отмена",
-            style: "cancel"
-          },
-          { 
-            text: "Удалить", 
-            onPress: () => {
-            console.log(item.social_id);
-              onDelete(item.social_id)},
+    const handlePressPoints = (id) => {
+        setSelectedIds(prevIds => {
+          if (prevIds.includes(id)) {
+          console.log(prevIds.filter(selectedId => selectedId !== id));
+            return prevIds.filter(selectedId => selectedId !== id); // Удалить id
+          } else {
+          console.log([...prevIds, id]);
+            return [...prevIds, id]; // Добавить id
           }
-        ]
-      );
-    };
-
-    const renderSocial = ({ item }) => (
-        <View style={{ flex: 1}}>
-          <TouchableOpacity style={style.button} onPress={() => handlePressSoc({item})} onLongPress={() => handleLongPress({item})}>
-          {item.isTemp && <Fontisto name="date" size={18} color="#fff" style={[{marginRight: "10%"}]}/> }
+        });
+      };
     
-              <Text style={style.buttonText}>{item.name}</Text>
-              {item.isTemp && <Fontisto name="date" size={18} color="#000" style={[{marginRight: "10%"}]}/> }
-          </TouchableOpacity>
-        </View>
-    );
+
+      const renderSocial = ({ item }) => {
+        const isSelecteda = selectedIds.includes(item.id);
+        const buttonStyle = isSelecteda ? { backgroundColor: '#9AEB9D' } : { backgroundColor: '#fff' }; // Замените на нужные цвета
+    
+        return (
+          <View style={{ flex: 1 }}>
+            <TouchableOpacity style={[style.button, buttonStyle]} onPress={() => handlePressPoints(item.id)}>
+              {item.isTemp && <Fontisto name="date" size={18} color="#fff" style={[{ marginRight: "10%" }]} />}
+              <Text style={style.buttonText}>{item.title}</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      };
+      const handlePressAddSocialPoints = () => {
+        selectedIds.forEach(id => {
+            fetchSocialPoints(id); // Вызов функции для каждого id
+          });
+        navigation.replace("Social"); // Переход на другой экран
+      };
     
     
   return (
@@ -173,44 +180,48 @@ export default function AssignmentPointFirm({ navigation }) {
                     <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
         </View>
         <View style={styles.menuPagesSecondHeader}>
-          <Text style={[styles.menuTitle, {fontSize: 30, textAlign:"left"}]}>Все соц.сети</Text>
+          <Text style={[styles.menuTitle, {fontSize: 30, textAlign:"left"}]}>Выберите точки к которым добавить соц.сеть</Text>
         </View>
         <View style={[styles.containerLine]}>
           <View style={styles.menuPagesLine} />
         </View>
+        {cards.length > 1 && (
         <View style={[localStyles.flatListContainer, {height: 120, flex: cards.length === 0 ? 1 : "unset"}]}>
+
             <FlatList
-              data={cards}
-              ref={flatListRef}
-              renderItem={renderItem}
-              keyExtractor={item => item.id}
-              horizontal={cards.length > 0}
-              showsHorizontalScrollIndicator={false}
-              ListEmptyComponent={
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                  <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет точек</Text>
+                data={cards}
+                ref={flatListRef}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                ListEmptyComponent={
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет фирм</Text>
                 </View>
-            }
+                }
             />
         </View>
+            )}
+
         <View style={{ flex: 1 }}>
             <FlatList
-              data={social}
+              data={point}
               renderItem={renderSocial}
-              keyExtractor={(item) => item.social_id.toString()} // Измените на соответствующий уникальный идентификатор
+              keyExtractor={(item) => item.id.toString()} // Измените на соответствующий уникальный идентификатор
               style={{ paddingRight: 10 }} // Отступ для списка документов
               ListEmptyComponent={
                               <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У этой точки пока что нет соц.сетей</Text>
+                                <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У вас пока что нет точек</Text>
                               </View>
                           }
             />
           </View>
         <View style={[styles.containerButtonsBottomFlatList]}>
-          <TouchableOpacity style={styles.buttonMenuPage} onPress={() => navigation.replace("newSocial")}>
+          <TouchableOpacity style={styles.buttonMenuPage} onPress={handlePressAddSocialPoints}>
             <Text style={styles.blackText}>Добавить соц.сеть</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("MenuPage")}>
+          <TouchableOpacity style={[styles.buttonBackMenuPage, { marginTop: 10 }]} onPress={() => navigation.replace("newSocial")}>
             <Icons name="arrow-left" size={18} color="#FFFFFF" style={[{marginEnd: 6}]}/>
             <Text style={styles.DefText}>Назад</Text>
           </TouchableOpacity>
@@ -399,12 +410,12 @@ const styles2 = StyleSheet.create({
 
   const style = StyleSheet.create({
     buttonText: {
-      flex: 1,
-      textAlign: 'center', 
-      fontSize: 15,
-      fontFamily: 'Montserrat',
-      fontWeight: "bold"
-    },
+        flex: 1,
+        textAlign: 'center', 
+        fontSize: 15,
+        fontFamily: 'Montserrat',
+        fontWeight: "bold"
+      },
     text: {
       color: "#000",
       fontSize: 12,

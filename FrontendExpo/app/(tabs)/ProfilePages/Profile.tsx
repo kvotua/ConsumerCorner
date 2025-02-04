@@ -10,13 +10,15 @@ import {
   Image,
   Dimensions,
   Platform,
-  FlatList
+  FlatList,
+  Linking
 } from "react-native";
 import Style from "@/app/Styles/Style";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import Icons from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Profile({ navigation }) {
@@ -134,7 +136,10 @@ export default function Profile({ navigation }) {
     </View>
   );
 
-
+  const handleLink = () => {
+    const url = 'https://business-russia.kvotua.ru'; // Замените на вашу ссылку
+    Linking.openURL(url).catch(err => console.error('Ошибка при открытии ссылки:', err));
+  };
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
@@ -146,6 +151,9 @@ export default function Profile({ navigation }) {
                 <View style={Style.menuPagesLine} />
               </View>
         <View style={[Style.profileHeader, {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
+        <TouchableOpacity onPress={() => handleLink()} style={{alignSelf: 'flex-start', marginTop: "2%"}}>
+            <MaterialCommunityIcons name='shield-alert-outline' size={32} color={'white'}/>
+          </TouchableOpacity>
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Image
             source={require("../../../assets/images/profileImage.png")}

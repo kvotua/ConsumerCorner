@@ -31,13 +31,13 @@ import InnRegAuth from '../(tabs)/SubPages/InnPageAuth';
 import newSocial from '../(tabs)/ProfilePages/AddSocial';
 import EditFirma from '../(tabs)/ProfilePages/EditFirms';
 import EditMarketPoint from '../(tabs)/ProfilePages/EditPoint';
-import DesignYourCorner from '../(tabs)/ProfilePages/QrPage';
 import AssignmentDoc from '../(tabs)/ProfilePages/DuplicatePages/AssignmentDocument';
 import InputCodePR from '../(tabs)/PasswordRestore/InputCodePR';
 import InputPasswordPR from '../(tabs)/PasswordRestore/InputPasswordPR';
 import InputPhonePR from '../(tabs)/PasswordRestore/InputPhonePR';
 import GeneratorQR from '../(tabs)/Qr/Generator';
 import Document from '../(tabs)/ProfilePages/Document';
+import ChoosePoints from '../(tabs)/ProfilePages/ChoosePoints';
 
 const Stack = createStackNavigator();
 
@@ -83,10 +83,10 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="newSocial" component={newSocial} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="EditFirma" component={EditFirma} options={{headerShown: false, animation: "fade" }} />
           <Stack.Screen name="EditMarketPoint" component={EditMarketPoint} options={{headerShown: false, animation: "fade"}} />
-          <Stack.Screen name="DesignYourCorner" component={DesignYourCorner} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="AssignmentDoc" component={AssignmentDoc} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="QR" component={GeneratorQR} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="Doc" component={Document} options={{headerShown: false, animation: "fade"}} />
+          <Stack.Screen name="ChoosePoints" component={ChoosePoints} options={{headerShown: false, animation: "fade"}} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );

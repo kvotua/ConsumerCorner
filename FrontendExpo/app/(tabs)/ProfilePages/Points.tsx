@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, ImageBackground, TouchableOpacity, ActivityIndicator, StyleSheet, Image } from "react-native";
+import { View, Text, FlatList, ImageBackground, TouchableOpacity, ActivityIndicator, StyleSheet, Image, Dimensions } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from "../../Styles/Style";
 import { apiRequest } from "../../../Api/RefreshToken"; // Убедитесь, что функция apiRequest корректно импортирована
@@ -9,6 +9,9 @@ import { Swipeable } from "react-native-gesture-handler";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import { replace } from "expo-router/build/global-state/routing";
 import { useFocusEffect } from "@react-navigation/native";
+import qrcode from "../../../assets/images/qrcode.png";
+const { width } = Dimensions.get('window');
+const isTablet = width >= 768;
 
 export default function Points({ navigation, route }) {
   const { id } = route.params;
@@ -164,7 +167,7 @@ export default function Points({ navigation, route }) {
               borderRadius: 10,
               shadowColor: 'black', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0, shadowRadius: 0, elevation: 0
             }]}>
-              <View style={[localStyles.logoContainer, { backgroundColor: 'transparent' }]}>
+              <View style={[localStyles.logoContainer, { backgroundColor: 'transparent', marginRight: 6 }]}>
                 <Image source={imageSource} style={{ height: 50, width: 50 }} />
               </View>
               <View style={[localStyles.cardContent, { backgroundColor: 'transparent' }]}>
@@ -175,6 +178,7 @@ export default function Points({ navigation, route }) {
                   {renderStars(item.middle_stars)}
                 </View>
               </View>
+            
             </View>
           </View>
 
@@ -182,7 +186,7 @@ export default function Points({ navigation, route }) {
           <Swipeable overshootRight={false} rightThreshold={100} renderRightActions={() => renderRightActions(item.id)} containerStyle={{ overflow: "visible" }}>
             <View>
               <View style={localStyles.card}>
-                <View style={[localStyles.logoContainer, { backgroundColor: 'transparent' }]}></View>
+                <View style={[localStyles.logoContainer, { backgroundColor: 'transparent'}]}></View>
                 <View style={localStyles.cardContent}>
                   <Text style={localStyles.subtitle}></Text>
                   <Text style={localStyles.cardTitle}></Text>
@@ -190,6 +194,11 @@ export default function Points({ navigation, route }) {
                     <Text style={localStyles.cardRating}></Text>
                   </View>
                 </View>
+                <TouchableOpacity activeOpacity={1} onPress={() => navigation.replace("QR", {id: item.id})} style={{zIndex: 2000}}>
+                <View style={[localStyles.logoContainer, { backgroundColor: 'transparent',  }]}>
+                  <Image source={qrcode} style={{ height: 50, width: 50 }} />
+                </View>
+              </TouchableOpacity>
               </View>
             </View>
           </Swipeable>
@@ -237,7 +246,7 @@ export default function Points({ navigation, route }) {
           <Text style={styles.footerDocumentsText}>уголок потребителя</Text>
         </View>
         <View style={styles.menuPagesSecondHeader}>
-          <Text style={styles.menuTitle} onPress={() => navigation.replace("QR", {id: 1})}>Мои точки</Text>
+          <Text style={styles.menuTitle}>Мои точки</Text>
         </View>
         <View style={styles.containerLine}>
           <View style={styles.menuPagesLine} />
@@ -294,7 +303,6 @@ const localStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    marginRight: 10,
   },
   logoText: {
     fontSize: 24,
