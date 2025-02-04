@@ -13,7 +13,7 @@ export default function DocumentScreen({ route }) {
         <View style={styles.container}>
           <WebView
             originWhitelist={['*']}
-            source={{ uri: `data:application/pdf;base64,${document.document_data}` }}
+            source={{ uri: "https://zagorie.ru/upload/iblock/4ea/4eae10bf98dde4f7356ebef161d365d5.pdf" }}
             style={styles.webview}
           />
         </View>
