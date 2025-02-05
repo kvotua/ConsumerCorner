@@ -1,8 +1,9 @@
-FROM oven/bun:1 as base
-WORKDIR /app/react-app
+FROM node:18
 
-COPY ./package.json ./package.json
-RUN bun install
-COPY . .
-RUN bun --bun run build
-CMD ["bun", "--bun", "run", "start"]
+RUN mkdir /app
+WORKDIR /app
+COPY ./ /app
+RUN npm install --legacy-peer-deps
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]

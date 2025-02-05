@@ -71,3 +71,11 @@ services:
     links:
       - mongodb
       - postgres
+
+  next-app:
+    build:
+      context: ./next
+    ports:
+      - '3000:3030'
+    volumes:
+      - /app/node_modules
