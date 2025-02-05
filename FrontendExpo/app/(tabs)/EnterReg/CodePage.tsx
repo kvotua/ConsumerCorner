@@ -52,7 +52,8 @@ export default function CodePage({ navigation }) {
       })
 
       const res2 = await data.json();
-      if (res2.detail && (res2.detail.message || res2.detail.phone)) {
+      console.log(res2)
+      if (res2.access_token || res2.detail.phone) {
         await AsyncStorage.setItem('access_token', res2.access_token);
 
         // Если успешный запрос, переходим на следующий экран
