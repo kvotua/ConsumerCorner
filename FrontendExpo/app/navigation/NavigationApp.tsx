@@ -37,7 +37,8 @@ import InputPasswordPR from '../(tabs)/PasswordRestore/InputPasswordPR';
 import InputPhonePR from '../(tabs)/PasswordRestore/InputPhonePR';
 import GeneratorQR from '../(tabs)/Qr/Generator';
 import Document from '../(tabs)/ProfilePages/Document';
-import ChoosePoints from '../(tabs)/ProfilePages/ChoosePoints';
+import ChoosePoints from '../(tabs)/ProfilePages/ChoosePointsSocial';
+import ChoosePointsDoc from '../(tabs)/ProfilePages/ChoosePointsDocument';
 
 const Stack = createStackNavigator();
 
@@ -87,6 +88,7 @@ export default function App({ onLayout }: NavigateAppProps) {
           <Stack.Screen name="QR" component={GeneratorQR} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="Doc" component={Document} options={{headerShown: false, animation: "fade"}} />
           <Stack.Screen name="ChoosePoints" component={ChoosePoints} options={{headerShown: false, animation: "fade"}} />
+          <Stack.Screen name="ChoosePointsDoc" component={ChoosePointsDoc} options={{headerShown: false, animation: "fade"}} />
         </Stack.Navigator>
     </GestureHandlerRootView>
   );

@@ -22,7 +22,7 @@ export default function newSocial({ navigation }) {
   const [SocValue, setSocValue] = useState(""); 
   const [toast, setToast] = useState({ type: "", message: "", subMessage: "", visible: false });
 
-const showToast = (type :string, message:string, subMessage:string) => {
+  const showToast = (type :string, message:string, subMessage:string) => {
     setToast({ type, message, subMessage, visible: true });
     setTimeout(() => setToast({ ...toast, visible: false }), 3000); 
   };
@@ -31,33 +31,6 @@ const showToast = (type :string, message:string, subMessage:string) => {
     setSocValue(text);
   };
 
-  const SendtoServer = async () =>{
-    try {
-      const data = await handleNext(rawPhoneValue, password)
-
-      if(data.message == "Input should be a valid dictionary or object to extract fields from")
-        showToast("error", "Ошибка!", data.message || "Неверный логин или пароль");
-      await AsyncStorage.setItem("access_token", data.access_token);
-      await AsyncStorage.setItem("refresh_token", data.refresh_token);
-      try {
-        const token = await AccessGetToken()
-        const decodeToken =  decodeJwt(token);
-        if(decodeToken.verify_phone != false)
-          navigation.replace("MenuPage");
-        else{
-          const token = await AccessGetToken();
-          await SendNumber(token);
-          navigation.replace("CodeConfirmEnt");
-        }
-
-      } catch (error) {
-        console.log(error.message)
-      }
-    } catch (error) {
-      showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
-    }
-    
-  }
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
       <SafeAreaView style={Style.containerMainPage}>

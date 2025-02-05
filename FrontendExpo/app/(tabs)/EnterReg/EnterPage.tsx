@@ -19,6 +19,7 @@ import { AccessGetToken } from "@/app/AsyncStore/StoreTokens";
 import { decodeJwt } from "@/app/AsyncStore/Decode";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import { apiRequest } from "@/Api/RefreshToken";
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function Enter({ navigation }) {
   const [password, setPassword] = useState("");
@@ -131,6 +132,9 @@ export default function Enter({ navigation }) {
       showToast("error", "Ошибка!", error.message || "Произошла неизвестная ошибка.");
     }
   };
+  const toggleSecureTextEntry = () => {
+    setIsSecure(!isSecure);
+  };
 
   return (
     <ImageBackground source={require("../../../assets/images/background.png")} style={Style.background}>
@@ -175,6 +179,12 @@ export default function Enter({ navigation }) {
               secureTextEntry={isSecure}
               placeholder="Пароль"
             />
+             <TouchableOpacity
+                onPress={toggleSecureTextEntry}
+                style={Style.iconButton}
+              >
+                <Icon name={isSecure ? 'eye-off' : 'eye'} size={24} color="#00000" />
+              </TouchableOpacity>
           </Animated.View>
           <TouchableOpacity onPress={() => navigation.replace("InputPhonePR")}>
             <Text style={StyleSheet.flatten([Style.subtitle, { color: "silver", marginTop: 4 }])}>Восстановить пароль</Text>

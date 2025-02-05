@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Image,
   Animated,
-  Easing
+  Easing, Alert 
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icons from "react-native-vector-icons/Feather";
@@ -42,7 +42,6 @@ export default function Documents({ navigation }) {
       });
       const document = await response.json();
       if (document && document.id) {
-        console.log(document);
         setCurrentDocument(document); // Сохраняем документ в состоянии
         navigation.navigate('Doc', { document }); // Навигация к экрану документа
       } else {
@@ -64,7 +63,6 @@ export default function Documents({ navigation }) {
       const point_info = await response.json();
       if (point_info && point_info.documents_data) {
         setDocuments(point_info.documents_data);
-        console.log(point_info);
       } else {
         console.error(`Error fetching documents for point ${pointId}:`, error);
       }
@@ -86,8 +84,6 @@ export default function Documents({ navigation }) {
       });
       const points = await response.json();
       
-      console.log('Fetched points:', points); // Log the API response
-  
       if (Array.isArray(points)) {
         setCards(points);  // Сохраняем точки в стейт
         setSelectedId(points[0].id); // Устанавливаем выбранный ID на первый элемент
@@ -147,9 +143,53 @@ const renderItem = ({ item }) => {
   );
 };
 
+  const  onDelete = async (point_id, document_id) => {
+    try {
+      const jwt = await AccessGetToken();
+      const response = await fetch(`https://consumer-corner.kvotua.ru/points/document/${point_id}/${document_id}`, {
+        method: 'DELETE',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwt}`
+        },
+      });
+      const point_info = await response.json();
+      if (point_info) {
+        console.log(point_info);
+        navigation.replace("Documents");
+      } else {
+        console.error(`Error fetching documents for point ${point_id}:`, error);
+      }
+  // Сохраняем документы
+    } catch (error) {
+      console.error(`Error fetching documents for point ${point_id}:`, error);
+    }
+  };
+  const handleLongPress = ({ item }) => {
+      // Логика для длинного нажатия
+      Alert.alert(
+        `Удалить документ ${item.name}`,
+        "Вы уверены, что хотите удалить этот документ?",
+        [
+          {
+            text: "Отмена",
+            style: "cancel"
+          },
+          { 
+            text: "Удалить", 
+            onPress: () => {
+            console.log(selectedId, item.id);
+              onDelete(selectedId, item.id)},
+          },
+        ]
+      );
+    };
+
+
 const renderDocument = ({ item }) => (
     <View style={{ flex: 1}}>
-      <TouchableOpacity style={style.button} onPress={() => handlePressDoc(item) }>
+      <TouchableOpacity style={style.button} onPress={() => handlePressDoc(item)}  onLongPress={() => handleLongPress({item})}>
       {item.isTemp && <Fontisto name="date" size={18} color="#fff" style={[{marginRight: "10%"}]}/> }
 
           <Text style={localStyles.buttonText}>{item.name}</Text>
@@ -186,6 +226,11 @@ const renderDocument = ({ item }) => (
             renderItem={renderDocument}
             keyExtractor={(item) => item.id.toString()} // Измените на соответствующий уникальный идентификатор
             style={{ paddingRight: 10 }} // Отступ для списка документов
+            ListEmptyComponent={
+                                          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                            <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>У этой точки пока что нет документов</Text>
+                                          </View>
+                                      }
           />
         </View>
         
