@@ -291,11 +291,11 @@ async def add_social(
         raise HTTPException(status_code=404, detail="The point was not found")
 
 
-@router.delete("/social/{point_id}", response_model=ResponseSchema, dependencies=dependencies)
+@router.delete("/social/{point_id}/{social_id}", response_model=ResponseSchema, dependencies=dependencies)
 async def delete_social(
     request: Request,
     point_id: Annotated[int, Path(title="Point ID", examples=[1], ge=1)],
-    social_id: Annotated[SocialID, Body()],
+    social_id: Annotated[int, Path(title="Social ID", examples=[1])],
     session: AsyncSession = Depends(get_session),
 ):
     dict_by_token = get_token_data_verify(request)
@@ -306,7 +306,5 @@ async def delete_social(
     if point_id not in points_id:
         raise HTTPException(status_code=403, detail='The user does not own this point')
 
-    if await points_crud.delete_social_by_id(session=session, social_id=social_id):
-        return ResponseSchema(status_code=200, detail={"message": "Social deleted", "point_id": point_id})
-    else:
-        raise HTTPException(status_code=404, detail="Invalid social ID")
+    await points_crud.delete_social_by_id(session=session, social_id=social_id)
+    return ResponseSchema(status_code=200, detail={"message": "Social deleted", "point_id": point_id, "social_id": social_id})

@@ -50,7 +50,7 @@ export default function App({ onLayout }: NavigateAppProps) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar barStyle="light-content" backgroundColor="#3A6CE9" />
-        <Stack.Navigator initialRouteName="Start"
+      <Stack.Navigator initialRouteName="Start"
         screenOptions={{
             headerShown: false, // Скрыть заголовок
           }} >
